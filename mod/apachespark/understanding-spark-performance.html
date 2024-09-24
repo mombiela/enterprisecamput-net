@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Spark Performance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/understanding-spark-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/understanding-spark-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/understanding-spark-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/understanding-spark-performance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/understanding-spark-performance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='use-cases-of-graphx'>&#x25C4;Use Cases of GraphX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding Spark Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-management'>Memory Management &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Apache Spark is a powerful open-source distributed computing system that provides an interface for programming entire clusters with implicit data parallelism and fault tolerance. Understanding Spark performance is crucial for optimizing your applications and making the most out of your resources.</p>
+</div><h1>Key Concepts in Spark Performance</h1>
+<div class='content'><ul>
+<li><strong>Cluster Manager</strong>: The component that manages resources across the cluster. Common cluster managers include YARN, Mesos, and Kubernetes.</li>
+<li><strong>Executor</strong>: A distributed agent responsible for executing tasks. Each executor runs on a worker node.</li>
+<li><strong>Task</strong>: The smallest unit of work in Spark, executed by an executor.</li>
+<li><strong>Job</strong>: A set of tasks that are triggered by an action (e.g., <code>count()</code>, <code>collect()</code>).</li>
+<li><strong>Stage</strong>: A set of tasks that can be executed in parallel, separated by shuffle boundaries.</li>
+<li><strong>Shuffle</strong>: The process of redistributing data across the cluster, which can be a performance bottleneck.</li>
+</ul>
+</div><h1>Optimizing Spark Performance</h1>
+<div class='content'></div><h2>Data Serialization</h2>
+<div class='content'><p>Serialization is the process of converting an object into a format that can be easily stored or transmitted. Spark supports two serialization libraries:</p>
+<ul>
+<li><strong>Java Serialization</strong>: Default, but slow and inefficient.</li>
+<li><strong>Kryo Serialization</strong>: Faster and more efficient, but requires explicit registration of classes.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3BhcmsuU3BhcmtDb25mCmltcG9ydCBvcmcuYXBhY2hlLnNwYXJrLnNlcmlhbGl6ZXIuS3J5b1NlcmlhbGl6ZXIKCnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpCmNvbmYuc2V0KCJzcGFyay5zZXJpYWxpemVyIiwgY2xhc3NPZltLcnlvU2VyaWFsaXplcl0uZ2V0TmFtZSkKY29uZi5yZWdpc3RlcktyeW9DbGFzc2VzKEFycmF5KGNsYXNzT2ZbWW91ckNsYXNzXSkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.SparkConf
+import org.apache.spark.serializer.KryoSerializer
+
+val conf = new SparkConf()
+conf.set(&quot;spark.serializer&quot;, classOf[KryoSerializer].getName)
+conf.registerKryoClasses(Array(classOf[YourClass]))</pre></div><div class='content'></div><h2>Memory Management</h2>
+<div class='content'><p>Efficient memory management is key to Spark performance. Spark divides memory into two main regions:</p>
+<ul>
+<li><strong>Execution Memory</strong>: Used for computation in shuffles, joins, sorts, and aggregations.</li>
+<li><strong>Storage Memory</strong>: Used for caching and propagating internal data across the cluster.</li>
+</ul>
+<h4>Tuning Memory Parameters</h4>
+<ul>
+<li><code>spark.executor.memory</code>: Total memory available to the executor.</li>
+<li><code>spark.memory.fraction</code>: Fraction of heap space used for execution and storage.</li>
+<li><code>spark.memory.storageFraction</code>: Fraction of <code>spark.memory.fraction</code> used for storage.</li>
+</ul>
+</div><h2>Caching and Persistence</h2>
+<div class='content'><p>Caching intermediate results can significantly speed up iterative algorithms. Spark provides several storage levels:</p>
+<ul>
+<li><code>MEMORY_ONLY</code>: Stores RDD as deserialized Java objects in memory.</li>
+<li><code>MEMORY_AND_DISK</code>: Stores RDD as deserialized Java objects in memory and spills to disk when memory is full.</li>
+<li><code>DISK_ONLY</code>: Stores RDD only on disk.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJoZGZzOi8vcGF0aC90by9maWxlIikKdmFsIGNhY2hlZFJkZCA9IHJkZC5jYWNoZSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;hdfs://path/to/file&quot;)
+val cachedRdd = rdd.cache()</pre></div><div class='content'></div><h2>Data Partitioning</h2>
+<div class='content'><p>Proper data partitioning can reduce shuffling and improve performance. Use <code>repartition</code> and <code>coalesce</code> to control the number of partitions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJoZGZzOi8vcGF0aC90by9maWxlIikKdmFsIHJlcGFydGl0aW9uZWRSZGQgPSByZGQucmVwYXJ0aXRpb24oMTAp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;hdfs://path/to/file&quot;)
+val repartitionedRdd = rdd.repartition(10)</pre></div><div class='content'></div><h2>Broadcast Variables</h2>
+<div class='content'><p>Broadcast variables allow you to cache a read-only variable on each machine rather than shipping a copy of it with tasks.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGJyb2FkY2FzdFZhciA9IHNjLmJyb2FkY2FzdChBcnJheSgxLCAyLCAzKSkKdmFsIHJkZCA9IHNjLnBhcmFsbGVsaXplKDEgdG8gMTApCnZhbCByZXN1bHQgPSByZGQubWFwKHggPT4geCAqIGJyb2FkY2FzdFZhci52YWx1ZSgwKSkuY29sbGVjdCgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val broadcastVar = sc.broadcast(Array(1, 2, 3))
+val rdd = sc.parallelize(1 to 10)
+val result = rdd.map(x =&gt; x * broadcastVar.value(0)).collect()</pre></div><div class='content'></div><h1>Monitoring and Debugging</h1>
+<div class='content'></div><h2>Spark UI</h2>
+<div class='content'><p>The Spark UI provides a web interface to monitor and inspect the execution of your Spark applications. Key tabs include:</p>
+<ul>
+<li><strong>Jobs</strong>: Displays a list of jobs and their stages.</li>
+<li><strong>Stages</strong>: Shows details about each stage, including tasks and shuffle read/write metrics.</li>
+<li><strong>Storage</strong>: Displays information about RDDs that are cached.</li>
+<li><strong>Environment</strong>: Shows environment variables, Spark properties, and classpath entries.</li>
+<li><strong>Executors</strong>: Provides information about executor memory and CPU usage.</li>
+</ul>
+</div><h2>Logs and Metrics</h2>
+<div class='content'><ul>
+<li><strong>Driver Logs</strong>: Contain information about the driver process.</li>
+<li><strong>Executor Logs</strong>: Contain information about executor processes.</li>
+<li><strong>Metrics</strong>: Spark provides a metrics system to monitor various aspects of the cluster.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding Spark performance involves a combination of optimizing data serialization, memory management, caching strategies, data partitioning, and using broadcast variables. Monitoring tools like the Spark UI and logs are invaluable for diagnosing performance issues. By mastering these concepts, you can significantly improve the efficiency and speed of your Spark applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='use-cases-of-graphx'>&#x25C4;Use Cases of GraphX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding Spark Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-management'>Memory Management &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

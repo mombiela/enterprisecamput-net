@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating Deployments</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/automating-deployments" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/automating-deployments" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/automating-deployments" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/automating-deployments" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/automating-deployments" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='gitops-with-argocd'>&#x25C4;GitOps with ArgoCD</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Automating Deployments</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='best-practices-for-production'>Best Practices for Production &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Automating deployments in Kubernetes is crucial for maintaining consistency, reducing errors, and improving the speed of releasing new features. This section will guide you through the basics to advanced techniques of automating deployments using Kubernetes.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Deployment</strong>: A Kubernetes resource that provides declarative updates to applications.</li>
+<li><strong>ReplicaSet</strong>: Ensures a specified number of pod replicas are running at any given time.</li>
+<li><strong>Rolling Updates</strong>: Gradually replaces old versions of pods with new ones.</li>
+<li><strong>Blue-Green Deployment</strong>: Maintains two identical environments, one live and one idle, to switch between them.</li>
+<li><strong>Canary Deployment</strong>: Gradually shifts traffic from the old version to the new version.</li>
+<li><strong>CI/CD Pipelines</strong>: Continuous Integration and Continuous Deployment pipelines automate the process of building, testing, and deploying code.</li>
+</ul>
+</div><h1>Basic Deployment Automation</h1>
+<div class='content'></div><h2>Creating a Deployment</h2>
+<div class='content'><p>A simple deployment can be created using a YAML file. Below is an example of a basic deployment configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAzCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBteS1hcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwLWNvbnRhaW5lcgogICAgICAgIGltYWdlOiBteS1hcHAtaW1hZ2U6MS4wCiAgICAgICAgcG9ydHM6CiAgICAgICAgLSBjb250YWluZXJQb3J0OiA4MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-app-image:1.0
+        ports:
+        - containerPort: 80</pre></div><div class='content'><ul>
+<li><strong>apiVersion</strong>: Specifies the API version.</li>
+<li><strong>kind</strong>: The type of Kubernetes resource.</li>
+<li><strong>metadata</strong>: Metadata about the deployment, including the name.</li>
+<li><strong>spec</strong>: The specification of the deployment, including the number of replicas and the pod template.</li>
+</ul>
+</div><h2>Applying the Deployment</h2>
+<div class='content'><p>To apply the deployment, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBteS1hcHAtZGVwbG95bWVudC55YW1s"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f my-app-deployment.yaml</pre></div><div class='content'><p>This command will create the deployment and start the specified number of replicas.</p>
+</div><h1>Intermediate Deployment Strategies</h1>
+<div class='content'></div><h2>Rolling Updates</h2>
+<div class='content'><p>Rolling updates allow you to update the application without downtime. Kubernetes handles the update process by gradually replacing old pods with new ones.</p>
+<p>To update the deployment, modify the image version in the YAML file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BlYzoKICB0ZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwLWNvbnRhaW5lcgogICAgICAgIGltYWdlOiBteS1hcHAtaW1hZ2U6Mi4w"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spec:
+  template:
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-app-image:2.0</pre></div><div class='content'><p>Apply the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBteS1hcHAtZGVwbG95bWVudC55YW1s"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f my-app-deployment.yaml</pre></div><div class='content'></div><h2>Blue-Green Deployment</h2>
+<div class='content'><p>Blue-Green deployment involves maintaining two environments. Here’s a simplified approach:</p>
+<ol>
+<li>Deploy the new version (green) alongside the old version (blue).</li>
+<li>Switch the service to point to the new version.</li>
+</ol>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAtc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiBteS1hcHAtZ3JlZW4KICBwb3J0czoKICAtIHByb3RvY29sOiBUQ1AKICAgIHBvcnQ6IDgwCiAgICB0YXJnZXRQb3J0OiA4MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app-green
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80</pre></div><div class='content'><p>Switching the service selector to <code>app: my-app-green</code> will redirect traffic to the new version.</p>
+</div><h1>Advanced Deployment Techniques</h1>
+<div class='content'></div><h2>Canary Deployment</h2>
+<div class='content'><p>Canary deployments gradually shift traffic to the new version. This can be achieved using multiple deployments and services.</p>
+<ol>
+<li>Create a new deployment for the canary version.</li>
+<li>Use a service mesh or ingress controller to route a small percentage of traffic to the canary deployment.</li>
+</ol>
+<p>Example using Istio:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogbmV0d29ya2luZy5pc3Rpby5pby92MWFscGhhMwpraW5kOiBWaXJ0dWFsU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAKc3BlYzoKICBob3N0czoKICAtIG15LWFwcC5leGFtcGxlLmNvbQogIGh0dHA6CiAgLSByb3V0ZToKICAgIC0gZGVzdGluYXRpb246CiAgICAgICAgaG9zdDogbXktYXBwCiAgICAgICAgc3Vic2V0OiB2MQogICAgICB3ZWlnaHQ6IDkwCiAgICAtIGRlc3RpbmF0aW9uOgogICAgICAgIGhvc3Q6IG15LWFwcAogICAgICAgIHN1YnNldDogdjIKICAgICAgd2VpZ2h0OiAxMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: my-app
+spec:
+  hosts:
+  - my-app.example.com
+  http:
+  - route:
+    - destination:
+        host: my-app
+        subset: v1
+      weight: 90
+    - destination:
+        host: my-app
+        subset: v2
+      weight: 10</pre></div><div class='content'></div><h2>CI/CD Pipelines</h2>
+<div class='content'><p>Integrate Kubernetes deployments into your CI/CD pipeline using tools like Jenkins, GitLab CI, or GitHub Actions.</p>
+<p>Example GitHub Actions workflow:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmFtZTogQ0kvQ0QgUGlwZWxpbmUKCm9uOgogIHB1c2g6CiAgICBicmFuY2hlczoKICAgICAgLSBtYWluCgpqb2JzOgogIGJ1aWxkOgogICAgcnVucy1vbjogdWJ1bnR1LWxhdGVzdAogICAgc3RlcHM6CiAgICAtIG5hbWU6IENoZWNrb3V0IGNvZGUKICAgICAgdXNlczogYWN0aW9ucy9jaGVja291dEB2MgogICAgLSBuYW1lOiBCdWlsZCBEb2NrZXIgaW1hZ2UKICAgICAgcnVuOiBkb2NrZXIgYnVpbGQgLXQgbXktYXBwLWltYWdlOiR7eyBnaXRodWIuc2hhIH19IC4KICAgIC0gbmFtZTogUHVzaCBEb2NrZXIgaW1hZ2UKICAgICAgcnVuOiBkb2NrZXIgcHVzaCBteS1hcHAtaW1hZ2U6JHt7IGdpdGh1Yi5zaGEgfX0KICAgIC0gbmFtZTogRGVwbG95IHRvIEt1YmVybmV0ZXMKICAgICAgcnVuOiB8CiAgICAgICAga3ViZWN0bCBzZXQgaW1hZ2UgZGVwbG95bWVudC9teS1hcHAgbXktYXBwLWNvbnRhaW5lcj1teS1hcHAtaW1hZ2U6JHt7IGdpdGh1Yi5zaGEgfX0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Build Docker image
+      run: docker build -t my-app-image:${{ github.sha }} .
+    - name: Push Docker image
+      run: docker push my-app-image:${{ github.sha }}
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl set image deployment/my-app my-app-container=my-app-image:${{ github.sha }}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Automating deployments in Kubernetes enhances the reliability and efficiency of your application delivery process. By understanding and implementing various deployment strategies such as rolling updates, blue-green deployments, and canary deployments, you can ensure smooth and controlled releases. Integrating these practices into CI/CD pipelines further streamlines the process, allowing for continuous and automated deployment of new features and updates.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='gitops-with-argocd'>&#x25C4;GitOps with ArgoCD</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Automating Deployments</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='best-practices-for-production'>Best Practices for Production &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

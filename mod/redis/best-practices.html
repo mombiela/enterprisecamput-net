@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='message-queues'>&#x25C4;Message Queues</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='redis-streams'>Redis Streams &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Redis is a powerful in-memory data structure store used as a database, cache, and message broker. To make the most out of Redis, it's essential to follow best practices that ensure performance, reliability, and maintainability. This section covers best practices from beginner to advanced levels.</p>
+</div><h1>General Best Practices</h1>
+<div class='content'></div><h2>Use the Right Data Structure</h2>
+<div class='content'><ul>
+<li><strong>Strings</strong>: For simple key-value pairs.</li>
+<li><strong>Hashes</strong>: For storing objects with multiple fields.</li>
+<li><strong>Lists</strong>: For ordered collections of items.</li>
+<li><strong>Sets</strong>: For collections of unique items.</li>
+<li><strong>Sorted Sets</strong>: For collections of unique items with scores.</li>
+<li><strong>Bitmaps</strong>: For compact storage of binary data.</li>
+<li><strong>HyperLogLogs</strong>: For approximating the cardinality of large sets.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdHJpbmdzClNFVCB1c2VyOjEwMDAgIkpvaG4gRG9lIgoKIyBIYXNoZXMKSFNFVCB1c2VyOjEwMDAgbmFtZSAiSm9obiBEb2UiIGFnZSAzMAoKIyBMaXN0cwpMUFVTSCB0YXNrcyAidGFzazEiICJ0YXNrMiIKCiMgU2V0cwpTQUREIHRhZ3MgInJlZGlzIiAiZGF0YWJhc2UiCgojIFNvcnRlZCBTZXRzClpBREQgbGVhZGVyYm9hcmQgMTAwICJ1c2VyMSIgMjAwICJ1c2VyMiI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Strings
+SET user:1000 &quot;John Doe&quot;
+
+# Hashes
+HSET user:1000 name &quot;John Doe&quot; age 30
+
+# Lists
+LPUSH tasks &quot;task1&quot; &quot;task2&quot;
+
+# Sets
+SADD tags &quot;redis&quot; &quot;database&quot;
+
+# Sorted Sets
+ZADD leaderboard 100 &quot;user1&quot; 200 &quot;user2&quot;</pre></div><div class='content'></div><h2>Keep Keys Short</h2>
+<div class='content'><ul>
+<li>Use concise and meaningful key names to save memory and improve performance.</li>
+<li>Example: Use <code>user:1000</code> instead of <code>user:id:1000</code>.</li>
+</ul>
+</div><h2>Use Namespaces</h2>
+<div class='content'><ul>
+<li>Organize keys using namespaces to avoid collisions.</li>
+<li>Example: <code>user:1000:name</code>, <code>user:1000:age</code>.</li>
+</ul>
+</div><h1>Performance Optimization</h1>
+<div class='content'></div><h2>Use Connection Pooling</h2>
+<div class='content'><ul>
+<li>Reuse connections to Redis to reduce the overhead of establishing new connections.</li>
+<li>Example (Python with <code>redis-py</code>):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCnBvb2wgPSByZWRpcy5Db25uZWN0aW9uUG9vbChob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTApCnIgPSByZWRpcy5SZWRpcyhjb25uZWN0aW9uX3Bvb2w9cG9vbCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+pool = redis.ConnectionPool(host='localhost', port=6379, db=0)
+r = redis.Redis(connection_pool=pool)</pre></div><div class='content'></div><h2>Avoid Large Keys and Values</h2>
+<div class='content'><ul>
+<li>Large keys and values can slow down operations and increase memory usage.</li>
+<li>Split large data into smaller chunks if necessary.</li>
+</ul>
+</div><h2>Use Pipelining</h2>
+<div class='content'><ul>
+<li>Batch multiple commands to reduce the number of round trips to the server.</li>
+<li>Example (Python with <code>redis-py</code>):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZSA9IHIucGlwZWxpbmUoKQpwaXBlLnNldCgnZm9vJywgJ2JhcicpCnBpcGUuc2V0KCdiYXonLCAncXV4JykKcGlwZS5leGVjdXRlKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipe = r.pipeline()
+pipe.set('foo', 'bar')
+pipe.set('baz', 'qux')
+pipe.execute()</pre></div><div class='content'></div><h2>Monitor and Tune Performance</h2>
+<div class='content'><ul>
+<li>Use Redis monitoring tools like <code>INFO</code>, <code>MONITOR</code>, and <code>SLOWLOG</code> to identify performance bottlenecks.</li>
+<li>Adjust configuration parameters based on workload and performance metrics.</li>
+</ul>
+</div><h1>Data Persistence</h1>
+<div class='content'></div><h2>Use RDB and AOF</h2>
+<div class='content'><ul>
+<li>Enable both RDB (snapshotting) and AOF (Append-Only File) for data persistence.</li>
+<li>RDB provides faster recovery, while AOF ensures minimal data loss.</li>
+</ul>
+</div><h2>Configure Persistence Settings</h2>
+<div class='content'><ul>
+<li>Adjust <code>save</code> intervals for RDB and <code>appendfsync</code> for AOF based on your durability requirements.</li>
+<li>Example (redis.conf):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2F2ZSA5MDAgMQpzYXZlIDMwMCAxMApzYXZlIDYwIDEwMDAwCmFwcGVuZGZzeW5jIGV2ZXJ5c2Vj"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>save 900 1
+save 300 10
+save 60 10000
+appendfsync everysec</pre></div><div class='content'></div><h1>Security</h1>
+<div class='content'></div><h2>Use Authentication</h2>
+<div class='content'><ul>
+<li>Enable password authentication to restrict access.</li>
+<li>Example (redis.conf):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVxdWlyZXBhc3MgeW91cnBhc3N3b3Jk"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>requirepass yourpassword</pre></div><div class='content'></div><h2>Restrict Network Access</h2>
+<div class='content'><ul>
+<li>Bind Redis to specific network interfaces and use firewalls to restrict access.</li>
+<li>Example (redis.conf):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluZCAxMjcuMC4wLjE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bind 127.0.0.1</pre></div><div class='content'></div><h2>Use TLS/SSL</h2>
+<div class='content'><ul>
+<li>Encrypt data in transit using TLS/SSL.</li>
+<li>Example (redis.conf):</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGxzLXBvcnQgNjM3OQp0bHMtY2VydC1maWxlIC9wYXRoL3RvL3JlZGlzLmNydAp0bHMta2V5LWZpbGUgL3BhdGgvdG8vcmVkaXMua2V5CnRscy1jYS1jZXJ0LWZpbGUgL3BhdGgvdG8vY2EuY3J0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>tls-port 6379
+tls-cert-file /path/to/redis.crt
+tls-key-file /path/to/redis.key
+tls-ca-cert-file /path/to/ca.crt</pre></div><div class='content'></div><h1>Advanced Practices</h1>
+<div class='content'></div><h2>Use Redis Cluster</h2>
+<div class='content'><ul>
+<li>For high availability and horizontal scaling, use Redis Cluster.</li>
+<li>Redis Cluster automatically shards data across multiple nodes.</li>
+</ul>
+</div><h2>Lua Scripting</h2>
+<div class='content'><ul>
+<li>Use Lua scripts for atomic operations and to reduce the number of round trips.</li>
+<li>Example:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB0byBpbmNyZW1lbnQgYSBrZXkgYnkgYSBnaXZlbiB2YWx1ZQpsb2NhbCBrZXkgPSBLRVlTWzFdCmxvY2FsIGluY3JlbWVudCA9IHRvbnVtYmVyKEFSR1ZbMV0pCnJldHVybiByZWRpcy5jYWxsKCdJTkNSQlknLCBrZXksIGluY3JlbWVudCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script to increment a key by a given value
+local key = KEYS[1]
+local increment = tonumber(ARGV[1])
+return redis.call('INCRBY', key, increment)</pre></div><div class='content'></div><h2>Use Redis Modules</h2>
+<div class='content'><ul>
+<li>Extend Redis functionality with modules like RedisJSON, RedisGraph, and RediSearch.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Following these best practices will help you optimize Redis for performance, reliability, and maintainability. Whether you're a beginner or an advanced user, these guidelines will ensure that you make the most out of Redis in your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='message-queues'>&#x25C4;Message Queues</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='redis-streams'>Redis Streams &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Augmentation in TensorFlow</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/data-augmentation" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/data-augmentation" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/data-augmentation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/data-augmentation" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/data-augmentation" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='datasets-and-iterators'>&#x25C4;Datasets and Iterators</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Augmentation in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-neural-networks'>Introduction to Neural Networks &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Data augmentation is a technique used to increase the diversity of your training dataset without actually collecting new data. This is particularly useful in deep learning, where large amounts of data are often required to train models effectively. TensorFlow provides several tools and methods to perform data augmentation efficiently.</p>
+</div><h1>Introduction to Data Augmentation</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Data augmentation involves creating new training examples by applying random transformations to the existing data.</li>
+<li><strong>Purpose</strong>: To improve the generalization ability of machine learning models by exposing them to a wider variety of data.</li>
+<li><strong>Common Techniques</strong>: Flipping, rotating, scaling, cropping, and color adjustments.</li>
+</ul>
+</div><h1>Why Use Data Augmentation?</h1>
+<div class='content'><ul>
+<li><strong>Prevent Overfitting</strong>: By increasing the variety of training data, models are less likely to memorize the training data and more likely to generalize well to new, unseen data.</li>
+<li><strong>Improve Model Robustness</strong>: Models trained with augmented data are typically more robust to variations in the input data.</li>
+</ul>
+</div><h1>Data Augmentation in TensorFlow</h1>
+<div class='content'><p>TensorFlow provides several ways to perform data augmentation, including the <code>tf.image</code> module and the <code>tf.keras.preprocessing.image.ImageDataGenerator</code> class.</p>
+</div><h2>Using `tf.image` Module</h2>
+<div class='content'><p>The <code>tf.image</code> module contains a variety of functions to perform common image transformations.</p>
+<h4>Example: Basic Image Transformations</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdAoKIyBMb2FkIGFuIGV4YW1wbGUgaW1hZ2UKaW1hZ2VfcGF0aCA9IHRmLmtlcmFzLnV0aWxzLmdldF9maWxlKCdjYXQuanBnJywgJ2h0dHBzOi8vc3RvcmFnZS5nb29nbGVhcGlzLmNvbS9kb3dubG9hZC50ZW5zb3JmbG93Lm9yZy9leGFtcGxlX2ltYWdlcy8zMjBweC1GZWxpc19jYXR1cy1jYXRfb25fc25vdy5qcGcnKQppbWFnZSA9IHRmLmlvLnJlYWRfZmlsZShpbWFnZV9wYXRoKQppbWFnZSA9IHRmLmltYWdlLmRlY29kZV9qcGVnKGltYWdlKQoKIyBEaXNwbGF5IHRoZSBvcmlnaW5hbCBpbWFnZQpwbHQuZmlndXJlKGZpZ3NpemU9KDYsIDYpKQpwbHQuaW1zaG93KGltYWdlKQpwbHQudGl0bGUoIk9yaWdpbmFsIEltYWdlIikKcGx0LmF4aXMoJ29mZicpCnBsdC5zaG93KCkKCiMgQXBwbHkgcmFuZG9tIGZsaXAKZmxpcHBlZF9pbWFnZSA9IHRmLmltYWdlLnJhbmRvbV9mbGlwX2xlZnRfcmlnaHQoaW1hZ2UpCgojIEFwcGx5IHJhbmRvbSByb3RhdGlvbgpyb3RhdGVkX2ltYWdlID0gdGYuaW1hZ2Uucm90OTAoaW1hZ2UpCgojIERpc3BsYXkgdGhlIGF1Z21lbnRlZCBpbWFnZXMKZmlnLCBheCA9IHBsdC5zdWJwbG90cygxLCAyLCBmaWdzaXplPSgxMiwgNikpCmF4WzBdLmltc2hvdyhmbGlwcGVkX2ltYWdlKQpheFswXS5zZXRfdGl0bGUoIkZsaXBwZWQgSW1hZ2UiKQpheFswXS5heGlzKCdvZmYnKQoKYXhbMV0uaW1zaG93KHJvdGF0ZWRfaW1hZ2UpCmF4WzFdLnNldF90aXRsZSgiUm90YXRlZCBJbWFnZSIpCmF4WzFdLmF4aXMoJ29mZicpCgpwbHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import matplotlib.pyplot as plt
+
+# Load an example image
+image_path = tf.keras.utils.get_file('cat.jpg', 'https://storage.googleapis.com/download.tensorflow.org/example_images/320px-Felis_catus-cat_on_snow.jpg')
+image = tf.io.read_file(image_path)
+image = tf.image.decode_jpeg(image)
+
+# Display the original image
+plt.figure(figsize=(6, 6))
+plt.imshow(image)
+plt.title(&quot;Original Image&quot;)
+plt.axis('off')
+plt.show()
+
+# Apply random flip
+flipped_image = tf.image.random_flip_left_right(image)
+
+# Apply random rotation
+rotated_image = tf.image.rot90(image)
+
+# Display the augmented images
+fig, ax = plt.subplots(1, 2, figsize=(12, 6))
+ax[0].imshow(flipped_image)
+ax[0].set_title(&quot;Flipped Image&quot;)
+ax[0].axis('off')
+
+ax[1].imshow(rotated_image)
+ax[1].set_title(&quot;Rotated Image&quot;)
+ax[1].axis('off')
+
+plt.show()</pre></div><div class='content'></div><h2>Using `tf.keras.preprocessing.image.ImageDataGenerator`</h2>
+<div class='content'><p>The <code>ImageDataGenerator</code> class provides a more high-level and convenient way to perform data augmentation.</p>
+<h4>Example: Using <code>ImageDataGenerator</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLnByZXByb2Nlc3NpbmcuaW1hZ2UgaW1wb3J0IEltYWdlRGF0YUdlbmVyYXRvciwgYXJyYXlfdG9faW1nLCBpbWdfdG9fYXJyYXksIGxvYWRfaW1nCgojIENyZWF0ZSBhbiBpbnN0YW5jZSBvZiBJbWFnZURhdGFHZW5lcmF0b3Igd2l0aCBhdWdtZW50YXRpb24gb3B0aW9ucwpkYXRhZ2VuID0gSW1hZ2VEYXRhR2VuZXJhdG9yKAogICAgcm90YXRpb25fcmFuZ2U9NDAsCiAgICB3aWR0aF9zaGlmdF9yYW5nZT0wLjIsCiAgICBoZWlnaHRfc2hpZnRfcmFuZ2U9MC4yLAogICAgc2hlYXJfcmFuZ2U9MC4yLAogICAgem9vbV9yYW5nZT0wLjIsCiAgICBob3Jpem9udGFsX2ZsaXA9VHJ1ZSwKICAgIGZpbGxfbW9kZT0nbmVhcmVzdCcKKQoKIyBMb2FkIGFuIGV4YW1wbGUgaW1hZ2UKaW1nID0gbG9hZF9pbWcoaW1hZ2VfcGF0aCkgICMgdGhpcyBpcyBhIFBJTCBpbWFnZQp4ID0gaW1nX3RvX2FycmF5KGltZykgICMgdGhpcyBpcyBhIE51bXB5IGFycmF5IHdpdGggc2hhcGUgKDMsIDE1MCwgMTUwKQp4ID0geC5yZXNoYXBlKCgxLCkgKyB4LnNoYXBlKSAgIyB0aGlzIGlzIGEgTnVtcHkgYXJyYXkgd2l0aCBzaGFwZSAoMSwgMywgMTUwLCAxNTApCgojIEdlbmVyYXRlIGJhdGNoZXMgb2YgYXVnbWVudGVkIGltYWdlcwppID0gMApmb3IgYmF0Y2ggaW4gZGF0YWdlbi5mbG93KHgsIGJhdGNoX3NpemU9MSk6CiAgICBwbHQuZmlndXJlKGkpCiAgICBpbWdwbG90ID0gcGx0Lmltc2hvdyhhcnJheV90b19pbWcoYmF0Y2hbMF0pKQogICAgaSArPSAxCiAgICBpZiBpICUgNCA9PSAwOgogICAgICAgIGJyZWFrCgpwbHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+
+# Create an instance of ImageDataGenerator with augmentation options
+datagen = ImageDataGenerator(
+    rotation_range=40,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest'
+)
+
+# Load an example image
+img = load_img(image_path)  # this is a PIL image
+x = img_to_array(img)  # this is a Numpy array with shape (3, 150, 150)
+x = x.reshape((1,) + x.shape)  # this is a Numpy array with shape (1, 3, 150, 150)
+
+# Generate batches of augmented images
+i = 0
+for batch in datagen.flow(x, batch_size=1):
+    plt.figure(i)
+    imgplot = plt.imshow(array_to_img(batch[0]))
+    i += 1
+    if i % 4 == 0:
+        break
+
+plt.show()</pre></div><div class='content'></div><h1>Advanced Data Augmentation Techniques</h1>
+<div class='content'><p>For more complex augmentation strategies, TensorFlow provides the <code>tf.data</code> API, which allows for custom augmentation pipelines.</p>
+</div><h2>Example: Custom Augmentation Pipeline with `tf.data`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGF1Z21lbnQoaW1hZ2UpOgogICAgaW1hZ2UgPSB0Zi5pbWFnZS5yYW5kb21fZmxpcF9sZWZ0X3JpZ2h0KGltYWdlKQogICAgaW1hZ2UgPSB0Zi5pbWFnZS5yYW5kb21fYnJpZ2h0bmVzcyhpbWFnZSwgbWF4X2RlbHRhPTAuMykKICAgIGltYWdlID0gdGYuaW1hZ2UucmFuZG9tX2NvbnRyYXN0KGltYWdlLCBsb3dlcj0wLjgsIHVwcGVyPTEuMikKICAgIHJldHVybiBpbWFnZQoKIyBDcmVhdGUgYSBkYXRhc2V0CmRhdGFzZXQgPSB0Zi5kYXRhLkRhdGFzZXQuZnJvbV90ZW5zb3Jfc2xpY2VzKFtpbWFnZV0pCmRhdGFzZXQgPSBkYXRhc2V0Lm1hcChhdWdtZW50KQoKIyBEaXNwbGF5IGF1Z21lbnRlZCBpbWFnZXMKZm9yIGltZyBpbiBkYXRhc2V0OgogICAgcGx0LmZpZ3VyZSgpCiAgICBwbHQuaW1zaG93KGltZykKICAgIHBsdC5heGlzKCdvZmYnKQogICAgcGx0LnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def augment(image):
+    image = tf.image.random_flip_left_right(image)
+    image = tf.image.random_brightness(image, max_delta=0.3)
+    image = tf.image.random_contrast(image, lower=0.8, upper=1.2)
+    return image
+
+# Create a dataset
+dataset = tf.data.Dataset.from_tensor_slices([image])
+dataset = dataset.map(augment)
+
+# Display augmented images
+for img in dataset:
+    plt.figure()
+    plt.imshow(img)
+    plt.axis('off')
+    plt.show()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Data augmentation is a powerful technique to enhance the performance and robustness of machine learning models. TensorFlow provides multiple methods to perform data augmentation, from simple image transformations using the <code>tf.image</code> module to more advanced pipelines using <code>tf.data</code>. By incorporating data augmentation into your training process, you can significantly improve the generalization ability of your models.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='datasets-and-iterators'>&#x25C4;Datasets and Iterators</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Augmentation in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-neural-networks'>Introduction to Neural Networks &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

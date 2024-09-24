@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a CNN with TensorFlow</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/building-a-cnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/building-a-cnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/building-a-cnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/building-a-cnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/building-a-cnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-cnns'>&#x25C4;Introduction to CNNs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a CNN with TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pooling-layers'>Pooling Layers &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we'll explore how to build a Convolutional Neural Network (CNN) using TensorFlow. CNNs are particularly effective for image recognition and classification tasks. We'll start from the basics and gradually move to more advanced concepts.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Convolutional Layer</strong>: Applies convolution operations to the input data.</li>
+<li><strong>Pooling Layer</strong>: Reduces the dimensionality of the feature maps.</li>
+<li><strong>Fully Connected Layer</strong>: Connects every neuron in one layer to every neuron in another layer.</li>
+<li><strong>Activation Function</strong>: Introduces non-linearity into the model.</li>
+<li><strong>Loss Function</strong>: Measures how well the model's predictions match the actual data.</li>
+<li><strong>Optimizer</strong>: Adjusts the weights of the network to minimize the loss function.</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before we start building our CNN, ensure you have TensorFlow installed. You can install it using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgdGVuc29yZmxvdw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install tensorflow</pre></div><div class='content'></div><h1>Building a Simple CNN</h1>
+<div class='content'></div><h2>Importing Libraries</h2>
+<div class='content'><p>First, we need to import the necessary libraries.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzIGltcG9ydCBsYXllcnMsIG1vZGVscw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras import layers, models</pre></div><div class='content'></div><h2>Loading and Preprocessing Data</h2>
+<div class='content'><p>For this example, we'll use the CIFAR-10 dataset, which contains 60,000 32x32 color images in 10 classes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSBDSUZBUi0xMCBkYXRhc2V0Cih0cmFpbl9pbWFnZXMsIHRyYWluX2xhYmVscyksICh0ZXN0X2ltYWdlcywgdGVzdF9sYWJlbHMpID0gdGYua2VyYXMuZGF0YXNldHMuY2lmYXIxMC5sb2FkX2RhdGEoKQoKIyBOb3JtYWxpemUgcGl4ZWwgdmFsdWVzIHRvIGJlIGJldHdlZW4gMCBhbmQgMQp0cmFpbl9pbWFnZXMsIHRlc3RfaW1hZ2VzID0gdHJhaW5faW1hZ2VzIC8gMjU1LjAsIHRlc3RfaW1hZ2VzIC8gMjU1LjA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the CIFAR-10 dataset
+(train_images, train_labels), (test_images, test_labels) = tf.keras.datasets.cifar10.load_data()
+
+# Normalize pixel values to be between 0 and 1
+train_images, test_images = train_images / 255.0, test_images / 255.0</pre></div><div class='content'></div><h2>Defining the CNN Architecture</h2>
+<div class='content'><p>We'll create a simple CNN with the following architecture:</p>
+<ul>
+<li><strong>Convolutional Layer</strong>: 32 filters, kernel size 3x3, ReLU activation</li>
+<li><strong>Pooling Layer</strong>: MaxPooling with pool size 2x2</li>
+<li><strong>Convolutional Layer</strong>: 64 filters, kernel size 3x3, ReLU activation</li>
+<li><strong>Pooling Layer</strong>: MaxPooling with pool size 2x2</li>
+<li><strong>Fully Connected Layer</strong>: 64 units, ReLU activation</li>
+<li><strong>Output Layer</strong>: 10 units (one for each class), softmax activation</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBtb2RlbHMuU2VxdWVudGlhbCgpCm1vZGVsLmFkZChsYXllcnMuQ29udjJEKDMyLCAoMywgMyksIGFjdGl2YXRpb249J3JlbHUnLCBpbnB1dF9zaGFwZT0oMzIsIDMyLCAzKSkpCm1vZGVsLmFkZChsYXllcnMuTWF4UG9vbGluZzJEKCgyLCAyKSkpCm1vZGVsLmFkZChsYXllcnMuQ29udjJEKDY0LCAoMywgMyksIGFjdGl2YXRpb249J3JlbHUnKSkKbW9kZWwuYWRkKGxheWVycy5NYXhQb29saW5nMkQoKDIsIDIpKSkKbW9kZWwuYWRkKGxheWVycy5GbGF0dGVuKCkpCm1vZGVsLmFkZChsYXllcnMuRGVuc2UoNjQsIGFjdGl2YXRpb249J3JlbHUnKSkKbW9kZWwuYWRkKGxheWVycy5EZW5zZSgxMCwgYWN0aXZhdGlvbj0nc29mdG1heCcpKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10, activation='softmax'))</pre></div><div class='content'></div><h2>Compiling the Model</h2>
+<div class='content'><p>Next, we need to compile the model by specifying the optimizer, loss function, and metrics.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9J2FkYW0nLAogICAgICAgICAgICAgIGxvc3M9J3NwYXJzZV9jYXRlZ29yaWNhbF9jcm9zc2VudHJvcHknLAogICAgICAgICAgICAgIG1ldHJpY3M9WydhY2N1cmFjeSddKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])</pre></div><div class='content'></div><h2>Training the Model</h2>
+<div class='content'><p>We can now train the model using the training data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGlzdG9yeSA9IG1vZGVsLmZpdCh0cmFpbl9pbWFnZXMsIHRyYWluX2xhYmVscywgZXBvY2hzPTEwLCAKICAgICAgICAgICAgICAgICAgICB2YWxpZGF0aW9uX2RhdGE9KHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscykp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>history = model.fit(train_images, train_labels, epochs=10, 
+                    validation_data=(test_images, test_labels))</pre></div><div class='content'></div><h2>Evaluating the Model</h2>
+<div class='content'><p>Finally, we evaluate the model's performance on the test data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVzdF9sb3NzLCB0ZXN0X2FjYyA9IG1vZGVsLmV2YWx1YXRlKHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscywgdmVyYm9zZT0yKQpwcmludChmJ1Rlc3QgYWNjdXJhY3k6IHt0ZXN0X2FjY30nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+print(f'Test accuracy: {test_acc}')</pre></div><div class='content'></div><h1>Advanced Concepts</h1>
+<div class='content'></div><h2>Data Augmentation</h2>
+<div class='content'><p>To improve the model's performance, we can use data augmentation to artificially increase the size of the training dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLnByZXByb2Nlc3NpbmcuaW1hZ2UgaW1wb3J0IEltYWdlRGF0YUdlbmVyYXRvcgoKZGF0YWdlbiA9IEltYWdlRGF0YUdlbmVyYXRvcigKICAgIHJvdGF0aW9uX3JhbmdlPTIwLAogICAgd2lkdGhfc2hpZnRfcmFuZ2U9MC4yLAogICAgaGVpZ2h0X3NoaWZ0X3JhbmdlPTAuMiwKICAgIGhvcml6b250YWxfZmxpcD1UcnVlKQoKZGF0YWdlbi5maXQodHJhaW5faW1hZ2VzKQoKIyBVc2UgdGhlIGRhdGEgZ2VuZXJhdG9yIHRvIHRyYWluIHRoZSBtb2RlbApoaXN0b3J5ID0gbW9kZWwuZml0KGRhdGFnZW4uZmxvdyh0cmFpbl9pbWFnZXMsIHRyYWluX2xhYmVscywgYmF0Y2hfc2l6ZT0zMiksCiAgICAgICAgICAgICAgICAgICAgZXBvY2hzPTEwLAogICAgICAgICAgICAgICAgICAgIHZhbGlkYXRpb25fZGF0YT0odGVzdF9pbWFnZXMsIHRlc3RfbGFiZWxzKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+datagen = ImageDataGenerator(
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    horizontal_flip=True)
+
+datagen.fit(train_images)
+
+# Use the data generator to train the model
+history = model.fit(datagen.flow(train_images, train_labels, batch_size=32),
+                    epochs=10,
+                    validation_data=(test_images, test_labels))</pre></div><div class='content'></div><h2>Transfer Learning</h2>
+<div class='content'><p>Transfer learning involves using a pre-trained model and fine-tuning it for a specific task. TensorFlow provides several pre-trained models through the <code>tf.keras.applications</code> module.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmFwcGxpY2F0aW9ucyBpbXBvcnQgVkdHMTYKCiMgTG9hZCB0aGUgVkdHMTYgbW9kZWwsIGV4Y2x1ZGluZyB0aGUgdG9wIGxheWVycwpiYXNlX21vZGVsID0gVkdHMTYod2VpZ2h0cz0naW1hZ2VuZXQnLCBpbmNsdWRlX3RvcD1GYWxzZSwgaW5wdXRfc2hhcGU9KDMyLCAzMiwgMykpCgojIEZyZWV6ZSB0aGUgYmFzZSBtb2RlbApiYXNlX21vZGVsLnRyYWluYWJsZSA9IEZhbHNlCgojIEFkZCBjdXN0b20gbGF5ZXJzIG9uIHRvcAptb2RlbCA9IG1vZGVscy5TZXF1ZW50aWFsKFsKICAgIGJhc2VfbW9kZWwsCiAgICBsYXllcnMuRmxhdHRlbigpLAogICAgbGF5ZXJzLkRlbnNlKDY0LCBhY3RpdmF0aW9uPSdyZWx1JyksCiAgICBsYXllcnMuRGVuc2UoMTAsIGFjdGl2YXRpb249J3NvZnRtYXgnKQpdKQoKIyBDb21waWxlIGFuZCB0cmFpbiB0aGUgbW9kZWwgYXMgYmVmb3JlCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywKICAgICAgICAgICAgICBsb3NzPSdzcGFyc2VfY2F0ZWdvcmljYWxfY3Jvc3NlbnRyb3B5JywKICAgICAgICAgICAgICBtZXRyaWNzPVsnYWNjdXJhY3knXSkKCmhpc3RvcnkgPSBtb2RlbC5maXQodHJhaW5faW1hZ2VzLCB0cmFpbl9sYWJlbHMsIGVwb2Nocz0xMCwgCiAgICAgICAgICAgICAgICAgICAgdmFsaWRhdGlvbl9kYXRhPSh0ZXN0X2ltYWdlcywgdGVzdF9sYWJlbHMpKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.applications import VGG16
+
+# Load the VGG16 model, excluding the top layers
+base_model = VGG16(weights='imagenet', include_top=False, input_shape=(32, 32, 3))
+
+# Freeze the base model
+base_model.trainable = False
+
+# Add custom layers on top
+model = models.Sequential([
+    base_model,
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+# Compile and train the model as before
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+history = model.fit(train_images, train_labels, epochs=10, 
+                    validation_data=(test_images, test_labels))</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of building a Convolutional Neural Network using TensorFlow. We started with a simple CNN architecture, moved on to data augmentation, and finally explored transfer learning. By understanding these concepts, you can build and optimize your own CNNs for various image recognition tasks.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-cnns'>&#x25C4;Introduction to CNNs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a CNN with TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pooling-layers'>Pooling Layers &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

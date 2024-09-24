@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embedding SQL in PL/SQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/embedding-sql-plsql" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/embedding-sql-plsql" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/embedding-sql-plsql" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/embedding-sql-plsql" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/embedding-sql-plsql" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='exception-handling'>&#x25C4;Exception Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Embedding SQL in PL/SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cursors-implicit-explicit'>Cursors: Implicit and Explicit &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>PL/SQL (Procedural Language/Structured Query Language) is Oracle Corporation's procedural extension for SQL and the Oracle relational database. It combines the data manipulation power of SQL with the processing power of procedural languages. In this section, we will explore how to embed SQL statements within PL/SQL code.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>SQL in PL/SQL</strong>: Embedding SQL statements within PL/SQL blocks to perform database operations.</li>
+<li><strong>DML Statements</strong>: Data Manipulation Language (DML) statements like <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>.</li>
+<li><strong>Transaction Control</strong>: Using <code>COMMIT</code>, <code>ROLLBACK</code>, and <code>SAVEPOINT</code> to manage transactions.</li>
+<li><strong>Cursors</strong>: Handling query results using implicit and explicit cursors.</li>
+</ul>
+</div><h1>Embedding SQL Statements</h1>
+<div class='content'></div><h2>SELECT Statement</h2>
+<div class='content'><p>The <code>SELECT</code> statement is used to fetch data from the database. In PL/SQL, you can use it in two ways: directly into variables or using cursors.</p>
+<h4>Example: SELECT INTO Variables</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgdl9lbXBsb3llZV9uYW1lIFZBUkNIQVIyKDUwKTsKICAgIHZfZW1wbG95ZWVfc2FsYXJ5IE5VTUJFUjsKQkVHSU4KICAgIFNFTEVDVCBlbXBsb3llZV9uYW1lLCBzYWxhcnkKICAgIElOVE8gdl9lbXBsb3llZV9uYW1lLCB2X2VtcGxveWVlX3NhbGFyeQogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGVtcGxveWVlX2lkID0gMTAxOwoKICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdFbXBsb3llZSBOYW1lOiAnIHx8IHZfZW1wbG95ZWVfbmFtZSk7CiAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnRW1wbG95ZWUgU2FsYXJ5OiAnIHx8IHZfZW1wbG95ZWVfc2FsYXJ5KTsKRU5EOwov"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    v_employee_name VARCHAR2(50);
+    v_employee_salary NUMBER;
+BEGIN
+    SELECT employee_name, salary
+    INTO v_employee_name, v_employee_salary
+    FROM employees
+    WHERE employee_id = 101;
+
+    DBMS_OUTPUT.PUT_LINE('Employee Name: ' || v_employee_name);
+    DBMS_OUTPUT.PUT_LINE('Employee Salary: ' || v_employee_salary);
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block declares two variables, <code>v_employee_name</code> and <code>v_employee_salary</code>, and fetches the <code>employee_name</code> and <code>salary</code> of the employee with <code>employee_id</code> 101 into these variables.</li>
+</ul>
+</div><h2>INSERT Statement</h2>
+<div class='content'><p>The <code>INSERT</code> statement is used to add new rows to a table.</p>
+<h4>Example: INSERT Statement</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIElOU0VSVCBJTlRPIGVtcGxveWVlcyAoZW1wbG95ZWVfaWQsIGVtcGxveWVlX25hbWUsIHNhbGFyeSkKICAgIFZBTFVFUyAoMTAyLCAnSm9obiBEb2UnLCA1MDAwMCk7CgogICAgQ09NTUlUOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    INSERT INTO employees (employee_id, employee_name, salary)
+    VALUES (102, 'John Doe', 50000);
+
+    COMMIT;
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block inserts a new employee record into the <code>employees</code> table and commits the transaction.</li>
+</ul>
+</div><h2>UPDATE Statement</h2>
+<div class='content'><p>The <code>UPDATE</code> statement modifies existing data in a table.</p>
+<h4>Example: UPDATE Statement</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIFVQREFURSBlbXBsb3llZXMKICAgIFNFVCBzYWxhcnkgPSBzYWxhcnkgKiAxLjEKICAgIFdIRVJFIGVtcGxveWVlX2lkID0gMTAxOwoKICAgIENPTU1JVDsKRU5EOwov"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    UPDATE employees
+    SET salary = salary * 1.1
+    WHERE employee_id = 101;
+
+    COMMIT;
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block updates the salary of the employee with <code>employee_id</code> 101 by increasing it by 10% and commits the transaction.</li>
+</ul>
+</div><h2>DELETE Statement</h2>
+<div class='content'><p>The <code>DELETE</code> statement removes rows from a table.</p>
+<h4>Example: DELETE Statement</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIERFTEVURSBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSAxMDI7CgogICAgQ09NTUlUOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    DELETE FROM employees
+    WHERE employee_id = 102;
+
+    COMMIT;
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block deletes the employee record with <code>employee_id</code> 102 from the <code>employees</code> table and commits the transaction.</li>
+</ul>
+</div><h1>Transaction Control</h1>
+<div class='content'><p>Transaction control statements manage changes made by DML statements.</p>
+</div><h2>COMMIT</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Save all changes made during the current transaction.</li>
+<li><strong>Example</strong>: <code>COMMIT;</code></li>
+</ul>
+</div><h2>ROLLBACK</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Undo all changes made during the current transaction.</li>
+<li><strong>Example</strong>: <code>ROLLBACK;</code></li>
+</ul>
+</div><h2>SAVEPOINT</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Set a point within a transaction to which you can later roll back.</li>
+<li><strong>Example</strong>:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIFNBVkVQT0lOVCBiZWZvcmVfdXBkYXRlOwoKICAgIFVQREFURSBlbXBsb3llZXMKICAgIFNFVCBzYWxhcnkgPSBzYWxhcnkgKiAxLjEKICAgIFdIRVJFIGVtcGxveWVlX2lkID0gMTAxOwoKICAgIFJPTExCQUNLIFRPIGJlZm9yZV91cGRhdGU7CkVORDsKLw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    SAVEPOINT before_update;
+
+    UPDATE employees
+    SET salary = salary * 1.1
+    WHERE employee_id = 101;
+
+    ROLLBACK TO before_update;
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block sets a savepoint before updating the salary and then rolls back to that savepoint, undoing the update.</li>
+</ul>
+</div><h1>Cursors</h1>
+<div class='content'><p>Cursors are used to handle query results row-by-row.</p>
+</div><h2>Implicit Cursors</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Automatically created by Oracle when a <code>SELECT</code> statement returns a single row.</li>
+<li><strong>Example</strong>: The <code>SELECT INTO</code> example above uses an implicit cursor.</li>
+</ul>
+</div><h2>Explicit Cursors</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Defined by the programmer for queries returning multiple rows.</li>
+<li><strong>Example</strong>:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgQ1VSU09SIGVtcF9jdXJzb3IgSVMKICAgICAgICBTRUxFQ1QgZW1wbG95ZWVfbmFtZSwgc2FsYXJ5CiAgICAgICAgRlJPTSBlbXBsb3llZXM7CiAgICB2X2VtcGxveWVlX25hbWUgZW1wbG95ZWVzLmVtcGxveWVlX25hbWUlVFlQRTsKICAgIHZfZW1wbG95ZWVfc2FsYXJ5IGVtcGxveWVlcy5zYWxhcnklVFlQRTsKQkVHSU4KICAgIE9QRU4gZW1wX2N1cnNvcjsKICAgIExPT1AKICAgICAgICBGRVRDSCBlbXBfY3Vyc29yIElOVE8gdl9lbXBsb3llZV9uYW1lLCB2X2VtcGxveWVlX3NhbGFyeTsKICAgICAgICBFWElUIFdIRU4gZW1wX2N1cnNvciVOT1RGT1VORDsKICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnRW1wbG95ZWUgTmFtZTogJyB8fCB2X2VtcGxveWVlX25hbWUgfHwgJywgU2FsYXJ5OiAnIHx8IHZfZW1wbG95ZWVfc2FsYXJ5KTsKICAgIEVORCBMT09QOwogICAgQ0xPU0UgZW1wX2N1cnNvcjsKRU5EOwov"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_name, salary
+        FROM employees;
+    v_employee_name employees.employee_name%TYPE;
+    v_employee_salary employees.salary%TYPE;
+BEGIN
+    OPEN emp_cursor;
+    LOOP
+        FETCH emp_cursor INTO v_employee_name, v_employee_salary;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Employee Name: ' || v_employee_name || ', Salary: ' || v_employee_salary);
+    END LOOP;
+    CLOSE emp_cursor;
+END;
+/</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This block declares an explicit cursor <code>emp_cursor</code> for selecting all employee names and salaries. It then opens the cursor, fetches each row in a loop, and prints the employee details until all rows are processed.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Embedding SQL in PL/SQL allows you to leverage the power of SQL within your procedural code, enabling complex data manipulation and transaction control. By understanding how to use DML statements, transaction control, and cursors, you can efficiently interact with the database and manage data within your PL/SQL programs. Practice these concepts with various examples to gain a deeper understanding and become proficient in embedding SQL in PL/SQL.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='exception-handling'>&#x25C4;Exception Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Embedding SQL in PL/SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cursors-implicit-explicit'>Cursors: Implicit and Explicit &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoencoders in TensorFlow</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/autoencoders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/autoencoders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/autoencoders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/autoencoders" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/autoencoders" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='generative-adversarial-networks'>&#x25C4;Generative Adversarial Networks (GANs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Autoencoders in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='reinforcement-learning'>Reinforcement Learning with TensorFlow &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Autoencoders are a type of artificial neural network used to learn efficient codings of unlabeled data. They are primarily used for dimensionality reduction, feature learning, and anomaly detection. In this section, we will explore how to implement autoencoders using TensorFlow, starting from the basics and progressing to more advanced concepts.</p>
+</div><h1>Introduction to Autoencoders</h1>
+<div class='content'><p>Autoencoders consist of two main parts:</p>
+<ul>
+<li><strong>Encoder</strong>: This part compresses the input into a latent-space representation.</li>
+<li><strong>Decoder</strong>: This part reconstructs the input from the latent space.</li>
+</ul>
+<p>The goal is to make the output as close to the input as possible.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Latent Space</strong>: The compressed representation of the input data.</li>
+<li><strong>Reconstruction Loss</strong>: The difference between the input and the reconstructed output.</li>
+<li><strong>Bottleneck</strong>: The layer in the middle of the autoencoder that represents the latent space.</li>
+</ul>
+</div><h1>Building a Basic Autoencoder</h1>
+<div class='content'><p>Let's start by building a simple autoencoder using TensorFlow and Keras.</p>
+</div><h2>Step-by-Step Implementation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Import Libraries</strong></p>
+<pre><code class="language-python">import tensorflow as tf
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.models import Model
+import numpy as np
+</code></pre>
+</li>
+<li>
+<p><strong>Prepare Data</strong>
+For simplicity, we'll use the MNIST dataset.</p>
+<pre><code class="language-python">(x_train, _), (x_test, _) = tf.keras.datasets.mnist.load_data()
+x_train = x_train.astype('float32') / 255.
+x_test = x_test.astype('float32') / 255.
+x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
+x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Autoencoder Architecture</strong></p>
+<pre><code class="language-python">input_dim = x_train.shape[1]
+encoding_dim = 32  # This is the size of our encoded representations
+
+# Input placeholder
+input_img = Input(shape=(input_dim,))
+# Encoded representation of the input
+encoded = Dense(encoding_dim, activation='relu')(input_img)
+# Decoded representation of the input
+decoded = Dense(input_dim, activation='sigmoid')(encoded)
+
+# Autoencoder model
+autoencoder = Model(input_img, decoded)
+</code></pre>
+</li>
+<li>
+<p><strong>Compile the Model</strong></p>
+<pre><code class="language-python">autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+</code></pre>
+</li>
+<li>
+<p><strong>Train the Model</strong></p>
+<pre><code class="language-python">autoencoder.fit(x_train, x_train,
+                epochs=50,
+                batch_size=256,
+                shuffle=True,
+                validation_data=(x_test, x_test))
+</code></pre>
+</li>
+<li>
+<p><strong>Evaluate the Model</strong></p>
+<pre><code class="language-python">decoded_imgs = autoencoder.predict(x_test)
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Input Layer</strong>: The input layer takes the flattened MNIST images.</li>
+<li><strong>Encoding Layer</strong>: This layer compresses the input into a lower-dimensional space.</li>
+<li><strong>Decoding Layer</strong>: This layer reconstructs the input from the encoded representation.</li>
+<li><strong>Loss Function</strong>: Binary cross-entropy is used to measure the difference between the input and the reconstructed output.</li>
+</ul>
+</div><h1>Advanced Autoencoders</h1>
+<div class='content'></div><h2>Variational Autoencoders (VAEs)</h2>
+<div class='content'><p>VAEs are a type of autoencoder that imposes a probabilistic structure on the latent space. This allows for more meaningful interpolations and generation of new data.</p>
+<h4>Key Concepts</h4>
+<ul>
+<li><strong>Latent Variables</strong>: Variables that capture the underlying structure of the data.</li>
+<li><strong>KL Divergence</strong>: A measure of how one probability distribution diverges from a second, expected probability distribution.</li>
+</ul>
+</div><h2>Implementing a VAE</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define the VAE Architecture</strong></p>
+<pre><code class="language-python">from tensorflow.keras.layers import Lambda, Layer
+from tensorflow.keras.losses import mse
+
+# Encoder
+inputs = Input(shape=(input_dim,))
+h = Dense(128, activation='relu')(inputs)
+z_mean = Dense(encoding_dim)(h)
+z_log_var = Dense(encoding_dim)(h)
+
+def sampling(args):
+    z_mean, z_log_var = args
+    batch = tf.shape(z_mean)[0]
+    dim = tf.shape(z_mean)[1]
+    epsilon = tf.keras.backend.random_normal(shape=(batch, dim))
+    return z_mean + tf.exp(0.5 * z_log_var) * epsilon
+
+z = Lambda(sampling, output_shape=(encoding_dim,))([z_mean, z_log_var])
+
+# Decoder
+decoder_h = Dense(128, activation='relu')
+decoder_mean = Dense(input_dim, activation='sigmoid')
+h_decoded = decoder_h(z)
+x_decoded_mean = decoder_mean(h_decoded)
+
+# VAE model
+vae = Model(inputs, x_decoded_mean)
+
+# Loss Function
+reconstruction_loss = mse(inputs, x_decoded_mean)
+reconstruction_loss *= input_dim
+kl_loss = 1 + z_log_var - tf.square(z_mean) - tf.exp(z_log_var)
+kl_loss = tf.reduce_mean(kl_loss) * -0.5
+vae_loss = tf.reduce_mean(reconstruction_loss + kl_loss)
+vae.add_loss(vae_loss)
+</code></pre>
+</li>
+<li>
+<p><strong>Compile and Train the VAE</strong></p>
+<pre><code class="language-python">vae.compile(optimizer='adam')
+vae.fit(x_train, epochs=50, batch_size=256, validation_data=(x_test, None))
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Latent Variables</strong>: <code>z_mean</code> and <code>z_log_var</code> represent the mean and variance of the latent variables.</li>
+<li><strong>Sampling Layer</strong>: This layer samples from the latent space using the reparameterization trick.</li>
+<li><strong>KL Divergence</strong>: This term ensures that the learned latent variables follow a standard normal distribution.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Autoencoders are powerful tools for unsupervised learning, capable of learning efficient representations of data. We started with a basic autoencoder and progressed to more advanced concepts like Variational Autoencoders. By understanding and implementing these models, you can apply them to various tasks such as data compression, denoising, and anomaly detection.</p>
+<p>In the next sections, we will explore other advanced neural network architectures and their applications in TensorFlow.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='generative-adversarial-networks'>&#x25C4;Generative Adversarial Networks (GANs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Autoencoders in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='reinforcement-learning'>Reinforcement Learning with TensorFlow &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

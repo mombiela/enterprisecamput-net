@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/python/security-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/python/security-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-quality-and-pep-8'>&#x25C4;Code Quality and PEP 8</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='project-overview'>Project Overview &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Security is a critical aspect of software development. In this section, we will cover essential security best practices for Python programming, from beginner to advanced levels. By the end of this topic, you will understand how to write secure Python code and protect your applications from common vulnerabilities.</p>
+</div><h1>Basic Security Practices</h1>
+<div class='content'></div><h2>Input Validation</h2>
+<div class='content'><ul>
+<li><strong>Sanitize User Input</strong>: Always validate and sanitize user input to prevent injection attacks.
+<pre><code class="language-python">import re
+
+def sanitize_input(user_input):
+    return re.sub(r'[^\w\s]', '', user_input)
+
+user_input = &quot;&lt;script&gt;alert('hack');&lt;/script&gt;&quot;
+safe_input = sanitize_input(user_input)
+print(safe_input)  # Output: scriptalerthackscript
+</code></pre>
+</li>
+</ul>
+</div><h2>Use Secure Password Storage</h2>
+<div class='content'><ul>
+<li><strong>Hash Passwords</strong>: Never store passwords in plain text. Use libraries like <code>bcrypt</code> to hash passwords securely.
+<pre><code class="language-python">import bcrypt
+
+password = b&quot;supersecretpassword&quot;
+hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+
+# To check a password
+if bcrypt.checkpw(password, hashed):
+    print(&quot;Password matches&quot;)
+else:
+    print(&quot;Password does not match&quot;)
+</code></pre>
+</li>
+</ul>
+</div><h2>Avoid Hardcoding Sensitive Information</h2>
+<div class='content'><ul>
+<li><strong>Environment Variables</strong>: Use environment variables to store sensitive information like API keys and database credentials.
+<pre><code class="language-python">import os
+
+api_key = os.getenv('API_KEY')
+</code></pre>
+</li>
+</ul>
+</div><h1>Intermediate Security Practices</h1>
+<div class='content'></div><h2>Secure Communication</h2>
+<div class='content'><ul>
+<li><strong>Use HTTPS</strong>: Ensure that your application uses HTTPS to encrypt data transmitted over the network.</li>
+<li><strong>SSL/TLS</strong>: Use libraries like <code>ssl</code> to add SSL/TLS support to your Python applications.
+<pre><code class="language-python">import ssl
+import socket
+
+context = ssl.create_default_context()
+with socket.create_connection(('www.example.com', 443)) as sock:
+    with context.wrap_socket(sock, server_hostname='www.example.com') as ssock:
+        print(ssock.version())
+</code></pre>
+</li>
+</ul>
+</div><h2>Secure Dependencies</h2>
+<div class='content'><ul>
+<li><strong>Dependency Management</strong>: Regularly update your dependencies to patch known vulnerabilities.</li>
+<li><strong>Use <code>pip</code> with <code>requirements.txt</code></strong>: Specify exact versions of dependencies to avoid introducing vulnerabilities.
+<pre><code class="language-plaintext"># requirements.txt
+requests==2.25.1
+flask==1.1.2
+</code></pre>
+</li>
+</ul>
+</div><h2>Error Handling</h2>
+<div class='content'><ul>
+<li><strong>Avoid Detailed Error Messages</strong>: Do not expose detailed error messages to end-users as they can reveal sensitive information.
+<pre><code class="language-python">try:
+    # Some code that might raise an exception
+    pass
+except Exception as e:
+    print(&quot;An error occurred. Please try again later.&quot;)
+    # Log the detailed error for internal use
+    with open('error.log', 'a') as f:
+        f.write(str(e))
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Security Practices</h1>
+<div class='content'></div><h2>Secure Coding Practices</h2>
+<div class='content'><ul>
+<li><strong>Principle of Least Privilege</strong>: Grant the minimum permissions necessary for your code to function.</li>
+<li><strong>Code Reviews</strong>: Regularly review code for security vulnerabilities.</li>
+</ul>
+</div><h2>Use Security Libraries</h2>
+<div class='content'><ul>
+<li><strong>Secure Configuration</strong>: Use libraries like <code>secure</code> to enforce security headers in web applications.
+<pre><code class="language-python">from flask import Flask
+from secure import SecureHeaders
+
+app = Flask(__name__)
+secure_headers = SecureHeaders()
+
+@app.after_request
+def set_secure_headers(response):
+    secure_headers.flask(response)
+    return response
+</code></pre>
+</li>
+</ul>
+</div><h2>Monitoring and Logging</h2>
+<div class='content'><ul>
+<li><strong>Monitor for Security Incidents</strong>: Implement logging and monitoring to detect and respond to security incidents.
+<pre><code class="language-python">import logging
+
+logging.basicConfig(filename='app.log', level=logging.INFO)
+logging.info('This is an informational message')
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Security is an ongoing process that requires vigilance and continuous improvement. By following these best practices, you can significantly reduce the risk of security vulnerabilities in your Python applications. Always stay updated with the latest security trends and updates to keep your applications secure.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-quality-and-pep-8'>&#x25C4;Code Quality and PEP 8</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='project-overview'>Project Overview &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

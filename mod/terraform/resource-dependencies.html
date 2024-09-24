@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Dependencies in Terraform</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/resource-dependencies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/resource-dependencies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/resource-dependencies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/resource-dependencies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/resource-dependencies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='terraform-expressions'>&#x25C4;Terraform Expressions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Resource Dependencies in Terraform</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules-reusable-configurations'>Modules: Reusable Configurations &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Resource Dependencies</h1>
+<div class='content'><p>Resource dependencies in Terraform are crucial for ensuring that resources are created, updated, or destroyed in the correct order. Understanding how Terraform manages these dependencies will help you write more efficient and reliable infrastructure as code.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Implicit Dependencies</strong>: Automatically determined by Terraform based on resource references.</li>
+<li><strong>Explicit Dependencies</strong>: Manually specified using the <code>depends_on</code> argument.</li>
+<li><strong>Graph Theory</strong>: Terraform uses a Directed Acyclic Graph (DAG) to manage dependencies.</li>
+</ul>
+</div><h1>Implicit Dependencies</h1>
+<div class='content'><p>Terraform automatically infers dependencies between resources based on references. When one resource references another, Terraform understands that the referenced resource must be created or updated first.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c192cGMiICJtYWluIiB7CiAgY2lkcl9ibG9jayA9ICIxMC4wLjAuMC8xNiIKfQoKcmVzb3VyY2UgImF3c19zdWJuZXQiICJzdWJuZXQxIiB7CiAgdnBjX2lkICAgICA9IGF3c192cGMubWFpbi5pZAogIGNpZHJfYmxvY2sgPSAiMTAuMC4xLjAvMjQiCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_vpc&quot; &quot;main&quot; {
+  cidr_block = &quot;10.0.0.0/16&quot;
+}
+
+resource &quot;aws_subnet&quot; &quot;subnet1&quot; {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = &quot;10.0.1.0/24&quot;
+}</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>aws_subnet</code> resource implicitly depends on the <code>aws_vpc</code> resource because it references <code>aws_vpc.main.id</code>.</li>
+</ul>
+</div><h1>Explicit Dependencies</h1>
+<div class='content'><p>Sometimes, you need to enforce a specific order of resource creation or destruction that Terraform cannot infer. This is where explicit dependencies come into play, using the <code>depends_on</code> argument.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19pbnN0YW5jZSIgIndlYiIgewogIGFtaSAgICAgICAgICAgPSAiYW1pLTBjNTViMTU5Y2JmYWZlMWYwIgogIGluc3RhbmNlX3R5cGUgPSAidDIubWljcm8iCn0KCnJlc291cmNlICJhd3NfZWlwIiAid2ViX2VpcCIgewogIGluc3RhbmNlID0gYXdzX2luc3RhbmNlLndlYi5pZAogIGRlcGVuZHNfb24gPSBbYXdzX2luc3RhbmNlLndlYl0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_instance&quot; &quot;web&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}
+
+resource &quot;aws_eip&quot; &quot;web_eip&quot; {
+  instance = aws_instance.web.id
+  depends_on = [aws_instance.web]
+}</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>aws_eip</code> resource explicitly depends on the <code>aws_instance</code> resource using the <code>depends_on</code> argument.</li>
+</ul>
+</div><h1>Dependency Graph</h1>
+<div class='content'><p>Terraform constructs a Directed Acyclic Graph (DAG) to determine the order of operations. Each node in the graph represents a resource, and edges represent dependencies.</p>
+</div><h2>Example</h2>
+<div class='content'><p>Consider the following resources:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c192cGMiICJtYWluIiB7CiAgY2lkcl9ibG9jayA9ICIxMC4wLjAuMC8xNiIKfQoKcmVzb3VyY2UgImF3c19zdWJuZXQiICJzdWJuZXQxIiB7CiAgdnBjX2lkICAgICA9IGF3c192cGMubWFpbi5pZAogIGNpZHJfYmxvY2sgPSAiMTAuMC4xLjAvMjQiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJ3ZWIiIHsKICBhbWkgICAgICAgICAgID0gImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIKICBpbnN0YW5jZV90eXBlID0gInQyLm1pY3JvIgogIHN1Ym5ldF9pZCAgICAgPSBhd3Nfc3VibmV0LnN1Ym5ldDEuaWQKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_vpc&quot; &quot;main&quot; {
+  cidr_block = &quot;10.0.0.0/16&quot;
+}
+
+resource &quot;aws_subnet&quot; &quot;subnet1&quot; {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = &quot;10.0.1.0/24&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;web&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+  subnet_id     = aws_subnet.subnet1.id
+}</pre></div><div class='content'><p>Terraform will create a DAG with the following dependencies:</p>
+<ul>
+<li><code>aws_subnet.subnet1</code> depends on <code>aws_vpc.main</code>.</li>
+<li><code>aws_instance.web</code> depends on <code>aws_subnet.subnet1</code>.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<h2>Exercise 1: Implicit Dependencies</h2>
+<div class='content'><p>Create a VPC and a subnet, then launch an EC2 instance within that subnet. Verify that Terraform correctly infers the dependencies.</p>
+</div><h2>Exercise 2: Explicit Dependencies</h2>
+<div class='content'><p>Create an EC2 instance and an Elastic IP. Use the <code>depends_on</code> argument to explicitly specify that the Elastic IP should be associated with the EC2 instance only after the instance is created.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding resource dependencies in Terraform is essential for managing complex infrastructure. By leveraging both implicit and explicit dependencies, you can ensure that your resources are provisioned in the correct order, leading to more reliable and maintainable infrastructure as code.</p>
+<p>By mastering these concepts, you'll be well-equipped to handle more advanced Terraform configurations and ensure that your infrastructure is both efficient and resilient.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='terraform-expressions'>&#x25C4;Terraform Expressions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Resource Dependencies in Terraform</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules-reusable-configurations'>Modules: Reusable Configurations &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

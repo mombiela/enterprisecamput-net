@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Operations in Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/window-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/window-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/window-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/window-operations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/window-operations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dstreams'>&#x25C4;DStreams (Discretized Streams)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Window Operations in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='stateful-stream-processing'>Stateful Stream Processing &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Window operations in Apache Spark are essential for performing computations across a range of data points, allowing for more complex and insightful data analysis. This topic will guide you from the basics to advanced concepts of window operations in Apache Spark.</p>
+</div><h1>Introduction to Window Operations</h1>
+<div class='content'><p>Window operations allow you to perform calculations across a set of rows that are related to the current row. This is particularly useful for time-series data, financial data, and any scenario where you need to compute metrics over a sliding window of data.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Window Specification</strong>: Defines the partitioning, ordering, and frame boundaries.</li>
+<li><strong>Partitioning</strong>: Divides the data into groups.</li>
+<li><strong>Ordering</strong>: Specifies the order of rows within each partition.</li>
+<li><strong>Frame Boundaries</strong>: Defines the range of rows to be included in the window frame.</li>
+</ul>
+</div><h1>Creating a Window Specification</h1>
+<div class='content'><p>To perform window operations, you first need to create a window specification using the <code>Window</code> class.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCmZyb20gcHlzcGFyay5zcWwud2luZG93IGltcG9ydCBXaW5kb3cKZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IGNvbCwgcm93X251bWJlcgoKIyBJbml0aWFsaXplIFNwYXJrIHNlc3Npb24Kc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlci5hcHBOYW1lKCJXaW5kb3dPcGVyYXRpb25zIikuZ2V0T3JDcmVhdGUoKQoKIyBTYW1wbGUgRGF0YUZyYW1lCmRhdGEgPSBbCiAgICAoIkFsaWNlIiwgIjIwMjMtMDEtMDEiLCAxMDApLAogICAgKCJBbGljZSIsICIyMDIzLTAxLTAyIiwgMjAwKSwKICAgICgiQWxpY2UiLCAiMjAyMy0wMS0wMyIsIDMwMCksCiAgICAoIkJvYiIsICIyMDIzLTAxLTAxIiwgNDAwKSwKICAgICgiQm9iIiwgIjIwMjMtMDEtMDIiLCA1MDApLAogICAgKCJCb2IiLCAiMjAyMy0wMS0wMyIsIDYwMCkKXQoKY29sdW1ucyA9IFsibmFtZSIsICJkYXRlIiwgImFtb3VudCJdCmRmID0gc3BhcmsuY3JlYXRlRGF0YUZyYW1lKGRhdGEsIGNvbHVtbnMpCgojIERlZmluZSB3aW5kb3cgc3BlY2lmaWNhdGlvbgp3aW5kb3dTcGVjID0gV2luZG93LnBhcnRpdGlvbkJ5KCJuYW1lIikub3JkZXJCeSgiZGF0ZSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+from pyspark.sql.window import Window
+from pyspark.sql.functions import col, row_number
+
+# Initialize Spark session
+spark = SparkSession.builder.appName(&quot;WindowOperations&quot;).getOrCreate()
+
+# Sample DataFrame
+data = [
+    (&quot;Alice&quot;, &quot;2023-01-01&quot;, 100),
+    (&quot;Alice&quot;, &quot;2023-01-02&quot;, 200),
+    (&quot;Alice&quot;, &quot;2023-01-03&quot;, 300),
+    (&quot;Bob&quot;, &quot;2023-01-01&quot;, 400),
+    (&quot;Bob&quot;, &quot;2023-01-02&quot;, 500),
+    (&quot;Bob&quot;, &quot;2023-01-03&quot;, 600)
+]
+
+columns = [&quot;name&quot;, &quot;date&quot;, &quot;amount&quot;]
+df = spark.createDataFrame(data, columns)
+
+# Define window specification
+windowSpec = Window.partitionBy(&quot;name&quot;).orderBy(&quot;date&quot;)</pre></div><div class='content'></div><h1>Common Window Functions</h1>
+<div class='content'></div><h2>Row Number</h2>
+<div class='content'><p>The <code>row_number</code> function assigns a unique number to each row within a partition.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBcHBseSByb3dfbnVtYmVyIGZ1bmN0aW9uCmRmLndpdGhDb2x1bW4oInJvd19udW1iZXIiLCByb3dfbnVtYmVyKCkub3Zlcih3aW5kb3dTcGVjKSkuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Apply row_number function
+df.withColumn(&quot;row_number&quot;, row_number().over(windowSpec)).show()</pre></div><div class='content'></div><h2>Running Total</h2>
+<div class='content'><p>The <code>sum</code> function can be used to calculate a running total.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IHN1bQoKIyBDYWxjdWxhdGUgcnVubmluZyB0b3RhbApkZi53aXRoQ29sdW1uKCJydW5uaW5nX3RvdGFsIiwgc3VtKCJhbW91bnQiKS5vdmVyKHdpbmRvd1NwZWMpKS5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql.functions import sum
+
+# Calculate running total
+df.withColumn(&quot;running_total&quot;, sum(&quot;amount&quot;).over(windowSpec)).show()</pre></div><div class='content'></div><h2>Moving Average</h2>
+<div class='content'><p>The <code>avg</code> function can be used to calculate a moving average.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IGF2ZwoKIyBDYWxjdWxhdGUgbW92aW5nIGF2ZXJhZ2UKZGYud2l0aENvbHVtbigibW92aW5nX2F2ZyIsIGF2ZygiYW1vdW50Iikub3Zlcih3aW5kb3dTcGVjKSkuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql.functions import avg
+
+# Calculate moving average
+df.withColumn(&quot;moving_avg&quot;, avg(&quot;amount&quot;).over(windowSpec)).show()</pre></div><div class='content'></div><h1>Advanced Window Operations</h1>
+<div class='content'></div><h2>Frame Boundaries</h2>
+<div class='content'><p>Frame boundaries allow you to define the range of rows to include in the window frame.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWZpbmUgd2luZG93IHNwZWNpZmljYXRpb24gd2l0aCBmcmFtZSBib3VuZGFyaWVzCndpbmRvd1NwZWNXaXRoRnJhbWUgPSB3aW5kb3dTcGVjLnJvd3NCZXR3ZWVuKFdpbmRvdy51bmJvdW5kZWRQcmVjZWRpbmcsIFdpbmRvdy5jdXJyZW50Um93KQoKIyBDYWxjdWxhdGUgcnVubmluZyB0b3RhbCB3aXRoIGZyYW1lIGJvdW5kYXJpZXMKZGYud2l0aENvbHVtbigicnVubmluZ190b3RhbCIsIHN1bSgiYW1vdW50Iikub3Zlcih3aW5kb3dTcGVjV2l0aEZyYW1lKSkuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Define window specification with frame boundaries
+windowSpecWithFrame = windowSpec.rowsBetween(Window.unboundedPreceding, Window.currentRow)
+
+# Calculate running total with frame boundaries
+df.withColumn(&quot;running_total&quot;, sum(&quot;amount&quot;).over(windowSpecWithFrame)).show()</pre></div><div class='content'></div><h2>Lag and Lead</h2>
+<div class='content'><p>The <code>lag</code> and <code>lead</code> functions are used to access previous and next rows in the window frame.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IGxhZywgbGVhZAoKIyBDYWxjdWxhdGUgcHJldmlvdXMgYW5kIG5leHQgYW1vdW50CmRmLndpdGhDb2x1bW4oInByZXZfYW1vdW50IiwgbGFnKCJhbW91bnQiLCAxKS5vdmVyKHdpbmRvd1NwZWMpKSBcCiAgLndpdGhDb2x1bW4oIm5leHRfYW1vdW50IiwgbGVhZCgiYW1vdW50IiwgMSkub3Zlcih3aW5kb3dTcGVjKSkgXAogIC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql.functions import lag, lead
+
+# Calculate previous and next amount
+df.withColumn(&quot;prev_amount&quot;, lag(&quot;amount&quot;, 1).over(windowSpec)) \
+  .withColumn(&quot;next_amount&quot;, lead(&quot;amount&quot;, 1).over(windowSpec)) \
+  .show()</pre></div><div class='content'></div><h1>Performance Considerations</h1>
+<div class='content'><ul>
+<li><strong>Partitioning</strong>: Proper partitioning can significantly improve the performance of window operations.</li>
+<li><strong>Resource Management</strong>: Be mindful of memory and CPU usage, especially with large datasets.</li>
+<li><strong>Caching</strong>: Use caching to avoid recomputing window operations multiple times.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Window operations in Apache Spark provide powerful tools for performing complex data analysis. By understanding and utilizing window specifications, common window functions, and advanced operations, you can unlock deeper insights from your data. Remember to consider performance implications and optimize your Spark jobs accordingly.</p>
+<p>By mastering window operations, you will be well-equipped to handle a wide range of data analysis tasks in Apache Spark.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dstreams'>&#x25C4;DStreams (Discretized Streams)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Window Operations in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='stateful-stream-processing'>Stateful Stream Processing &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

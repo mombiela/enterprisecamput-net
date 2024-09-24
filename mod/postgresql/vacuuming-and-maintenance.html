@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacuuming and Maintenance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/vacuuming-and-maintenance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/vacuuming-and-maintenance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/vacuuming-and-maintenance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/vacuuming-and-maintenance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/vacuuming-and-maintenance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='analyzing-query-performance'>&#x25C4;Analyzing Query Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Vacuuming and Maintenance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='transactions-and-concurrency'>Transactions and Concurrency &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Maintaining a PostgreSQL database is crucial for ensuring optimal performance and reliability. One of the key maintenance tasks is vacuuming, which helps manage storage and improve query performance. This section will cover the basics of vacuuming, its importance, and how to perform it effectively.</p>
+</div><h1>What is Vacuuming?</h1>
+<div class='content'><p>Vacuuming in PostgreSQL is a process that helps reclaim storage occupied by dead tuples (rows that have been updated or deleted). It also updates statistics used by the query planner to optimize query performance.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Dead Tuples</strong>: Rows that have been deleted or updated but still occupy space.</li>
+<li><strong>Autovacuum</strong>: A background process that automatically vacuums tables.</li>
+<li><strong>Manual Vacuum</strong>: A user-initiated vacuum process.</li>
+</ul>
+</div><h1>Importance of Vacuuming</h1>
+<div class='content'><ul>
+<li><strong>Reclaiming Space</strong>: Frees up storage space by removing dead tuples.</li>
+<li><strong>Improving Performance</strong>: Keeps indexes and tables efficient, reducing the time for query execution.</li>
+<li><strong>Preventing Transaction ID Wraparound</strong>: Ensures that the transaction ID counter does not overflow, which could otherwise lead to data corruption.</li>
+</ul>
+</div><h1>Types of Vacuuming</h1>
+<h2>Autovacuum</h2>
+<div class='content'><p>Autovacuum is a built-in feature that automatically vacuums tables based on certain thresholds.</p>
+<h4>Configuration</h4>
+<p>Autovacuum can be configured in the <code>postgresql.conf</code> file. Key parameters include:</p>
+<ul>
+<li><code>autovacuum</code>: Enables or disables the autovacuum daemon.</li>
+<li><code>autovacuum_naptime</code>: Sets the delay between autovacuum runs.</li>
+<li><code>autovacuum_vacuum_threshold</code>: Minimum number of tuple updates or deletions before a vacuum is triggered.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeGFtcGxlIGNvbmZpZ3VyYXRpb24gaW4gcG9zdGdyZXNxbC5jb25mCmF1dG92YWN1dW0gPSBvbgphdXRvdmFjdXVtX25hcHRpbWUgPSAnMW1pbicKYXV0b3ZhY3V1bV92YWN1dW1fdGhyZXNob2xkID0gNTA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Example configuration in postgresql.conf
+autovacuum = on
+autovacuum_naptime = '1min'
+autovacuum_vacuum_threshold = 50</pre></div><div class='content'></div><h2>Manual Vacuum</h2>
+<div class='content'><p>Manual vacuuming can be performed using the <code>VACUUM</code> command. It can be run on specific tables or the entire database.</p>
+<h4>Basic Usage</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gVmFjdXVtIGEgc3BlY2lmaWMgdGFibGUKVkFDVVVNIG15X3RhYmxlOwoKLS0gVmFjdXVtIHRoZSBlbnRpcmUgZGF0YWJhc2UKVkFDVVVNOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Vacuum a specific table
+VACUUM my_table;
+
+-- Vacuum the entire database
+VACUUM;</pre></div><div class='content'><h4>Vacuum Full</h4>
+<p><code>VACUUM FULL</code> is a more intensive version that locks the table and fully reclaims space.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gUGVyZm9ybSBhIGZ1bGwgdmFjdXVtIG9uIGEgc3BlY2lmaWMgdGFibGUKVkFDVVVNIEZVTEwgbXlfdGFibGU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Perform a full vacuum on a specific table
+VACUUM FULL my_table;</pre></div><div class='content'></div><h1>Analyzing Tables</h1>
+<div class='content'><p>The <code>ANALYZE</code> command updates statistics used by the query planner to make efficient query execution plans.</p>
+</div><h2>Basic Usage</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQW5hbHl6ZSBhIHNwZWNpZmljIHRhYmxlCkFOQUxZWkUgbXlfdGFibGU7CgotLSBBbmFseXplIHRoZSBlbnRpcmUgZGF0YWJhc2UKQU5BTFlaRTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Analyze a specific table
+ANALYZE my_table;
+
+-- Analyze the entire database
+ANALYZE;</pre></div><div class='content'></div><h2>Combined Vacuum and Analyze</h2>
+<div class='content'><p>You can combine vacuuming and analyzing in a single command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gVmFjdXVtIGFuZCBhbmFseXplIGEgc3BlY2lmaWMgdGFibGUKVkFDVVVNIEFOQUxZWkUgbXlfdGFibGU7CgotLSBWYWN1dW0gYW5kIGFuYWx5emUgdGhlIGVudGlyZSBkYXRhYmFzZQpWQUNVVU0gQU5BTFlaRTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Vacuum and analyze a specific table
+VACUUM ANALYZE my_table;
+
+-- Vacuum and analyze the entire database
+VACUUM ANALYZE;</pre></div><div class='content'></div><h1>Monitoring and Maintenance</h1>
+<h2>Monitoring Vacuum Activity</h2>
+<div class='content'><p>You can monitor vacuum activity using system views such as <code>pg_stat_user_tables</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ2hlY2sgdmFjdXVtIGFjdGl2aXR5IGZvciB1c2VyIHRhYmxlcwpTRUxFQ1QgcmVsbmFtZSwgbGFzdF92YWN1dW0sIGxhc3RfYXV0b3ZhY3V1bSwgbGFzdF9hbmFseXplLCBsYXN0X2F1dG9hbmFseXplCkZST00gcGdfc3RhdF91c2VyX3RhYmxlczs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Check vacuum activity for user tables
+SELECT relname, last_vacuum, last_autovacuum, last_analyze, last_autoanalyze
+FROM pg_stat_user_tables;</pre></div><div class='content'></div><h2>Scheduling Maintenance</h2>
+<div class='content'><p>Regular maintenance tasks can be scheduled using tools like <code>cron</code> or PostgreSQL's <code>pg_cron</code> extension.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRXhhbXBsZSBjcm9uIGpvYiB0byB2YWN1dW0gYSBkYXRhYmFzZSBkYWlseSBhdCBtaWRuaWdodAowIDAgKiAqICogcHNxbCAtVSBwb3N0Z3JlcyAtZCBteV9kYXRhYmFzZSAtYyAiVkFDVVVNIEFOQUxZWkU7Ig=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Example cron job to vacuum a database daily at midnight
+0 0 * * * psql -U postgres -d my_database -c &quot;VACUUM ANALYZE;&quot;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Vacuuming and maintenance are essential for the health and performance of a PostgreSQL database. By understanding and properly configuring autovacuum, performing manual vacuuming when necessary, and regularly analyzing tables, you can ensure your database remains efficient and reliable. Regular monitoring and scheduling of maintenance tasks will help you stay ahead of potential performance issues.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='analyzing-query-performance'>&#x25C4;Analyzing Query Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Vacuuming and Maintenance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='transactions-and-concurrency'>Transactions and Concurrency &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

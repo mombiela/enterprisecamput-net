@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Management Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/state-management-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/state-management-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/state-management-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/state-management-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/state-management-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-multiple-environments'>&#x25C4;Managing Multiple Environments</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">State Management Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='writing-and-organizing-configuration'>Writing and Organizing Configuration &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>State management is a crucial aspect of working with Terraform. Proper state management ensures that your infrastructure is consistent, reliable, and can be easily maintained. This topic will cover best practices for managing Terraform state from beginner to advanced levels.</p>
+</div><h1>Introduction to Terraform State</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What is Terraform State?</strong></p>
+<ul>
+<li>Terraform state is a file that tracks the current state of your infrastructure.</li>
+<li>It maps your configuration to the real-world resources.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why is State Management Important?</strong></p>
+<ul>
+<li>Ensures consistency between your configuration and deployed resources.</li>
+<li>Enables features like <code>terraform plan</code> and <code>terraform apply</code> to work correctly.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Storing State Files</h1>
+<div class='content'></div><h2>Local State</h2>
+<div class='content'><ul>
+<li><strong>Local State Storage</strong>
+<ul>
+<li>By default, Terraform stores state files locally on your machine.</li>
+<li>Suitable for small projects or learning purposes.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJsb2NhbCIgewogICAgcGF0aCA9ICJ0ZXJyYWZvcm0udGZzdGF0ZSIKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;local&quot; {
+    path = &quot;terraform.tfstate&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>Drawbacks of Local State</strong>
+<ul>
+<li>Not suitable for team environments.</li>
+<li>Risk of losing state file if the local machine fails.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Remote State</h2>
+<div class='content'><ul>
+<li><strong>Remote State Storage</strong>
+<ul>
+<li>Recommended for production and team environments.</li>
+<li>Stores state files in a remote backend like AWS S3, Azure Blob Storage, or Terraform Cloud.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ID0gIm15LXRlcnJhZm9ybS1zdGF0ZSIKICAgIGtleSAgICA9ICJwYXRoL3RvL215L2tleSIKICAgIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket = &quot;my-terraform-state&quot;
+    key    = &quot;path/to/my/key&quot;
+    region = &quot;us-west-2&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>Benefits of Remote State</strong>
+<ul>
+<li>Centralized state management.</li>
+<li>Enhanced security and access control.</li>
+<li>Supports state locking to prevent concurrent modifications.</li>
+</ul>
+</li>
+</ul>
+</div><h1>State Locking</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What is State Locking?</strong></p>
+<ul>
+<li>Prevents multiple users from making concurrent changes to the state file.</li>
+<li>Ensures that only one <code>terraform apply</code> or <code>terraform plan</code> operation can run at a time.</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementing State Locking</strong></p>
+<ul>
+<li>Most remote backends support state locking out-of-the-box.</li>
+<li>For example, AWS S3 backend uses DynamoDB for state locking.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibXktdGVycmFmb3JtLXN0YXRlIgogICAga2V5ICAgICAgICAgICAgPSAicGF0aC90by9teS9rZXkiCiAgICByZWdpb24gICAgICAgICA9ICJ1cy13ZXN0LTIiCiAgICBkeW5hbW9kYl90YWJsZSA9ICJ0ZXJyYWZvcm0tbG9jay10YWJsZSIKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state&quot;
+    key            = &quot;path/to/my/key&quot;
+    region         = &quot;us-west-2&quot;
+    dynamodb_table = &quot;terraform-lock-table&quot;
+  }
+}</pre></div><div class='content'></div><h1>State File Security</h1>
+<div class='content'><ul>
+<li><strong>Encrypting State Files</strong>
+<ul>
+<li>Always encrypt state files, especially when stored remotely.</li>
+<li>Use backend-specific encryption options (e.g., S3 server-side encryption).</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibXktdGVycmFmb3JtLXN0YXRlIgogICAga2V5ICAgICAgICAgICAgPSAicGF0aC90by9teS9rZXkiCiAgICByZWdpb24gICAgICAgICA9ICJ1cy13ZXN0LTIiCiAgICBlbmNyeXB0ICAgICAgICA9IHRydWUKICAgIGR5bmFtb2RiX3RhYmxlID0gInRlcnJhZm9ybS1sb2NrLXRhYmxlIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state&quot;
+    key            = &quot;path/to/my/key&quot;
+    region         = &quot;us-west-2&quot;
+    encrypt        = true
+    dynamodb_table = &quot;terraform-lock-table&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>Access Control</strong>
+<ul>
+<li>Restrict access to state files using IAM policies or equivalent access control mechanisms.</li>
+<li>Ensure only authorized users can read or modify the state.</li>
+</ul>
+</li>
+</ul>
+</div><h1>State Management Commands</h1>
+<div class='content'><ul>
+<li><strong>terraform state list</strong>
+<ul>
+<li>Lists all resources in the state file.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHN0YXRlIGxpc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform state list</pre></div><div class='content'><ul>
+<li><strong>terraform state show</strong>
+<ul>
+<li>Shows detailed information about a specific resource in the state file.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHN0YXRlIHNob3cgYXdzX2luc3RhbmNlLm15X2luc3RhbmNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform state show aws_instance.my_instance</pre></div><div class='content'><ul>
+<li><strong>terraform state mv</strong>
+<ul>
+<li>Moves a resource to a different address in the state file.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHN0YXRlIG12IGF3c19pbnN0YW5jZS5vbGRfaW5zdGFuY2UgYXdzX2luc3RhbmNlLm5ld19pbnN0YW5jZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform state mv aws_instance.old_instance aws_instance.new_instance</pre></div><div class='content'><ul>
+<li><strong>terraform state rm</strong>
+<ul>
+<li>Removes a resource from the state file.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHN0YXRlIHJtIGF3c19pbnN0YW5jZS5teV9pbnN0YW5jZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform state rm aws_instance.my_instance</pre></div><div class='content'></div><h1>State File Management Strategies</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Version Control for State Files</strong></p>
+<ul>
+<li>Do not store state files in version control systems like Git.</li>
+<li>Use remote backends for state file storage and versioning.</li>
+</ul>
+</li>
+<li>
+<p><strong>State File Backups</strong></p>
+<ul>
+<li>Regularly back up your state files.</li>
+<li>Most remote backends provide automatic versioning and backups.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Proper state management is essential for maintaining the integrity and reliability of your Terraform-managed infrastructure. By following best practices such as using remote state storage, implementing state locking, securing state files, and using state management commands effectively, you can ensure that your infrastructure remains consistent and manageable.</p>
+<p>Remember to:</p>
+<ul>
+<li>Use remote state storage for team environments.</li>
+<li>Implement state locking to prevent concurrent modifications.</li>
+<li>Secure your state files with encryption and access control.</li>
+<li>Regularly back up your state files and avoid storing them in version control systems.</li>
+</ul>
+<p>By adhering to these best practices, you can avoid common pitfalls and ensure smooth and efficient state management in your Terraform projects.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-multiple-environments'>&#x25C4;Managing Multiple Environments</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">State Management Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='writing-and-organizing-configuration'>Writing and Organizing Configuration &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

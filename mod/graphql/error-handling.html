@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling in GraphQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/error-handling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/error-handling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/error-handling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/error-handling" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/error-handling" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='authentication-and-authorization'>&#x25C4;Authentication and Authorization</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graphiql-and-playground'>GraphiQL and Playground &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Error handling is a crucial aspect of any application, and GraphQL is no exception. This topic will guide you through the basics of error handling in GraphQL, from understanding the default error responses to implementing custom error handling mechanisms.</p>
+</div><h1>Introduction to Error Handling in GraphQL</h1>
+<div class='content'><p>GraphQL has a built-in mechanism for handling errors. When a GraphQL server encounters an error while resolving a query, it returns an <code>errors</code> array in the response.</p>
+</div><h2>Default Error Response</h2>
+<div class='content'><p>When an error occurs, the GraphQL response includes an <code>errors</code> array alongside the <code>data</code> field. Here’s an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHVzZXIoaWQ6ICIxIikgewogICAgbmFtZQogICAgZW1haWwKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  user(id: &quot;1&quot;) {
+    name
+    email
+  }
+}</pre></div><div class='content'><p>If the <code>user</code> with <code>id: &quot;1&quot;</code> does not exist, the response might look like this:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJkYXRhIjogewogICAgInVzZXIiOiBudWxsCiAgfSwKICAiZXJyb3JzIjogWwogICAgewogICAgICAibWVzc2FnZSI6ICJVc2VyIG5vdCBmb3VuZCIsCiAgICAgICJsb2NhdGlvbnMiOiBbCiAgICAgICAgewogICAgICAgICAgImxpbmUiOiAyLAogICAgICAgICAgImNvbHVtbiI6IDMKICAgICAgICB9CiAgICAgIF0sCiAgICAgICJwYXRoIjogWyJ1c2VyIl0KICAgIH0KICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;data&quot;: {
+    &quot;user&quot;: null
+  },
+  &quot;errors&quot;: [
+    {
+      &quot;message&quot;: &quot;User not found&quot;,
+      &quot;locations&quot;: [
+        {
+          &quot;line&quot;: 2,
+          &quot;column&quot;: 3
+        }
+      ],
+      &quot;path&quot;: [&quot;user&quot;]
+    }
+  ]
+}</pre></div><div class='content'><ul>
+<li><strong>data</strong>: Contains the partial data that could be resolved.</li>
+<li><strong>errors</strong>: An array of error objects with details about each error.</li>
+</ul>
+</div><h1>Types of Errors in GraphQL</h1>
+<div class='content'></div><h2>Validation Errors</h2>
+<div class='content'><p>These errors occur when the query does not conform to the GraphQL schema.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHVzZXIoaWQ6ICIxIikgewogICAgbm9uRXhpc3RlbnRGaWVsZAogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  user(id: &quot;1&quot;) {
+    nonExistentField
+  }
+}</pre></div><div class='content'><p>Response:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJlcnJvcnMiOiBbCiAgICB7CiAgICAgICJtZXNzYWdlIjogIkNhbm5vdCBxdWVyeSBmaWVsZCAnbm9uRXhpc3RlbnRGaWVsZCcgb24gdHlwZSAnVXNlcicuIiwKICAgICAgImxvY2F0aW9ucyI6IFsKICAgICAgICB7CiAgICAgICAgICAibGluZSI6IDMsCiAgICAgICAgICAiY29sdW1uIjogNQogICAgICAgIH0KICAgICAgXQogICAgfQogIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;errors&quot;: [
+    {
+      &quot;message&quot;: &quot;Cannot query field 'nonExistentField' on type 'User'.&quot;,
+      &quot;locations&quot;: [
+        {
+          &quot;line&quot;: 3,
+          &quot;column&quot;: 5
+        }
+      ]
+    }
+  ]
+}</pre></div><div class='content'></div><h2>Execution Errors</h2>
+<div class='content'><p>These errors occur during the execution of the query, such as when a resolver throws an exception.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHVzZXIoaWQ6ICJpbnZhbGlkLWlkIikgewogICAgbmFtZQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  user(id: &quot;invalid-id&quot;) {
+    name
+  }
+}</pre></div><div class='content'><p>Response:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJkYXRhIjogewogICAgInVzZXIiOiBudWxsCiAgfSwKICAiZXJyb3JzIjogWwogICAgewogICAgICAibWVzc2FnZSI6ICJJbnZhbGlkIHVzZXIgSUQiLAogICAgICAibG9jYXRpb25zIjogWwogICAgICAgIHsKICAgICAgICAgICJsaW5lIjogMiwKICAgICAgICAgICJjb2x1bW4iOiAzCiAgICAgICAgfQogICAgICBdLAogICAgICAicGF0aCI6IFsidXNlciJdCiAgICB9CiAgXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;data&quot;: {
+    &quot;user&quot;: null
+  },
+  &quot;errors&quot;: [
+    {
+      &quot;message&quot;: &quot;Invalid user ID&quot;,
+      &quot;locations&quot;: [
+        {
+          &quot;line&quot;: 2,
+          &quot;column&quot;: 3
+        }
+      ],
+      &quot;path&quot;: [&quot;user&quot;]
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Custom Error Handling</h1>
+<div class='content'><p>To provide more meaningful error messages and handle errors gracefully, you can implement custom error handling in your GraphQL server.</p>
+</div><h2>Using Apollo Server</h2>
+<div class='content'><p>Apollo Server allows you to customize error handling by using the <code>formatError</code> function.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlcicpOwoKY29uc3QgdHlwZURlZnMgPSBncWxgCiAgdHlwZSBRdWVyeSB7CiAgICB1c2VyKGlkOiBJRCEpOiBVc2VyCiAgfQoKICB0eXBlIFVzZXIgewogICAgaWQ6IElEIQogICAgbmFtZTogU3RyaW5nIQogIH0KYDsKCmNvbnN0IHJlc29sdmVycyA9IHsKICBRdWVyeTogewogICAgdXNlcjogKHBhcmVudCwgYXJncywgY29udGV4dCwgaW5mbykgPT4gewogICAgICBpZiAoYXJncy5pZCAhPT0gIjEiKSB7CiAgICAgICAgdGhyb3cgbmV3IEVycm9yKCJVc2VyIG5vdCBmb3VuZCIpOwogICAgICB9CiAgICAgIHJldHVybiB7IGlkOiAiMSIsIG5hbWU6ICJKb2huIERvZSIgfTsKICAgIH0KICB9Cn07Cgpjb25zdCBzZXJ2ZXIgPSBuZXcgQXBvbGxvU2VydmVyKHsKICB0eXBlRGVmcywKICByZXNvbHZlcnMsCiAgZm9ybWF0RXJyb3I6IChlcnIpID0+IHsKICAgIHJldHVybiB7CiAgICAgIG1lc3NhZ2U6IGVyci5tZXNzYWdlLAogICAgICBjb2RlOiBlcnIuZXh0ZW5zaW9ucy5jb2RlIHx8ICdJTlRFUk5BTF9TRVJWRVJfRVJST1InLAogICAgICBsb2NhdGlvbnM6IGVyci5sb2NhdGlvbnMsCiAgICAgIHBhdGg6IGVyci5wYXRoCiAgICB9OwogIH0KfSk7CgpzZXJ2ZXIubGlzdGVuKCkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFNlcnZlciByZWFkeSBhdCAke3VybH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql } = require('apollo-server');
+
+const typeDefs = gql`
+  type Query {
+    user(id: ID!): User
+  }
+
+  type User {
+    id: ID!
+    name: String!
+  }
+`;
+
+const resolvers = {
+  Query: {
+    user: (parent, args, context, info) =&gt; {
+      if (args.id !== &quot;1&quot;) {
+        throw new Error(&quot;User not found&quot;);
+      }
+      return { id: &quot;1&quot;, name: &quot;John Doe&quot; };
+    }
+  }
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  formatError: (err) =&gt; {
+    return {
+      message: err.message,
+      code: err.extensions.code || 'INTERNAL_SERVER_ERROR',
+      locations: err.locations,
+      path: err.path
+    };
+  }
+});
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'><p>In this example, the <code>formatError</code> function customizes the error response to include a <code>code</code> field.</p>
+</div><h2>Error Codes</h2>
+<div class='content'><p>You can define custom error codes to categorize errors.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCwgQXBvbGxvRXJyb3IgfSA9IHJlcXVpcmUoJ2Fwb2xsby1zZXJ2ZXInKTsKCmNvbnN0IHR5cGVEZWZzID0gZ3FsYAogIHR5cGUgUXVlcnkgewogICAgdXNlcihpZDogSUQhKTogVXNlcgogIH0KCiAgdHlwZSBVc2VyIHsKICAgIGlkOiBJRCEKICAgIG5hbWU6IFN0cmluZyEKICB9CmA7Cgpjb25zdCByZXNvbHZlcnMgPSB7CiAgUXVlcnk6IHsKICAgIHVzZXI6IChwYXJlbnQsIGFyZ3MsIGNvbnRleHQsIGluZm8pID0+IHsKICAgICAgaWYgKGFyZ3MuaWQgIT09ICIxIikgewogICAgICAgIHRocm93IG5ldyBBcG9sbG9FcnJvcigiVXNlciBub3QgZm91bmQiLCAiVVNFUl9OT1RfRk9VTkQiKTsKICAgICAgfQogICAgICByZXR1cm4geyBpZDogIjEiLCBuYW1lOiAiSm9obiBEb2UiIH07CiAgICB9CiAgfQp9OwoKY29uc3Qgc2VydmVyID0gbmV3IEFwb2xsb1NlcnZlcih7CiAgdHlwZURlZnMsCiAgcmVzb2x2ZXJzLAogIGZvcm1hdEVycm9yOiAoZXJyKSA9PiB7CiAgICByZXR1cm4gewogICAgICBtZXNzYWdlOiBlcnIubWVzc2FnZSwKICAgICAgY29kZTogZXJyLmV4dGVuc2lvbnMuY29kZSwKICAgICAgbG9jYXRpb25zOiBlcnIubG9jYXRpb25zLAogICAgICBwYXRoOiBlcnIucGF0aAogICAgfTsKICB9Cn0pOwoKc2VydmVyLmxpc3RlbigpLnRoZW4oKHsgdXJsIH0pID0+IHsKICBjb25zb2xlLmxvZyhg8J+agCBTZXJ2ZXIgcmVhZHkgYXQgJHt1cmx9YCk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql, ApolloError } = require('apollo-server');
+
+const typeDefs = gql`
+  type Query {
+    user(id: ID!): User
+  }
+
+  type User {
+    id: ID!
+    name: String!
+  }
+`;
+
+const resolvers = {
+  Query: {
+    user: (parent, args, context, info) =&gt; {
+      if (args.id !== &quot;1&quot;) {
+        throw new ApolloError(&quot;User not found&quot;, &quot;USER_NOT_FOUND&quot;);
+      }
+      return { id: &quot;1&quot;, name: &quot;John Doe&quot; };
+    }
+  }
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  formatError: (err) =&gt; {
+    return {
+      message: err.message,
+      code: err.extensions.code,
+      locations: err.locations,
+      path: err.path
+    };
+  }
+});
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'><p>In this example, the <code>ApolloError</code> class is used to throw errors with custom codes.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Error handling in GraphQL is essential for building robust applications. By understanding the default error responses and implementing custom error handling, you can provide more meaningful error messages and improve the overall user experience. Remember to:</p>
+<ul>
+<li>Handle validation and execution errors appropriately.</li>
+<li>Customize error responses using tools like Apollo Server.</li>
+<li>Define and use custom error codes to categorize errors.</li>
+</ul>
+<p>With these practices, you'll be well-equipped to manage errors effectively in your GraphQL applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='authentication-and-authorization'>&#x25C4;Authentication and Authorization</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graphiql-and-playground'>GraphiQL and Playground &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

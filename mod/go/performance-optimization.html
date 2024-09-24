@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization in Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/go/performance-optimization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/go/performance-optimization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-design-patterns'>&#x25C4;Common Design Patterns</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performance Optimization in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-cli-application'>Building a CLI Application &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Performance Optimization</h1>
+<div class='content'><p>Performance optimization is a crucial aspect of software development, especially in a language like Go, which is designed for efficiency and scalability. This section will guide you through various techniques and best practices to optimize your Go programs from beginner to advanced levels.</p>
+</div><h1>Profiling and Benchmarking</h1>
+<div class='content'><p>Before optimizing, it's essential to identify the parts of your code that need improvement. Go provides built-in tools for profiling and benchmarking.</p>
+</div><h2>Profiling</h2>
+<div class='content'><p>Profiling helps you understand where your program spends most of its time and where memory is being allocated.</p>
+<ul>
+<li><strong>CPU Profiling</strong>: Measures the time spent on each function.</li>
+<li><strong>Memory Profiling</strong>: Tracks memory allocations.</li>
+</ul>
+<h4>Example: CPU Profiling</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImxvZyIKICAgICJvcyIKICAgICJydW50aW1lL3Bwcm9mIgopCgpmdW5jIG1haW4oKSB7CiAgICBmLCBlcnIgOj0gb3MuQ3JlYXRlKCJjcHUucHJvZiIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgcHByb2YuU3RhcnRDUFVQcm9maWxlKGYpCiAgICBkZWZlciBwcHJvZi5TdG9wQ1BVUHJvZmlsZSgpCgogICAgLy8gWW91ciBjb2RlIGhlcmUKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;log&quot;
+    &quot;os&quot;
+    &quot;runtime/pprof&quot;
+)
+
+func main() {
+    f, err := os.Create(&quot;cpu.prof&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    pprof.StartCPUProfile(f)
+    defer pprof.StopCPUProfile()
+
+    // Your code here
+}</pre></div><div class='content'><p>Run your program and then use the <code>go tool pprof</code> command to analyze the profile.</p>
+</div><h2>Benchmarking</h2>
+<div class='content'><p>Benchmarking helps you measure the performance of your code. Go's testing package includes support for benchmarks.</p>
+<h4>Example: Benchmarking</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrTXlGdW5jdGlvbihiICp0ZXN0aW5nLkIpIHsKICAgIGZvciBpIDo9IDA7IGkgPCBiLk47IGkrKyB7CiAgICAgICAgTXlGdW5jdGlvbigpCiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkMyFunction(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        MyFunction()
+    }
+}</pre></div><div class='content'><p>Run the benchmark using <code>go test -bench .</code>.</p>
+</div><h1>Efficient Data Structures</h1>
+<div class='content'><p>Choosing the right data structures can significantly impact performance.</p>
+<ul>
+<li><strong>Arrays and Slices</strong>: Use slices for dynamic arrays but be mindful of their capacity.</li>
+<li><strong>Maps</strong>: Useful for fast lookups but can be memory-intensive.</li>
+</ul>
+</div><h2>Example: Using Slices Efficiently</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgImZtdCIKCmZ1bmMgbWFpbigpIHsKICAgIHMgOj0gbWFrZShbXWludCwgMCwgMTAwKSAvLyBQcmVhbGxvY2F0ZSBjYXBhY2l0eQogICAgZm9yIGkgOj0gMDsgaSA8IDEwMDsgaSsrIHsKICAgICAgICBzID0gYXBwZW5kKHMsIGkpCiAgICB9CiAgICBmbXQuUHJpbnRsbihzKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import &quot;fmt&quot;
+
+func main() {
+    s := make([]int, 0, 100) // Preallocate capacity
+    for i := 0; i &lt; 100; i++ {
+        s = append(s, i)
+    }
+    fmt.Println(s)
+}</pre></div><div class='content'><p>Preallocating capacity can reduce the number of allocations and improve performance.</p>
+</div><h1>Concurrency Optimization</h1>
+<div class='content'><p>Go's concurrency model is one of its most powerful features, but improper use can lead to performance bottlenecks.</p>
+<ul>
+<li><strong>Goroutines</strong>: Lightweight threads managed by the Go runtime.</li>
+<li><strong>Channels</strong>: Used for communication between goroutines.</li>
+</ul>
+</div><h2>Example: Using Goroutines and Channels</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJzeW5jIgopCgpmdW5jIHdvcmtlcihpZCBpbnQsIHdnICpzeW5jLldhaXRHcm91cCkgewogICAgZGVmZXIgd2cuRG9uZSgpCiAgICBmbXQuUHJpbnRmKCJXb3JrZXIgJWQgc3RhcnRpbmdcbiIsIGlkKQogICAgLy8gU2ltdWxhdGUgd29yawogICAgZm10LlByaW50ZigiV29ya2VyICVkIGRvbmVcbiIsIGlkKQp9CgpmdW5jIG1haW4oKSB7CiAgICB2YXIgd2cgc3luYy5XYWl0R3JvdXAKICAgIGZvciBpIDo9IDE7IGkgPD0gNTsgaSsrIHsKICAgICAgICB3Zy5BZGQoMSkKICAgICAgICBnbyB3b3JrZXIoaSwgJndnKQogICAgfQogICAgd2cuV2FpdCgpCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+func worker(id int, wg *sync.WaitGroup) {
+    defer wg.Done()
+    fmt.Printf(&quot;Worker %d starting\n&quot;, id)
+    // Simulate work
+    fmt.Printf(&quot;Worker %d done\n&quot;, id)
+}
+
+func main() {
+    var wg sync.WaitGroup
+    for i := 1; i &lt;= 5; i++ {
+        wg.Add(1)
+        go worker(i, &amp;wg)
+    }
+    wg.Wait()
+}</pre></div><div class='content'><p>Using <code>sync.WaitGroup</code> ensures that the main function waits for all goroutines to complete.</p>
+</div><h1>Memory Management</h1>
+<div class='content'><p>Efficient memory management is crucial for performance.</p>
+<ul>
+<li><strong>Garbage Collection</strong>: Go has automatic garbage collection, but you can optimize how your program allocates memory.</li>
+<li><strong>Escape Analysis</strong>: Determines whether variables should be allocated on the stack or heap.</li>
+</ul>
+</div><h2>Example: Minimizing Allocations</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgImZtdCIKCnR5cGUgUG9pbnQgc3RydWN0IHsKICAgIHgsIHkgaW50Cn0KCmZ1bmMgbWFpbigpIHsKICAgIHAgOj0gUG9pbnR7eDogMSwgeTogMn0gLy8gQWxsb2NhdGVkIG9uIHRoZSBzdGFjawogICAgZm10LlByaW50bG4ocCkKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import &quot;fmt&quot;
+
+type Point struct {
+    x, y int
+}
+
+func main() {
+    p := Point{x: 1, y: 2} // Allocated on the stack
+    fmt.Println(p)
+}</pre></div><div class='content'><p>By understanding escape analysis, you can write code that minimizes heap allocations.</p>
+</div><h1>Summary</h1>
+<div class='content'><p>Performance optimization in Go involves a combination of profiling, choosing efficient data structures, leveraging concurrency, and managing memory effectively. By applying these techniques, you can write Go programs that are both efficient and scalable.</p>
+<ul>
+<li><strong>Profiling and Benchmarking</strong>: Identify performance bottlenecks.</li>
+<li><strong>Efficient Data Structures</strong>: Choose the right data structures for your needs.</li>
+<li><strong>Concurrency Optimization</strong>: Use goroutines and channels effectively.</li>
+<li><strong>Memory Management</strong>: Optimize memory allocation and garbage collection.</li>
+</ul>
+<p>By mastering these concepts, you'll be well-equipped to optimize your Go programs for maximum performance.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-design-patterns'>&#x25C4;Common Design Patterns</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performance Optimization in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-cli-application'>Building a CLI Application &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

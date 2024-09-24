@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing with Jest</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/unit-testing-jest" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/unit-testing-jest" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/unit-testing-jest" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/unit-testing-jest" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/unit-testing-jest" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='debugging-react-native-apps'>&#x25C4;Debugging React Native Apps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Unit Testing with Jest</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='end-to-end-testing-detox'>End-to-End Testing with Detox &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Unit Testing</h1>
+<div class='content'><p>Unit testing is a software testing method where individual units or components of a software are tested in isolation. In the context of React Native, unit tests help ensure that your components and functions work as expected.</p>
+</div><h1>Why Use Jest for Unit Testing?</h1>
+<div class='content'><p>Jest is a JavaScript testing framework maintained by Facebook, designed to ensure the correctness of any JavaScript codebase. It is particularly well-suited for testing React and React Native applications due to its simplicity and powerful features.</p>
+<ul>
+<li><strong>Zero configuration</strong>: Jest works out of the box for most JavaScript projects.</li>
+<li><strong>Snapshot testing</strong>: Jest can capture snapshots of React trees to ensure UI consistency.</li>
+<li><strong>Mocking</strong>: Jest provides powerful mocking capabilities to isolate components and functions.</li>
+</ul>
+</div><h1>Setting Up Jest in a React Native Project</h1>
+<div class='content'></div><h2>Installation</h2>
+<div class='content'><p>To get started with Jest in a React Native project, you need to install Jest and its dependencies.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiBqZXN0IEB0ZXN0aW5nLWxpYnJhcnkvcmVhY3QtbmF0aXZlIEB0ZXN0aW5nLWxpYnJhcnkvamVzdC1uYXRpdmU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev jest @testing-library/react-native @testing-library/jest-native</pre></div><div class='content'></div><h2>Configuration</h2>
+<div class='content'><p>Create a <code>jest.config.js</code> file in the root of your project to configure Jest.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlLmV4cG9ydHMgPSB7CiAgcHJlc2V0OiAncmVhY3QtbmF0aXZlJywKICBzZXR1cEZpbGVzQWZ0ZXJFbnY6IFsnQHRlc3RpbmctbGlicmFyeS9qZXN0LW5hdGl2ZS9leHRlbmQtZXhwZWN0J10sCiAgdHJhbnNmb3JtSWdub3JlUGF0dGVybnM6IFsKICAgICdub2RlX21vZHVsZXMvKD8hKGplc3QtKT9yZWFjdC1uYXRpdmV8QHJlYWN0LW5hdGl2ZXxAcmVhY3QtbmF2aWdhdGlvbiknLAogIF0sCn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module.exports = {
+  preset: 'react-native',
+  setupFilesAfterEnv: ['@testing-library/jest-native/extend-expect'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(jest-)?react-native|@react-native|@react-navigation)',
+  ],
+};</pre></div><div class='content'></div><h1>Writing Your First Test</h1>
+<div class='content'></div><h2>Testing a Simple Function</h2>
+<div class='content'><p>Let's start by writing a test for a simple function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3VtLmpzCmV4cG9ydCBjb25zdCBzdW0gPSAoYSwgYikgPT4gYSArIGI7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// sum.js
+export const sum = (a, b) =&gt; a + b;</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3VtLnRlc3QuanMKaW1wb3J0IHsgc3VtIH0gZnJvbSAnLi9zdW0nOwoKdGVzdCgnYWRkcyAxICsgMiB0byBlcXVhbCAzJywgKCkgPT4gewogIGV4cGVjdChzdW0oMSwgMikpLnRvQmUoMyk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// sum.test.js
+import { sum } from './sum';
+
+test('adds 1 + 2 to equal 3', () =&gt; {
+  expect(sum(1, 2)).toBe(3);
+});</pre></div><div class='content'></div><h2>Running the Test</h2>
+<div class='content'><p>You can run your tests using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIHRlc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm test</pre></div><div class='content'></div><h1>Testing React Native Components</h1>
+<div class='content'></div><h2>Example Component</h2>
+<div class='content'><p>Consider a simple React Native component:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gR3JlZXRpbmcuanMKaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgVGV4dCB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7Cgpjb25zdCBHcmVldGluZyA9ICh7IG5hbWUgfSkgPT4gewogIHJldHVybiA8VGV4dD5IZWxsbywge25hbWV9ITwvVGV4dD47Cn07CgpleHBvcnQgZGVmYXVsdCBHcmVldGluZzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Greeting.js
+import React from 'react';
+import { Text } from 'react-native';
+
+const Greeting = ({ name }) =&gt; {
+  return &lt;Text&gt;Hello, {name}!&lt;/Text&gt;;
+};
+
+export default Greeting;</pre></div><div class='content'></div><h2>Writing a Test for the Component</h2>
+<div class='content'><p>To test this component, you can use <code>@testing-library/react-native</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gR3JlZXRpbmcudGVzdC5qcwppbXBvcnQgUmVhY3QgZnJvbSAncmVhY3QnOwppbXBvcnQgeyByZW5kZXIgfSBmcm9tICdAdGVzdGluZy1saWJyYXJ5L3JlYWN0LW5hdGl2ZSc7CmltcG9ydCBHcmVldGluZyBmcm9tICcuL0dyZWV0aW5nJzsKCnRlc3QoJ3JlbmRlcnMgdGhlIGNvcnJlY3QgZ3JlZXRpbmcgbWVzc2FnZScsICgpID0+IHsKICBjb25zdCB7IGdldEJ5VGV4dCB9ID0gcmVuZGVyKDxHcmVldGluZyBuYW1lPSJKb2huIiAvPik7CiAgZXhwZWN0KGdldEJ5VGV4dCgnSGVsbG8sIEpvaG4hJykpLnRvQmVUcnV0aHkoKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Greeting.test.js
+import React from 'react';
+import { render } from '@testing-library/react-native';
+import Greeting from './Greeting';
+
+test('renders the correct greeting message', () =&gt; {
+  const { getByText } = render(&lt;Greeting name=&quot;John&quot; /&gt;);
+  expect(getByText('Hello, John!')).toBeTruthy();
+});</pre></div><div class='content'></div><h1>Snapshot Testing</h1>
+<div class='content'><p>Snapshot testing is a feature of Jest that allows you to take a &quot;snapshot&quot; of your rendered component and compare it to a reference snapshot file stored alongside your tests.</p>
+</div><h2>Creating a Snapshot Test</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gR3JlZXRpbmcudGVzdC5qcwppbXBvcnQgUmVhY3QgZnJvbSAncmVhY3QnOwppbXBvcnQgcmVuZGVyZXIgZnJvbSAncmVhY3QtdGVzdC1yZW5kZXJlcic7CmltcG9ydCBHcmVldGluZyBmcm9tICcuL0dyZWV0aW5nJzsKCnRlc3QoJ3JlbmRlcnMgY29ycmVjdGx5JywgKCkgPT4gewogIGNvbnN0IHRyZWUgPSByZW5kZXJlci5jcmVhdGUoPEdyZWV0aW5nIG5hbWU9IkpvaG4iIC8+KS50b0pTT04oKTsKICBleHBlY3QodHJlZSkudG9NYXRjaFNuYXBzaG90KCk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Greeting.test.js
+import React from 'react';
+import renderer from 'react-test-renderer';
+import Greeting from './Greeting';
+
+test('renders correctly', () =&gt; {
+  const tree = renderer.create(&lt;Greeting name=&quot;John&quot; /&gt;).toJSON();
+  expect(tree).toMatchSnapshot();
+});</pre></div><div class='content'><p>When you run this test for the first time, Jest will create a snapshot file. On subsequent runs, Jest will compare the rendered output to the existing snapshot and alert you if there are differences.</p>
+</div><h1>Mocking in Jest</h1>
+<div class='content'><p>Mocking is useful for isolating the component or function you are testing by replacing dependencies with mock implementations.</p>
+</div><h2>Mocking a Module</h2>
+<div class='content'><p>Suppose you have a module that fetches data from an API:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBpLmpzCmV4cG9ydCBjb25zdCBmZXRjaERhdGEgPSBhc3luYyAoKSA9PiB7CiAgY29uc3QgcmVzcG9uc2UgPSBhd2FpdCBmZXRjaCgnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YScpOwogIHJldHVybiByZXNwb25zZS5qc29uKCk7Cn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// api.js
+export const fetchData = async () =&gt; {
+  const response = await fetch('https://api.example.com/data');
+  return response.json();
+};</pre></div><div class='content'><p>You can mock this module in your tests:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBpLnRlc3QuanMKaW1wb3J0IHsgZmV0Y2hEYXRhIH0gZnJvbSAnLi9hcGknOwoKamVzdC5tb2NrKCcuL2FwaScpOwoKdGVzdCgnZmV0Y2hEYXRhIHJldHVybnMgbW9jayBkYXRhJywgYXN5bmMgKCkgPT4gewogIGZldGNoRGF0YS5tb2NrUmVzb2x2ZWRWYWx1ZSh7IGRhdGE6ICdtb2NrIGRhdGEnIH0pOwogIGNvbnN0IGRhdGEgPSBhd2FpdCBmZXRjaERhdGEoKTsKICBleHBlY3QoZGF0YSkudG9FcXVhbCh7IGRhdGE6ICdtb2NrIGRhdGEnIH0pOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// api.test.js
+import { fetchData } from './api';
+
+jest.mock('./api');
+
+test('fetchData returns mock data', async () =&gt; {
+  fetchData.mockResolvedValue({ data: 'mock data' });
+  const data = await fetchData();
+  expect(data).toEqual({ data: 'mock data' });
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Unit testing with Jest in a React Native project is a powerful way to ensure your components and functions work as expected. By setting up Jest, writing tests for functions and components, using snapshot testing, and leveraging Jest's mocking capabilities, you can create a robust test suite that helps maintain the quality and reliability of your codebase.</p>
+<p>Remember, the key to effective unit testing is to write tests that are isolated, repeatable, and easy to understand. Happy testing!</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='debugging-react-native-apps'>&#x25C4;Debugging React Native Apps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Unit Testing with Jest</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='end-to-end-testing-detox'>End-to-End Testing with Detox &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

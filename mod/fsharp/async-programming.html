@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Async Programming in F#</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/async-programming" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/async-programming" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/async-programming" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fsharp/async-programming" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/async-programming" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='option-types-and-error-handling'>&#x25C4;Option Types and Error Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Async Programming in F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lazy-evaluation'>Lazy Evaluation &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Async programming is a powerful feature in F# that allows you to write non-blocking code, making your applications more responsive and efficient. This topic will guide you from the basics to advanced concepts of async programming in F#.</p>
+</div><h1>Introduction to Async Programming</h1>
+<div class='content'><p>Async programming is essential for performing tasks that involve waiting, such as I/O operations, without blocking the main thread. This is particularly useful in applications that require high responsiveness, such as web servers or GUI applications.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Asynchronous Workflows</strong>: F# provides a way to write asynchronous code using workflows.</li>
+<li><strong>Tasks and Promises</strong>: Understanding how tasks and promises work in F#.</li>
+<li><strong>Non-blocking I/O</strong>: Performing I/O operations without blocking the main thread.</li>
+</ul>
+</div><h1>Asynchronous Workflows</h1>
+<div class='content'><p>Asynchronous workflows in F# are created using the <code>async</code> keyword. This allows you to write code that can perform asynchronous operations in a sequential manner.</p>
+</div><h2>Basic Example</h2>
+<div class='content'><p>Here's a simple example of an asynchronous workflow:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0Kb3BlbiBTeXN0ZW0uVGhyZWFkaW5nLlRhc2tzCgpsZXQgYXN5bmNXb3JrZmxvdyA9IGFzeW5jIHsKICAgIHByaW50Zm4gIlN0YXJ0aW5nIGFzeW5jIHdvcmtmbG93Li4uIgogICAgZG8hIEFzeW5jLlNsZWVwIDEwMDAgLy8gQXN5bmNocm9ub3VzbHkgd2FpdCBmb3IgMSBzZWNvbmQKICAgIHByaW50Zm4gIkZpbmlzaGVkIGFzeW5jIHdvcmtmbG93ISIKfQoKQXN5bmMuU3RhcnQgYXN5bmNXb3JrZmxvdw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System
+open System.Threading.Tasks
+
+let asyncWorkflow = async {
+    printfn &quot;Starting async workflow...&quot;
+    do! Async.Sleep 1000 // Asynchronously wait for 1 second
+    printfn &quot;Finished async workflow!&quot;
+}
+
+Async.Start asyncWorkflow</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>async { ... }</code> defines an asynchronous workflow.</li>
+<li><code>do! Async.Sleep 1000</code> waits asynchronously for 1 second without blocking the main thread.</li>
+<li><code>Async.Start asyncWorkflow</code> starts the asynchronous workflow.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>async { ... }</code>: This block defines an asynchronous computation.</li>
+<li><code>do!</code>: This keyword is used to perform an asynchronous operation within the workflow.</li>
+<li><code>Async.Sleep</code>: This function asynchronously waits for the specified time.</li>
+</ul>
+</div><h1>Tasks and Promises</h1>
+<div class='content'><p>F# integrates well with .NET's <code>Task</code> type, which represents an asynchronous operation. You can convert between F# async workflows and .NET tasks.</p>
+</div><h2>Converting Async to Task</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGFzeW5jVG9UYXNrICh3b3JrZmxvdzogQXN5bmM8J1Q+KSA6IFRhc2s8J1Q+ID0KICAgIEFzeW5jLlN0YXJ0QXNUYXNrIHdvcmtmbG93"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let asyncToTask (workflow: Async&lt;'T&gt;) : Task&lt;'T&gt; =
+    Async.StartAsTask workflow</pre></div><div class='content'></div><h2>Converting Task to Async</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHRhc2tUb0FzeW5jICh0YXNrOiBUYXNrPCdUPikgOiBBc3luYzwnVD4gPQogICAgQXN5bmMuQXdhaXRUYXNrIHRhc2s="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let taskToAsync (task: Task&lt;'T&gt;) : Async&lt;'T&gt; =
+    Async.AwaitTask task</pre></div><div class='content'></div><h2>Example with Tasks</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGFzeW5jV29ya2Zsb3cgPSBhc3luYyB7CiAgICBwcmludGZuICJTdGFydGluZyBhc3luYyB3b3JrZmxvdy4uLiIKICAgIGRvISBBc3luYy5TbGVlcCAxMDAwCiAgICBwcmludGZuICJGaW5pc2hlZCBhc3luYyB3b3JrZmxvdyEiCn0KCmxldCB0YXNrID0gQXN5bmMuU3RhcnRBc1Rhc2sgYXN5bmNXb3JrZmxvdwp0YXNrLldhaXQoKSAvLyBXYWl0IGZvciB0aGUgdGFzayB0byBjb21wbGV0ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let asyncWorkflow = async {
+    printfn &quot;Starting async workflow...&quot;
+    do! Async.Sleep 1000
+    printfn &quot;Finished async workflow!&quot;
+}
+
+let task = Async.StartAsTask asyncWorkflow
+task.Wait() // Wait for the task to complete</pre></div><div class='content'></div><h1>Non-blocking I/O</h1>
+<div class='content'><p>Performing I/O operations asynchronously is crucial for building responsive applications. F# provides several functions to perform non-blocking I/O.</p>
+</div><h2>Example: Reading a File Asynchronously</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uSU8KCmxldCByZWFkRmlsZUFzeW5jIChwYXRoOiBzdHJpbmcpID0gYXN5bmMgewogICAgdXNlIHJlYWRlciA9IG5ldyBTdHJlYW1SZWFkZXIocGF0aCkKICAgIGxldCEgY29udGVudCA9IHJlYWRlci5SZWFkVG9FbmRBc3luYygpIHw+IEFzeW5jLkF3YWl0VGFzawogICAgcmV0dXJuIGNvbnRlbnQKfQoKbGV0IGZpbGVQYXRoID0gImV4YW1wbGUudHh0IgpsZXQgY29udGVudCA9IEFzeW5jLlJ1blN5bmNocm9ub3VzbHkgKHJlYWRGaWxlQXN5bmMgZmlsZVBhdGgpCnByaW50Zm4gIkZpbGUgY29udGVudDogJXMiIGNvbnRlbnQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.IO
+
+let readFileAsync (path: string) = async {
+    use reader = new StreamReader(path)
+    let! content = reader.ReadToEndAsync() |&gt; Async.AwaitTask
+    return content
+}
+
+let filePath = &quot;example.txt&quot;
+let content = Async.RunSynchronously (readFileAsync filePath)
+printfn &quot;File content: %s&quot; content</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>use reader = new StreamReader(path)</code>: Opens the file for reading.</li>
+<li><code>let! content = reader.ReadToEndAsync() |&gt; Async.AwaitTask</code>: Reads the file content asynchronously.</li>
+<li><code>Async.RunSynchronously</code>: Runs the asynchronous workflow synchronously and waits for the result.</li>
+</ul>
+</div><h1>Advanced Concepts</h1>
+<div class='content'></div><h2>Parallel Async Workflows</h2>
+<div class='content'><p>You can run multiple asynchronous workflows in parallel using <code>Async.Parallel</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHdvcmtmbG93MSA9IGFzeW5jIHsKICAgIGRvISBBc3luYy5TbGVlcCAxMDAwCiAgICByZXR1cm4gIldvcmtmbG93IDEiCn0KCmxldCB3b3JrZmxvdzIgPSBhc3luYyB7CiAgICBkbyEgQXN5bmMuU2xlZXAgMjAwMAogICAgcmV0dXJuICJXb3JrZmxvdyAyIgp9CgpsZXQgcGFyYWxsZWxXb3JrZmxvd3MgPSBbd29ya2Zsb3cxOyB3b3JrZmxvdzJdIHw+IEFzeW5jLlBhcmFsbGVsCgpsZXQgcmVzdWx0cyA9IEFzeW5jLlJ1blN5bmNocm9ub3VzbHkgcGFyYWxsZWxXb3JrZmxvd3MKcHJpbnRmbiAiUmVzdWx0czogJUEiIHJlc3VsdHM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let workflow1 = async {
+    do! Async.Sleep 1000
+    return &quot;Workflow 1&quot;
+}
+
+let workflow2 = async {
+    do! Async.Sleep 2000
+    return &quot;Workflow 2&quot;
+}
+
+let parallelWorkflows = [workflow1; workflow2] |&gt; Async.Parallel
+
+let results = Async.RunSynchronously parallelWorkflows
+printfn &quot;Results: %A&quot; results</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>Async.Parallel</code>: Runs multiple asynchronous workflows in parallel.</li>
+<li><code>Async.RunSynchronously</code>: Waits for all workflows to complete and returns their results.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Async programming in F# allows you to write efficient and responsive applications by performing non-blocking operations. Starting with basic asynchronous workflows, you can progress to more advanced concepts like parallel workflows and integrating with .NET tasks. By mastering these techniques, you can significantly improve the performance and responsiveness of your F# applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='option-types-and-error-handling'>&#x25C4;Option Types and Error Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Async Programming in F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lazy-evaluation'>Lazy Evaluation &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

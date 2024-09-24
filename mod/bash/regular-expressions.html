@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regular Expressions in Bash</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/regular-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/regular-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/regular-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bash/regular-expressions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/regular-expressions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='arrays-in-bash'>&#x25C4;Arrays in Bash</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Regular Expressions in Bash</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-and-debugging'>Error Handling and Debugging &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Regular Expressions</h1>
+<div class='content'><p>Regular expressions (regex) are sequences of characters that define a search pattern. They are used for string matching within texts and are incredibly powerful for text processing tasks. In Bash, regular expressions are commonly used with commands like <code>grep</code>, <code>sed</code>, and <code>awk</code>.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Literal Characters</strong>: Characters that match themselves.</li>
+<li><strong>Metacharacters</strong>: Special characters that have a unique meaning in regex (e.g., <code>.</code> <code>*</code> <code>^</code> <code>$</code>).</li>
+<li><strong>Character Classes</strong>: Sets of characters enclosed in square brackets <code>[]</code> that match any single character within the set.</li>
+<li><strong>Quantifiers</strong>: Symbols that specify how many times a character or group should be matched (e.g., <code>*</code> <code>+</code> <code>?</code> <code>{n}</code> <code>{n,}</code> <code>{n,m}</code>).</li>
+<li><strong>Anchors</strong>: Characters that assert a position in the string (e.g., <code>^</code> for the start, <code>$</code> for the end).</li>
+</ul>
+</div><h1>Basic Regular Expressions</h1>
+<h2>Literal Characters</h2>
+<div class='content'><p>Literal characters match themselves exactly. For example, the regex <code>cat</code> matches the string &quot;cat&quot;.</p>
+</div><h2>Metacharacters</h2>
+<div class='content'><ul>
+<li><code>.</code>: Matches any single character except a newline.</li>
+<li><code>*</code>: Matches 0 or more of the preceding element.</li>
+<li><code>^</code>: Matches the start of a line.</li>
+<li><code>$</code>: Matches the end of a line.</li>
+</ul>
+</div><h2>Examples</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdjYXQnCmdyZXAgJ2NhdCcgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIHN0YXJ0aW5nIHdpdGggJ2NhdCcKZ3JlcCAnXmNhdCcgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIGVuZGluZyB3aXRoICdjYXQnCmdyZXAgJ2NhdCQnIGZpbGVuYW1lLnR4dAoKIyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdjLnQnICh3aGVyZSAuIGNhbiBiZSBhbnkgY2hhcmFjdGVyKQpncmVwICdjLnQnIGZpbGVuYW1lLnR4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Match any line containing 'cat'
+grep 'cat' filename.txt
+
+# Match any line starting with 'cat'
+grep '^cat' filename.txt
+
+# Match any line ending with 'cat'
+grep 'cat$' filename.txt
+
+# Match any line containing 'c.t' (where . can be any character)
+grep 'c.t' filename.txt</pre></div><div class='content'></div><h1>Character Classes</h1>
+<div class='content'><p>Character classes allow you to match any one of a set of characters.</p>
+</div><h2>Examples</h2>
+<div class='content'><ul>
+<li><code>[abc]</code>: Matches any one of 'a', 'b', or 'c'.</li>
+<li><code>[a-z]</code>: Matches any lowercase letter.</li>
+<li><code>[A-Z]</code>: Matches any uppercase letter.</li>
+<li><code>[0-9]</code>: Matches any digit.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nIGEgZGlnaXQKZ3JlcCAnWzAtOV0nIGZpbGVuYW1lLnR4dAoKIyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nIGEgbG93ZXJjYXNlIGxldHRlcgpncmVwICdbYS16XScgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIGNvbnRhaW5pbmcgZWl0aGVyICdhJywgJ2InLCBvciAnYycKZ3JlcCAnW2FiY10nIGZpbGVuYW1lLnR4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Match any line containing a digit
+grep '[0-9]' filename.txt
+
+# Match any line containing a lowercase letter
+grep '[a-z]' filename.txt
+
+# Match any line containing either 'a', 'b', or 'c'
+grep '[abc]' filename.txt</pre></div><div class='content'></div><h1>Quantifiers</h1>
+<div class='content'><p>Quantifiers specify the number of occurrences of a character or group.</p>
+</div><h2>Examples</h2>
+<div class='content'><ul>
+<li><code>*</code>: 0 or more times.</li>
+<li><code>+</code>: 1 or more times.</li>
+<li><code>?</code>: 0 or 1 time.</li>
+<li><code>{n}</code>: Exactly n times.</li>
+<li><code>{n,}</code>: n or more times.</li>
+<li><code>{n,m}</code>: Between n and m times.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdhJyBmb2xsb3dlZCBieSB6ZXJvIG9yIG1vcmUgJ2IncwpncmVwICdhYionIGZpbGVuYW1lLnR4dAoKIyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdhJyBmb2xsb3dlZCBieSBvbmUgb3IgbW9yZSAnYidzCmdyZXAgJ2FiKycgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIGNvbnRhaW5pbmcgJ2EnIGZvbGxvd2VkIGJ5IHplcm8gb3Igb25lICdiJwpncmVwICdhYj8nIGZpbGVuYW1lLnR4dAoKIyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdhJyBmb2xsb3dlZCBieSBleGFjdGx5IDMgJ2IncwpncmVwICdhYnszfScgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIGNvbnRhaW5pbmcgJ2EnIGZvbGxvd2VkIGJ5IDIgb3IgbW9yZSAnYidzCmdyZXAgJ2FiezIsfScgZmlsZW5hbWUudHh0CgojIE1hdGNoIGFueSBsaW5lIGNvbnRhaW5pbmcgJ2EnIGZvbGxvd2VkIGJ5IGJldHdlZW4gMiBhbmQgNCAnYidzCmdyZXAgJ2FiezIsNH0nIGZpbGVuYW1lLnR4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Match any line containing 'a' followed by zero or more 'b's
+grep 'ab*' filename.txt
+
+# Match any line containing 'a' followed by one or more 'b's
+grep 'ab+' filename.txt
+
+# Match any line containing 'a' followed by zero or one 'b'
+grep 'ab?' filename.txt
+
+# Match any line containing 'a' followed by exactly 3 'b's
+grep 'ab{3}' filename.txt
+
+# Match any line containing 'a' followed by 2 or more 'b's
+grep 'ab{2,}' filename.txt
+
+# Match any line containing 'a' followed by between 2 and 4 'b's
+grep 'ab{2,4}' filename.txt</pre></div><div class='content'></div><h1>Advanced Regular Expressions</h1>
+<div class='content'><p>Advanced regular expressions (AREs) include additional features like grouping and alternation.</p>
+</div><h2>Grouping and Alternation</h2>
+<div class='content'><ul>
+<li><strong>Grouping</strong>: Parentheses <code>()</code> are used to group parts of the regex.</li>
+<li><strong>Alternation</strong>: The pipe <code>|</code> is used to specify alternatives.</li>
+</ul>
+</div><h2>Examples</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdjYXQnIG9yICdkb2cnCmdyZXAgJ2NhdHxkb2cnIGZpbGVuYW1lLnR4dAoKIyBNYXRjaCBhbnkgbGluZSBjb250YWluaW5nICdjYXQnIGZvbGxvd2VkIGJ5ICdkb2cnCmdyZXAgJ2NhdChkb2cpJyBmaWxlbmFtZS50eHQKCiMgTWF0Y2ggYW55IGxpbmUgY29udGFpbmluZyAnY2F0JyBmb2xsb3dlZCBieSAnZG9nJyBvciAnbW91c2UnCmdyZXAgJ2NhdChkb2d8bW91c2UpJyBmaWxlbmFtZS50eHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Match any line containing 'cat' or 'dog'
+grep 'cat|dog' filename.txt
+
+# Match any line containing 'cat' followed by 'dog'
+grep 'cat(dog)' filename.txt
+
+# Match any line containing 'cat' followed by 'dog' or 'mouse'
+grep 'cat(dog|mouse)' filename.txt</pre></div><div class='content'></div><h1>Practical Applications</h1>
+<h2>Using `grep`</h2>
+<div class='content'><p><code>grep</code> is a command-line utility for searching plain-text data for lines that match a regular expression.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZWFyY2ggZm9yIGxpbmVzIGNvbnRhaW5pbmcgJ2Vycm9yJyBpbiBhIGxvZyBmaWxlCmdyZXAgJ2Vycm9yJyAvdmFyL2xvZy9zeXNsb2cKCiMgU2VhcmNoIGZvciBsaW5lcyBzdGFydGluZyB3aXRoICdlcnJvcicKZ3JlcCAnXmVycm9yJyAvdmFyL2xvZy9zeXNsb2cKCiMgU2VhcmNoIGZvciBsaW5lcyBlbmRpbmcgd2l0aCAnZXJyb3InCmdyZXAgJ2Vycm9yJCcgL3Zhci9sb2cvc3lzbG9n"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Search for lines containing 'error' in a log file
+grep 'error' /var/log/syslog
+
+# Search for lines starting with 'error'
+grep '^error' /var/log/syslog
+
+# Search for lines ending with 'error'
+grep 'error$' /var/log/syslog</pre></div><div class='content'></div><h2>Using `sed`</h2>
+<div class='content'><p><code>sed</code> is a stream editor for filtering and transforming text.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZXBsYWNlICdmb28nIHdpdGggJ2JhcicgaW4gYSBmaWxlCnNlZCAncy9mb28vYmFyL2cnIGZpbGVuYW1lLnR4dAoKIyBEZWxldGUgbGluZXMgY29udGFpbmluZyAnZXJyb3InCnNlZCAnL2Vycm9yL2QnIGZpbGVuYW1lLnR4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Replace 'foo' with 'bar' in a file
+sed 's/foo/bar/g' filename.txt
+
+# Delete lines containing 'error'
+sed '/error/d' filename.txt</pre></div><div class='content'></div><h2>Using `awk`</h2>
+<div class='content'><p><code>awk</code> is a programming language for pattern scanning and processing.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcmludCBsaW5lcyBjb250YWluaW5nICdlcnJvcicKYXdrICcvZXJyb3IvJyBmaWxlbmFtZS50eHQKCiMgUHJpbnQgdGhlIHNlY29uZCBjb2x1bW4gb2YgbGluZXMgY29udGFpbmluZyAnZXJyb3InCmF3ayAnL2Vycm9yLyB7cHJpbnQgJDJ9JyBmaWxlbmFtZS50eHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Print lines containing 'error'
+awk '/error/' filename.txt
+
+# Print the second column of lines containing 'error'
+awk '/error/ {print $2}' filename.txt</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Regular expressions are a powerful tool for text processing in Bash. By mastering basic and advanced regex concepts, you can efficiently search, replace, and manipulate text data. Practice using <code>grep</code>, <code>sed</code>, and <code>awk</code> with regular expressions to enhance your text processing skills in Bash.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='arrays-in-bash'>&#x25C4;Arrays in Bash</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Regular Expressions in Bash</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-and-debugging'>Error Handling and Debugging &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

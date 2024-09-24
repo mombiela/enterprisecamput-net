@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/django/security-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/django/security-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-organization-and-best-practices'>&#x25C4;Code Organization and Best Practices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-querying-techniques'>Advanced Querying Techniques &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Security is a critical aspect of web development, and Django provides several built-in features to help developers create secure applications. This section will cover best practices for securing your Django application, from beginner to advanced levels.</p>
+</div><h1>Basic Security Practices</h1>
+<div class='content'></div><h2>Use the Latest Version of Django</h2>
+<div class='content'><ul>
+<li>Always use the latest stable release of Django to ensure you have the latest security patches and features.</li>
+<li>Regularly check the Django release notes for any security updates.</li>
+</ul>
+</div><h2>Secure Settings</h2>
+<div class='content'><ul>
+<li><strong>SECRET_KEY</strong>: Keep your <code>SECRET_KEY</code> secret and never expose it in your source code repository.
+<pre><code class="language-python">import os
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'your-default-secret-key')
+</code></pre>
+</li>
+<li><strong>DEBUG</strong>: Set <code>DEBUG</code> to <code>False</code> in production to avoid exposing sensitive information.
+<pre><code class="language-python">DEBUG = False
+</code></pre>
+</li>
+</ul>
+</div><h2>Allowed Hosts</h2>
+<div class='content'><ul>
+<li>Define <code>ALLOWED_HOSTS</code> to prevent HTTP Host header attacks.
+<pre><code class="language-python">ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']
+</code></pre>
+</li>
+</ul>
+</div><h2>Secure Database Configuration</h2>
+<div class='content'><ul>
+<li>Use environment variables to store database credentials.
+<pre><code class="language-python">DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Intermediate Security Practices</h1>
+<div class='content'></div><h2>HTTPS</h2>
+<div class='content'><ul>
+<li>Use HTTPS to encrypt data in transit.</li>
+<li>Set <code>SECURE_SSL_REDIRECT</code> to <code>True</code> to redirect all HTTP requests to HTTPS.
+<pre><code class="language-python">SECURE_SSL_REDIRECT = True
+</code></pre>
+</li>
+</ul>
+</div><h2>Content Security Policy (CSP)</h2>
+<div class='content'><ul>
+<li>Implement CSP to prevent Cross-Site Scripting (XSS) attacks.
+<pre><code class="language-python">CSP_DEFAULT_SRC = (&quot;'self'&quot;,)
+CSP_STYLE_SRC = (&quot;'self'&quot;, 'https://fonts.googleapis.com')
+CSP_SCRIPT_SRC = (&quot;'self'&quot;, 'https://ajax.googleapis.com')
+</code></pre>
+</li>
+</ul>
+</div><h2>Cross-Site Request Forgery (CSRF) Protection</h2>
+<div class='content'><ul>
+<li>Django has built-in CSRF protection enabled by default. Ensure you include <code>{% csrf_token %}</code> in your forms.
+<pre><code class="language-html">&lt;form method=&quot;post&quot;&gt;
+    {% csrf_token %}
+    &lt;!-- form fields --&gt;
+&lt;/form&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>Secure Cookies</h2>
+<div class='content'><ul>
+<li>Set <code>SESSION_COOKIE_SECURE</code> and <code>CSRF_COOKIE_SECURE</code> to <code>True</code> to ensure cookies are only sent over HTTPS.
+<pre><code class="language-python">SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Security Practices</h1>
+<div class='content'></div><h2>User Authentication and Authorization</h2>
+<div class='content'><ul>
+<li>Use Django's built-in authentication system and consider using third-party packages like <code>django-allauth</code> for more advanced features.</li>
+<li>Implement Two-Factor Authentication (2FA) for added security.</li>
+</ul>
+</div><h2>Rate Limiting</h2>
+<div class='content'><ul>
+<li>Implement rate limiting to protect against brute force attacks.</li>
+<li>Use third-party packages like <code>django-ratelimit</code>.</li>
+</ul>
+</div><h2>Security Headers</h2>
+<div class='content'><ul>
+<li>Add security headers to your responses.
+<pre><code class="language-python">SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+</code></pre>
+</li>
+</ul>
+</div><h2>Regular Security Audits</h2>
+<div class='content'><ul>
+<li>Regularly audit your code and dependencies for security vulnerabilities.</li>
+<li>Use tools like <code>Bandit</code> for static code analysis and <code>Safety</code> to check for known vulnerabilities in dependencies.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Securing a Django application requires a multi-layered approach, from basic settings to advanced practices. By following these best practices, you can significantly reduce the risk of security vulnerabilities in your application. Always stay updated with the latest security trends and continuously monitor and audit your application for potential threats.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-organization-and-best-practices'>&#x25C4;Code Organization and Best Practices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-querying-techniques'>Advanced Querying Techniques &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

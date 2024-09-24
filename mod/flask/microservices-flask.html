@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microservices with Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/microservices-flask" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/microservices-flask" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/microservices-flask" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/microservices-flask" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/microservices-flask" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='scaling-flask-applications'>&#x25C4;Scaling Flask Applications</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Microservices with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Microservices</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Microservices is an architectural style that structures an application as a collection of loosely coupled services.</li>
+<li><strong>Benefits</strong>:
+<ul>
+<li>Scalability</li>
+<li>Flexibility</li>
+<li>Independent deployment</li>
+<li>Improved fault isolation</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up Flask for Microservices</h1>
+<div class='content'><ul>
+<li><strong>Installation</strong>:
+<pre><code class="language-bash">pip install Flask
+</code></pre>
+</li>
+<li><strong>Basic Flask Application</strong>:
+<pre><code class="language-python">from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return &quot;Hello, Microservices!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+</ul>
+</div><h1>Designing Microservices</h1>
+<div class='content'><ul>
+<li><strong>Service Boundaries</strong>: Define clear boundaries for each microservice.</li>
+<li><strong>Communication</strong>: Use RESTful APIs for communication between services.</li>
+<li><strong>Data Management</strong>: Each microservice should manage its own database.</li>
+</ul>
+</div><h1>Building a Simple Microservice</h1>
+<div class='content'><ul>
+<li><strong>Creating a User Service</strong>:
+<pre><code class="language-python">from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+users = []
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    return jsonify(users)
+
+@app.route('/users', methods=['POST'])
+def add_user():
+    user = request.json
+    users.append(user)
+    return jsonify(user), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>@app.route('/users', methods=['GET'])</code>: Defines a route to get all users.</li>
+<li><code>@app.route('/users', methods=['POST'])</code>: Defines a route to add a new user.</li>
+<li><code>request.json</code>: Retrieves JSON data from the request body.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Inter-Service Communication</h1>
+<div class='content'><ul>
+<li><strong>RESTful APIs</strong>: Use HTTP methods (GET, POST, PUT, DELETE) for communication.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-python">import requests
+
+response = requests.get('http://user-service/users')
+users = response.json()
+print(users)
+</code></pre>
+</li>
+</ul>
+</div><h1>Error Handling and Logging</h1>
+<div class='content'><ul>
+<li><strong>Error Handling</strong>:
+<pre><code class="language-python">@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'error': 'Not found'}), 404
+</code></pre>
+</li>
+<li><strong>Logging</strong>:
+<pre><code class="language-python">import logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.route('/users', methods=['POST'])
+def add_user():
+    user = request.json
+    users.append(user)
+    logger.info(f'User added: {user}')
+    return jsonify(user), 201
+</code></pre>
+</li>
+</ul>
+</div><h1>Testing Microservices</h1>
+<div class='content'><ul>
+<li><strong>Unit Testing</strong>:
+<pre><code class="language-python">import unittest
+
+class UserServiceTest(unittest.TestCase):
+    def test_add_user(self):
+        with app.test_client() as client:
+            response = client.post('/users', json={'name': 'John'})
+            self.assertEqual(response.status_code, 201)
+            self.assertEqual(response.json, {'name': 'John'})
+
+if __name__ == '__main__':
+    unittest.main()
+</code></pre>
+</li>
+<li><strong>Integration Testing</strong>: Test the interaction between multiple services.</li>
+</ul>
+</div><h1>Deployment Strategies</h1>
+<div class='content'><ul>
+<li><strong>Docker</strong>: Containerize your microservices.
+<pre><code class="language-dockerfile">FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+</li>
+<li><strong>Kubernetes</strong>: Orchestrate your microservices.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Microservices with Flask allow for scalable, flexible, and independently deployable services. By understanding the basics of Flask, designing clear service boundaries, handling inter-service communication, and implementing proper error handling and logging, you can build robust microservices. Testing and deployment strategies further ensure the reliability and scalability of your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='scaling-flask-applications'>&#x25C4;Scaling Flask Applications</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Microservices with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

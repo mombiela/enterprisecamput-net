@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Dashboard</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/kubernetes-dashboard" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/kubernetes-dashboard" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/kubernetes-dashboard" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/kubernetes-dashboard" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/kubernetes-dashboard" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cost-management'>&#x25C4;Cost Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Kubernetes Dashboard</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='kustomize'>Kustomize &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Kubernetes Dashboard</h1>
+<div class='content'><p>The Kubernetes Dashboard is a web-based user interface that allows you to manage and monitor your Kubernetes clusters. It provides a visual representation of the cluster's resources and workloads, making it easier to understand and manage your applications.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Cluster Management</strong>: View and manage cluster resources such as nodes, namespaces, and workloads.</li>
+<li><strong>Workload Management</strong>: Deploy, scale, and troubleshoot applications.</li>
+<li><strong>Resource Monitoring</strong>: Monitor resource usage and health of the cluster.</li>
+<li><strong>User Management</strong>: Manage access control and permissions.</li>
+</ul>
+</div><h1>Installing Kubernetes Dashboard</h1>
+<div class='content'><p>To use the Kubernetes Dashboard, you need to install it on your cluster. Follow these steps to install the Dashboard.</p>
+</div><h2>Step-by-Step Installation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy the Dashboard</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Service Account</strong>:</p>
+<pre><code class="language-bash">kubectl create serviceaccount dashboard-admin-sa
+kubectl create clusterrolebinding dashboard-admin-sa --clusterrole=cluster-admin --serviceaccount=default:dashboard-admin-sa
+</code></pre>
+</li>
+<li>
+<p><strong>Obtain the Bearer Token</strong>:</p>
+<pre><code class="language-bash">kubectl get secret $(kubectl get serviceaccount dashboard-admin-sa -o jsonpath=&quot;{.secrets[0].name}&quot;) -o jsonpath=&quot;{.data.token}&quot; | base64 --decode
+</code></pre>
+</li>
+<li>
+<p><strong>Access the Dashboard</strong>:</p>
+<pre><code class="language-bash">kubectl proxy
+</code></pre>
+<p>Open the following URL in your web browser:</p>
+<pre><code>http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+</code></pre>
+</li>
+</ol>
+</div><h1>Using Kubernetes Dashboard</h1>
+<div class='content'><p>Once the Dashboard is installed and running, you can start using it to manage your cluster.</p>
+</div><h2>Navigating the Dashboard</h2>
+<div class='content'><ul>
+<li><strong>Overview</strong>: Provides a summary of the cluster's state, including nodes, namespaces, and workloads.</li>
+<li><strong>Workloads</strong>: Manage deployments, pods, replica sets, and jobs.</li>
+<li><strong>Services and Ingress</strong>: Manage services, ingress resources, and network policies.</li>
+<li><strong>Config and Storage</strong>: Manage ConfigMaps, secrets, persistent volume claims, and storage classes.</li>
+<li><strong>Cluster</strong>: View and manage nodes, namespaces, and roles.</li>
+<li><strong>Settings</strong>: Configure the Dashboard settings and manage user access.</li>
+</ul>
+</div><h2>Example: Deploying an Application</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Deployment</strong>:</p>
+<ul>
+<li>Navigate to the &quot;Workloads&quot; section.</li>
+<li>Click on &quot;Deployments&quot; and then &quot;Create&quot;.</li>
+<li>Fill in the necessary details such as the application name, container image, and number of replicas.</li>
+<li>Click &quot;Deploy&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Expose the Deployment</strong>:</p>
+<ul>
+<li>Navigate to the &quot;Services and Ingress&quot; section.</li>
+<li>Click on &quot;Services&quot; and then &quot;Create&quot;.</li>
+<li>Select the deployment you created and configure the service type (e.g., ClusterIP, NodePort, LoadBalancer).</li>
+<li>Click &quot;Create&quot;.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Monitoring Resources</h2>
+<div class='content'><ul>
+<li><strong>Resource Usage</strong>: View CPU and memory usage for nodes and pods.</li>
+<li><strong>Logs</strong>: Access logs for individual pods to troubleshoot issues.</li>
+<li><strong>Events</strong>: View events related to the cluster's resources to understand what actions have been taken.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>The Kubernetes Dashboard is a powerful tool for managing and monitoring your Kubernetes clusters. It provides a user-friendly interface to deploy applications, monitor resources, and troubleshoot issues. By following the installation steps and exploring the Dashboard's features, you can effectively manage your Kubernetes environment.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li>The Kubernetes Dashboard is a web-based UI for managing Kubernetes clusters.</li>
+<li>It allows you to deploy applications, monitor resources, and manage user access.</li>
+<li>Installation involves deploying the Dashboard, creating a service account, and accessing the Dashboard via a proxy.</li>
+<li>The Dashboard provides various sections for managing workloads, services, configurations, and the cluster itself.</li>
+</ul>
+<p>By mastering the Kubernetes Dashboard, you can enhance your ability to manage and optimize your Kubernetes clusters efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cost-management'>&#x25C4;Cost Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Kubernetes Dashboard</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='kustomize'>Kustomize &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

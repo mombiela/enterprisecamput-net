@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborating with Terraform</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/collaborating-with-terraform" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/collaborating-with-terraform" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/collaborating-with-terraform" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/collaborating-with-terraform" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/collaborating-with-terraform" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='version-control-with-terraform'>&#x25C4;Version Control with Terraform</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Collaborating with Terraform</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-terraform-cloud'>Introduction to Terraform Cloud &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Collaborating effectively with Terraform is crucial for teams working on infrastructure as code (IaC). This section will cover best practices, tools, and workflows that enable teams to work together efficiently.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Version Control Systems (VCS)</strong>: Using Git or other VCS to manage Terraform configurations.</li>
+<li><strong>Remote State Management</strong>: Storing Terraform state files in a remote backend to enable collaboration.</li>
+<li><strong>Terraform Workspaces</strong>: Managing multiple environments (e.g., dev, staging, production) within the same configuration.</li>
+<li><strong>Modules</strong>: Creating reusable pieces of infrastructure code.</li>
+<li><strong>CI/CD Integration</strong>: Automating Terraform workflows using Continuous Integration and Continuous Deployment pipelines.</li>
+</ul>
+</div><h1>Version Control Systems (VCS)</h1>
+<div class='content'><p>Using a VCS like Git is essential for managing Terraform configurations. It allows multiple team members to work on the same codebase, track changes, and collaborate effectively.</p>
+</div><h2>Example: Basic Git Workflow</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Clone the repository</strong>:</p>
+<pre><code class="language-sh">git clone https://github.com/your-repo/terraform-config.git
+cd terraform-config
+</code></pre>
+</li>
+<li>
+<p><strong>Create a new branch</strong>:</p>
+<pre><code class="language-sh">git checkout -b feature/new-infrastructure
+</code></pre>
+</li>
+<li>
+<p><strong>Make changes and commit</strong>:</p>
+<pre><code class="language-sh"># Edit your Terraform files
+git add .
+git commit -m &quot;Add new infrastructure component&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Push changes and create a pull request</strong>:</p>
+<pre><code class="language-sh">git push origin feature/new-infrastructure
+</code></pre>
+<ul>
+<li>Open a pull request on GitHub for code review and collaboration.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Remote State Management</h1>
+<div class='content'><p>Storing the Terraform state file remotely allows multiple team members to access and update the state file concurrently.</p>
+</div><h2>Example: Configuring Remote State with AWS S3</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create an S3 bucket</strong>:</p>
+<pre><code class="language-sh">aws s3api create-bucket --bucket my-terraform-state --region us-west-2
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the backend in <code>main.tf</code></strong>:</p>
+<pre><code class="language-hcl">terraform {
+  backend &quot;s3&quot; {
+    bucket = &quot;my-terraform-state&quot;
+    key    = &quot;path/to/my/key&quot;
+    region = &quot;us-west-2&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize the backend</strong>:</p>
+<pre><code class="language-sh">terraform init
+</code></pre>
+</li>
+</ol>
+</div><h1>Terraform Workspaces</h1>
+<div class='content'><p>Workspaces allow you to manage multiple environments within the same Terraform configuration.</p>
+</div><h2>Example: Creating and Using Workspaces</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new workspace</strong>:</p>
+<pre><code class="language-sh">terraform workspace new dev
+</code></pre>
+</li>
+<li>
+<p><strong>Switch to an existing workspace</strong>:</p>
+<pre><code class="language-sh">terraform workspace select dev
+</code></pre>
+</li>
+<li>
+<p><strong>List all workspaces</strong>:</p>
+<pre><code class="language-sh">terraform workspace list
+</code></pre>
+</li>
+</ol>
+</div><h1>Modules</h1>
+<div class='content'><p>Modules are reusable pieces of Terraform code that can be shared across projects and teams.</p>
+</div><h2>Example: Creating and Using a Module</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a module directory structure</strong>:</p>
+<pre><code>modules/
+  └── vpc/
+      ├── main.tf
+      ├── variables.tf
+      └── outputs.tf
+</code></pre>
+</li>
+<li>
+<p><strong>Define the module in <code>main.tf</code></strong>:</p>
+<pre><code class="language-hcl">module &quot;vpc&quot; {
+  source = &quot;./modules/vpc&quot;
+  cidr_block = &quot;10.0.0.0/16&quot;
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>CI/CD Integration</h1>
+<div class='content'><p>Integrating Terraform with CI/CD pipelines ensures that infrastructure changes are automatically tested and deployed.</p>
+</div><h2>Example: Basic CI/CD Pipeline with GitHub Actions</h2>
+<div class='content'><ol>
+<li><strong>Create a <code>.github/workflows/terraform.yml</code> file</strong>:
+<pre><code class="language-yaml">name: 'Terraform'
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        run: terraform apply -auto-approve
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Collaborating with Terraform involves using version control systems, managing remote state, utilizing workspaces, creating reusable modules, and integrating with CI/CD pipelines. By following these best practices, teams can work together more effectively, ensuring that infrastructure changes are managed and deployed consistently.</p>
+<p>By mastering these collaboration techniques, you can ensure that your team can work together seamlessly, reduce errors, and maintain a high level of productivity in managing your infrastructure as code.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='version-control-with-terraform'>&#x25C4;Version Control with Terraform</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Collaborating with Terraform</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-terraform-cloud'>Introduction to Terraform Cloud &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

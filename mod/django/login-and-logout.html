@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Logout in Django</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/login-and-logout" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/login-and-logout" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/login-and-logout" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/django/login-and-logout" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/django/login-and-logout" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-authentication-basics'>&#x25C4;User Authentication Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Login and Logout in Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-registration'>User Registration &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will cover how to implement user login and logout functionality in a Django application. This includes setting up the necessary views, forms, and templates, as well as configuring Django's built-in authentication system.</p>
+</div><h1>Setting Up Authentication</h1>
+<div class='content'></div><h2>Installing Django</h2>
+<div class='content'><p>Before we start, ensure you have Django installed. If not, you can install it using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgZGphbmdv"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install django</pre></div><div class='content'></div><h2>Creating a Django Project and App</h2>
+<div class='content'><p>First, create a new Django project and an app within it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGphbmdvLWFkbWluIHN0YXJ0cHJvamVjdCBteXByb2plY3QKY2QgbXlwcm9qZWN0CmRqYW5nby1hZG1pbiBzdGFydGFwcCBteWFwcA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>django-admin startproject myproject
+cd myproject
+django-admin startapp myapp</pre></div><div class='content'></div><h2>Configuring the Project</h2>
+<div class='content'><p>Add the new app to the <code>INSTALLED_APPS</code> list in <code>myproject/settings.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TVEFMTEVEX0FQUFMgPSBbCiAgICAuLi4KICAgICdteWFwcCcsCiAgICAnZGphbmdvLmNvbnRyaWIuYXV0aCcsCiAgICAnZGphbmdvLmNvbnRyaWIuY29udGVudHR5cGVzJywKICAgIC4uLgpd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSTALLED_APPS = [
+    ...
+    'myapp',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    ...
+]</pre></div><div class='content'></div><h1>Implementing Login</h1>
+<div class='content'></div><h2>Creating the Login View</h2>
+<div class='content'><p>Create a view for handling user login in <code>myapp/views.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkamFuZ28uc2hvcnRjdXRzIGltcG9ydCByZW5kZXIsIHJlZGlyZWN0CmZyb20gZGphbmdvLmNvbnRyaWIuYXV0aCBpbXBvcnQgYXV0aGVudGljYXRlLCBsb2dpbgpmcm9tIGRqYW5nby5jb250cmliIGltcG9ydCBtZXNzYWdlcwoKZGVmIGxvZ2luX3ZpZXcocmVxdWVzdCk6CiAgICBpZiByZXF1ZXN0Lm1ldGhvZCA9PSAnUE9TVCc6CiAgICAgICAgdXNlcm5hbWUgPSByZXF1ZXN0LlBPU1RbJ3VzZXJuYW1lJ10KICAgICAgICBwYXNzd29yZCA9IHJlcXVlc3QuUE9TVFsncGFzc3dvcmQnXQogICAgICAgIHVzZXIgPSBhdXRoZW50aWNhdGUocmVxdWVzdCwgdXNlcm5hbWU9dXNlcm5hbWUsIHBhc3N3b3JkPXBhc3N3b3JkKQogICAgICAgIGlmIHVzZXIgaXMgbm90IE5vbmU6CiAgICAgICAgICAgIGxvZ2luKHJlcXVlc3QsIHVzZXIpCiAgICAgICAgICAgIHJldHVybiByZWRpcmVjdCgnaG9tZScpCiAgICAgICAgZWxzZToKICAgICAgICAgICAgbWVzc2FnZXMuZXJyb3IocmVxdWVzdCwgJ0ludmFsaWQgdXNlcm5hbWUgb3IgcGFzc3dvcmQnKQogICAgcmV0dXJuIHJlbmRlcihyZXF1ZXN0LCAnbXlhcHAvbG9naW4uaHRtbCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Invalid username or password')
+    return render(request, 'myapp/login.html')</pre></div><div class='content'></div><h2>Creating the Login Template</h2>
+<div class='content'><p>Create a template for the login page in <code>myapp/templates/myapp/login.html</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT5Mb2dpbjwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDI+TG9naW48L2gyPgogICAgeyUgaWYgbWVzc2FnZXMgJX0KICAgICAgICA8dWw+CiAgICAgICAgICAgIHslIGZvciBtZXNzYWdlIGluIG1lc3NhZ2VzICV9CiAgICAgICAgICAgICAgICA8bGk+e3sgbWVzc2FnZSB9fTwvbGk+CiAgICAgICAgICAgIHslIGVuZGZvciAlfQogICAgICAgIDwvdWw+CiAgICB7JSBlbmRpZiAlfQogICAgPGZvcm0gbWV0aG9kPSJwb3N0Ij4KICAgICAgICB7JSBjc3JmX3Rva2VuICV9CiAgICAgICAgPGxhYmVsIGZvcj0idXNlcm5hbWUiPlVzZXJuYW1lOjwvbGFiZWw+CiAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIG5hbWU9InVzZXJuYW1lIiBpZD0idXNlcm5hbWUiIHJlcXVpcmVkPjxicj4KICAgICAgICA8bGFiZWwgZm9yPSJwYXNzd29yZCI+UGFzc3dvcmQ6PC9sYWJlbD4KICAgICAgICA8aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiBpZD0icGFzc3dvcmQiIHJlcXVpcmVkPjxicj4KICAgICAgICA8YnV0dG9uIHR5cGU9InN1Ym1pdCI+TG9naW48L2J1dHRvbj4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Login&lt;/h2&gt;
+    {% if messages %}
+        &lt;ul&gt;
+            {% for message in messages %}
+                &lt;li&gt;{{ message }}&lt;/li&gt;
+            {% endfor %}
+        &lt;/ul&gt;
+    {% endif %}
+    &lt;form method=&quot;post&quot;&gt;
+        {% csrf_token %}
+        &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; name=&quot;username&quot; id=&quot;username&quot; required&gt;&lt;br&gt;
+        &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+        &lt;input type=&quot;password&quot; name=&quot;password&quot; id=&quot;password&quot; required&gt;&lt;br&gt;
+        &lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Updating URLs</h2>
+<div class='content'><p>Add a URL pattern for the login view in <code>myapp/urls.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkamFuZ28udXJscyBpbXBvcnQgcGF0aApmcm9tIC52aWV3cyBpbXBvcnQgbG9naW5fdmlldwoKdXJscGF0dGVybnMgPSBbCiAgICBwYXRoKCdsb2dpbi8nLCBsb2dpbl92aWV3LCBuYW1lPSdsb2dpbicpLApd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from django.urls import path
+from .views import login_view
+
+urlpatterns = [
+    path('login/', login_view, name='login'),
+]</pre></div><div class='content'></div><h1>Implementing Logout</h1>
+<div class='content'></div><h2>Creating the Logout View</h2>
+<div class='content'><p>Create a view for handling user logout in <code>myapp/views.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkamFuZ28uY29udHJpYi5hdXRoIGltcG9ydCBsb2dvdXQKCmRlZiBsb2dvdXRfdmlldyhyZXF1ZXN0KToKICAgIGxvZ291dChyZXF1ZXN0KQogICAgcmV0dXJuIHJlZGlyZWN0KCdsb2dpbicp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from django.contrib.auth import logout
+
+def logout_view(request):
+    logout(request)
+    return redirect('login')</pre></div><div class='content'></div><h2>Updating URLs</h2>
+<div class='content'><p>Add a URL pattern for the logout view in <code>myapp/urls.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSAudmlld3MgaW1wb3J0IGxvZ291dF92aWV3Cgp1cmxwYXR0ZXJucyA9IFsKICAgIC4uLgogICAgcGF0aCgnbG9nb3V0LycsIGxvZ291dF92aWV3LCBuYW1lPSdsb2dvdXQnKSwKXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from .views import logout_view
+
+urlpatterns = [
+    ...
+    path('logout/', logout_view, name='logout'),
+]</pre></div><div class='content'></div><h1>Protecting Views with Login Required</h1>
+<div class='content'><p>To ensure certain views are only accessible to logged-in users, use the <code>login_required</code> decorator. For example, in <code>myapp/views.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkamFuZ28uY29udHJpYi5hdXRoLmRlY29yYXRvcnMgaW1wb3J0IGxvZ2luX3JlcXVpcmVkCgpAbG9naW5fcmVxdWlyZWQKZGVmIGhvbWVfdmlldyhyZXF1ZXN0KToKICAgIHJldHVybiByZW5kZXIocmVxdWVzdCwgJ215YXBwL2hvbWUuaHRtbCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from django.contrib.auth.decorators import login_required
+
+@login_required
+def home_view(request):
+    return render(request, 'myapp/home.html')</pre></div><div class='content'><p>Update the URL pattern for the home view in <code>myapp/urls.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSAudmlld3MgaW1wb3J0IGhvbWVfdmlldwoKdXJscGF0dGVybnMgPSBbCiAgICAuLi4KICAgIHBhdGgoJycsIGhvbWVfdmlldywgbmFtZT0naG9tZScpLApd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from .views import home_view
+
+urlpatterns = [
+    ...
+    path('', home_view, name='home'),
+]</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of implementing login and logout functionality in a Django application. We created views, templates, and URL patterns to handle user authentication. Additionally, we learned how to protect views using the <code>login_required</code> decorator. With these fundamentals, you can now manage user sessions and secure parts of your application effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-authentication-basics'>&#x25C4;User Authentication Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Login and Logout in Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-registration'>User Registration &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

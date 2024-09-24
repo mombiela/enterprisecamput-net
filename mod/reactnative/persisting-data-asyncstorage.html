@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persisting Data with AsyncStorage</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/persisting-data-asyncstorage" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/persisting-data-asyncstorage" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/persisting-data-asyncstorage" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/persisting-data-asyncstorage" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/persisting-data-asyncstorage" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-api-responses'>&#x25C4;Handling API Responses</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Persisting Data with AsyncStorage</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-animations'>Using Animations &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to AsyncStorage</h1>
+<div class='content'><p>AsyncStorage is a simple, unencrypted, asynchronous, persistent, key-value storage system that is global to the app. It is used in React Native to store data that needs to persist across app launches.</p>
+<ul>
+<li><strong>Key Concepts:</strong>
+<ul>
+<li><strong>Key-Value Storage:</strong> Data is stored as key-value pairs.</li>
+<li><strong>Asynchronous:</strong> Operations are non-blocking, allowing for smooth UI performance.</li>
+<li><strong>Persistent:</strong> Data remains available even after the app is closed and reopened.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up AsyncStorage</h1>
+<div class='content'><p>To use AsyncStorage in your React Native project, you need to install the package.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgQHJlYWN0LW5hdGl2ZS1hc3luYy1zdG9yYWdlL2FzeW5jLXN0b3JhZ2U="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install @react-native-async-storage/async-storage</pre></div><div class='content'><p>After installation, you need to import it into your component.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IEFzeW5jU3RvcmFnZSBmcm9tICdAcmVhY3QtbmF0aXZlLWFzeW5jLXN0b3JhZ2UvYXN5bmMtc3RvcmFnZSc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import AsyncStorage from '@react-native-async-storage/async-storage';</pre></div><div class='content'></div><h1>Basic Operations with AsyncStorage</h1>
+<div class='content'></div><h2>Storing Data</h2>
+<div class='content'><p>To store data, use the <code>setItem</code> method. This method takes two arguments: the key and the value.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc3RvcmVEYXRhID0gYXN5bmMgKGtleSwgdmFsdWUpID0+IHsKICB0cnkgewogICAgYXdhaXQgQXN5bmNTdG9yYWdlLnNldEl0ZW0oa2V5LCB2YWx1ZSk7CiAgICBjb25zb2xlLmxvZygnRGF0YSBzdWNjZXNzZnVsbHkgc2F2ZWQnKTsKICB9IGNhdGNoIChlKSB7CiAgICBjb25zb2xlLmVycm9yKCdGYWlsZWQgdG8gc2F2ZSB0aGUgZGF0YSB0byB0aGUgc3RvcmFnZScsIGUpOwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const storeData = async (key, value) =&gt; {
+  try {
+    await AsyncStorage.setItem(key, value);
+    console.log('Data successfully saved');
+  } catch (e) {
+    console.error('Failed to save the data to the storage', e);
+  }
+};</pre></div><div class='content'></div><h2>Retrieving Data</h2>
+<div class='content'><p>To retrieve data, use the <code>getItem</code> method. This method takes one argument: the key.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZ2V0RGF0YSA9IGFzeW5jIChrZXkpID0+IHsKICB0cnkgewogICAgY29uc3QgdmFsdWUgPSBhd2FpdCBBc3luY1N0b3JhZ2UuZ2V0SXRlbShrZXkpOwogICAgaWYgKHZhbHVlICE9PSBudWxsKSB7CiAgICAgIGNvbnNvbGUubG9nKCdEYXRhIHJldHJpZXZlZCBzdWNjZXNzZnVsbHknLCB2YWx1ZSk7CiAgICAgIHJldHVybiB2YWx1ZTsKICAgIH0KICB9IGNhdGNoIChlKSB7CiAgICBjb25zb2xlLmVycm9yKCdGYWlsZWQgdG8gZmV0Y2ggdGhlIGRhdGEgZnJvbSBzdG9yYWdlJywgZSk7CiAgfQp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const getData = async (key) =&gt; {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      console.log('Data retrieved successfully', value);
+      return value;
+    }
+  } catch (e) {
+    console.error('Failed to fetch the data from storage', e);
+  }
+};</pre></div><div class='content'></div><h2>Removing Data</h2>
+<div class='content'><p>To remove data, use the <code>removeItem</code> method. This method takes one argument: the key.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmVtb3ZlRGF0YSA9IGFzeW5jIChrZXkpID0+IHsKICB0cnkgewogICAgYXdhaXQgQXN5bmNTdG9yYWdlLnJlbW92ZUl0ZW0oa2V5KTsKICAgIGNvbnNvbGUubG9nKCdEYXRhIHJlbW92ZWQgc3VjY2Vzc2Z1bGx5Jyk7CiAgfSBjYXRjaCAoZSkgewogICAgY29uc29sZS5lcnJvcignRmFpbGVkIHRvIHJlbW92ZSB0aGUgZGF0YSBmcm9tIHN0b3JhZ2UnLCBlKTsKICB9Cn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const removeData = async (key) =&gt; {
+  try {
+    await AsyncStorage.removeItem(key);
+    console.log('Data removed successfully');
+  } catch (e) {
+    console.error('Failed to remove the data from storage', e);
+  }
+};</pre></div><div class='content'></div><h1>Advanced Usage</h1>
+<div class='content'></div><h2>Storing Complex Data</h2>
+<div class='content'><p>AsyncStorage can only store strings, so to store complex data types like objects or arrays, you need to serialize them using <code>JSON.stringify</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc3RvcmVDb21wbGV4RGF0YSA9IGFzeW5jIChrZXksIHZhbHVlKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGpzb25WYWx1ZSA9IEpTT04uc3RyaW5naWZ5KHZhbHVlKTsKICAgIGF3YWl0IEFzeW5jU3RvcmFnZS5zZXRJdGVtKGtleSwganNvblZhbHVlKTsKICAgIGNvbnNvbGUubG9nKCdDb21wbGV4IGRhdGEgc3VjY2Vzc2Z1bGx5IHNhdmVkJyk7CiAgfSBjYXRjaCAoZSkgewogICAgY29uc29sZS5lcnJvcignRmFpbGVkIHRvIHNhdmUgdGhlIGNvbXBsZXggZGF0YSB0byB0aGUgc3RvcmFnZScsIGUpOwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const storeComplexData = async (key, value) =&gt; {
+  try {
+    const jsonValue = JSON.stringify(value);
+    await AsyncStorage.setItem(key, jsonValue);
+    console.log('Complex data successfully saved');
+  } catch (e) {
+    console.error('Failed to save the complex data to the storage', e);
+  }
+};</pre></div><div class='content'></div><h2>Retrieving Complex Data</h2>
+<div class='content'><p>To retrieve complex data, you need to deserialize it using <code>JSON.parse</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZ2V0Q29tcGxleERhdGEgPSBhc3luYyAoa2V5KSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGpzb25WYWx1ZSA9IGF3YWl0IEFzeW5jU3RvcmFnZS5nZXRJdGVtKGtleSk7CiAgICByZXR1cm4ganNvblZhbHVlICE9IG51bGwgPyBKU09OLnBhcnNlKGpzb25WYWx1ZSkgOiBudWxsOwogIH0gY2F0Y2ggKGUpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0ZhaWxlZCB0byBmZXRjaCB0aGUgY29tcGxleCBkYXRhIGZyb20gc3RvcmFnZScsIGUpOwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const getComplexData = async (key) =&gt; {
+  try {
+    const jsonValue = await AsyncStorage.getItem(key);
+    return jsonValue != null ? JSON.parse(jsonValue) : null;
+  } catch (e) {
+    console.error('Failed to fetch the complex data from storage', e);
+  }
+};</pre></div><div class='content'></div><h2>Clearing All Data</h2>
+<div class='content'><p>To clear all data stored in AsyncStorage, use the <code>clear</code> method.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgY2xlYXJBbGxEYXRhID0gYXN5bmMgKCkgPT4gewogIHRyeSB7CiAgICBhd2FpdCBBc3luY1N0b3JhZ2UuY2xlYXIoKTsKICAgIGNvbnNvbGUubG9nKCdBbGwgZGF0YSBjbGVhcmVkIHN1Y2Nlc3NmdWxseScpOwogIH0gY2F0Y2ggKGUpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0ZhaWxlZCB0byBjbGVhciB0aGUgc3RvcmFnZScsIGUpOwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const clearAllData = async () =&gt; {
+  try {
+    await AsyncStorage.clear();
+    console.log('All data cleared successfully');
+  } catch (e) {
+    console.error('Failed to clear the storage', e);
+  }
+};</pre></div><div class='content'></div><h1>Error Handling</h1>
+<div class='content'><p>Proper error handling is crucial when working with AsyncStorage to ensure a smooth user experience.</p>
+<ul>
+<li><strong>Try-Catch Blocks:</strong> Use try-catch blocks to handle errors gracefully.</li>
+<li><strong>Fallback Values:</strong> Provide fallback values when data retrieval fails.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZ2V0RGF0YVdpdGhGYWxsYmFjayA9IGFzeW5jIChrZXksIGZhbGxiYWNrVmFsdWUpID0+IHsKICB0cnkgewogICAgY29uc3QgdmFsdWUgPSBhd2FpdCBBc3luY1N0b3JhZ2UuZ2V0SXRlbShrZXkpOwogICAgcmV0dXJuIHZhbHVlICE9IG51bGwgPyB2YWx1ZSA6IGZhbGxiYWNrVmFsdWU7CiAgfSBjYXRjaCAoZSkgewogICAgY29uc29sZS5lcnJvcignRmFpbGVkIHRvIGZldGNoIHRoZSBkYXRhIGZyb20gc3RvcmFnZScsIGUpOwogICAgcmV0dXJuIGZhbGxiYWNrVmFsdWU7CiAgfQp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const getDataWithFallback = async (key, fallbackValue) =&gt; {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    return value != null ? value : fallbackValue;
+  } catch (e) {
+    console.error('Failed to fetch the data from storage', e);
+    return fallbackValue;
+  }
+};</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>AsyncStorage is a powerful tool for persisting data in React Native applications. By understanding its basic and advanced operations, you can effectively manage data storage and retrieval, ensuring a seamless user experience. Remember to handle errors gracefully and consider the performance implications of your data storage strategy.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-api-responses'>&#x25C4;Handling API Responses</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Persisting Data with AsyncStorage</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-animations'>Using Animations &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

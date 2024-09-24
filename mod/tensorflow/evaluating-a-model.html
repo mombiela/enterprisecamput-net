@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluating a Model</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/evaluating-a-model" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/evaluating-a-model" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/evaluating-a-model" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/evaluating-a-model" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/evaluating-a-model" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='training-a-model'>&#x25C4;Training a Model</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Evaluating a Model</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='overfitting-and-underfitting'>Overfitting and Underfitting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Evaluating a model is a crucial step in the machine learning pipeline. It helps you understand how well your model is performing and whether it is ready for deployment. In this section, we will cover various techniques and metrics for evaluating models using TensorFlow.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Training vs. Validation vs. Test Sets</strong>: Understanding the difference and importance of these datasets.</li>
+<li><strong>Metrics</strong>: Common metrics used for evaluation like accuracy, precision, recall, F1 score, etc.</li>
+<li><strong>Confusion Matrix</strong>: A tool to visualize the performance of a classification model.</li>
+<li><strong>Cross-Validation</strong>: A technique to ensure your model generalizes well to unseen data.</li>
+<li><strong>Overfitting and Underfitting</strong>: Identifying and addressing these issues.</li>
+</ul>
+</div><h1>Training vs. Validation vs. Test Sets</h1>
+<div class='content'><p>When evaluating a model, it's essential to split your data into three distinct sets:</p>
+<ul>
+<li><strong>Training Set</strong>: Used to train the model.</li>
+<li><strong>Validation Set</strong>: Used to tune the model's hyperparameters.</li>
+<li><strong>Test Set</strong>: Used to evaluate the model's performance on unseen data.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdAoKIyBBc3N1bWluZyBYIGFuZCB5IGFyZSB5b3VyIGZlYXR1cmVzIGFuZCBsYWJlbHMKWF90cmFpbiwgWF90ZW1wLCB5X3RyYWluLCB5X3RlbXAgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjQsIHJhbmRvbV9zdGF0ZT00MikKWF92YWwsIFhfdGVzdCwgeV92YWwsIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWF90ZW1wLCB5X3RlbXAsIHRlc3Rfc2l6ZT0wLjUsIHJhbmRvbV9zdGF0ZT00Mik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import train_test_split
+
+# Assuming X and y are your features and labels
+X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.4, random_state=42)
+X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, random_state=42)</pre></div><div class='content'></div><h1>Metrics</h1>
+<div class='content'><p>Different metrics are used depending on the type of problem (classification or regression).</p>
+</div><h2>Classification Metrics</h2>
+<div class='content'><ul>
+<li><strong>Accuracy</strong>: The ratio of correctly predicted instances to the total instances.</li>
+<li><strong>Precision</strong>: The ratio of correctly predicted positive observations to the total predicted positives.</li>
+<li><strong>Recall</strong>: The ratio of correctly predicted positive observations to all observations in the actual class.</li>
+<li><strong>F1 Score</strong>: The weighted average of Precision and Recall.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3JlLCBwcmVjaXNpb25fc2NvcmUsIHJlY2FsbF9zY29yZSwgZjFfc2NvcmUKCiMgQXNzdW1pbmcgeV9wcmVkIGFyZSB5b3VyIHByZWRpY3Rpb25zIGFuZCB5X3Rlc3QgYXJlIHlvdXIgdHJ1ZSBsYWJlbHMKYWNjdXJhY3kgPSBhY2N1cmFjeV9zY29yZSh5X3Rlc3QsIHlfcHJlZCkKcHJlY2lzaW9uID0gcHJlY2lzaW9uX3Njb3JlKHlfdGVzdCwgeV9wcmVkKQpyZWNhbGwgPSByZWNhbGxfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCmYxID0gZjFfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCgpwcmludChmIkFjY3VyYWN5OiB7YWNjdXJhY3l9IikKcHJpbnQoZiJQcmVjaXNpb246IHtwcmVjaXNpb259IikKcHJpbnQoZiJSZWNhbGw6IHtyZWNhbGx9IikKcHJpbnQoZiJGMSBTY29yZToge2YxfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# Assuming y_pred are your predictions and y_test are your true labels
+accuracy = accuracy_score(y_test, y_pred)
+precision = precision_score(y_test, y_pred)
+recall = recall_score(y_test, y_pred)
+f1 = f1_score(y_test, y_pred)
+
+print(f&quot;Accuracy: {accuracy}&quot;)
+print(f&quot;Precision: {precision}&quot;)
+print(f&quot;Recall: {recall}&quot;)
+print(f&quot;F1 Score: {f1}&quot;)</pre></div><div class='content'></div><h2>Regression Metrics</h2>
+<div class='content'><ul>
+<li><strong>Mean Absolute Error (MAE)</strong>: The average of the absolute errors.</li>
+<li><strong>Mean Squared Error (MSE)</strong>: The average of the squared errors.</li>
+<li><strong>Root Mean Squared Error (RMSE)</strong>: The square root of the average of the squared errors.</li>
+<li><strong>R-squared (R²)</strong>: The proportion of the variance in the dependent variable that is predictable from the independent variables.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IG1lYW5fYWJzb2x1dGVfZXJyb3IsIG1lYW5fc3F1YXJlZF9lcnJvciwgcjJfc2NvcmUKCiMgQXNzdW1pbmcgeV9wcmVkIGFyZSB5b3VyIHByZWRpY3Rpb25zIGFuZCB5X3Rlc3QgYXJlIHlvdXIgdHJ1ZSBsYWJlbHMKbWFlID0gbWVhbl9hYnNvbHV0ZV9lcnJvcih5X3Rlc3QsIHlfcHJlZCkKbXNlID0gbWVhbl9zcXVhcmVkX2Vycm9yKHlfdGVzdCwgeV9wcmVkKQpybXNlID0gbWVhbl9zcXVhcmVkX2Vycm9yKHlfdGVzdCwgeV9wcmVkLCBzcXVhcmVkPUZhbHNlKQpyMiA9IHIyX3Njb3JlKHlfdGVzdCwgeV9wcmVkKQoKcHJpbnQoZiJNQUU6IHttYWV9IikKcHJpbnQoZiJNU0U6IHttc2V9IikKcHJpbnQoZiJSTVNFOiB7cm1zZX0iKQpwcmludChmIlLCsjoge3IyfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Assuming y_pred are your predictions and y_test are your true labels
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+r2 = r2_score(y_test, y_pred)
+
+print(f&quot;MAE: {mae}&quot;)
+print(f&quot;MSE: {mse}&quot;)
+print(f&quot;RMSE: {rmse}&quot;)
+print(f&quot;R&sup2;: {r2}&quot;)</pre></div><div class='content'></div><h1>Confusion Matrix</h1>
+<div class='content'><p>A confusion matrix is a table used to describe the performance of a classification model. It shows the true positives, true negatives, false positives, and false negatives.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGNvbmZ1c2lvbl9tYXRyaXgKaW1wb3J0IHNlYWJvcm4gYXMgc25zCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKCiMgQXNzdW1pbmcgeV9wcmVkIGFyZSB5b3VyIHByZWRpY3Rpb25zIGFuZCB5X3Rlc3QgYXJlIHlvdXIgdHJ1ZSBsYWJlbHMKY20gPSBjb25mdXNpb25fbWF0cml4KHlfdGVzdCwgeV9wcmVkKQpzbnMuaGVhdG1hcChjbSwgYW5ub3Q9VHJ1ZSwgZm10PSdkJykKcGx0LnhsYWJlbCgnUHJlZGljdGVkJykKcGx0LnlsYWJlbCgnVHJ1ZScpCnBsdC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Assuming y_pred are your predictions and y_test are your true labels
+cm = confusion_matrix(y_test, y_pred)
+sns.heatmap(cm, annot=True, fmt='d')
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.show()</pre></div><div class='content'></div><h1>Cross-Validation</h1>
+<div class='content'><p>Cross-validation is a technique for assessing how the results of a statistical analysis will generalize to an independent dataset. It is mainly used in settings where the goal is prediction.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgY3Jvc3NfdmFsX3Njb3JlCmZyb20gc2tsZWFybi5lbnNlbWJsZSBpbXBvcnQgUmFuZG9tRm9yZXN0Q2xhc3NpZmllcgoKIyBBc3N1bWluZyBYIGFuZCB5IGFyZSB5b3VyIGZlYXR1cmVzIGFuZCBsYWJlbHMKbW9kZWwgPSBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyKCkKc2NvcmVzID0gY3Jvc3NfdmFsX3Njb3JlKG1vZGVsLCBYLCB5LCBjdj01KQoKcHJpbnQoZiJDcm9zcy1WYWxpZGF0aW9uIFNjb3Jlczoge3Njb3Jlc30iKQpwcmludChmIk1lYW4gQ1YgU2NvcmU6IHtzY29yZXMubWVhbigpfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+
+# Assuming X and y are your features and labels
+model = RandomForestClassifier()
+scores = cross_val_score(model, X, y, cv=5)
+
+print(f&quot;Cross-Validation Scores: {scores}&quot;)
+print(f&quot;Mean CV Score: {scores.mean()}&quot;)</pre></div><div class='content'></div><h1>Overfitting and Underfitting</h1>
+<div class='content'><ul>
+<li><strong>Overfitting</strong>: When a model learns the training data too well, including noise and outliers, leading to poor performance on new data.</li>
+<li><strong>Underfitting</strong>: When a model is too simple to capture the underlying patterns in the data, leading to poor performance on both training and new data.</li>
+</ul>
+</div><h2>Addressing Overfitting</h2>
+<div class='content'><ul>
+<li><strong>Regularization</strong>: Techniques like L1 and L2 regularization.</li>
+<li><strong>Pruning</strong>: Reducing the complexity of decision trees.</li>
+<li><strong>Dropout</strong>: Randomly dropping neurons during training in neural networks.</li>
+</ul>
+</div><h2>Addressing Underfitting</h2>
+<div class='content'><ul>
+<li><strong>Increase Model Complexity</strong>: Use more complex models.</li>
+<li><strong>Feature Engineering</strong>: Create new features or use more relevant features.</li>
+<li><strong>Reduce Regularization</strong>: Decrease the regularization parameters.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Evaluating a model is an essential step in the machine learning process. By understanding and applying the right metrics and techniques, you can ensure your model performs well on unseen data. Remember to always split your data correctly, use appropriate metrics, visualize your results with tools like confusion matrices, and apply cross-validation to get a robust estimate of your model's performance. Address overfitting and underfitting to improve your model's generalization capabilities.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='training-a-model'>&#x25C4;Training a Model</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Evaluating a Model</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='overfitting-and-underfitting'>Overfitting and Underfitting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

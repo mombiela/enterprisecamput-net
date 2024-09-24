@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2: Text Generation with RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/proyecto-generacion-texto-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/proyecto-generacion-texto-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/proyecto-generacion-texto-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/deep_learning/proyecto-generacion-texto-rnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/proyecto-generacion-texto-rnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this project, we will explore how Recurrent Neural Networks (RNN) can be used for text generation. RNNs are especially suitable for sequential tasks, such as text processing, due to their ability to maintain information about previous states in the sequence.</p>
+</div><h1>Project Objectives</h1>
+<div class='content'><ul>
+<li>Understand the basic functioning of RNNs.</li>
+<li>Implement an RNN for text generation.</li>
+<li>Evaluate the performance of the RNN in the text generation task.</li>
+</ul>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Recurrent Neural Networks (RNN)</strong>: A type of neural network capable of handling sequential data.</li>
+<li><strong>Hidden States</strong>: The internal states of the RNN that allow it to maintain information about previous inputs.</li>
+<li><strong>Text Generation</strong>: The process of producing new text based on patterns learned from an existing text corpus.</li>
+</ul>
+</div><h1>Implementation of an RNN for Text Generation</h1>
+<div class='content'></div><h2>Environment Preparation</h2>
+<div class='content'><p>First, make sure you have the necessary libraries installed. We will use TensorFlow and Keras to implement our RNN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IXBpcCBpbnN0YWxsIHRlbnNvcmZsb3c="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>!pip install tensorflow</pre></div><div class='content'></div><h2>Importing Libraries</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCB0ZW5zb3JmbG93IGFzIHRmCmZyb20gdGVuc29yZmxvdy5rZXJhcy5tb2RlbHMgaW1wb3J0IFNlcXVlbnRpYWwKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmxheWVycyBpbXBvcnQgRGVuc2UsIExTVE0sIEVtYmVkZGluZwpmcm9tIHRlbnNvcmZsb3cua2VyYXMub3B0aW1pemVycyBpbXBvcnQgQWRhbQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, LSTM, Embedding
+from tensorflow.keras.optimizers import Adam</pre></div><div class='content'></div><h2>Data Loading and Preprocessing</h2>
+<div class='content'><p>For this project, we will use a text corpus. You can choose any long text, such as a book or a collection of articles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSB0ZXh0CnBhdGhfdG9fZmlsZSA9ICdwYXRoL3RvL3lvdXIvdGV4dGZpbGUudHh0Jwp0ZXh0ID0gb3BlbihwYXRoX3RvX2ZpbGUsICdyJykucmVhZCgpCgojIFByZXByb2Nlc3NpbmcKdm9jYWIgPSBzb3J0ZWQoc2V0KHRleHQpKQpjaGFyMmlkeCA9IHt1OmkgZm9yIGksIHUgaW4gZW51bWVyYXRlKHZvY2FiKX0KaWR4MmNoYXIgPSBucC5hcnJheSh2b2NhYikKdGV4dF9hc19pbnQgPSBucC5hcnJheShbY2hhcjJpZHhbY10gZm9yIGMgaW4gdGV4dF0pCgojIENyZWF0ZSBpbnB1dCBhbmQgb3V0cHV0IHNlcXVlbmNlcwpzZXFfbGVuZ3RoID0gMTAwCmV4YW1wbGVzX3Blcl9lcG9jaCA9IGxlbih0ZXh0KS8vKHNlcV9sZW5ndGgrMSkKCmNoYXJfZGF0YXNldCA9IHRmLmRhdGEuRGF0YXNldC5mcm9tX3RlbnNvcl9zbGljZXModGV4dF9hc19pbnQpCnNlcXVlbmNlcyA9IGNoYXJfZGF0YXNldC5iYXRjaChzZXFfbGVuZ3RoKzEsIGRyb3BfcmVtYWluZGVyPVRydWUpCgpkZWYgc3BsaXRfaW5wdXRfdGFyZ2V0KGNodW5rKToKICAgIGlucHV0X3RleHQgPSBjaHVua1s6LTFdCiAgICB0YXJnZXRfdGV4dCA9IGNodW5rWzE6XQogICAgcmV0dXJuIGlucHV0X3RleHQsIHRhcmdldF90ZXh0CgpkYXRhc2V0ID0gc2VxdWVuY2VzLm1hcChzcGxpdF9pbnB1dF90YXJnZXQp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the text
+path_to_file = 'path/to/your/textfile.txt'
+text = open(path_to_file, 'r').read()
+
+# Preprocessing
+vocab = sorted(set(text))
+char2idx = {u:i for i, u in enumerate(vocab)}
+idx2char = np.array(vocab)
+text_as_int = np.array([char2idx[c] for c in text])
+
+# Create input and output sequences
+seq_length = 100
+examples_per_epoch = len(text)//(seq_length+1)
+
+char_dataset = tf.data.Dataset.from_tensor_slices(text_as_int)
+sequences = char_dataset.batch(seq_length+1, drop_remainder=True)
+
+def split_input_target(chunk):
+    input_text = chunk[:-1]
+    target_text = chunk[1:]
+    return input_text, target_text
+
+dataset = sequences.map(split_input_target)</pre></div><div class='content'></div><h2>Model Construction</h2>
+<div class='content'><p>We will use a simple LSTM architecture for our RNN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNb2RlbCBwYXJhbWV0ZXJzCnZvY2FiX3NpemUgPSBsZW4odm9jYWIpCmVtYmVkZGluZ19kaW0gPSAyNTYKcm5uX3VuaXRzID0gMTAyNAoKIyBNb2RlbCBjb25zdHJ1Y3Rpb24KbW9kZWwgPSBTZXF1ZW50aWFsKFsKICAgIEVtYmVkZGluZyh2b2NhYl9zaXplLCBlbWJlZGRpbmdfZGltLCBiYXRjaF9pbnB1dF9zaGFwZT1bTm9uZSwgTm9uZV0pLAogICAgTFNUTShybm5fdW5pdHMsIHJldHVybl9zZXF1ZW5jZXM9VHJ1ZSwgc3RhdGVmdWw9RmFsc2UsIHJlY3VycmVudF9pbml0aWFsaXplcj0nZ2xvcm90X3VuaWZvcm0nKSwKICAgIERlbnNlKHZvY2FiX3NpemUpCl0pCgojIE1vZGVsIGNvbXBpbGF0aW9uCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz10Zi5sb3NzZXMuU3BhcnNlQ2F0ZWdvcmljYWxDcm9zc2VudHJvcHkoZnJvbV9sb2dpdHM9VHJ1ZSkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Model parameters
+vocab_size = len(vocab)
+embedding_dim = 256
+rnn_units = 1024
+
+# Model construction
+model = Sequential([
+    Embedding(vocab_size, embedding_dim, batch_input_shape=[None, None]),
+    LSTM(rnn_units, return_sequences=True, stateful=False, recurrent_initializer='glorot_uniform'),
+    Dense(vocab_size)
+])
+
+# Model compilation
+model.compile(optimizer='adam', loss=tf.losses.SparseCategoricalCrossentropy(from_logits=True))</pre></div><div class='content'></div><h2>Model Training</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBUcmFpbmluZyBjb25maWd1cmF0aW9uCkJBVENIX1NJWkUgPSA2NApCVUZGRVJfU0laRSA9IDEwMDAwCgpkYXRhc2V0ID0gZGF0YXNldC5zaHVmZmxlKEJVRkZFUl9TSVpFKS5iYXRjaChCQVRDSF9TSVpFLCBkcm9wX3JlbWFpbmRlcj1UcnVlKQoKIyBUcmFpbmluZwpFUE9DSFMgPSAxMApoaXN0b3J5ID0gbW9kZWwuZml0KGRhdGFzZXQsIGVwb2Nocz1FUE9DSFMp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Training configuration
+BATCH_SIZE = 64
+BUFFER_SIZE = 10000
+
+dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
+
+# Training
+EPOCHS = 10
+history = model.fit(dataset, epochs=EPOCHS)</pre></div><div class='content'></div><h2>Text Generation</h2>
+<div class='content'><p>Once the model is trained, we can generate new text.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGdlbmVyYXRlX3RleHQobW9kZWwsIHN0YXJ0X3N0cmluZyk6CiAgICBudW1fZ2VuZXJhdGUgPSAxMDAwCiAgICBpbnB1dF9ldmFsID0gW2NoYXIyaWR4W3NdIGZvciBzIGluIHN0YXJ0X3N0cmluZ10KICAgIGlucHV0X2V2YWwgPSB0Zi5leHBhbmRfZGltcyhpbnB1dF9ldmFsLCAwKQogICAgdGV4dF9nZW5lcmF0ZWQgPSBbXQogICAgdGVtcGVyYXR1cmUgPSAxLjAKCiAgICBtb2RlbC5yZXNldF9zdGF0ZXMoKQogICAgZm9yIGkgaW4gcmFuZ2UobnVtX2dlbmVyYXRlKToKICAgICAgICBwcmVkaWN0aW9ucyA9IG1vZGVsKGlucHV0X2V2YWwpCiAgICAgICAgcHJlZGljdGlvbnMgPSB0Zi5zcXVlZXplKHByZWRpY3Rpb25zLCAwKQogICAgICAgIHByZWRpY3Rpb25zID0gcHJlZGljdGlvbnMgLyB0ZW1wZXJhdHVyZQogICAgICAgIHByZWRpY3RlZF9pZCA9IHRmLnJhbmRvbS5jYXRlZ29yaWNhbChwcmVkaWN0aW9ucywgbnVtX3NhbXBsZXM9MSlbLTEsMF0ubnVtcHkoKQogICAgICAgIGlucHV0X2V2YWwgPSB0Zi5leHBhbmRfZGltcyhbcHJlZGljdGVkX2lkXSwgMCkKICAgICAgICB0ZXh0X2dlbmVyYXRlZC5hcHBlbmQoaWR4MmNoYXJbcHJlZGljdGVkX2lkXSkKCiAgICByZXR1cm4gKHN0YXJ0X3N0cmluZyArICcnLmpvaW4odGV4dF9nZW5lcmF0ZWQpKQoKcHJpbnQoZ2VuZXJhdGVfdGV4dChtb2RlbCwgc3RhcnRfc3RyaW5nPSJPbmNlIHVwb24gYSB0aW1lIikp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def generate_text(model, start_string):
+    num_generate = 1000
+    input_eval = [char2idx[s] for s in start_string]
+    input_eval = tf.expand_dims(input_eval, 0)
+    text_generated = []
+    temperature = 1.0
+
+    model.reset_states()
+    for i in range(num_generate):
+        predictions = model(input_eval)
+        predictions = tf.squeeze(predictions, 0)
+        predictions = predictions / temperature
+        predicted_id = tf.random.categorical(predictions, num_samples=1)[-1,0].numpy()
+        input_eval = tf.expand_dims([predicted_id], 0)
+        text_generated.append(idx2char[predicted_id])
+
+    return (start_string + ''.join(text_generated))
+
+print(generate_text(model, start_string=&quot;Once upon a time&quot;))</pre></div><div class='content'></div><h1>Evaluation and Adjustments</h1>
+<div class='content'><ul>
+<li><strong>Evaluation</strong>: Review the generated text to evaluate coherence and fluency.</li>
+<li><strong>Adjustments</strong>: If the generated text is not satisfactory, consider adjusting hyperparameters, such as the network size, input sequence length, or the number of training epochs.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this project, we have learned to implement an RNN for text generation. We covered everything from data preparation to model construction, training, and evaluation. Text generation with RNNs is a powerful technique that can be applied in various areas, such as content creation, chatbots, and more.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

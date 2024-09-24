@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extending Autograd</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/extending-autograd" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/extending-autograd" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/extending-autograd" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/extending-autograd" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/extending-autograd" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-layers-and-modules'>&#x25C4;Custom Layers and Modules</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Extending Autograd</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pytorch-lightning'>PyTorch Lightning &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to extend PyTorch's Autograd functionality. Autograd is PyTorch's automatic differentiation engine that powers neural network training. By extending Autograd, you can define custom operations and gradients, which can be useful for implementing novel algorithms or optimizing specific parts of your model.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Autograd</strong>: PyTorch's automatic differentiation engine.</li>
+<li><strong>Custom Autograd Functions</strong>: User-defined operations with custom forward and backward passes.</li>
+<li><strong>Tensors</strong>: The fundamental data structure in PyTorch, which supports automatic differentiation.</li>
+</ul>
+</div><h1>Custom Autograd Functions</h1>
+<div class='content'><p>To extend Autograd, you need to create custom autograd functions. These functions allow you to define both the forward and backward passes of an operation. This is particularly useful when you need more control over the gradient computation.</p>
+</div><h2>Creating a Custom Autograd Function</h2>
+<div class='content'><p>To create a custom autograd function, you need to subclass <code>torch.autograd.Function</code> and implement two static methods: <code>forward</code> and <code>backward</code>.</p>
+<h4>Example: Custom Square Function</h4>
+<p>Let's create a custom function that computes the square of its input and its gradient.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCgpjbGFzcyBTcXVhcmVGdW5jdGlvbih0b3JjaC5hdXRvZ3JhZC5GdW5jdGlvbik6CiAgICBAc3RhdGljbWV0aG9kCiAgICBkZWYgZm9yd2FyZChjdHgsIGlucHV0KToKICAgICAgICAjIFNhdmUgY29udGV4dCBmb3IgYmFja3dhcmQgcGFzcwogICAgICAgIGN0eC5zYXZlX2Zvcl9iYWNrd2FyZChpbnB1dCkKICAgICAgICByZXR1cm4gaW5wdXQgKiogMgoKICAgIEBzdGF0aWNtZXRob2QKICAgIGRlZiBiYWNrd2FyZChjdHgsIGdyYWRfb3V0cHV0KToKICAgICAgICAjIFJldHJpZXZlIHNhdmVkIHRlbnNvcgogICAgICAgIGlucHV0LCA9IGN0eC5zYXZlZF90ZW5zb3JzCiAgICAgICAgIyBDb21wdXRlIGdyYWRpZW50CiAgICAgICAgZ3JhZF9pbnB1dCA9IGdyYWRfb3V0cHV0ICogMiAqIGlucHV0CiAgICAgICAgcmV0dXJuIGdyYWRfaW5wdXQKCiMgVXNhZ2UKeCA9IHRvcmNoLnRlbnNvcihbMi4wLCAzLjBdLCByZXF1aXJlc19ncmFkPVRydWUpCnNxdWFyZSA9IFNxdWFyZUZ1bmN0aW9uLmFwcGx5CnkgPSBzcXVhcmUoeCkKeS5iYWNrd2FyZCh0b3JjaC50ZW5zb3IoWzEuMCwgMS4wXSkpCgpwcmludCh4LmdyYWQpICAjIE91dHB1dDogdGVuc29yKFs0LiwgNi5dKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+
+class SquareFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, input):
+        # Save context for backward pass
+        ctx.save_for_backward(input)
+        return input ** 2
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        # Retrieve saved tensor
+        input, = ctx.saved_tensors
+        # Compute gradient
+        grad_input = grad_output * 2 * input
+        return grad_input
+
+# Usage
+x = torch.tensor([2.0, 3.0], requires_grad=True)
+square = SquareFunction.apply
+y = square(x)
+y.backward(torch.tensor([1.0, 1.0]))
+
+print(x.grad)  # Output: tensor([4., 6.])</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>forward</code> method computes the square of the input tensor and saves it for the backward pass.</li>
+<li>The <code>backward</code> method retrieves the saved input tensor and computes the gradient.</li>
+</ul>
+</div><h2>Using Custom Autograd Functions</h2>
+<div class='content'><p>You can use custom autograd functions just like any other PyTorch operation. The key is to call the <code>apply</code> method of your custom function.</p>
+<h4>Example: Custom ReLU Function</h4>
+<p>Let's create a custom ReLU (Rectified Linear Unit) function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUmVMVUZ1bmN0aW9uKHRvcmNoLmF1dG9ncmFkLkZ1bmN0aW9uKToKICAgIEBzdGF0aWNtZXRob2QKICAgIGRlZiBmb3J3YXJkKGN0eCwgaW5wdXQpOgogICAgICAgIGN0eC5zYXZlX2Zvcl9iYWNrd2FyZChpbnB1dCkKICAgICAgICByZXR1cm4gaW5wdXQuY2xhbXAobWluPTApCgogICAgQHN0YXRpY21ldGhvZAogICAgZGVmIGJhY2t3YXJkKGN0eCwgZ3JhZF9vdXRwdXQpOgogICAgICAgIGlucHV0LCA9IGN0eC5zYXZlZF90ZW5zb3JzCiAgICAgICAgZ3JhZF9pbnB1dCA9IGdyYWRfb3V0cHV0LmNsb25lKCkKICAgICAgICBncmFkX2lucHV0W2lucHV0IDwgMF0gPSAwCiAgICAgICAgcmV0dXJuIGdyYWRfaW5wdXQKCiMgVXNhZ2UKeCA9IHRvcmNoLnRlbnNvcihbLTEuMCwgMi4wLCAtMy4wLCA0LjBdLCByZXF1aXJlc19ncmFkPVRydWUpCnJlbHUgPSBSZUxVRnVuY3Rpb24uYXBwbHkKeSA9IHJlbHUoeCkKeS5iYWNrd2FyZCh0b3JjaC50ZW5zb3IoWzEuMCwgMS4wLCAxLjAsIDEuMF0pKQoKcHJpbnQoeC5ncmFkKSAgIyBPdXRwdXQ6IHRlbnNvcihbMC4sIDEuLCAwLiwgMS5dKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ReLUFunction(torch.autograd.Function):
+    @staticmethod
+    def forward(ctx, input):
+        ctx.save_for_backward(input)
+        return input.clamp(min=0)
+
+    @staticmethod
+    def backward(ctx, grad_output):
+        input, = ctx.saved_tensors
+        grad_input = grad_output.clone()
+        grad_input[input &lt; 0] = 0
+        return grad_input
+
+# Usage
+x = torch.tensor([-1.0, 2.0, -3.0, 4.0], requires_grad=True)
+relu = ReLUFunction.apply
+y = relu(x)
+y.backward(torch.tensor([1.0, 1.0, 1.0, 1.0]))
+
+print(x.grad)  # Output: tensor([0., 1., 0., 1.])</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>forward</code> method applies the ReLU operation.</li>
+<li>The <code>backward</code> method computes the gradient, setting it to zero where the input was negative.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Extending Autograd in PyTorch allows you to define custom operations with specific forward and backward passes. This can be particularly useful for implementing new algorithms or optimizing certain parts of your model. By subclassing <code>torch.autograd.Function</code> and implementing the <code>forward</code> and <code>backward</code> methods, you gain full control over the computation and gradient flow, enabling more flexibility and customization in your deep learning models.</p>
+<p>In the next sections, we will delve deeper into more advanced topics and applications of custom autograd functions, including their use in complex neural network architectures and optimization routines.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-layers-and-modules'>&#x25C4;Custom Layers and Modules</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Extending Autograd</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pytorch-lightning'>PyTorch Lightning &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

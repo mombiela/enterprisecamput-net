@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Mapping in OpenGL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/shadow-mapping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/shadow-mapping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/shadow-mapping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/open_gl/shadow-mapping" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/shadow-mapping" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='advanced-shading-techniques'>&#x25C4;Advanced Shading Techniques</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Shadow Mapping in OpenGL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='post-processing-effects'>Post-Processing Effects &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Shadow Mapping</h1>
+<div class='content'><p>Shadow mapping is a technique used in computer graphics to add shadows to a 3D scene. It involves rendering the scene from the light's point of view to create a depth map, which is then used to determine whether a pixel is in shadow.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Depth Map</strong>: A texture that stores the distance from the light source to the closest surface.</li>
+<li><strong>Light Space Transformation</strong>: Transforming world coordinates to the light's view to create the depth map.</li>
+<li><strong>Shadow Test</strong>: Comparing the depth of a fragment with the depth map to determine if it is in shadow.</li>
+</ul>
+</div><h1>Creating a Depth Map</h1>
+<div class='content'><p>To create a depth map, you need to render the scene from the light's perspective.</p>
+</div><h2>Steps to Create a Depth Map</h2>
+<div class='content'><ol>
+<li><strong>Set up a framebuffer object (FBO)</strong> with a depth texture attachment.</li>
+<li><strong>Render the scene</strong> from the light's point of view to populate the depth texture.</li>
+</ol>
+</div><h2>Code Example: Setting Up the Depth Map</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYXRlIGEgZnJhbWVidWZmZXIgb2JqZWN0IGZvciB0aGUgZGVwdGggbWFwCkdMdWludCBkZXB0aE1hcEZCTzsKZ2xHZW5GcmFtZWJ1ZmZlcnMoMSwgJmRlcHRoTWFwRkJPKTsKCi8vIENyZWF0ZSBhIHRleHR1cmUgdG8gc3RvcmUgdGhlIGRlcHRoIG1hcApHTHVpbnQgZGVwdGhNYXA7CmdsR2VuVGV4dHVyZXMoMSwgJmRlcHRoTWFwKTsKZ2xCaW5kVGV4dHVyZShHTF9URVhUVVJFXzJELCBkZXB0aE1hcCk7CmdsVGV4SW1hZ2UyRChHTF9URVhUVVJFXzJELCAwLCBHTF9ERVBUSF9DT01QT05FTlQsIFNIQURPV19XSURUSCwgU0hBRE9XX0hFSUdIVCwgMCwgR0xfREVQVEhfQ09NUE9ORU5ULCBHTF9GTE9BVCwgTlVMTCk7CmdsVGV4UGFyYW1ldGVyaShHTF9URVhUVVJFXzJELCBHTF9URVhUVVJFX01JTl9GSUxURVIsIEdMX05FQVJFU1QpOwpnbFRleFBhcmFtZXRlcmkoR0xfVEVYVFVSRV8yRCwgR0xfVEVYVFVSRV9NQUdfRklMVEVSLCBHTF9ORUFSRVNUKTsKZ2xUZXhQYXJhbWV0ZXJpKEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfV1JBUF9TLCBHTF9DTEFNUF9UT19CT1JERVIpOwpnbFRleFBhcmFtZXRlcmkoR0xfVEVYVFVSRV8yRCwgR0xfVEVYVFVSRV9XUkFQX1QsIEdMX0NMQU1QX1RPX0JPUkRFUik7CmZsb2F0IGJvcmRlckNvbG9yW10gPSB7IDEuMCwgMS4wLCAxLjAsIDEuMCB9OwpnbFRleFBhcmFtZXRlcmZ2KEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfQk9SREVSX0NPTE9SLCBib3JkZXJDb2xvcik7CgovLyBBdHRhY2ggdGhlIGRlcHRoIHRleHR1cmUgdG8gdGhlIGZyYW1lYnVmZmVyCmdsQmluZEZyYW1lYnVmZmVyKEdMX0ZSQU1FQlVGRkVSLCBkZXB0aE1hcEZCTyk7CmdsRnJhbWVidWZmZXJUZXh0dXJlMkQoR0xfRlJBTUVCVUZGRVIsIEdMX0RFUFRIX0FUVEFDSE1FTlQsIEdMX1RFWFRVUkVfMkQsIGRlcHRoTWFwLCAwKTsKZ2xEcmF3QnVmZmVyKEdMX05PTkUpOyAvLyBObyBjb2xvciBidWZmZXIgaXMgZHJhd24gdG8KZ2xSZWFkQnVmZmVyKEdMX05PTkUpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgMCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Create a framebuffer object for the depth map
+GLuint depthMapFBO;
+glGenFramebuffers(1, &amp;depthMapFBO);
+
+// Create a texture to store the depth map
+GLuint depthMap;
+glGenTextures(1, &amp;depthMap);
+glBindTexture(GL_TEXTURE_2D, depthMap);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+// Attach the depth texture to the framebuffer
+glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+glDrawBuffer(GL_NONE); // No color buffer is drawn to
+glReadBuffer(GL_NONE);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h1>Rendering the Scene from the Light's Perspective</h1>
+<div class='content'><p>To render the scene from the light's perspective, you need to set up a view and projection matrix for the light.</p>
+</div><h2>Code Example: Light Space Transformation</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xtOjptYXQ0IGxpZ2h0UHJvamVjdGlvbiwgbGlnaHRWaWV3OwpnbG06Om1hdDQgbGlnaHRTcGFjZU1hdHJpeDsKZmxvYXQgbmVhcl9wbGFuZSA9IDEuMGYsIGZhcl9wbGFuZSA9IDcuNWY7CmxpZ2h0UHJvamVjdGlvbiA9IGdsbTo6b3J0aG8oLTEwLjBmLCAxMC4wZiwgLTEwLjBmLCAxMC4wZiwgbmVhcl9wbGFuZSwgZmFyX3BsYW5lKTsKbGlnaHRWaWV3ID0gZ2xtOjpsb29rQXQobGlnaHRQb3MsIGdsbTo6dmVjMygwLjBmKSwgZ2xtOjp2ZWMzKDAuMGYsIDEuMGYsIDAuMGYpKTsKbGlnaHRTcGFjZU1hdHJpeCA9IGxpZ2h0UHJvamVjdGlvbiAqIGxpZ2h0VmlldzsKCi8vIFBhc3MgbGlnaHRTcGFjZU1hdHJpeCB0byB0aGUgc2hhZGVyCnNoYWRlci5zZXRNYXQ0KCJsaWdodFNwYWNlTWF0cml4IiwgbGlnaHRTcGFjZU1hdHJpeCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>glm::mat4 lightProjection, lightView;
+glm::mat4 lightSpaceMatrix;
+float near_plane = 1.0f, far_plane = 7.5f;
+lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+lightSpaceMatrix = lightProjection * lightView;
+
+// Pass lightSpaceMatrix to the shader
+shader.setMat4(&quot;lightSpaceMatrix&quot;, lightSpaceMatrix);</pre></div><div class='content'></div><h1>Performing the Shadow Test</h1>
+<div class='content'><p>After creating the depth map, you need to perform a shadow test in the fragment shader to determine if a fragment is in shadow.</p>
+</div><h2>Code Example: Shadow Test in Fragment Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKaW4gdmVjNCBGcmFnUG9zTGlnaHRTcGFjZTsKdW5pZm9ybSBzYW1wbGVyMkQgc2hhZG93TWFwOwoKZmxvYXQgU2hhZG93Q2FsY3VsYXRpb24odmVjNCBmcmFnUG9zTGlnaHRTcGFjZSkKewogICAgLy8gUGVyZm9ybSBwZXJzcGVjdGl2ZSBkaXZpZGUKICAgIHZlYzMgcHJvakNvb3JkcyA9IGZyYWdQb3NMaWdodFNwYWNlLnh5eiAvIGZyYWdQb3NMaWdodFNwYWNlLnc7CiAgICAvLyBUcmFuc2Zvcm0gdG8gWzAsMV0gcmFuZ2UKICAgIHByb2pDb29yZHMgPSBwcm9qQ29vcmRzICogMC41ICsgMC41OwogICAgLy8gR2V0IGNsb3Nlc3QgZGVwdGggdmFsdWUgZnJvbSBsaWdodCdzIHBlcnNwZWN0aXZlICh1c2luZyBbMCwxXSByYW5nZSkKICAgIGZsb2F0IGNsb3Nlc3REZXB0aCA9IHRleHR1cmUoc2hhZG93TWFwLCBwcm9qQ29vcmRzLnh5KS5yOwogICAgLy8gR2V0IGRlcHRoIG9mIGN1cnJlbnQgZnJhZ21lbnQgZnJvbSBsaWdodCdzIHBlcnNwZWN0aXZlCiAgICBmbG9hdCBjdXJyZW50RGVwdGggPSBwcm9qQ29vcmRzLno7CiAgICAvLyBDaGVjayB3aGV0aGVyIGN1cnJlbnQgZnJhZ21lbnQgaXMgaW4gc2hhZG93CiAgICBmbG9hdCBzaGFkb3cgPSBjdXJyZW50RGVwdGggPiBjbG9zZXN0RGVwdGggID8gMS4wIDogMC4wOwogICAgcmV0dXJuIHNoYWRvdzsKfQoKdm9pZCBtYWluKCkKewogICAgZmxvYXQgc2hhZG93ID0gU2hhZG93Q2FsY3VsYXRpb24oRnJhZ1Bvc0xpZ2h0U3BhY2UpOwogICAgdmVjMyBjb2xvciA9IHZlYzMoMS4wKSAqICgxLjAgLSBzaGFkb3cpOyAvLyBBcHBseSBzaGFkb3cKICAgIEZyYWdDb2xvciA9IHZlYzQoY29sb3IsIDEuMCk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+in vec4 FragPosLightSpace;
+uniform sampler2D shadowMap;
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // Perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // Transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // Get closest depth value from light's perspective (using [0,1] range)
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    // Get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // Check whether current fragment is in shadow
+    float shadow = currentDepth &gt; closestDepth  ? 1.0 : 0.0;
+    return shadow;
+}
+
+void main()
+{
+    float shadow = ShadowCalculation(FragPosLightSpace);
+    vec3 color = vec3(1.0) * (1.0 - shadow); // Apply shadow
+    FragColor = vec4(color, 1.0);
+}</pre></div><div class='content'></div><h1>Improving Shadow Quality</h1>
+<div class='content'><p>There are several techniques to improve the quality of shadows:</p>
+<ul>
+<li><strong>PCF (Percentage Closer Filtering)</strong>: Smooths the shadow edges by averaging multiple depth comparisons.</li>
+<li><strong>Shadow Map Resolution</strong>: Increasing the resolution of the depth map can reduce aliasing.</li>
+<li><strong>Bias</strong>: Adding a small bias to the depth comparison to reduce shadow acne.</li>
+</ul>
+</div><h2>Code Example: PCF in Fragment Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmxvYXQgU2hhZG93Q2FsY3VsYXRpb24odmVjNCBmcmFnUG9zTGlnaHRTcGFjZSkKewogICAgdmVjMyBwcm9qQ29vcmRzID0gZnJhZ1Bvc0xpZ2h0U3BhY2UueHl6IC8gZnJhZ1Bvc0xpZ2h0U3BhY2UudzsKICAgIHByb2pDb29yZHMgPSBwcm9qQ29vcmRzICogMC41ICsgMC41OwogICAgZmxvYXQgY3VycmVudERlcHRoID0gcHJvakNvb3Jkcy56OwogICAgZmxvYXQgc2hhZG93ID0gMC4wOwogICAgdmVjMiB0ZXhlbFNpemUgPSAxLjAgLyB0ZXh0dXJlU2l6ZShzaGFkb3dNYXAsIDApOwogICAgZm9yKGludCB4ID0gLTE7IHggPD0gMTsgKyt4KQogICAgewogICAgICAgIGZvcihpbnQgeSA9IC0xOyB5IDw9IDE7ICsreSkKICAgICAgICB7CiAgICAgICAgICAgIGZsb2F0IHBjZkRlcHRoID0gdGV4dHVyZShzaGFkb3dNYXAsIHByb2pDb29yZHMueHkgKyB2ZWMyKHgsIHkpICogdGV4ZWxTaXplKS5yOwogICAgICAgICAgICBzaGFkb3cgKz0gY3VycmVudERlcHRoID4gcGNmRGVwdGggID8gMS4wIDogMC4wOwogICAgICAgIH0KICAgIH0KICAgIHNoYWRvdyAvPSA5LjA7CiAgICByZXR1cm4gc2hhZG93Owp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float currentDepth = projCoords.z;
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    for(int x = -1; x &lt;= 1; ++x)
+    {
+        for(int y = -1; y &lt;= 1; ++y)
+        {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+            shadow += currentDepth &gt; pcfDepth  ? 1.0 : 0.0;
+        }
+    }
+    shadow /= 9.0;
+    return shadow;
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Shadow mapping is a powerful technique for adding realistic shadows to a 3D scene. By understanding the process of creating a depth map, transforming coordinates to light space, and performing shadow tests, you can implement basic shadow mapping. Further improvements like PCF and adjusting shadow map resolution can enhance the quality of shadows in your scenes.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='advanced-shading-techniques'>&#x25C4;Advanced Shading Techniques</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Shadow Mapping in OpenGL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='post-processing-effects'>Post-Processing Effects &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

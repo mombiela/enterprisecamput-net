@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Patterns</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/arquitecturas_sistemas/patrones-seguridad" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/arquitecturas_sistemas/patrones-seguridad" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/arquitecturas_sistemas/patrones-seguridad" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/arquitecturas_sistemas/patrones-seguridad" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/arquitecturas_sistemas/patrones-seguridad" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In the development of system architectures, security is a critical aspect that must be considered from the initial design to implementation and maintenance. Security patterns are proven and reusable solutions that address common security problems in system design. This topic will explore various security patterns, their applications, and practical examples.</p>
+</div><h1>Main Security Patterns</h1>
+<div class='content'></div><h2>1. Authentication</h2>
+<div class='content'><p>Authentication is the process of verifying the identity of a user or system. This pattern ensures that only legitimate users can access system resources.</p>
+<ul>
+<li>
+<p><strong>Key Concepts:</strong></p>
+<ul>
+<li><strong>Credentials:</strong> Information used to verify identity (e.g., username and password).</li>
+<li><strong>Authentication Methods:</strong> Passwords, tokens, biometrics, etc.</li>
+<li><strong>Protocol:</strong> OAuth, SAML, JWT.</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Example:</strong></p>
+<pre><code class="language-python">from flask import Flask, request, jsonify
+from werkzeug.security import check_password_hash
+
+app = Flask(__name__)
+
+users = {
+    &quot;user1&quot;: {&quot;password_hash&quot;: &quot;hashed_password1&quot;},
+    &quot;user2&quot;: {&quot;password_hash&quot;: &quot;hashed_password2&quot;}
+}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    user = users.get(username)
+    if user and check_password_hash(user['password_hash'], password):
+        return jsonify({&quot;message&quot;: &quot;Login successful&quot;}), 200
+    return jsonify({&quot;message&quot;: &quot;Invalid credentials&quot;}), 401
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Authorization</h2>
+<div class='content'><p>Authorization determines which resources and actions are allowed for an authenticated user. This pattern ensures that users can only perform actions for which they have permissions.</p>
+<ul>
+<li>
+<p><strong>Key Concepts:</strong></p>
+<ul>
+<li><strong>Roles and Permissions:</strong> Definition of roles and associated permissions.</li>
+<li><strong>Role-Based Access Control (RBAC):</strong> Assignment of permissions according to roles.</li>
+<li><strong>Attribute-Based Access Control (ABAC):</strong> Assignment of permissions according to user and environment attributes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Example:</strong></p>
+<pre><code class="language-python">from flask import Flask, request, jsonify
+from functools import wraps
+
+app = Flask(__name__)
+
+roles_permissions = {
+    &quot;admin&quot;: [&quot;read&quot;, &quot;write&quot;, &quot;delete&quot;],
+    &quot;user&quot;: [&quot;read&quot;]
+}
+
+users = {
+    &quot;admin_user&quot;: {&quot;role&quot;: &quot;admin&quot;},
+    &quot;regular_user&quot;: {&quot;role&quot;: &quot;user&quot;}
+}
+
+def authorize(permission):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            username = request.headers.get('username')
+            user = users.get(username)
+            if user and permission in roles_permissions[user['role']]:
+                return f(*args, **kwargs)
+            return jsonify({&quot;message&quot;: &quot;Forbidden&quot;}), 403
+        return decorated_function
+    return decorator
+
+@app.route('/resource', methods=['GET'])
+@authorize('read')
+def get_resource():
+    return jsonify({&quot;message&quot;: &quot;Resource content&quot;}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Encryption</h2>
+<div class='content'><p>Encryption protects the confidentiality of data by converting it into an unreadable format for anyone who does not have the decryption key.</p>
+<ul>
+<li>
+<p><strong>Key Concepts:</strong></p>
+<ul>
+<li><strong>Symmetric Encryption:</strong> Uses the same key to encrypt and decrypt (e.g., AES).</li>
+<li><strong>Asymmetric Encryption:</strong> Uses a pair of public and private keys (e.g., RSA).</li>
+<li><strong>Certificates and PKI:</strong> Public Key Infrastructure to manage keys and certificates.</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Example:</strong></p>
+<pre><code class="language-python">from cryptography.fernet import Fernet
+
+# Generate a key and encrypt a message
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+cipher_text = cipher_suite.encrypt(b&quot;Secret message&quot;)
+
+# Decrypt the message
+plain_text = cipher_suite.decrypt(cipher_text)
+print(plain_text.decode())
+</code></pre>
+</li>
+</ul>
+</div><h2>4. Logging and Monitoring</h2>
+<div class='content'><p>Logging and monitoring are essential to detect and respond to security incidents. This pattern involves capturing and analyzing events and activities in the system.</p>
+<ul>
+<li>
+<p><strong>Key Concepts:</strong></p>
+<ul>
+<li><strong>Security Logs:</strong> Recording of security events.</li>
+<li><strong>Real-Time Monitoring:</strong> Detection of anomalies and alerts.</li>
+<li><strong>SIEM:</strong> Security Information and Event Management systems.</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Example:</strong></p>
+<pre><code class="language-python">import logging
+
+# Configure logging
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+def log_event(event):
+    logging.info(f&quot;Security event: {event}&quot;)
+
+# Log an event
+log_event(&quot;User admin_user logged in&quot;)
+</code></pre>
+</li>
+</ul>
+</div><h1>Comparison of Patterns</h1>
+<div class='content'><p>| Pattern         | Purpose                                    | Example of Use                  |
+|----------------|----------------------------------------------|---------------------------------|
+| Authentication  | Verify user identity                        | Login with username and password |
+| Authorization   | Control access to resources and actions     | Role-based permissions          |
+| Encryption      | Protect data confidentiality                | Encryption of sensitive messages |
+| Logging and Monitoring | Detect and respond to security incidents | Security event logs             |</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Security patterns are fundamental to designing robust and secure system architectures. Proper implementation of these patterns helps protect systems against common threats and vulnerabilities. By understanding and applying these patterns, IT professionals can significantly improve the security of their systems and applications.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

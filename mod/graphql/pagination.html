@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination in GraphQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/pagination" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/pagination" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/pagination" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/pagination" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/pagination" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='batching-and-caching'>&#x25C4;Batching and Caching</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pagination in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='rate-limiting'>Rate Limiting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Pagination is a crucial concept in GraphQL for managing large sets of data. It allows clients to request data in chunks, making data retrieval more efficient and manageable. This topic will cover the basics of pagination, different pagination strategies, and advanced techniques.</p>
+</div><h1>Introduction to Pagination</h1>
+<div class='content'><p>Pagination is the process of dividing a large dataset into smaller, more manageable chunks or pages. This is essential for performance and usability, especially when dealing with large datasets.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Page</strong>: A subset of the total dataset.</li>
+<li><strong>Cursor</strong>: A pointer to a specific item in the dataset, used to keep track of the current position.</li>
+<li><strong>Offset</strong>: The number of items to skip before starting to collect the result set.</li>
+<li><strong>Limit</strong>: The maximum number of items to return in a single page.</li>
+</ul>
+</div><h1>Pagination Strategies</h1>
+<div class='content'><p>There are two main strategies for implementing pagination in GraphQL: Offset-based pagination and Cursor-based pagination.</p>
+</div><h2>Offset-based Pagination</h2>
+<div class='content'><p>Offset-based pagination uses an offset and a limit to fetch a specific subset of data.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHBvc3RzKG9mZnNldDogMCwgbGltaXQ6IDEwKSB7CiAgICBpZAogICAgdGl0bGUKICAgIGNvbnRlbnQKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  posts(offset: 0, limit: 10) {
+    id
+    title
+    content
+  }
+}</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><code>offset</code>: The number of items to skip.</li>
+<li><code>limit</code>: The number of items to return.</li>
+</ul>
+<p>This query fetches the first 10 posts. To fetch the next 10 posts, you would set <code>offset</code> to 10.</p>
+</div><h2>Cursor-based Pagination</h2>
+<div class='content'><p>Cursor-based pagination uses a cursor to keep track of the current position in the dataset. This method is more efficient for large datasets and provides better performance.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHBvc3RzKGZpcnN0OiAxMCwgYWZ0ZXI6ICJjdXJzb3IxMjMiKSB7CiAgICBlZGdlcyB7CiAgICAgIG5vZGUgewogICAgICAgIGlkCiAgICAgICAgdGl0bGUKICAgICAgICBjb250ZW50CiAgICAgIH0KICAgICAgY3Vyc29yCiAgICB9CiAgICBwYWdlSW5mbyB7CiAgICAgIGVuZEN1cnNvcgogICAgICBoYXNOZXh0UGFnZQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  posts(first: 10, after: &quot;cursor123&quot;) {
+    edges {
+      node {
+        id
+        title
+        content
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><code>first</code>: The number of items to return.</li>
+<li><code>after</code>: The cursor pointing to the last item of the previous page.</li>
+<li><code>edges</code>: Contains the actual data and the cursor for each item.</li>
+<li><code>pageInfo</code>: Provides information about the pagination state, such as <code>endCursor</code> and <code>hasNextPage</code>.</li>
+</ul>
+</div><h1>Implementing Pagination in GraphQL</h1>
+<div class='content'></div><h2>Schema Definition</h2>
+<div class='content'><p>Define the schema to support pagination. Here’s an example schema for cursor-based pagination:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBQb3N0IHsKICBpZDogSUQhCiAgdGl0bGU6IFN0cmluZyEKICBjb250ZW50OiBTdHJpbmchCn0KCnR5cGUgUG9zdEVkZ2UgewogIG5vZGU6IFBvc3QKICBjdXJzb3I6IFN0cmluZyEKfQoKdHlwZSBQYWdlSW5mbyB7CiAgZW5kQ3Vyc29yOiBTdHJpbmcKICBoYXNOZXh0UGFnZTogQm9vbGVhbiEKfQoKdHlwZSBQb3N0Q29ubmVjdGlvbiB7CiAgZWRnZXM6IFtQb3N0RWRnZV0KICBwYWdlSW5mbzogUGFnZUluZm8hCn0KCnR5cGUgUXVlcnkgewogIHBvc3RzKGZpcnN0OiBJbnQsIGFmdGVyOiBTdHJpbmcpOiBQb3N0Q29ubmVjdGlvbgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Post {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+type PostEdge {
+  node: Post
+  cursor: String!
+}
+
+type PageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
+}
+
+type PostConnection {
+  edges: [PostEdge]
+  pageInfo: PageInfo!
+}
+
+type Query {
+  posts(first: Int, after: String): PostConnection
+}</pre></div><div class='content'></div><h2>Resolver Implementation</h2>
+<div class='content'><p>Implement the resolver to handle pagination logic. Here’s an example resolver for cursor-based pagination:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcG9zdHMgPSBbCiAgLy8gQXJyYXkgb2YgcG9zdCBvYmplY3RzCl07Cgpjb25zdCByZXNvbHZlcnMgPSB7CiAgUXVlcnk6IHsKICAgIHBvc3RzOiAocGFyZW50LCB7IGZpcnN0LCBhZnRlciB9KSA9PiB7CiAgICAgIGNvbnN0IHN0YXJ0SW5kZXggPSBhZnRlciA/IHBvc3RzLmZpbmRJbmRleChwb3N0ID0+IHBvc3QuaWQgPT09IGFmdGVyKSArIDEgOiAwOwogICAgICBjb25zdCBwYWdpbmF0ZWRQb3N0cyA9IHBvc3RzLnNsaWNlKHN0YXJ0SW5kZXgsIHN0YXJ0SW5kZXggKyBmaXJzdCk7CgogICAgICBjb25zdCBlZGdlcyA9IHBhZ2luYXRlZFBvc3RzLm1hcChwb3N0ID0+ICh7CiAgICAgICAgbm9kZTogcG9zdCwKICAgICAgICBjdXJzb3I6IHBvc3QuaWQsCiAgICAgIH0pKTsKCiAgICAgIGNvbnN0IGVuZEN1cnNvciA9IGVkZ2VzLmxlbmd0aCA+IDAgPyBlZGdlc1tlZGdlcy5sZW5ndGggLSAxXS5jdXJzb3IgOiBudWxsOwogICAgICBjb25zdCBoYXNOZXh0UGFnZSA9IHN0YXJ0SW5kZXggKyBmaXJzdCA8IHBvc3RzLmxlbmd0aDsKCiAgICAgIHJldHVybiB7CiAgICAgICAgZWRnZXMsCiAgICAgICAgcGFnZUluZm86IHsKICAgICAgICAgIGVuZEN1cnNvciwKICAgICAgICAgIGhhc05leHRQYWdlLAogICAgICAgIH0sCiAgICAgIH07CiAgICB9LAogIH0sCn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const posts = [
+  // Array of post objects
+];
+
+const resolvers = {
+  Query: {
+    posts: (parent, { first, after }) =&gt; {
+      const startIndex = after ? posts.findIndex(post =&gt; post.id === after) + 1 : 0;
+      const paginatedPosts = posts.slice(startIndex, startIndex + first);
+
+      const edges = paginatedPosts.map(post =&gt; ({
+        node: post,
+        cursor: post.id,
+      }));
+
+      const endCursor = edges.length &gt; 0 ? edges[edges.length - 1].cursor : null;
+      const hasNextPage = startIndex + first &lt; posts.length;
+
+      return {
+        edges,
+        pageInfo: {
+          endCursor,
+          hasNextPage,
+        },
+      };
+    },
+  },
+};</pre></div><div class='content'></div><h1>Advanced Pagination Techniques</h1>
+<div class='content'></div><h2>Bidirectional Pagination</h2>
+<div class='content'><p>Bidirectional pagination allows clients to navigate both forward and backward through the dataset. This can be achieved by adding <code>before</code> and <code>last</code> arguments to the query.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHBvc3RzKGxhc3Q6IDEwLCBiZWZvcmU6ICJjdXJzb3IxMjMiKSB7CiAgICBlZGdlcyB7CiAgICAgIG5vZGUgewogICAgICAgIGlkCiAgICAgICAgdGl0bGUKICAgICAgICBjb250ZW50CiAgICAgIH0KICAgICAgY3Vyc29yCiAgICB9CiAgICBwYWdlSW5mbyB7CiAgICAgIHN0YXJ0Q3Vyc29yCiAgICAgIGhhc1ByZXZpb3VzUGFnZQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  posts(last: 10, before: &quot;cursor123&quot;) {
+    edges {
+      node {
+        id
+        title
+        content
+      }
+      cursor
+    }
+    pageInfo {
+      startCursor
+      hasPreviousPage
+    }
+  }
+}</pre></div><div class='content'></div><h2>Combining Filters with Pagination</h2>
+<div class='content'><p>Combining filters with pagination allows clients to refine their data requests while still benefiting from pagination.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cXVlcnkgewogIHBvc3RzKGZpcnN0OiAxMCwgYWZ0ZXI6ICJjdXJzb3IxMjMiLCBmaWx0ZXI6IHsgYXV0aG9yOiAiSm9obiBEb2UiIH0pIHsKICAgIGVkZ2VzIHsKICAgICAgbm9kZSB7CiAgICAgICAgaWQKICAgICAgICB0aXRsZQogICAgICAgIGNvbnRlbnQKICAgICAgfQogICAgICBjdXJzb3IKICAgIH0KICAgIHBhZ2VJbmZvIHsKICAgICAgZW5kQ3Vyc29yCiAgICAgIGhhc05leHRQYWdlCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>query {
+  posts(first: 10, after: &quot;cursor123&quot;, filter: { author: &quot;John Doe&quot; }) {
+    edges {
+      node {
+        id
+        title
+        content
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      hasNextPage
+    }
+  }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Pagination is a fundamental concept in GraphQL that helps manage large datasets efficiently. By understanding and implementing different pagination strategies, such as offset-based and cursor-based pagination, you can enhance the performance and usability of your GraphQL APIs. Advanced techniques like bidirectional pagination and combining filters with pagination provide even more flexibility and control over data retrieval.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='batching-and-caching'>&#x25C4;Batching and Caching</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pagination in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='rate-limiting'>Rate Limiting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

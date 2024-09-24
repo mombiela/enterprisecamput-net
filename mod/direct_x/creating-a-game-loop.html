@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Game Loop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/creating-a-game-loop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/creating-a-game-loop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/creating-a-game-loop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/creating-a-game-loop" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/creating-a-game-loop" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-game-development-with-directx'>&#x25C4;Introduction to Game Development with DirectX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creating a Game Loop</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='handling-input'>Handling Input &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>A game loop is the core of any game engine. It continuously updates the game state and renders the game world. In this section, we will cover how to create a game loop using DirectX, starting from the basics and moving towards more advanced concepts.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Game Loop</strong>: A cycle that handles game updates and rendering.</li>
+<li><strong>Frame Rate</strong>: The frequency at which the game loop runs, typically measured in frames per second (FPS).</li>
+<li><strong>Delta Time</strong>: The time difference between the current frame and the previous frame, used to ensure smooth movement and animations.</li>
+</ul>
+</div><h1>Basic Game Loop Structure</h1>
+<div class='content'><p>A basic game loop consists of three main parts:</p>
+<ol>
+<li><strong>Initialization</strong>: Setting up the game environment.</li>
+<li><strong>Update</strong>: Updating the game state.</li>
+<li><strong>Render</strong>: Drawing the game world.</li>
+</ol>
+</div><h2>Initialization</h2>
+<div class='content'><p>Before entering the game loop, you need to initialize DirectX and set up the necessary resources.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW5pdGlhbGl6ZSBEaXJlY3RYCmJvb2wgSW5pdGlhbGl6ZURpcmVjdFgoSFdORCBod25kKSB7CiAgICAvLyBDcmVhdGUgdGhlIGRldmljZSBhbmQgZGV2aWNlIGNvbnRleHQKICAgIEhSRVNVTFQgaHIgPSBEM0QxMUNyZWF0ZURldmljZSgKICAgICAgICBudWxscHRyLCAgICAgICAgICAgICAgICAgICAgLy8gRGVmYXVsdCBhZGFwdGVyCiAgICAgICAgRDNEX0RSSVZFUl9UWVBFX0hBUkRXQVJFLCAgIC8vIEhhcmR3YXJlIGRyaXZlcgogICAgICAgIG51bGxwdHIsICAgICAgICAgICAgICAgICAgICAvLyBObyBzb2Z0d2FyZSBkZXZpY2UKICAgICAgICAwLCAgICAgICAgICAgICAgICAgICAgICAgICAgLy8gRmxhZ3MKICAgICAgICBudWxscHRyLCAwLCAgICAgICAgICAgICAgICAgLy8gRmVhdHVyZSBsZXZlbHMKICAgICAgICBEM0QxMV9TREtfVkVSU0lPTiwgICAgICAgICAgLy8gU0RLIHZlcnNpb24KICAgICAgICAmZGV2aWNlLCAgICAgICAgICAgICAgICAgICAgLy8gRGV2aWNlCiAgICAgICAgbnVsbHB0ciwgICAgICAgICAgICAgICAgICAgIC8vIEZlYXR1cmUgbGV2ZWwKICAgICAgICAmZGV2aWNlQ29udGV4dCAgICAgICAgICAgICAgLy8gRGV2aWNlIGNvbnRleHQKICAgICk7CgogICAgaWYgKEZBSUxFRChocikpIHsKICAgICAgICByZXR1cm4gZmFsc2U7CiAgICB9CgogICAgLy8gQWRkaXRpb25hbCBzZXR1cCBjb2RlLi4uCgogICAgcmV0dXJuIHRydWU7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Initialize DirectX
+bool InitializeDirectX(HWND hwnd) {
+    // Create the device and device context
+    HRESULT hr = D3D11CreateDevice(
+        nullptr,                    // Default adapter
+        D3D_DRIVER_TYPE_HARDWARE,   // Hardware driver
+        nullptr,                    // No software device
+        0,                          // Flags
+        nullptr, 0,                 // Feature levels
+        D3D11_SDK_VERSION,          // SDK version
+        &amp;device,                    // Device
+        nullptr,                    // Feature level
+        &amp;deviceContext              // Device context
+    );
+
+    if (FAILED(hr)) {
+        return false;
+    }
+
+    // Additional setup code...
+
+    return true;
+}</pre></div><div class='content'></div><h2>Update</h2>
+<div class='content'><p>The update function handles all game logic, such as moving characters, checking for collisions, and updating the game state.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBVcGRhdGUoZmxvYXQgZGVsdGFUaW1lKSB7CiAgICAvLyBFeGFtcGxlOiBNb3ZlIGEgY2hhcmFjdGVyCiAgICBjaGFyYWN0ZXJQb3NpdGlvbi54ICs9IGNoYXJhY3RlclNwZWVkICogZGVsdGFUaW1lOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Update(float deltaTime) {
+    // Example: Move a character
+    characterPosition.x += characterSpeed * deltaTime;
+}</pre></div><div class='content'></div><h2>Render</h2>
+<div class='content'><p>The render function draws the game world to the screen.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBSZW5kZXIoKSB7CiAgICAvLyBDbGVhciB0aGUgYmFjayBidWZmZXIKICAgIGZsb2F0IGNsZWFyQ29sb3JbXSA9IHsgMC4wZiwgMC4yZiwgMC40ZiwgMS4wZiB9OwogICAgZGV2aWNlQ29udGV4dC0+Q2xlYXJSZW5kZXJUYXJnZXRWaWV3KHJlbmRlclRhcmdldFZpZXcsIGNsZWFyQ29sb3IpOwoKICAgIC8vIERyYXcgZ2FtZSBvYmplY3RzCiAgICAvLyBFeGFtcGxlOiBEcmF3IGEgY2hhcmFjdGVyCiAgICBEcmF3Q2hhcmFjdGVyKGNoYXJhY3RlclBvc2l0aW9uKTsKCiAgICAvLyBQcmVzZW50IHRoZSBiYWNrIGJ1ZmZlciB0byB0aGUgc2NyZWVuCiAgICBzd2FwQ2hhaW4tPlByZXNlbnQoMSwgMCk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Render() {
+    // Clear the back buffer
+    float clearColor[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    deviceContext-&gt;ClearRenderTargetView(renderTargetView, clearColor);
+
+    // Draw game objects
+    // Example: Draw a character
+    DrawCharacter(characterPosition);
+
+    // Present the back buffer to the screen
+    swapChain-&gt;Present(1, 0);
+}</pre></div><div class='content'></div><h1>Implementing the Game Loop</h1>
+<div class='content'><p>Now that we have the basic components, let's put them together in a game loop.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBHYW1lTG9vcCgpIHsKICAgIE1TRyBtc2cgPSB7IDAgfTsKICAgIHdoaWxlIChtc2cubWVzc2FnZSAhPSBXTV9RVUlUKSB7CiAgICAgICAgaWYgKFBlZWtNZXNzYWdlKCZtc2csIG51bGxwdHIsIDAsIDAsIFBNX1JFTU9WRSkpIHsKICAgICAgICAgICAgVHJhbnNsYXRlTWVzc2FnZSgmbXNnKTsKICAgICAgICAgICAgRGlzcGF0Y2hNZXNzYWdlKCZtc2cpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIC8vIENhbGN1bGF0ZSBkZWx0YSB0aW1lCiAgICAgICAgICAgIHN0YXRpYyBEV09SRCBwcmV2VGltZSA9IHRpbWVHZXRUaW1lKCk7CiAgICAgICAgICAgIERXT1JEIGN1cnJUaW1lID0gdGltZUdldFRpbWUoKTsKICAgICAgICAgICAgZmxvYXQgZGVsdGFUaW1lID0gKGN1cnJUaW1lIC0gcHJldlRpbWUpIC8gMTAwMC4wZjsKICAgICAgICAgICAgcHJldlRpbWUgPSBjdXJyVGltZTsKCiAgICAgICAgICAgIC8vIFVwZGF0ZSBhbmQgcmVuZGVyCiAgICAgICAgICAgIFVwZGF0ZShkZWx0YVRpbWUpOwogICAgICAgICAgICBSZW5kZXIoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void GameLoop() {
+    MSG msg = { 0 };
+    while (msg.message != WM_QUIT) {
+        if (PeekMessage(&amp;msg, nullptr, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&amp;msg);
+            DispatchMessage(&amp;msg);
+        } else {
+            // Calculate delta time
+            static DWORD prevTime = timeGetTime();
+            DWORD currTime = timeGetTime();
+            float deltaTime = (currTime - prevTime) / 1000.0f;
+            prevTime = currTime;
+
+            // Update and render
+            Update(deltaTime);
+            Render();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Advanced Topics</h1>
+<h2>Frame Rate Control</h2>
+<div class='content'><p>To ensure a consistent frame rate, you can implement frame rate control.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaW50IFRBUkdFVF9GUFMgPSA2MDsKY29uc3QgZmxvYXQgVEFSR0VUX0ZSQU1FX1RJTUUgPSAxLjBmIC8gVEFSR0VUX0ZQUzsKCnZvaWQgR2FtZUxvb3AoKSB7CiAgICBNU0cgbXNnID0geyAwIH07CiAgICB3aGlsZSAobXNnLm1lc3NhZ2UgIT0gV01fUVVJVCkgewogICAgICAgIGlmIChQZWVrTWVzc2FnZSgmbXNnLCBudWxscHRyLCAwLCAwLCBQTV9SRU1PVkUpKSB7CiAgICAgICAgICAgIFRyYW5zbGF0ZU1lc3NhZ2UoJm1zZyk7CiAgICAgICAgICAgIERpc3BhdGNoTWVzc2FnZSgmbXNnKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAvLyBDYWxjdWxhdGUgZGVsdGEgdGltZQogICAgICAgICAgICBzdGF0aWMgRFdPUkQgcHJldlRpbWUgPSB0aW1lR2V0VGltZSgpOwogICAgICAgICAgICBEV09SRCBjdXJyVGltZSA9IHRpbWVHZXRUaW1lKCk7CiAgICAgICAgICAgIGZsb2F0IGRlbHRhVGltZSA9IChjdXJyVGltZSAtIHByZXZUaW1lKSAvIDEwMDAuMGY7CgogICAgICAgICAgICBpZiAoZGVsdGFUaW1lID49IFRBUkdFVF9GUkFNRV9USU1FKSB7CiAgICAgICAgICAgICAgICBwcmV2VGltZSA9IGN1cnJUaW1lOwoKICAgICAgICAgICAgICAgIC8vIFVwZGF0ZSBhbmQgcmVuZGVyCiAgICAgICAgICAgICAgICBVcGRhdGUoZGVsdGFUaW1lKTsKICAgICAgICAgICAgICAgIFJlbmRlcigpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const int TARGET_FPS = 60;
+const float TARGET_FRAME_TIME = 1.0f / TARGET_FPS;
+
+void GameLoop() {
+    MSG msg = { 0 };
+    while (msg.message != WM_QUIT) {
+        if (PeekMessage(&amp;msg, nullptr, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&amp;msg);
+            DispatchMessage(&amp;msg);
+        } else {
+            // Calculate delta time
+            static DWORD prevTime = timeGetTime();
+            DWORD currTime = timeGetTime();
+            float deltaTime = (currTime - prevTime) / 1000.0f;
+
+            if (deltaTime &gt;= TARGET_FRAME_TIME) {
+                prevTime = currTime;
+
+                // Update and render
+                Update(deltaTime);
+                Render();
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Handling Variable Frame Rates</h2>
+<div class='content'><p>To handle variable frame rates, you can use a fixed time step for updates and interpolate rendering.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZmxvYXQgRklYRURfVElNRV9TVEVQID0gMC4wMTZmOyAvLyA2MCBGUFMKCnZvaWQgR2FtZUxvb3AoKSB7CiAgICBNU0cgbXNnID0geyAwIH07CiAgICBmbG9hdCBhY2N1bXVsYXRvciA9IDAuMGY7CgogICAgd2hpbGUgKG1zZy5tZXNzYWdlICE9IFdNX1FVSVQpIHsKICAgICAgICBpZiAoUGVla01lc3NhZ2UoJm1zZywgbnVsbHB0ciwgMCwgMCwgUE1fUkVNT1ZFKSkgewogICAgICAgICAgICBUcmFuc2xhdGVNZXNzYWdlKCZtc2cpOwogICAgICAgICAgICBEaXNwYXRjaE1lc3NhZ2UoJm1zZyk7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgLy8gQ2FsY3VsYXRlIGRlbHRhIHRpbWUKICAgICAgICAgICAgc3RhdGljIERXT1JEIHByZXZUaW1lID0gdGltZUdldFRpbWUoKTsKICAgICAgICAgICAgRFdPUkQgY3VyclRpbWUgPSB0aW1lR2V0VGltZSgpOwogICAgICAgICAgICBmbG9hdCBkZWx0YVRpbWUgPSAoY3VyclRpbWUgLSBwcmV2VGltZSkgLyAxMDAwLjBmOwogICAgICAgICAgICBwcmV2VGltZSA9IGN1cnJUaW1lOwoKICAgICAgICAgICAgYWNjdW11bGF0b3IgKz0gZGVsdGFUaW1lOwoKICAgICAgICAgICAgd2hpbGUgKGFjY3VtdWxhdG9yID49IEZJWEVEX1RJTUVfU1RFUCkgewogICAgICAgICAgICAgICAgVXBkYXRlKEZJWEVEX1RJTUVfU1RFUCk7CiAgICAgICAgICAgICAgICBhY2N1bXVsYXRvciAtPSBGSVhFRF9USU1FX1NURVA7CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIFJlbmRlcigpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const float FIXED_TIME_STEP = 0.016f; // 60 FPS
+
+void GameLoop() {
+    MSG msg = { 0 };
+    float accumulator = 0.0f;
+
+    while (msg.message != WM_QUIT) {
+        if (PeekMessage(&amp;msg, nullptr, 0, 0, PM_REMOVE)) {
+            TranslateMessage(&amp;msg);
+            DispatchMessage(&amp;msg);
+        } else {
+            // Calculate delta time
+            static DWORD prevTime = timeGetTime();
+            DWORD currTime = timeGetTime();
+            float deltaTime = (currTime - prevTime) / 1000.0f;
+            prevTime = currTime;
+
+            accumulator += deltaTime;
+
+            while (accumulator &gt;= FIXED_TIME_STEP) {
+                Update(FIXED_TIME_STEP);
+                accumulator -= FIXED_TIME_STEP;
+            }
+
+            Render();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Creating a game loop is fundamental to game development. By understanding and implementing a game loop, you can control the flow of your game, ensuring smooth updates and rendering. As you advance, you can incorporate more sophisticated techniques like frame rate control and handling variable frame rates to enhance your game's performance and user experience.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-game-development-with-directx'>&#x25C4;Introduction to Game Development with DirectX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creating a Game Loop</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='handling-input'>Handling Input &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

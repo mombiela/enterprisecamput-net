@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Vuex in Components</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/using-vuex-components" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/using-vuex-components" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/using-vuex-components" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/vuejs/using-vuex-components" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/using-vuex-components" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='modules-vuex'>&#x25C4;Modules in Vuex</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Vuex in Components</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-vuex-patterns'>Advanced Vuex Patterns &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Vuex</h1>
+<div class='content'><p>Vuex is a state management pattern + library for Vue.js applications. It serves as a centralized store for all the components in an application, with rules ensuring that the state can only be mutated in a predictable fashion. Vuex is often used in medium to large-scale applications to manage state more efficiently.</p>
+</div><h1>Setting Up Vuex</h1>
+<div class='content'><p>Before using Vuex in your components, you need to set it up in your Vue.js project.</p>
+<ol>
+<li>
+<p><strong>Install Vuex</strong>:</p>
+<pre><code class="language-bash">npm install vuex
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Vuex Store</strong>:</p>
+<pre><code class="language-javascript">// store.js
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+    state: {
+        count: 0
+    },
+    mutations: {
+        increment(state) {
+            state.count++;
+        }
+    },
+    actions: {
+        increment({ commit }) {
+            commit('increment');
+        }
+    },
+    getters: {
+        count: state =&gt; state.count
+    }
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Integrate the Store with Vue Instance</strong>:</p>
+<pre><code class="language-javascript">// main.js
+import Vue from 'vue';
+import App from './App.vue';
+import store from './store';
+
+new Vue({
+    store,
+    render: h =&gt; h(App)
+}).$mount('#app');
+</code></pre>
+</li>
+</ol>
+</div><h1>Accessing State in Components</h1>
+<div class='content'><p>To access the state in your Vue components, you can use the <code>mapState</code> helper from Vuex.</p>
+<ol>
+<li>
+<p><strong>Using <code>mapState</code></strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapState } from 'vuex';
+
+export default {
+    computed: {
+        ...mapState(['count'])
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Direct Access</strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ $store.state.count }}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+    computed: {
+        count() {
+            return this.$store.state.count;
+        }
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Committing Mutations</h1>
+<div class='content'><p>To change the state, you need to commit mutations. This ensures that state changes are trackable and predictable.</p>
+<ol>
+<li>
+<p><strong>Using <code>mapMutations</code></strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+        &lt;button @click=&quot;increment&quot;&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapState, mapMutations } from 'vuex';
+
+export default {
+    computed: {
+        ...mapState(['count'])
+    },
+    methods: {
+        ...mapMutations(['increment'])
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Direct Commit</strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+        &lt;button @click=&quot;increment&quot;&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+    computed: {
+        count() {
+            return this.$store.state.count;
+        }
+    },
+    methods: {
+        increment() {
+            this.$store.commit('increment');
+        }
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Dispatching Actions</h1>
+<div class='content'><p>Actions are similar to mutations, but instead of mutating the state directly, actions commit mutations. Actions can contain asynchronous operations.</p>
+<ol>
+<li>
+<p><strong>Using <code>mapActions</code></strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+        &lt;button @click=&quot;increment&quot;&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapState, mapActions } from 'vuex';
+
+export default {
+    computed: {
+        ...mapState(['count'])
+    },
+    methods: {
+        ...mapActions(['increment'])
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Direct Dispatch</strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+        &lt;button @click=&quot;increment&quot;&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+    computed: {
+        count() {
+            return this.$store.state.count;
+        }
+    },
+    methods: {
+        increment() {
+            this.$store.dispatch('increment');
+        }
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Using Getters</h1>
+<div class='content'><p>Getters are used to compute derived state based on store state. They are similar to computed properties for stores.</p>
+<ol>
+<li>
+<p><strong>Using <code>mapGetters</code></strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { mapGetters } from 'vuex';
+
+export default {
+    computed: {
+        ...mapGetters(['count'])
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Direct Access</strong>:</p>
+<pre><code class="language-javascript">// MyComponent.vue
+&lt;template&gt;
+    &lt;div&gt;
+        &lt;p&gt;Count: {{ count }}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+    computed: {
+        count() {
+            return this.$store.getters.count;
+        }
+    }
+};
+&lt;/script&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Using Vuex in your Vue.js components allows you to manage state in a more structured and predictable way. By leveraging Vuex's state, mutations, actions, and getters, you can create applications that are easier to debug and maintain. Remember to use the provided helpers (<code>mapState</code>, <code>mapMutations</code>, <code>mapActions</code>, and <code>mapGetters</code>) to keep your components clean and concise.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='modules-vuex'>&#x25C4;Modules in Vuex</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Vuex in Components</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-vuex-patterns'>Advanced Vuex Patterns &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

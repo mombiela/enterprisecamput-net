@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restart and Checkpoint in JCL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jcl/restart-and-checkpoint" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jcl/restart-and-checkpoint" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jcl/restart-and-checkpoint" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jcl/restart-and-checkpoint" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jcl/restart-and-checkpoint" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='conditional-processing'>&#x25C4;Conditional Processing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Restart and Checkpoint in JCL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='generation-data-groups'>Generation Data Groups (GDGs) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In Job Control Language (JCL), the concepts of Restart and Checkpoint are crucial for managing long-running jobs and ensuring that they can be resumed from a specific point in case of failure. This section will cover the basics of these concepts, how to implement them, and best practices.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Restart</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Restarting a job means resuming its execution from a specific step after a failure or interruption.</li>
+<li><strong>Purpose</strong>: To avoid reprocessing steps that have already completed successfully, saving time and resources.</li>
+<li><strong>Syntax</strong>: The <code>RESTART</code> parameter is used in the <code>JOB</code> statement to specify the step from which to restart.</li>
+</ul>
+</div><h2>Checkpoint</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A checkpoint is a designated point within a job step where the system can save the current state of processing.</li>
+<li><strong>Purpose</strong>: To allow a job step to resume from the last checkpoint rather than starting over from the beginning of the step.</li>
+<li><strong>Implementation</strong>: Requires application-level coding to periodically save the state and read it upon restart.</li>
+</ul>
+</div><h1>Restart Implementation</h1>
+<div class='content'></div><h2>Basic Syntax</h2>
+<div class='content'><p>To restart a job from a specific step, use the <code>RESTART</code> parameter in the <code>JOB</code> statement:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgIEpPQiAgKEFDQ1QpLCdSRVNUQVJUIEVYQU1QTEUnLFJFU1RBUlQ9U1RFUDMKLy9TVEVQMSAgIEVYRUMgUEdNPVBST0cxCi8vU1RFUDIgICBFWEVDIFBHTT1QUk9HMgovL1NURVAzICAgRVhFQyBQR009UFJPRzMKLy9TVEVQNCAgIEVYRUMgUEdNPVBST0c0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB   JOB  (ACCT),'RESTART EXAMPLE',RESTART=STEP3
+//STEP1   EXEC PGM=PROG1
+//STEP2   EXEC PGM=PROG2
+//STEP3   EXEC PGM=PROG3
+//STEP4   EXEC PGM=PROG4</pre></div><div class='content'><p>In this example, if the job fails at <code>STEP4</code>, you can restart it from <code>STEP3</code> by specifying <code>RESTART=STEP3</code>.</p>
+</div><h2>Conditional Restart</h2>
+<div class='content'><p>You can also restart a job conditionally based on the return code of a previous step:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgIEpPQiAgKEFDQ1QpLCdDT05ESVRJT05BTCBSRVNUQVJUJyxSRVNUQVJUPShTVEVQMyxDT05EPSgwLE5FKSkKLy9TVEVQMSAgIEVYRUMgUEdNPVBST0cxCi8vU1RFUDIgICBFWEVDIFBHTT1QUk9HMgovL1NURVAzICAgRVhFQyBQR009UFJPRzMKLy9TVEVQNCAgIEVYRUMgUEdNPVBST0c0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB   JOB  (ACCT),'CONDITIONAL RESTART',RESTART=(STEP3,COND=(0,NE))
+//STEP1   EXEC PGM=PROG1
+//STEP2   EXEC PGM=PROG2
+//STEP3   EXEC PGM=PROG3
+//STEP4   EXEC PGM=PROG4</pre></div><div class='content'><p>In this example, the job will restart from <code>STEP3</code> only if the return code of <code>STEP2</code> is not equal to 0.</p>
+</div><h1>Checkpoint Implementation</h1>
+<div class='content'></div><h2>Application-Level Checkpoints</h2>
+<div class='content'><p>Implementing checkpoints requires modifying the application code to periodically save its state. Here is a simplified example in COBOL:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SURFTlRJRklDQVRJT04gRElWSVNJT04uClBST0dSQU0tSUQuIENIRUNLUE9JTlQtRVhBTVBMRS4KCkRBVEEgRElWSVNJT04uCldPUktJTkctU1RPUkFHRSBTRUNUSU9OLgowMSAgV1MtQ0hFQ0tQT0lOVC1SRUNPUkQuCiAgICAwNSAgV1MtQ0hFQ0tQT0lOVC1EQVRBICBQSUMgWCgxMDApLgoKUFJPQ0VEVVJFIERJVklTSU9OLgpNQUlOLUxPR0lDLgogICAgUEVSRk9STSBVTlRJTCBFTkQtT0YtREFUQQogICAgICAgIFJFQUQgTkVYVCBSRUNPUkQKICAgICAgICBJRiBFUlJPUgogICAgICAgICAgICBQRVJGT1JNIEhBTkRMRS1FUlJPUgogICAgICAgIEVMU0UKICAgICAgICAgICAgUEVSRk9STSBQUk9DRVNTLVJFQ09SRAogICAgICAgICAgICBQRVJGT1JNIFNBVkUtQ0hFQ0tQT0lOVAogICAgICAgIEVORC1JRgogICAgRU5ELVBFUkZPUk0uCiAgICBTVE9QIFJVTi4KClNBVkUtQ0hFQ0tQT0lOVC4KICAgIE1PVkUgQ1VSUkVOVC1TVEFURSBUTyBXUy1DSEVDS1BPSU5ULURBVEEuCiAgICBXUklURSBXUy1DSEVDS1BPSU5ULVJFQ09SRC4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>IDENTIFICATION DIVISION.
+PROGRAM-ID. CHECKPOINT-EXAMPLE.
+
+DATA DIVISION.
+WORKING-STORAGE SECTION.
+01  WS-CHECKPOINT-RECORD.
+    05  WS-CHECKPOINT-DATA  PIC X(100).
+
+PROCEDURE DIVISION.
+MAIN-LOGIC.
+    PERFORM UNTIL END-OF-DATA
+        READ NEXT RECORD
+        IF ERROR
+            PERFORM HANDLE-ERROR
+        ELSE
+            PERFORM PROCESS-RECORD
+            PERFORM SAVE-CHECKPOINT
+        END-IF
+    END-PERFORM.
+    STOP RUN.
+
+SAVE-CHECKPOINT.
+    MOVE CURRENT-STATE TO WS-CHECKPOINT-DATA.
+    WRITE WS-CHECKPOINT-RECORD.</pre></div><div class='content'></div><h2>JCL for Checkpoint Restart</h2>
+<div class='content'><p>To restart a job step from a checkpoint, you need to modify the JCL to read the checkpoint data:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgIEpPQiAgKEFDQ1QpLCdDSEVDS1BPSU5UIFJFU1RBUlQnCi8vU1RFUDEgICBFWEVDIFBHTT1DSEtQVFBHTQovL1NZU0lOICAgREQgICoKICBSRVNUQVJUIEZST00gQ0hFQ0tQT0lOVAovKg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB   JOB  (ACCT),'CHECKPOINT RESTART'
+//STEP1   EXEC PGM=CHKPTPGM
+//SYSIN   DD  *
+  RESTART FROM CHECKPOINT
+/*</pre></div><div class='content'><p>In this example, <code>CHKPTPGM</code> is the program that reads the checkpoint data and resumes processing from the saved state.</p>
+</div><h1>Best Practices</h1>
+<div class='content'><ul>
+<li><strong>Frequent Checkpoints</strong>: For long-running jobs, take checkpoints frequently to minimize reprocessing time.</li>
+<li><strong>Error Handling</strong>: Implement robust error handling to ensure that checkpoints are taken correctly and can be used for reliable restarts.</li>
+<li><strong>Documentation</strong>: Clearly document the checkpoint and restart logic within your code and JCL to make it easier for others to understand and maintain.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Restart and Checkpoint are essential features in JCL for managing long-running jobs and ensuring efficient recovery from failures. By understanding and implementing these concepts, you can significantly improve the reliability and efficiency of your batch processing jobs. Remember to follow best practices for frequent checkpoints, robust error handling, and thorough documentation to make the most of these features.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='conditional-processing'>&#x25C4;Conditional Processing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Restart and Checkpoint in JCL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='generation-data-groups'>Generation Data Groups (GDGs) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

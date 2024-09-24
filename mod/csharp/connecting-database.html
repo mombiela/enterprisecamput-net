@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting to a Database</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/csharp/connecting-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/csharp/connecting-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/csharp/connecting-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/csharp/connecting-database" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/csharp/connecting-database" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-databases'>&#x25C4;Introduction to Databases</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Connecting to a Database</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='crud-operations'>CRUD Operations &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Connecting to a database is a fundamental skill for any C# developer. This topic will guide you through the process from beginner to advanced levels, covering the basics of database connections, executing queries, and handling data efficiently.</p>
+</div><h1>Introduction to Databases</h1>
+<div class='content'><p>Before diving into the code, it's essential to understand what a database is and why it's used.</p>
+<ul>
+<li><strong>Database</strong>: A structured collection of data that can be easily accessed, managed, and updated.</li>
+<li><strong>SQL (Structured Query Language)</strong>: A standard language for managing and manipulating databases.</li>
+</ul>
+</div><h1>Setting Up Your Environment</h1>
+<div class='content'><p>To connect to a database in C#, you'll need:</p>
+<ol>
+<li><strong>A Database Management System (DBMS)</strong>: Examples include SQL Server, MySQL, PostgreSQL, etc.</li>
+<li><strong>.NET Framework or .NET Core</strong>: Ensure you have the latest version installed.</li>
+<li><strong>Database Connection Library</strong>: For SQL Server, you can use <code>System.Data.SqlClient</code>.</li>
+</ol>
+</div><h1>Basic Connection to a SQL Server Database</h1>
+<div class='content'></div><h2>Step 1: Install Necessary Packages</h2>
+<div class='content'><p>For .NET Core, you can install the <code>System.Data.SqlClient</code> package via NuGet:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG90bmV0IGFkZCBwYWNrYWdlIFN5c3RlbS5EYXRhLlNxbENsaWVudA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dotnet add package System.Data.SqlClient</pre></div><div class='content'></div><h2>Step 2: Establishing a Connection</h2>
+<div class='content'><p>Here's a simple example of how to connect to a SQL Server database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcjtEYXRhYmFzZT15b3VyX2RhdGFiYXNlO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgdHJ5CiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIGNvbm5lY3Rpb24uT3BlbigpOwogICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIkNvbm5lY3Rpb24gc3VjY2Vzc2Z1bCEiKTsKICAgICAgICAgICAgfQogICAgICAgICAgICBjYXRjaCAoRXhjZXB0aW9uIGV4KQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBDb25zb2xlLldyaXRlTGluZSgkIkFuIGVycm9yIG9jY3VycmVkOiB7ZXguTWVzc2FnZX0iKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server;Database=your_database;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                Console.WriteLine(&quot;Connection successful!&quot;);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($&quot;An error occurred: {ex.Message}&quot;);
+            }
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>SqlConnection</code>: Represents a connection to a SQL Server database.</li>
+<li><code>connectionString</code>: Contains the information needed to connect to the database.</li>
+<li><code>connection.Open()</code>: Opens the connection to the database.</li>
+<li><code>using</code> statement: Ensures that the connection is closed and disposed of properly.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Executing SQL Commands</h1>
+<div class='content'></div><h2>Step 1: Executing a Simple Query</h2>
+<div class='content'><p>To execute a query, you can use the <code>SqlCommand</code> class:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcjtEYXRhYmFzZT15b3VyX2RhdGFiYXNlO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIAogICAgICAgICAgICBzdHJpbmcgcXVlcnkgPSAiU0VMRUNUIENPVU5UKCopIEZST00geW91cl90YWJsZSI7CiAgICAgICAgICAgIFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKTsKICAgICAgICAgICAgCiAgICAgICAgICAgIGludCBjb3VudCA9IChpbnQpY29tbWFuZC5FeGVjdXRlU2NhbGFyKCk7CiAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCQiTnVtYmVyIG9mIHJvd3M6IHtjb3VudH0iKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server;Database=your_database;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            
+            string query = &quot;SELECT COUNT(*) FROM your_table&quot;;
+            SqlCommand command = new SqlCommand(query, connection);
+            
+            int count = (int)command.ExecuteScalar();
+            Console.WriteLine($&quot;Number of rows: {count}&quot;);
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>SqlCommand</code>: Represents a SQL statement to execute against a SQL Server database.</li>
+<li><code>ExecuteScalar()</code>: Executes the query and returns the first column of the first row in the result set.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Step 2: Reading Data with `SqlDataReader`</h2>
+<div class='content'><p>For more complex queries, you can use <code>SqlDataReader</code> to read data row by row:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcjtEYXRhYmFzZT15b3VyX2RhdGFiYXNlO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIAogICAgICAgICAgICBzdHJpbmcgcXVlcnkgPSAiU0VMRUNUICogRlJPTSB5b3VyX3RhYmxlIjsKICAgICAgICAgICAgU3FsQ29tbWFuZCBjb21tYW5kID0gbmV3IFNxbENvbW1hbmQocXVlcnksIGNvbm5lY3Rpb24pOwogICAgICAgICAgICAKICAgICAgICAgICAgdXNpbmcgKFNxbERhdGFSZWFkZXIgcmVhZGVyID0gY29tbWFuZC5FeGVjdXRlUmVhZGVyKCkpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIHdoaWxlIChyZWFkZXIuUmVhZCgpKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCQiSUQ6IHtyZWFkZXJbIklEIl19LCBOYW1lOiB7cmVhZGVyWyJOYW1lIl19Iik7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server;Database=your_database;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            
+            string query = &quot;SELECT * FROM your_table&quot;;
+            SqlCommand command = new SqlCommand(query, connection);
+            
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($&quot;ID: {reader[&quot;ID&quot;]}, Name: {reader[&quot;Name&quot;]}&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>ExecuteReader()</code>: Executes the query and returns a <code>SqlDataReader</code> to read the results.</li>
+<li><code>reader.Read()</code>: Advances to the next record in the result set.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<div class='content'></div><h2>Using Parameters to Prevent SQL Injection</h2>
+<div class='content'><p>To prevent SQL injection attacks, always use parameters in your queries:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcjtEYXRhYmFzZT15b3VyX2RhdGFiYXNlO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIAogICAgICAgICAgICBzdHJpbmcgcXVlcnkgPSAiU0VMRUNUICogRlJPTSB5b3VyX3RhYmxlIFdIRVJFIE5hbWUgPSBAbmFtZSI7CiAgICAgICAgICAgIFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKTsKICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQG5hbWUiLCAiSm9obiBEb2UiKTsKICAgICAgICAgICAgCiAgICAgICAgICAgIHVzaW5nIChTcWxEYXRhUmVhZGVyIHJlYWRlciA9IGNvbW1hbmQuRXhlY3V0ZVJlYWRlcigpKQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICB3aGlsZSAocmVhZGVyLlJlYWQoKSkKICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICBDb25zb2xlLldyaXRlTGluZSgkIklEOiB7cmVhZGVyWyJJRCJdfSwgTmFtZToge3JlYWRlclsiTmFtZSJdfSIpOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server;Database=your_database;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            
+            string query = &quot;SELECT * FROM your_table WHERE Name = @name&quot;;
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue(&quot;@name&quot;, &quot;John Doe&quot;);
+            
+            using (SqlDataReader reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    Console.WriteLine($&quot;ID: {reader[&quot;ID&quot;]}, Name: {reader[&quot;Name&quot;]}&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>command.Parameters.AddWithValue(&quot;@name&quot;, &quot;John Doe&quot;)</code>: Adds a parameter to the SQL query to prevent SQL injection.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Handling Transactions</h2>
+<div class='content'><p>Transactions ensure that a series of operations either all succeed or all fail, maintaining data integrity:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcjtEYXRhYmFzZT15b3VyX2RhdGFiYXNlO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIFNxbFRyYW5zYWN0aW9uIHRyYW5zYWN0aW9uID0gY29ubmVjdGlvbi5CZWdpblRyYW5zYWN0aW9uKCk7CiAgICAgICAgICAgIAogICAgICAgICAgICB0cnkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgU3FsQ29tbWFuZCBjb21tYW5kMSA9IG5ldyBTcWxDb21tYW5kKCJJTlNFUlQgSU5UTyB5b3VyX3RhYmxlIChOYW1lKSBWQUxVRVMgKCdKb2huIERvZScpIiwgY29ubmVjdGlvbiwgdHJhbnNhY3Rpb24pOwogICAgICAgICAgICAgICAgY29tbWFuZDEuRXhlY3V0ZU5vblF1ZXJ5KCk7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIFNxbENvbW1hbmQgY29tbWFuZDIgPSBuZXcgU3FsQ29tbWFuZCgiSU5TRVJUIElOVE8geW91cl90YWJsZSAoTmFtZSkgVkFMVUVTICgnSmFuZSBEb2UnKSIsIGNvbm5lY3Rpb24sIHRyYW5zYWN0aW9uKTsKICAgICAgICAgICAgICAgIGNvbW1hbmQyLkV4ZWN1dGVOb25RdWVyeSgpOwogICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICB0cmFuc2FjdGlvbi5Db21taXQoKTsKICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJUcmFuc2FjdGlvbiBjb21taXR0ZWQuIik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgY2F0Y2ggKEV4Y2VwdGlvbiBleCkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgdHJhbnNhY3Rpb24uUm9sbGJhY2soKTsKICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCQiVHJhbnNhY3Rpb24gcm9sbGVkIGJhY2s6IHtleC5NZXNzYWdlfSIpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server;Database=your_database;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            SqlTransaction transaction = connection.BeginTransaction();
+            
+            try
+            {
+                SqlCommand command1 = new SqlCommand(&quot;INSERT INTO your_table (Name) VALUES ('John Doe')&quot;, connection, transaction);
+                command1.ExecuteNonQuery();
+                
+                SqlCommand command2 = new SqlCommand(&quot;INSERT INTO your_table (Name) VALUES ('Jane Doe')&quot;, connection, transaction);
+                command2.ExecuteNonQuery();
+                
+                transaction.Commit();
+                Console.WriteLine(&quot;Transaction committed.&quot;);
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                Console.WriteLine($&quot;Transaction rolled back: {ex.Message}&quot;);
+            }
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>BeginTransaction()</code>: Starts a new transaction.</li>
+<li><code>transaction.Commit()</code>: Commits the transaction.</li>
+<li><code>transaction.Rollback()</code>: Rolls back the transaction in case of an error.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Connecting to a database in C# involves understanding the basics of database management systems, setting up your environment, and using the appropriate classes and methods to execute queries and handle data. By following best practices such as using parameters to prevent SQL injection and handling transactions properly, you can ensure your applications are secure and reliable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-databases'>&#x25C4;Introduction to Databases</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Connecting to a Database</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='crud-operations'>CRUD Operations &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

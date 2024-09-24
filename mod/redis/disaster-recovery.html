@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Recovery in Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/disaster-recovery" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/disaster-recovery" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/disaster-recovery" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/disaster-recovery" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/disaster-recovery" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging'>&#x25C4;Logging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Disaster Recovery in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='upgrading-redis'>Upgrading Redis &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Disaster recovery is a critical aspect of managing any database system, including Redis. It involves preparing for and recovering from unexpected events that can cause data loss or downtime. This section will guide you through the essential concepts, strategies, and tools for implementing disaster recovery in Redis.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Data Persistence</strong>: Ensuring that data is saved to disk to prevent loss in case of a crash.</li>
+<li><strong>Replication</strong>: Creating copies of your Redis data across multiple servers to ensure high availability.</li>
+<li><strong>Backup and Restore</strong>: Regularly saving snapshots of your data and having a plan to restore them.</li>
+<li><strong>Failover</strong>: Automatically switching to a standby server if the primary server fails.</li>
+</ul>
+</div><h1>Data Persistence</h1>
+<div class='content'><p>Redis provides two main mechanisms for data persistence:</p>
+<ol>
+<li>
+<p><strong>RDB (Redis Database Backup)</strong>:</p>
+<ul>
+<li>Creates point-in-time snapshots of your dataset at specified intervals.</li>
+<li>Suitable for infrequent backups and faster restarts.</li>
+<li>Configuration example:
+<pre><code class="language-redis">save 900 1
+save 300 10
+save 60 10000
+</code></pre>
+This configuration saves a snapshot if:
+<ul>
+<li>At least 1 key changed in 900 seconds (15 minutes).</li>
+<li>At least 10 keys changed in 300 seconds (5 minutes).</li>
+<li>At least 10000 keys changed in 60 seconds (1 minute).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>AOF (Append-Only File)</strong>:</p>
+<ul>
+<li>Logs every write operation received by the server.</li>
+<li>More durable but can be slower than RDB.</li>
+<li>Configuration example:
+<pre><code class="language-redis">appendonly yes
+appendfsync everysec
+</code></pre>
+This configuration enables AOF and sets it to sync to disk every second.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Replication</h1>
+<div class='content'><p>Replication in Redis allows you to create replicas of your primary Redis server. This is crucial for high availability and disaster recovery.</p>
+<ul>
+<li>
+<p><strong>Setting up a replica</strong>:</p>
+<pre><code class="language-redis">replicaof &lt;master-ip&gt; &lt;master-port&gt;
+</code></pre>
+<p>Example:</p>
+<pre><code class="language-redis">replicaof 127.0.0.1 6379
+</code></pre>
+</li>
+<li>
+<p><strong>Promoting a replica to master</strong>:
+In case the master fails, you can promote a replica to master:</p>
+<pre><code class="language-redis">SLAVEOF NO ONE
+</code></pre>
+</li>
+</ul>
+</div><h1>Backup and Restore</h1>
+<div class='content'><p>Regular backups are essential for disaster recovery. Redis supports creating backups using RDB snapshots.</p>
+<ul>
+<li>
+<p><strong>Creating a backup</strong>:
+You can manually trigger a snapshot:</p>
+<pre><code class="language-redis">BGSAVE
+</code></pre>
+<p>This command creates an RDB file in the Redis data directory.</p>
+</li>
+<li>
+<p><strong>Restoring from a backup</strong>:
+To restore, stop the Redis server, replace the existing dump file with your backup, and restart the server:</p>
+<pre><code class="language-sh">cp /path/to/backup/dump.rdb /var/lib/redis/dump.rdb
+sudo service redis-server restart
+</code></pre>
+</li>
+</ul>
+</div><h1>Failover</h1>
+<div class='content'><p>Failover is the process of switching to a standby server when the primary server fails. Redis Sentinel is a tool that provides high availability and monitoring.</p>
+<ul>
+<li>
+<p><strong>Configuring Redis Sentinel</strong>:
+Create a sentinel configuration file (<code>sentinel.conf</code>):</p>
+<pre><code class="language-redis">sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+</code></pre>
+<ul>
+<li><code>mymaster</code>: Name of the master.</li>
+<li><code>127.0.0.1</code>: IP address of the master.</li>
+<li><code>6379</code>: Port of the master.</li>
+<li><code>2</code>: Number of sentinels that need to agree before a failover is initiated.</li>
+</ul>
+</li>
+<li>
+<p><strong>Starting Redis Sentinel</strong>:</p>
+<pre><code class="language-sh">redis-sentinel /path/to/sentinel.conf
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Disaster recovery in Redis involves a combination of data persistence, replication, regular backups, and failover mechanisms. By understanding and implementing these strategies, you can ensure that your Redis deployment is resilient and can recover quickly from unexpected events. Regularly test your disaster recovery plan to ensure that it works as expected and keep your configurations up to date with your evolving infrastructure.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging'>&#x25C4;Logging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Disaster Recovery in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='upgrading-redis'>Upgrading Redis &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

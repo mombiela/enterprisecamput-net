@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Text Search in PostgreSQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/full-text-search" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/full-text-search" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/full-text-search" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/full-text-search" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/full-text-search" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-table-expressions'>&#x25C4;Common Table Expressions (CTEs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Full-Text Search in PostgreSQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='understanding-data-types'>Understanding Data Types &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Full-Text Search</h1>
+<div class='content'><p>Full-text search (FTS) in PostgreSQL allows you to efficiently search for documents or text within a database. Unlike simple pattern matching with <code>LIKE</code>, FTS can handle complex queries and rank results based on relevance.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Tokenization</strong>: Breaking down text into tokens (words or terms).</li>
+<li><strong>Normalization</strong>: Converting tokens to a standard form (e.g., lowercasing, stemming).</li>
+<li><strong>Dictionaries</strong>: Used to define how tokens are processed.</li>
+<li><strong>TSVector</strong>: A data type that stores preprocessed text for efficient searching.</li>
+<li><strong>TSQuery</strong>: A data type that represents a search query.</li>
+</ul>
+</div><h1>Setting Up Full-Text Search</h1>
+<div class='content'></div><h2>Creating a TSVector Column</h2>
+<div class='content'><p>To use FTS, you need to create a column that stores the preprocessed text.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUxURVIgVEFCTEUgYXJ0aWNsZXMgQUREIENPTFVNTiB0c3YgdHN2ZWN0b3I7ClVQREFURSBhcnRpY2xlcyBTRVQgdHN2ID0gdG9fdHN2ZWN0b3IoJ2VuZ2xpc2gnLCB0aXRsZSB8fCAnICcgfHwgYm9keSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ALTER TABLE articles ADD COLUMN tsv tsvector;
+UPDATE articles SET tsv = to_tsvector('english', title || ' ' || body);</pre></div><div class='content'></div><h2>Indexing the TSVector Column</h2>
+<div class='content'><p>Creating an index on the <code>tsvector</code> column improves search performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9mdHMgT04gYXJ0aWNsZXMgVVNJTkcgZ2luKHRzdik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_fts ON articles USING gin(tsv);</pre></div><div class='content'></div><h1>Performing Full-Text Searches</h1>
+<div class='content'></div><h2>Basic Search</h2>
+<div class='content'><p>You can perform a basic full-text search using the <code>@@</code> operator.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIHRpdGxlLCBib2R5CkZST00gYXJ0aWNsZXMKV0hFUkUgdHN2IEBAIHRvX3RzcXVlcnkoJ2VuZ2xpc2gnLCAncG9zdGdyZXNxbCAmIHNlYXJjaCcpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT title, body
+FROM articles
+WHERE tsv @@ to_tsquery('english', 'postgresql &amp; search');</pre></div><div class='content'></div><h2>Ranking Search Results</h2>
+<div class='content'><p>To rank search results by relevance, use the <code>ts_rank</code> function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIHRpdGxlLCBib2R5LCB0c19yYW5rKHRzdiwgdG9fdHNxdWVyeSgnZW5nbGlzaCcsICdwb3N0Z3Jlc3FsICYgc2VhcmNoJykpIEFTIHJhbmsKRlJPTSBhcnRpY2xlcwpXSEVSRSB0c3YgQEAgdG9fdHNxdWVyeSgnZW5nbGlzaCcsICdwb3N0Z3Jlc3FsICYgc2VhcmNoJykKT1JERVIgQlkgcmFuayBERVNDOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT title, body, ts_rank(tsv, to_tsquery('english', 'postgresql &amp; search')) AS rank
+FROM articles
+WHERE tsv @@ to_tsquery('english', 'postgresql &amp; search')
+ORDER BY rank DESC;</pre></div><div class='content'></div><h1>Advanced Full-Text Search Techniques</h1>
+<div class='content'></div><h2>Using Multiple Dictionaries</h2>
+<div class='content'><p>You can use multiple dictionaries to handle different languages or specialized vocabularies.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRFWFQgU0VBUkNIIENPTkZJR1VSQVRJT04gbXlfY29uZmlnIChDT1BZID0gcGdfY2F0YWxvZy5lbmdsaXNoKTsKQUxURVIgVEVYVCBTRUFSQ0ggQ09ORklHVVJBVElPTiBteV9jb25maWcKICAgIEFMVEVSIE1BUFBJTkcgRk9SIGh3b3JkLCBod29yZF9wYXJ0LCB3b3JkCiAgICBXSVRIIHNpbXBsZSwgZW5nbGlzaF9zdGVtOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TEXT SEARCH CONFIGURATION my_config (COPY = pg_catalog.english);
+ALTER TEXT SEARCH CONFIGURATION my_config
+    ALTER MAPPING FOR hword, hword_part, word
+    WITH simple, english_stem;</pre></div><div class='content'></div><h2>Highlighting Search Terms</h2>
+<div class='content'><p>Highlighting search terms in the results can make it easier to see why a document was matched.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIHRpdGxlLCB0c19oZWFkbGluZSgnZW5nbGlzaCcsIGJvZHksIHRvX3RzcXVlcnkoJ2VuZ2xpc2gnLCAncG9zdGdyZXNxbCAmIHNlYXJjaCcpKSBBUyBoaWdobGlnaHRlZF9ib2R5CkZST00gYXJ0aWNsZXMKV0hFUkUgdHN2IEBAIHRvX3RzcXVlcnkoJ2VuZ2xpc2gnLCAncG9zdGdyZXNxbCAmIHNlYXJjaCcpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT title, ts_headline('english', body, to_tsquery('english', 'postgresql &amp; search')) AS highlighted_body
+FROM articles
+WHERE tsv @@ to_tsquery('english', 'postgresql &amp; search');</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Full-text search in PostgreSQL is a powerful feature that allows for efficient and complex text searches. By understanding and utilizing tokenization, normalization, and the <code>tsvector</code> and <code>tsquery</code> data types, you can create robust search functionalities in your applications. Remember to index your <code>tsvector</code> columns and consider using advanced techniques like multiple dictionaries and term highlighting to enhance your search capabilities.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-table-expressions'>&#x25C4;Common Table Expressions (CTEs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Full-Text Search in PostgreSQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='understanding-data-types'>Understanding Data Types &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

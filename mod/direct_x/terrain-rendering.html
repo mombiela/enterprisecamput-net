@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terrain Rendering in DirectX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/terrain-rendering" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/terrain-rendering" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/terrain-rendering" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/terrain-rendering" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/terrain-rendering" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='particle-systems'>&#x25C4;Particle Systems</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Terrain Rendering in DirectX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-game-development-with-directx'>Introduction to Game Development with DirectX &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Terrain Rendering</h1>
+<div class='content'><p>Terrain rendering is a crucial aspect of many 3D applications, especially in games and simulations. This topic will guide you through the process of rendering terrain using DirectX, starting from basic concepts and gradually moving towards advanced techniques.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Heightmaps</strong>: A 2D image where each pixel represents the height at that point on the terrain.</li>
+<li><strong>Vertex and Index Buffers</strong>: Structures used to store vertex data and indices for efficient rendering.</li>
+<li><strong>Shaders</strong>: Programs that run on the GPU to control the rendering pipeline.</li>
+<li><strong>Level of Detail (LOD)</strong>: Techniques to manage the complexity of the terrain mesh based on the camera distance.</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before diving into terrain rendering, ensure you have a working DirectX setup. This includes:</p>
+<ul>
+<li>Installing the DirectX SDK.</li>
+<li>Setting up a basic DirectX application with a rendering loop.</li>
+</ul>
+</div><h1>Creating a Heightmap</h1>
+<div class='content'><p>A heightmap is a grayscale image where the brightness of each pixel represents the height of the terrain at that point.</p>
+</div><h2>Loading a Heightmap</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ym9vbCBMb2FkSGVpZ2h0bWFwKGNvbnN0IHN0ZDo6c3RyaW5nJiBmaWxlbmFtZSwgc3RkOjp2ZWN0b3I8ZmxvYXQ+JiBoZWlnaHREYXRhLCBpbnQmIHdpZHRoLCBpbnQmIGhlaWdodCkgewogICAgLy8gTG9hZCB0aGUgaW1hZ2UgdXNpbmcgYSBsaWJyYXJ5IGxpa2Ugc3RiX2ltYWdlCiAgICBpbnQgY2hhbm5lbHM7CiAgICB1bnNpZ25lZCBjaGFyKiBkYXRhID0gc3RiaV9sb2FkKGZpbGVuYW1lLmNfc3RyKCksICZ3aWR0aCwgJmhlaWdodCwgJmNoYW5uZWxzLCAxKTsKICAgIGlmICghZGF0YSkgcmV0dXJuIGZhbHNlOwoKICAgIGhlaWdodERhdGEucmVzaXplKHdpZHRoICogaGVpZ2h0KTsKICAgIGZvciAoaW50IGkgPSAwOyBpIDwgd2lkdGggKiBoZWlnaHQ7ICsraSkgewogICAgICAgIGhlaWdodERhdGFbaV0gPSBzdGF0aWNfY2FzdDxmbG9hdD4oZGF0YVtpXSkgLyAyNTUuMGY7CiAgICB9CgogICAgc3RiaV9pbWFnZV9mcmVlKGRhdGEpOwogICAgcmV0dXJuIHRydWU7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bool LoadHeightmap(const std::string&amp; filename, std::vector&lt;float&gt;&amp; heightData, int&amp; width, int&amp; height) {
+    // Load the image using a library like stb_image
+    int channels;
+    unsigned char* data = stbi_load(filename.c_str(), &amp;width, &amp;height, &amp;channels, 1);
+    if (!data) return false;
+
+    heightData.resize(width * height);
+    for (int i = 0; i &lt; width * height; ++i) {
+        heightData[i] = static_cast&lt;float&gt;(data[i]) / 255.0f;
+    }
+
+    stbi_image_free(data);
+    return true;
+}</pre></div><div class='content'><p>This code snippet demonstrates how to load a heightmap using the stb_image library. The height data is normalized to a range of 0.0 to 1.0.</p>
+</div><h1>Generating the Terrain Mesh</h1>
+<div class='content'><p>Once the heightmap is loaded, the next step is to generate the terrain mesh.</p>
+</div><h2>Creating Vertex and Index Buffers</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBDcmVhdGVUZXJyYWluTWVzaChjb25zdCBzdGQ6OnZlY3RvcjxmbG9hdD4mIGhlaWdodERhdGEsIGludCB3aWR0aCwgaW50IGhlaWdodCwgc3RkOjp2ZWN0b3I8VmVydGV4PiYgdmVydGljZXMsIHN0ZDo6dmVjdG9yPHVpbnQzMl90PiYgaW5kaWNlcykgewogICAgLy8gR2VuZXJhdGUgdmVydGljZXMKICAgIGZvciAoaW50IHogPSAwOyB6IDwgaGVpZ2h0OyArK3opIHsKICAgICAgICBmb3IgKGludCB4ID0gMDsgeCA8IHdpZHRoOyArK3gpIHsKICAgICAgICAgICAgZmxvYXQgeSA9IGhlaWdodERhdGFbeiAqIHdpZHRoICsgeF07CiAgICAgICAgICAgIHZlcnRpY2VzLnB1c2hfYmFjayhWZXJ0ZXh7IFhNRkxPQVQzKHgsIHksIHopLCBYTUZMT0FUMygwLjBmLCAxLjBmLCAwLjBmKSwgWE1GTE9BVDIoeCAvIChmbG9hdCl3aWR0aCwgeiAvIChmbG9hdCloZWlnaHQpIH0pOwogICAgICAgIH0KICAgIH0KCiAgICAvLyBHZW5lcmF0ZSBpbmRpY2VzCiAgICBmb3IgKGludCB6ID0gMDsgeiA8IGhlaWdodCAtIDE7ICsreikgewogICAgICAgIGZvciAoaW50IHggPSAwOyB4IDwgd2lkdGggLSAxOyArK3gpIHsKICAgICAgICAgICAgaW50IHRvcExlZnQgPSB6ICogd2lkdGggKyB4OwogICAgICAgICAgICBpbnQgdG9wUmlnaHQgPSB0b3BMZWZ0ICsgMTsKICAgICAgICAgICAgaW50IGJvdHRvbUxlZnQgPSAoeiArIDEpICogd2lkdGggKyB4OwogICAgICAgICAgICBpbnQgYm90dG9tUmlnaHQgPSBib3R0b21MZWZ0ICsgMTsKCiAgICAgICAgICAgIGluZGljZXMucHVzaF9iYWNrKHRvcExlZnQpOwogICAgICAgICAgICBpbmRpY2VzLnB1c2hfYmFjayhib3R0b21MZWZ0KTsKICAgICAgICAgICAgaW5kaWNlcy5wdXNoX2JhY2sodG9wUmlnaHQpOwoKICAgICAgICAgICAgaW5kaWNlcy5wdXNoX2JhY2sodG9wUmlnaHQpOwogICAgICAgICAgICBpbmRpY2VzLnB1c2hfYmFjayhib3R0b21MZWZ0KTsKICAgICAgICAgICAgaW5kaWNlcy5wdXNoX2JhY2soYm90dG9tUmlnaHQpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void CreateTerrainMesh(const std::vector&lt;float&gt;&amp; heightData, int width, int height, std::vector&lt;Vertex&gt;&amp; vertices, std::vector&lt;uint32_t&gt;&amp; indices) {
+    // Generate vertices
+    for (int z = 0; z &lt; height; ++z) {
+        for (int x = 0; x &lt; width; ++x) {
+            float y = heightData[z * width + x];
+            vertices.push_back(Vertex{ XMFLOAT3(x, y, z), XMFLOAT3(0.0f, 1.0f, 0.0f), XMFLOAT2(x / (float)width, z / (float)height) });
+        }
+    }
+
+    // Generate indices
+    for (int z = 0; z &lt; height - 1; ++z) {
+        for (int x = 0; x &lt; width - 1; ++x) {
+            int topLeft = z * width + x;
+            int topRight = topLeft + 1;
+            int bottomLeft = (z + 1) * width + x;
+            int bottomRight = bottomLeft + 1;
+
+            indices.push_back(topLeft);
+            indices.push_back(bottomLeft);
+            indices.push_back(topRight);
+
+            indices.push_back(topRight);
+            indices.push_back(bottomLeft);
+            indices.push_back(bottomRight);
+        }
+    }
+}</pre></div><div class='content'><p>This function generates vertices and indices for the terrain mesh based on the heightmap data.</p>
+</div><h1>Applying Shaders</h1>
+<div class='content'><p>Shaders are essential for rendering the terrain with lighting and textures.</p>
+</div><h2>Vertex Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2J1ZmZlciBDb25zdGFudEJ1ZmZlciA6IHJlZ2lzdGVyKGIwKSB7CiAgICBtYXRyaXggd29ybGRNYXRyaXg7CiAgICBtYXRyaXggdmlld01hdHJpeDsKICAgIG1hdHJpeCBwcm9qZWN0aW9uTWF0cml4Owp9CgpzdHJ1Y3QgVlNfSU5QVVQgewogICAgZmxvYXQzIHBvcyA6IFBPU0lUSU9OOwogICAgZmxvYXQzIG5vcm1hbCA6IE5PUk1BTDsKICAgIGZsb2F0MiB0ZXggOiBURVhDT09SRDA7Cn07CgpzdHJ1Y3QgUFNfSU5QVVQgewogICAgZmxvYXQ0IHBvcyA6IFNWX1BPU0lUSU9OOwogICAgZmxvYXQzIG5vcm1hbCA6IE5PUk1BTDsKICAgIGZsb2F0MiB0ZXggOiBURVhDT09SRDA7Cn07CgpQU19JTlBVVCBWUyhWU19JTlBVVCBpbnB1dCkgewogICAgUFNfSU5QVVQgb3V0cHV0OwogICAgZmxvYXQ0IHdvcmxkUG9zID0gbXVsKGZsb2F0NChpbnB1dC5wb3MsIDEuMGYpLCB3b3JsZE1hdHJpeCk7CiAgICBvdXRwdXQucG9zID0gbXVsKHdvcmxkUG9zLCB2aWV3TWF0cml4KTsKICAgIG91dHB1dC5wb3MgPSBtdWwob3V0cHV0LnBvcywgcHJvamVjdGlvbk1hdHJpeCk7CiAgICBvdXRwdXQubm9ybWFsID0gbXVsKGlucHV0Lm5vcm1hbCwgKGZsb2F0M3gzKXdvcmxkTWF0cml4KTsKICAgIG91dHB1dC50ZXggPSBpbnB1dC50ZXg7CiAgICByZXR1cm4gb3V0cHV0Owp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cbuffer ConstantBuffer : register(b0) {
+    matrix worldMatrix;
+    matrix viewMatrix;
+    matrix projectionMatrix;
+}
+
+struct VS_INPUT {
+    float3 pos : POSITION;
+    float3 normal : NORMAL;
+    float2 tex : TEXCOORD0;
+};
+
+struct PS_INPUT {
+    float4 pos : SV_POSITION;
+    float3 normal : NORMAL;
+    float2 tex : TEXCOORD0;
+};
+
+PS_INPUT VS(VS_INPUT input) {
+    PS_INPUT output;
+    float4 worldPos = mul(float4(input.pos, 1.0f), worldMatrix);
+    output.pos = mul(worldPos, viewMatrix);
+    output.pos = mul(output.pos, projectionMatrix);
+    output.normal = mul(input.normal, (float3x3)worldMatrix);
+    output.tex = input.tex;
+    return output;
+}</pre></div><div class='content'></div><h2>Pixel Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VGV4dHVyZTJEIHRlcnJhaW5UZXh0dXJlIDogcmVnaXN0ZXIodDApOwpTYW1wbGVyU3RhdGUgc2FtcGxlclN0YXRlIDogcmVnaXN0ZXIoczApOwoKc3RydWN0IFBTX0lOUFVUIHsKICAgIGZsb2F0NCBwb3MgOiBTVl9QT1NJVElPTjsKICAgIGZsb2F0MyBub3JtYWwgOiBOT1JNQUw7CiAgICBmbG9hdDIgdGV4IDogVEVYQ09PUkQwOwp9OwoKZmxvYXQ0IFBTKFBTX0lOUFVUIGlucHV0KSA6IFNWX1RBUkdFVCB7CiAgICBmbG9hdDQgY29sb3IgPSB0ZXJyYWluVGV4dHVyZS5TYW1wbGUoc2FtcGxlclN0YXRlLCBpbnB1dC50ZXgpOwogICAgcmV0dXJuIGNvbG9yOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Texture2D terrainTexture : register(t0);
+SamplerState samplerState : register(s0);
+
+struct PS_INPUT {
+    float4 pos : SV_POSITION;
+    float3 normal : NORMAL;
+    float2 tex : TEXCOORD0;
+};
+
+float4 PS(PS_INPUT input) : SV_TARGET {
+    float4 color = terrainTexture.Sample(samplerState, input.tex);
+    return color;
+}</pre></div><div class='content'><p>These shaders handle the transformation of vertices and apply a texture to the terrain.</p>
+</div><h1>Level of Detail (LOD)</h1>
+<div class='content'><p>To optimize performance, use LOD techniques to reduce the complexity of the terrain mesh based on the camera distance.</p>
+</div><h2>Implementing LOD</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBVcGRhdGVMT0QoY29uc3QgQ2FtZXJhJiBjYW1lcmEsIHN0ZDo6dmVjdG9yPFZlcnRleD4mIHZlcnRpY2VzLCBzdGQ6OnZlY3Rvcjx1aW50MzJfdD4mIGluZGljZXMpIHsKICAgIC8vIFNpbXBsaWZ5IHRoZSB0ZXJyYWluIG1lc2ggYmFzZWQgb24gdGhlIGNhbWVyYSBkaXN0YW5jZQogICAgLy8gVGhpcyBpcyBhIHBsYWNlaG9sZGVyIGZvciBMT0QgaW1wbGVtZW50YXRpb24KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void UpdateLOD(const Camera&amp; camera, std::vector&lt;Vertex&gt;&amp; vertices, std::vector&lt;uint32_t&gt;&amp; indices) {
+    // Simplify the terrain mesh based on the camera distance
+    // This is a placeholder for LOD implementation
+}</pre></div><div class='content'><p>This function should adjust the terrain mesh complexity based on the camera's distance from the terrain.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Terrain rendering in DirectX involves several steps, including loading heightmaps, generating meshes, applying shaders, and optimizing with LOD techniques. By following these steps, you can create detailed and efficient terrain for your 3D applications. Practice with different heightmaps and shaders to enhance your understanding and skills in terrain rendering.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='particle-systems'>&#x25C4;Particle Systems</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Terrain Rendering in DirectX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-game-development-with-directx'>Introduction to Game Development with DirectX &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

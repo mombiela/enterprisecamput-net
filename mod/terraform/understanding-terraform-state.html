@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Terraform State</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/understanding-terraform-state" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/understanding-terraform-state" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/understanding-terraform-state" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/understanding-terraform-state" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/understanding-terraform-state" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='terraform-commands'>&#x25C4;Terraform Commands: init, plan, apply, and destroy</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding Terraform State</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='managing-terraform-state'>Managing Terraform State &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Terraform state is a critical concept in Terraform that helps manage your infrastructure. It keeps track of the resources that Terraform manages, maps real-world resources to your configuration, and helps in planning and applying changes efficiently.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>State File</strong>: A JSON file that Terraform uses to map resources defined in your configuration to real-world resources.</li>
+<li><strong>Backend</strong>: The location where Terraform state is stored. It can be local or remote (e.g., AWS S3, Azure Blob Storage).</li>
+<li><strong>State Locking</strong>: A mechanism to prevent concurrent operations that could corrupt the state file.</li>
+<li><strong>State Management Commands</strong>: Commands like <code>terraform state list</code>, <code>terraform state show</code>, <code>terraform state mv</code>, etc., that help manage the state file.</li>
+</ul>
+</div><h1>State File</h1>
+<div class='content'><p>The state file is a JSON file that Terraform uses to keep track of the resources it manages. By default, this file is named <code>terraform.tfstate</code> and is stored in the current working directory.</p>
+</div><h2>Example State File</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ2ZXJzaW9uIjogNCwKICAidGVycmFmb3JtX3ZlcnNpb24iOiAiMS4wLjAiLAogICJyZXNvdXJjZXMiOiBbCiAgICB7CiAgICAgICJtb2RlIjogIm1hbmFnZWQiLAogICAgICAidHlwZSI6ICJhd3NfaW5zdGFuY2UiLAogICAgICAibmFtZSI6ICJleGFtcGxlIiwKICAgICAgInByb3ZpZGVyIjogInByb3ZpZGVyW1wicmVnaXN0cnkudGVycmFmb3JtLmlvL2hhc2hpY29ycC9hd3NcIl0iLAogICAgICAiaW5zdGFuY2VzIjogWwogICAgICAgIHsKICAgICAgICAgICJzY2hlbWFfdmVyc2lvbiI6IDEsCiAgICAgICAgICAiYXR0cmlidXRlcyI6IHsKICAgICAgICAgICAgImlkIjogImktMTIzNDU2Nzg5MGFiY2RlZjAiLAogICAgICAgICAgICAiYW1pIjogImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIsCiAgICAgICAgICAgICJpbnN0YW5jZV90eXBlIjogInQyLm1pY3JvIiwKICAgICAgICAgICAgInRhZ3MiOiB7CiAgICAgICAgICAgICAgIk5hbWUiOiAiZXhhbXBsZS1pbnN0YW5jZSIKICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgIH0KICAgICAgXQogICAgfQogIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;version&quot;: 4,
+  &quot;terraform_version&quot;: &quot;1.0.0&quot;,
+  &quot;resources&quot;: [
+    {
+      &quot;mode&quot;: &quot;managed&quot;,
+      &quot;type&quot;: &quot;aws_instance&quot;,
+      &quot;name&quot;: &quot;example&quot;,
+      &quot;provider&quot;: &quot;provider[\&quot;registry.terraform.io/hashicorp/aws\&quot;]&quot;,
+      &quot;instances&quot;: [
+        {
+          &quot;schema_version&quot;: 1,
+          &quot;attributes&quot;: {
+            &quot;id&quot;: &quot;i-1234567890abcdef0&quot;,
+            &quot;ami&quot;: &quot;ami-0c55b159cbfafe1f0&quot;,
+            &quot;instance_type&quot;: &quot;t2.micro&quot;,
+            &quot;tags&quot;: {
+              &quot;Name&quot;: &quot;example-instance&quot;
+            }
+          }
+        }
+      ]
+    }
+  ]
+}</pre></div><div class='content'><p>In this example, the state file keeps track of an AWS EC2 instance with specific attributes like <code>id</code>, <code>ami</code>, and <code>instance_type</code>.</p>
+</div><h1>Backend</h1>
+<div class='content'><p>The backend is where the state file is stored. Terraform supports various backends, including local and remote storage options.</p>
+</div><h2>Local Backend</h2>
+<div class='content'><p>By default, Terraform uses a local backend, which stores the state file in the current working directory.</p>
+</div><h2>Remote Backend</h2>
+<div class='content'><p>Remote backends store the state file in a remote location, which is useful for collaboration and state locking.</p>
+<h4>Example: Configuring an S3 Backend</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibXktdGVycmFmb3JtLXN0YXRlIgogICAga2V5ICAgICAgICAgICAgPSAicGF0aC90by9teS9rZXkiCiAgICByZWdpb24gICAgICAgICA9ICJ1cy13ZXN0LTIiCiAgICBkeW5hbW9kYl90YWJsZSA9ICJ0ZXJyYWZvcm0tbG9jayIKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state&quot;
+    key            = &quot;path/to/my/key&quot;
+    region         = &quot;us-west-2&quot;
+    dynamodb_table = &quot;terraform-lock&quot;
+  }
+}</pre></div><div class='content'><p>In this example, the state file is stored in an S3 bucket, and DynamoDB is used for state locking.</p>
+</div><h1>State Locking</h1>
+<div class='content'><p>State locking prevents concurrent operations that could corrupt the state file. When using remote backends like S3 with DynamoDB, Terraform automatically handles state locking.</p>
+</div><h1>State Management Commands</h1>
+<div class='content'><p>Terraform provides several commands to manage the state file:</p>
+<ul>
+<li><code>terraform state list</code>: Lists all resources in the state file.</li>
+<li><code>terraform state show &lt;resource&gt;</code>: Shows detailed information about a specific resource.</li>
+<li><code>terraform state mv &lt;source&gt; &lt;destination&gt;</code>: Moves a resource to a new address.</li>
+<li><code>terraform state rm &lt;resource&gt;</code>: Removes a resource from the state file.</li>
+</ul>
+</div><h2>Example: Listing Resources</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCB0ZXJyYWZvcm0gc3RhdGUgbGlzdAphd3NfaW5zdGFuY2UuZXhhbXBsZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ terraform state list
+aws_instance.example</pre></div><div class='content'><p>This command lists all resources in the state file, showing that there is an <code>aws_instance</code> resource named <code>example</code>.</p>
+</div><h2>Example: Showing Resource Details</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCB0ZXJyYWZvcm0gc3RhdGUgc2hvdyBhd3NfaW5zdGFuY2UuZXhhbXBsZQojIGF3c19pbnN0YW5jZS5leGFtcGxlOgpyZXNvdXJjZSAiYXdzX2luc3RhbmNlIiAiZXhhbXBsZSIgewogICAgYW1pICAgICAgICAgICAgICAgICAgICAgICAgID0gImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIKICAgIGlkICAgICAgICAgICAgICAgICAgICAgICAgICA9ICJpLTEyMzQ1Njc4OTBhYmNkZWYwIgogICAgaW5zdGFuY2VfdHlwZSAgICAgICAgICAgICAgID0gInQyLm1pY3JvIgogICAgdGFncyAgICAgICAgICAgICAgICAgICAgICAgID0gewogICAgICAgICJOYW1lIiA9ICJleGFtcGxlLWluc3RhbmNlIgogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ terraform state show aws_instance.example
+# aws_instance.example:
+resource &quot;aws_instance&quot; &quot;example&quot; {
+    ami                         = &quot;ami-0c55b159cbfafe1f0&quot;
+    id                          = &quot;i-1234567890abcdef0&quot;
+    instance_type               = &quot;t2.micro&quot;
+    tags                        = {
+        &quot;Name&quot; = &quot;example-instance&quot;
+    }
+}</pre></div><div class='content'><p>This command shows detailed information about the <code>aws_instance.example</code> resource.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding Terraform state is crucial for managing your infrastructure efficiently. The state file keeps track of resources, the backend determines where the state file is stored, and state locking ensures safe concurrent operations. By mastering state management commands, you can effectively manage and troubleshoot your Terraform configurations.</p>
+<p>In the next section, we will dive deeper into advanced state management techniques and best practices.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='terraform-commands'>&#x25C4;Terraform Commands: init, plan, apply, and destroy</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding Terraform State</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='managing-terraform-state'>Managing Terraform State &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

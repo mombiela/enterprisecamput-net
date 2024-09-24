@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pod Security Policies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/pod-security-policies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/pod-security-policies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/pod-security-policies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/pod-security-policies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/pod-security-policies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies-for-security'>&#x25C4;Network Policies for Security</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pod Security Policies</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='custom-resource-definitions'>Custom Resource Definitions (CRDs) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Pod Security Policies (PSPs) are a critical aspect of Kubernetes security, providing a mechanism to control the security-related aspects of pod creation and updates. This topic will guide you from the basics to advanced concepts of PSPs, ensuring a comprehensive understanding.</p>
+</div><h1>Introduction to Pod Security Policies</h1>
+<div class='content'><p>Pod Security Policies are cluster-level resources that control security-sensitive aspects of pod specification. They allow administrators to define a set of conditions that a pod must meet to be accepted into the system.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Pod Security Policy (PSP)</strong>: A cluster-level resource that defines a set of conditions that a pod must meet to be accepted into the system.</li>
+<li><strong>Admission Controller</strong>: A piece of code that intercepts requests to the Kubernetes API server prior to persistence of the object, but after the request is authenticated and authorized.</li>
+<li><strong>Security Context</strong>: Defines privilege and access control settings for a Pod or Container.</li>
+</ul>
+</div><h1>Creating a Pod Security Policy</h1>
+<div class='content'><p>To create a PSP, you need to define a YAML configuration file that specifies the security requirements for your pods.</p>
+</div><h2>Example PSP YAML</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcG9saWN5L3YxYmV0YTEKa2luZDogUG9kU2VjdXJpdHlQb2xpY3kKbWV0YWRhdGE6CiAgbmFtZTogZXhhbXBsZS1wc3AKc3BlYzoKICBwcml2aWxlZ2VkOiBmYWxzZQogIGFsbG93UHJpdmlsZWdlRXNjYWxhdGlvbjogZmFsc2UKICByZXF1aXJlZERyb3BDYXBhYmlsaXRpZXM6CiAgICAtIEFMTAogIHZvbHVtZXM6CiAgICAtICdjb25maWdNYXAnCiAgICAtICdlbXB0eURpcicKICAgIC0gJ3Byb2plY3RlZCcKICAgIC0gJ3NlY3JldCcKICBob3N0TmV0d29yazogZmFsc2UKICBob3N0SVBDOiBmYWxzZQogIGhvc3RQSUQ6IGZhbHNlCiAgcnVuQXNVc2VyOgogICAgcnVsZTogJ011c3RSdW5Bc05vblJvb3QnCiAgc2VMaW51eDoKICAgIHJ1bGU6ICdSdW5Bc0FueScKICBzdXBwbGVtZW50YWxHcm91cHM6CiAgICBydWxlOiAnTXVzdFJ1bkFzJwogICAgcmFuZ2VzOgogICAgICAtIG1pbjogMQogICAgICAgIG1heDogNjU1MzUKICBmc0dyb3VwOgogICAgcnVsZTogJ011c3RSdW5BcycKICAgIHJhbmdlczoKICAgICAgLSBtaW46IDEKICAgICAgICBtYXg6IDY1NTM1"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: example-psp
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  volumes:
+    - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+  hostNetwork: false
+  hostIPC: false
+  hostPID: false
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>privileged</strong>: Ensures that no privileged containers are allowed.</li>
+<li><strong>allowPrivilegeEscalation</strong>: Prevents privilege escalation.</li>
+<li><strong>requiredDropCapabilities</strong>: Drops all capabilities to minimize the potential attack surface.</li>
+<li><strong>volumes</strong>: Restricts the types of volumes that can be used.</li>
+<li><strong>hostNetwork, hostIPC, hostPID</strong>: Prevents the use of the host's network, IPC, and PID namespaces.</li>
+<li><strong>runAsUser</strong>: Ensures that containers run as a non-root user.</li>
+<li><strong>seLinux</strong>: Allows any SELinux context.</li>
+<li><strong>supplementalGroups</strong>: Requires that containers run with specific supplemental groups.</li>
+<li><strong>fsGroup</strong>: Requires that containers run with specific file system groups.</li>
+</ul>
+</div><h1>Applying a Pod Security Policy</h1>
+<div class='content'><p>To apply a PSP, you need to enable the PodSecurityPolicy admission controller and create appropriate RoleBindings or ClusterRoleBindings.</p>
+</div><h2>Enabling the Admission Controller</h2>
+<div class='content'><p>Edit the Kubernetes API server configuration to include the <code>PodSecurityPolicy</code> admission controller.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS1lbmFibGUtYWRtaXNzaW9uLXBsdWdpbnM9UG9kU2VjdXJpdHlQb2xpY3k="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>--enable-admission-plugins=PodSecurityPolicy</pre></div><div class='content'></div><h2>Creating RoleBindings</h2>
+<div class='content'><p>You need to create RoleBindings or ClusterRoleBindings to bind the PSP to specific users or service accounts.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiB1c2UtZXhhbXBsZS1wc3AKICBuYW1lc3BhY2U6IGRlZmF1bHQKcm9sZVJlZjoKICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbwogIGtpbmQ6IFJvbGUKICBuYW1lOiB1c2UtZXhhbXBsZS1wc3AKc3ViamVjdHM6Ci0ga2luZDogVXNlcgogIG5hbWU6IGV4YW1wbGUtdXNlcgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlv"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: use-example-psp
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: use-example-psp
+subjects:
+- kind: User
+  name: example-user
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>roleRef</strong>: References the role that grants permissions to use the PSP.</li>
+<li><strong>subjects</strong>: Specifies the users or service accounts that the RoleBinding applies to.</li>
+</ul>
+</div><h1>Advanced Usage of Pod Security Policies</h1>
+<div class='content'></div><h2>Combining Multiple PSPs</h2>
+<div class='content'><p>You can create multiple PSPs to cater to different security requirements for different namespaces or applications.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcG9saWN5L3YxYmV0YTEKa2luZDogUG9kU2VjdXJpdHlQb2xpY3kKbWV0YWRhdGE6CiAgbmFtZTogcmVzdHJpY3RlZC1wc3AKc3BlYzoKICBwcml2aWxlZ2VkOiBmYWxzZQogIGFsbG93UHJpdmlsZWdlRXNjYWxhdGlvbjogZmFsc2UKICByZXF1aXJlZERyb3BDYXBhYmlsaXRpZXM6CiAgICAtIEFMTAogIHJ1bkFzVXNlcjoKICAgIHJ1bGU6ICdNdXN0UnVuQXNOb25Sb290JwogIHNlTGludXg6CiAgICBydWxlOiAnUnVuQXNBbnknCiAgc3VwcGxlbWVudGFsR3JvdXBzOgogICAgcnVsZTogJ011c3RSdW5BcycKICAgIHJhbmdlczoKICAgICAgLSBtaW46IDEKICAgICAgICBtYXg6IDY1NTM1CiAgZnNHcm91cDoKICAgIHJ1bGU6ICdNdXN0UnVuQXMnCiAgICByYW5nZXM6CiAgICAgIC0gbWluOiAxCiAgICAgICAgbWF4OiA2NTUzNQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted-psp
+spec:
+  privileged: false
+  allowPrivilegeEscalation: false
+  requiredDropCapabilities:
+    - ALL
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+      - min: 1
+        max: 65535</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcG9saWN5L3YxYmV0YTEKa2luZDogUG9kU2VjdXJpdHlQb2xpY3kKbWV0YWRhdGE6CiAgbmFtZTogcGVybWlzc2l2ZS1wc3AKc3BlYzoKICBwcml2aWxlZ2VkOiB0cnVlCiAgYWxsb3dQcml2aWxlZ2VFc2NhbGF0aW9uOiB0cnVlCiAgcnVuQXNVc2VyOgogICAgcnVsZTogJ1J1bkFzQW55JwogIHNlTGludXg6CiAgICBydWxlOiAnUnVuQXNBbnknCiAgc3VwcGxlbWVudGFsR3JvdXBzOgogICAgcnVsZTogJ1J1bkFzQW55JwogIGZzR3JvdXA6CiAgICBydWxlOiAnUnVuQXNBbnkn"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: permissive-psp
+spec:
+  privileged: true
+  allowPrivilegeEscalation: true
+  runAsUser:
+    rule: 'RunAsAny'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>restricted-psp</strong>: Enforces strict security policies.</li>
+<li><strong>permissive-psp</strong>: Allows more permissive settings for specific use cases.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Pod Security Policies are a powerful tool for enforcing security standards in a Kubernetes cluster. By understanding and implementing PSPs, you can significantly enhance the security posture of your Kubernetes environment. Remember to:</p>
+<ul>
+<li>Define clear and concise PSPs tailored to your security requirements.</li>
+<li>Apply PSPs using RoleBindings or ClusterRoleBindings.</li>
+<li>Regularly review and update PSPs to adapt to evolving security needs.</li>
+</ul>
+<p>By mastering PSPs, you ensure that your Kubernetes clusters are secure and compliant with best practices.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies-for-security'>&#x25C4;Network Policies for Security</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pod Security Policies</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='custom-resource-definitions'>Custom Resource Definitions (CRDs) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

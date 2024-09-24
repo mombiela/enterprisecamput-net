@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing in Lua</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/lua/unit-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/lua/unit-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/lua/unit-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/lua/unit-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/lua/unit-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-the-debug-library'>&#x25C4;Using the Debug Library</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Unit Testing in Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='profiling-lua-code'>Profiling Lua Code &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Unit testing is a crucial aspect of software development that ensures individual units of code work as expected. In Lua, unit testing can be performed using various libraries and frameworks. This topic will guide you from the basics to advanced concepts of unit testing in Lua.</p>
+</div><h1>Introduction to Unit Testing</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Unit testing involves testing individual components or functions of a program to ensure they work correctly.</li>
+<li><strong>Purpose</strong>: To catch bugs early, facilitate code refactoring, and ensure code reliability.</li>
+<li><strong>Benefits</strong>:
+<ul>
+<li>Early bug detection</li>
+<li>Simplified debugging</li>
+<li>Improved code quality</li>
+<li>Documentation of code behavior</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up a Unit Testing Environment in Lua</h1>
+<div class='content'><p>To perform unit testing in Lua, you need to set up a testing framework. One of the most popular frameworks is <strong>LuaUnit</strong>.</p>
+</div><h2>Installing LuaUnit</h2>
+<div class='content'><p>You can install LuaUnit using LuaRocks, a package manager for Lua.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bHVhcm9ja3MgaW5zdGFsbCBsdWF1bml0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>luarocks install luaunit</pre></div><div class='content'></div><h2>Basic Structure of a LuaUnit Test</h2>
+<div class='content'><p>A simple LuaUnit test involves defining test functions and running them using the LuaUnit framework.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW1wb3J0IEx1YVVuaXQKbG9jYWwgbHVhdW5pdCA9IHJlcXVpcmUoJ2x1YXVuaXQnKQoKLS0gRGVmaW5lIGEgdGVzdCBjbGFzcwpUZXN0TWF0aCA9IHt9CgotLSBEZWZpbmUgYSB0ZXN0IGZ1bmN0aW9uCmZ1bmN0aW9uIFRlc3RNYXRoOnRlc3RBZGRpdGlvbigpCiAgICBsb2NhbCByZXN1bHQgPSAxICsgMQogICAgbHVhdW5pdC5hc3NlcnRFcXVhbHMocmVzdWx0LCAyKQplbmQKCi0tIFJ1biB0aGUgdGVzdHMKb3MuZXhpdChsdWF1bml0Lkx1YVVuaXQucnVuKCkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Import LuaUnit
+local luaunit = require('luaunit')
+
+-- Define a test class
+TestMath = {}
+
+-- Define a test function
+function TestMath:testAddition()
+    local result = 1 + 1
+    luaunit.assertEquals(result, 2)
+end
+
+-- Run the tests
+os.exit(luaunit.LuaUnit.run())</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>require('luaunit')</code>: Imports the LuaUnit library.</li>
+<li><code>TestMath</code>: A table that acts as a test class.</li>
+<li><code>TestMath:testAddition()</code>: A test function that checks if 1 + 1 equals 2.</li>
+<li><code>luaunit.assertEquals(result, 2)</code>: Asserts that the result is equal to 2.</li>
+<li><code>os.exit(luaunit.LuaUnit.run())</code>: Runs all defined tests.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Writing Unit Tests</h1>
+<div class='content'></div><h2>Test Functions</h2>
+<div class='content'><ul>
+<li><strong>Naming Convention</strong>: Test functions should start with <code>test</code> to be recognized by LuaUnit.</li>
+<li><strong>Assertions</strong>: LuaUnit provides various assertion functions to validate test outcomes.</li>
+</ul>
+</div><h2>Common Assertions</h2>
+<div class='content'><p>| Assertion Function          | Description                                      |
+|-----------------------------|--------------------------------------------------|
+| <code>luaunit.assertEquals(a, b)</code>| Asserts that <code>a</code> equals <code>b</code>.                     |
+| <code>luaunit.assertNotEquals(a, b)</code> | Asserts that <code>a</code> does not equal <code>b</code>.           |
+| <code>luaunit.assertTrue(a)</code>     | Asserts that <code>a</code> is true.                        |
+| <code>luaunit.assertFalse(a)</code>    | Asserts that <code>a</code> is false.                       |
+| <code>luaunit.assertNil(a)</code>      | Asserts that <code>a</code> is nil.                         |
+| <code>luaunit.assertNotNil(a)</code>   | Asserts that <code>a</code> is not nil.                     |</p>
+</div><h2>Example: Testing a Lua Function</h2>
+<div class='content'><p>Let's write a unit test for a simple Lua function that calculates the factorial of a number.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRmFjdG9yaWFsIGZ1bmN0aW9uCmZ1bmN0aW9uIGZhY3RvcmlhbChuKQogICAgaWYgbiA9PSAwIHRoZW4KICAgICAgICByZXR1cm4gMQogICAgZWxzZQogICAgICAgIHJldHVybiBuICogZmFjdG9yaWFsKG4gLSAxKQogICAgZW5kCmVuZAoKLS0gVGVzdCBjbGFzcyBmb3IgZmFjdG9yaWFsIGZ1bmN0aW9uClRlc3RGYWN0b3JpYWwgPSB7fQoKZnVuY3Rpb24gVGVzdEZhY3RvcmlhbDp0ZXN0RmFjdG9yaWFsT2ZaZXJvKCkKICAgIGx1YXVuaXQuYXNzZXJ0RXF1YWxzKGZhY3RvcmlhbCgwKSwgMSkKZW5kCgpmdW5jdGlvbiBUZXN0RmFjdG9yaWFsOnRlc3RGYWN0b3JpYWxPZkZpdmUoKQogICAgbHVhdW5pdC5hc3NlcnRFcXVhbHMoZmFjdG9yaWFsKDUpLCAxMjApCmVuZAoKLS0gUnVuIHRoZSB0ZXN0cwpvcy5leGl0KGx1YXVuaXQuTHVhVW5pdC5ydW4oKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Factorial function
+function factorial(n)
+    if n == 0 then
+        return 1
+    else
+        return n * factorial(n - 1)
+    end
+end
+
+-- Test class for factorial function
+TestFactorial = {}
+
+function TestFactorial:testFactorialOfZero()
+    luaunit.assertEquals(factorial(0), 1)
+end
+
+function TestFactorial:testFactorialOfFive()
+    luaunit.assertEquals(factorial(5), 120)
+end
+
+-- Run the tests
+os.exit(luaunit.LuaUnit.run())</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>factorial(n)</code>: A recursive function to calculate the factorial of <code>n</code>.</li>
+<li><code>TestFactorial:testFactorialOfZero()</code>: Tests if the factorial of 0 is 1.</li>
+<li><code>TestFactorial:testFactorialOfFive()</code>: Tests if the factorial of 5 is 120.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Unit Testing Concepts</h1>
+<div class='content'></div><h2>Test Fixtures</h2>
+<div class='content'><p>Test fixtures are used to set up and tear down the environment before and after each test.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VGVzdEZpeHR1cmVFeGFtcGxlID0ge30KCmZ1bmN0aW9uIFRlc3RGaXh0dXJlRXhhbXBsZTpzZXRVcCgpCiAgICAtLSBDb2RlIHRvIHNldCB1cCB0ZXN0IGVudmlyb25tZW50CiAgICBzZWxmLnZhbHVlID0gMTAKZW5kCgpmdW5jdGlvbiBUZXN0Rml4dHVyZUV4YW1wbGU6dGVhckRvd24oKQogICAgLS0gQ29kZSB0byBjbGVhbiB1cCB0ZXN0IGVudmlyb25tZW50CiAgICBzZWxmLnZhbHVlID0gbmlsCmVuZAoKZnVuY3Rpb24gVGVzdEZpeHR1cmVFeGFtcGxlOnRlc3RWYWx1ZSgpCiAgICBsdWF1bml0LmFzc2VydEVxdWFscyhzZWxmLnZhbHVlLCAxMCkKZW5kCgpvcy5leGl0KGx1YXVuaXQuTHVhVW5pdC5ydW4oKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>TestFixtureExample = {}
+
+function TestFixtureExample:setUp()
+    -- Code to set up test environment
+    self.value = 10
+end
+
+function TestFixtureExample:tearDown()
+    -- Code to clean up test environment
+    self.value = nil
+end
+
+function TestFixtureExample:testValue()
+    luaunit.assertEquals(self.value, 10)
+end
+
+os.exit(luaunit.LuaUnit.run())</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>setUp()</code>: Initializes the test environment.</li>
+<li><code>tearDown()</code>: Cleans up the test environment.</li>
+<li><code>testValue()</code>: Tests if the value is correctly set up.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Mocking and Stubbing</h2>
+<div class='content'><p>Mocking and stubbing are techniques used to simulate the behavior of complex objects or functions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gT3JpZ2luYWwgZnVuY3Rpb24KZnVuY3Rpb24gZmV0Y2hEYXRhKCkKICAgIC0tIFNpbXVsYXRlIGZldGNoaW5nIGRhdGEgZnJvbSBhIGRhdGFiYXNlCiAgICByZXR1cm4gInJlYWwgZGF0YSIKZW5kCgotLSBNb2NrIGZ1bmN0aW9uCmZ1bmN0aW9uIG1vY2tGZXRjaERhdGEoKQogICAgcmV0dXJuICJtb2NrIGRhdGEiCmVuZAoKLS0gVGVzdCBjbGFzcyBmb3IgbW9ja2luZwpUZXN0TW9ja2luZyA9IHt9CgpmdW5jdGlvbiBUZXN0TW9ja2luZzp0ZXN0RmV0Y2hEYXRhKCkKICAgIC0tIFJlcGxhY2UgZmV0Y2hEYXRhIHdpdGggbW9ja0ZldGNoRGF0YQogICAgbG9jYWwgb3JpZ2luYWxGZXRjaERhdGEgPSBmZXRjaERhdGEKICAgIGZldGNoRGF0YSA9IG1vY2tGZXRjaERhdGEKCiAgICBsdWF1bml0LmFzc2VydEVxdWFscyhmZXRjaERhdGEoKSwgIm1vY2sgZGF0YSIpCgogICAgLS0gUmVzdG9yZSBvcmlnaW5hbCBmdW5jdGlvbgogICAgZmV0Y2hEYXRhID0gb3JpZ2luYWxGZXRjaERhdGEKZW5kCgpvcy5leGl0KGx1YXVuaXQuTHVhVW5pdC5ydW4oKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Original function
+function fetchData()
+    -- Simulate fetching data from a database
+    return &quot;real data&quot;
+end
+
+-- Mock function
+function mockFetchData()
+    return &quot;mock data&quot;
+end
+
+-- Test class for mocking
+TestMocking = {}
+
+function TestMocking:testFetchData()
+    -- Replace fetchData with mockFetchData
+    local originalFetchData = fetchData
+    fetchData = mockFetchData
+
+    luaunit.assertEquals(fetchData(), &quot;mock data&quot;)
+
+    -- Restore original function
+    fetchData = originalFetchData
+end
+
+os.exit(luaunit.LuaUnit.run())</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>mockFetchData()</code>: A mock function that returns &quot;mock data&quot;.</li>
+<li><code>TestMocking:testFetchData()</code>: Replaces <code>fetchData</code> with <code>mockFetchData</code> and tests the behavior.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Unit testing is an essential practice in software development that helps ensure code reliability and quality. By using LuaUnit, you can write and run tests for your Lua code efficiently. This topic covered the basics of setting up LuaUnit, writing simple and advanced tests, and using test fixtures and mocking techniques. With these tools and techniques, you can confidently develop and maintain robust Lua applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-the-debug-library'>&#x25C4;Using the Debug Library</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Unit Testing in Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='profiling-lua-code'>Profiling Lua Code &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User-Defined Functions (UDFs) in Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/user-defined-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/user-defined-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/user-defined-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/user-defined-functions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/user-defined-functions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-sources-and-sinks'>&#x25C4;Data Sources and Sinks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">User-Defined Functions (UDFs) in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-spark-streaming'>Introduction to Spark Streaming &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>User-Defined Functions (UDFs) allow you to create custom functions to extend the functionality of Spark SQL and DataFrame operations. This topic will guide you from the basics of UDFs to advanced usage, ensuring you understand how to create, register, and use UDFs effectively in your Spark applications.</p>
+</div><h1>Introduction to UDFs</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: UDFs are custom functions defined by the user to perform specific operations that are not available in the built-in functions of Spark.</li>
+<li><strong>Purpose</strong>: They are used to apply custom transformations to DataFrame columns.</li>
+</ul>
+</div><h1>Creating and Registering UDFs</h1>
+<div class='content'></div><h2>Creating a Simple UDF</h2>
+<div class='content'><p>To create a UDF, you define a function in Python, Scala, or Java and then register it with Spark.</p>
+<h4>Python Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCmZyb20gcHlzcGFyay5zcWwuZnVuY3Rpb25zIGltcG9ydCB1ZGYKZnJvbSBweXNwYXJrLnNxbC50eXBlcyBpbXBvcnQgU3RyaW5nVHlwZQoKIyBJbml0aWFsaXplIFNwYXJrIHNlc3Npb24Kc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlci5hcHBOYW1lKCJVREYgRXhhbXBsZSIpLmdldE9yQ3JlYXRlKCkKCiMgRGVmaW5lIGEgc2ltcGxlIFB5dGhvbiBmdW5jdGlvbgpkZWYgdG9fdXBwZXJjYXNlKHMpOgogICAgcmV0dXJuIHMudXBwZXIoKQoKIyBSZWdpc3RlciB0aGUgZnVuY3Rpb24gYXMgYSBVREYKdXBwZXJjYXNlX3VkZiA9IHVkZih0b191cHBlcmNhc2UsIFN0cmluZ1R5cGUoKSkKCiMgQ3JlYXRlIGEgc2FtcGxlIERhdGFGcmFtZQpkYXRhID0gWygiYWxpY2UiLCksICgiYm9iIiwpLCAoImNoYXJsaWUiLCldCmRmID0gc3BhcmsuY3JlYXRlRGF0YUZyYW1lKGRhdGEsIFsibmFtZSJdKQoKIyBVc2UgdGhlIFVERiBpbiBhIERhdGFGcmFtZSBvcGVyYXRpb24KZGYud2l0aENvbHVtbigibmFtZV91cHBlciIsIHVwcGVyY2FzZV91ZGYoZGZbIm5hbWUiXSkpLnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+from pyspark.sql.functions import udf
+from pyspark.sql.types import StringType
+
+# Initialize Spark session
+spark = SparkSession.builder.appName(&quot;UDF Example&quot;).getOrCreate()
+
+# Define a simple Python function
+def to_uppercase(s):
+    return s.upper()
+
+# Register the function as a UDF
+uppercase_udf = udf(to_uppercase, StringType())
+
+# Create a sample DataFrame
+data = [(&quot;alice&quot;,), (&quot;bob&quot;,), (&quot;charlie&quot;,)]
+df = spark.createDataFrame(data, [&quot;name&quot;])
+
+# Use the UDF in a DataFrame operation
+df.withColumn(&quot;name_upper&quot;, uppercase_udf(df[&quot;name&quot;])).show()</pre></div><div class='content'><h4>Scala Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsuc3FsLlNwYXJrU2Vzc2lvbgppbXBvcnQgb3JnLmFwYWNoZS5zcGFyay5zcWwuZnVuY3Rpb25zLnVkZgoKLy8gSW5pdGlhbGl6ZSBTcGFyayBzZXNzaW9uCnZhbCBzcGFyayA9IFNwYXJrU2Vzc2lvbi5idWlsZGVyLmFwcE5hbWUoIlVERiBFeGFtcGxlIikuZ2V0T3JDcmVhdGUoKQoKLy8gRGVmaW5lIGEgc2ltcGxlIFNjYWxhIGZ1bmN0aW9uCmRlZiB0b1VwcGVyY2FzZShzOiBTdHJpbmcpOiBTdHJpbmcgPSBzLnRvVXBwZXJDYXNlCgovLyBSZWdpc3RlciB0aGUgZnVuY3Rpb24gYXMgYSBVREYKdmFsIHVwcGVyY2FzZVVERiA9IHVkZih0b1VwcGVyY2FzZSBfKQoKLy8gQ3JlYXRlIGEgc2FtcGxlIERhdGFGcmFtZQp2YWwgZGF0YSA9IFNlcSgoImFsaWNlIiksICgiYm9iIiksICgiY2hhcmxpZSIpKQp2YWwgZGYgPSBzcGFyay5jcmVhdGVEYXRhRnJhbWUoZGF0YSkudG9ERigibmFtZSIpCgovLyBVc2UgdGhlIFVERiBpbiBhIERhdGFGcmFtZSBvcGVyYXRpb24KZGYud2l0aENvbHVtbigibmFtZV91cHBlciIsIHVwcGVyY2FzZVVERihkZigibmFtZSIpKSkuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.functions.udf
+
+// Initialize Spark session
+val spark = SparkSession.builder.appName(&quot;UDF Example&quot;).getOrCreate()
+
+// Define a simple Scala function
+def toUppercase(s: String): String = s.toUpperCase
+
+// Register the function as a UDF
+val uppercaseUDF = udf(toUppercase _)
+
+// Create a sample DataFrame
+val data = Seq((&quot;alice&quot;), (&quot;bob&quot;), (&quot;charlie&quot;))
+val df = spark.createDataFrame(data).toDF(&quot;name&quot;)
+
+// Use the UDF in a DataFrame operation
+df.withColumn(&quot;name_upper&quot;, uppercaseUDF(df(&quot;name&quot;))).show()</pre></div><div class='content'></div><h2>Registering UDFs with Spark SQL</h2>
+<div class='content'><p>You can also register UDFs to use them in Spark SQL queries.</p>
+<h4>Python Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZWdpc3RlciB0aGUgVURGIHdpdGggU3BhcmsgU1FMCnNwYXJrLnVkZi5yZWdpc3RlcigidG9fdXBwZXJjYXNlX3NxbCIsIHRvX3VwcGVyY2FzZSwgU3RyaW5nVHlwZSgpKQoKIyBVc2UgdGhlIFVERiBpbiBhIFNRTCBxdWVyeQpkZi5jcmVhdGVPclJlcGxhY2VUZW1wVmlldygicGVvcGxlIikKc3Bhcmsuc3FsKCJTRUxFQ1QgbmFtZSwgdG9fdXBwZXJjYXNlX3NxbChuYW1lKSBhcyBuYW1lX3VwcGVyIEZST00gcGVvcGxlIikuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Register the UDF with Spark SQL
+spark.udf.register(&quot;to_uppercase_sql&quot;, to_uppercase, StringType())
+
+# Use the UDF in a SQL query
+df.createOrReplaceTempView(&quot;people&quot;)
+spark.sql(&quot;SELECT name, to_uppercase_sql(name) as name_upper FROM people&quot;).show()</pre></div><div class='content'><h4>Scala Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVnaXN0ZXIgdGhlIFVERiB3aXRoIFNwYXJrIFNRTApzcGFyay51ZGYucmVnaXN0ZXIoInRvVXBwZXJjYXNlU1FMIiwgdG9VcHBlcmNhc2UgXykKCi8vIFVzZSB0aGUgVURGIGluIGEgU1FMIHF1ZXJ5CmRmLmNyZWF0ZU9yUmVwbGFjZVRlbXBWaWV3KCJwZW9wbGUiKQpzcGFyay5zcWwoIlNFTEVDVCBuYW1lLCB0b1VwcGVyY2FzZVNRTChuYW1lKSBhcyBuYW1lX3VwcGVyIEZST00gcGVvcGxlIikuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Register the UDF with Spark SQL
+spark.udf.register(&quot;toUppercaseSQL&quot;, toUppercase _)
+
+// Use the UDF in a SQL query
+df.createOrReplaceTempView(&quot;people&quot;)
+spark.sql(&quot;SELECT name, toUppercaseSQL(name) as name_upper FROM people&quot;).show()</pre></div><div class='content'></div><h1>Advanced UDF Usage</h1>
+<div class='content'></div><h2>Handling Null Values</h2>
+<div class='content'><p>UDFs need to handle null values explicitly to avoid runtime errors.</p>
+<h4>Python Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHNhZmVfdG9fdXBwZXJjYXNlKHMpOgogICAgcmV0dXJuIHMudXBwZXIoKSBpZiBzIGlzIG5vdCBOb25lIGVsc2UgTm9uZQoKc2FmZV91cHBlcmNhc2VfdWRmID0gdWRmKHNhZmVfdG9fdXBwZXJjYXNlLCBTdHJpbmdUeXBlKCkpCmRmLndpdGhDb2x1bW4oIm5hbWVfdXBwZXIiLCBzYWZlX3VwcGVyY2FzZV91ZGYoZGZbIm5hbWUiXSkpLnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def safe_to_uppercase(s):
+    return s.upper() if s is not None else None
+
+safe_uppercase_udf = udf(safe_to_uppercase, StringType())
+df.withColumn(&quot;name_upper&quot;, safe_uppercase_udf(df[&quot;name&quot;])).show()</pre></div><div class='content'></div><h2>Performance Considerations</h2>
+<div class='content'><ul>
+<li><strong>Serialization Overhead</strong>: UDFs can introduce serialization overhead. Use built-in functions whenever possible.</li>
+<li><strong>Vectorized UDFs</strong>: In PySpark, use pandas UDFs for better performance with vectorized operations.</li>
+</ul>
+<h4>Python Example with Pandas UDF</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IHBhbmRhc191ZGYsIFBhbmRhc1VERlR5cGUKCkBwYW5kYXNfdWRmKFN0cmluZ1R5cGUoKSwgUGFuZGFzVURGVHlwZS5TQ0FMQVIpCmRlZiBwYW5kYXNfdG9fdXBwZXJjYXNlKHMpOgogICAgcmV0dXJuIHMuc3RyLnVwcGVyKCkKCmRmLndpdGhDb2x1bW4oIm5hbWVfdXBwZXIiLCBwYW5kYXNfdG9fdXBwZXJjYXNlKGRmWyJuYW1lIl0pKS5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql.functions import pandas_udf, PandasUDFType
+
+@pandas_udf(StringType(), PandasUDFType.SCALAR)
+def pandas_to_uppercase(s):
+    return s.str.upper()
+
+df.withColumn(&quot;name_upper&quot;, pandas_to_uppercase(df[&quot;name&quot;])).show()</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><ul>
+<li>UDFs are custom functions that extend the capabilities of Spark SQL and DataFrame operations.</li>
+<li>They can be created and registered in Python, Scala, or Java.</li>
+<li>Handle null values explicitly in UDFs to avoid errors.</li>
+<li>Consider performance implications and use vectorized UDFs (pandas UDFs) in PySpark for better performance.</li>
+</ul>
+<p>By understanding and utilizing UDFs, you can perform complex transformations and extend the functionality of your Spark applications beyond the built-in functions.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-sources-and-sinks'>&#x25C4;Data Sources and Sinks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">User-Defined Functions (UDFs) in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-spark-streaming'>Introduction to Spark Streaming &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

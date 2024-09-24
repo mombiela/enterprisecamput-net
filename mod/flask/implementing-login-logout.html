@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing Login and Logout</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/implementing-login-logout" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/implementing-login-logout" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/implementing-login-logout" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/implementing-login-logout" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/implementing-login-logout" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-authentication'>&#x25C4;User Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementing Login and Logout</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-registration'>User Registration &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to implement user authentication in a Flask application. This includes creating a login and logout system. We will start with the basics and gradually move to more advanced topics.</p>
+</div><h1>Setting Up Flask and Extensions</h1>
+<div class='content'><p>Before we dive into the implementation, ensure you have Flask and necessary extensions installed. You can install them using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2sgRmxhc2stTG9naW4gRmxhc2stV1RG"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask Flask-Login Flask-WTF</pre></div><div class='content'><ul>
+<li><strong>Flask</strong>: The main framework.</li>
+<li><strong>Flask-Login</strong>: Manages user sessions.</li>
+<li><strong>Flask-WTF</strong>: Simplifies form handling.</li>
+</ul>
+</div><h1>Basic Project Structure</h1>
+<div class='content'><p>Here is a basic structure for our Flask application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("L2ZsYXNrX2F1dGgKICAgIC9zdGF0aWMKICAgIC90ZW1wbGF0ZXMKICAgIGFwcC5weQogICAgY29uZmlnLnB5CiAgICBtb2RlbHMucHk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>/flask_auth
+    /static
+    /templates
+    app.py
+    config.py
+    models.py</pre></div><div class='content'><ul>
+<li><strong>app.py</strong>: Main application file.</li>
+<li><strong>config.py</strong>: Configuration settings.</li>
+<li><strong>models.py</strong>: Database models.</li>
+</ul>
+</div><h1>Configuring the Application</h1>
+<div class='content'><p>First, let's set up the configuration in <code>config.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBjb25maWcucHkKaW1wb3J0IG9zCgpjbGFzcyBDb25maWc6CiAgICBTRUNSRVRfS0VZID0gb3MuZW52aXJvbi5nZXQoJ1NFQ1JFVF9LRVknKSBvciAneW91LXdpbGwtbmV2ZXItZ3Vlc3MnCiAgICBTUUxBTENIRU1ZX0RBVEFCQVNFX1VSSSA9IG9zLmVudmlyb24uZ2V0KCdEQVRBQkFTRV9VUkwnKSBvciAnc3FsaXRlOi8vL3NpdGUuZGInCiAgICBTUUxBTENIRU1ZX1RSQUNLX01PRElGSUNBVElPTlMgPSBGYWxzZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># config.py
+import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///site.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False</pre></div><div class='content'></div><h1>Creating the User Model</h1>
+<div class='content'><p>In <code>models.py</code>, define the User model:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBtb2RlbHMucHkKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CmZyb20gZmxhc2tfbG9naW4gaW1wb3J0IFVzZXJNaXhpbgoKZGIgPSBTUUxBbGNoZW15KCkKCmNsYXNzIFVzZXIoZGIuTW9kZWwsIFVzZXJNaXhpbik6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgdXNlcm5hbWUgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDE1MCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKICAgIGVtYWlsID0gZGIuQ29sdW1uKGRiLlN0cmluZygxNTApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwYXNzd29yZCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMTUwKSwgbnVsbGFibGU9RmFsc2Up"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># models.py
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+
+db = SQLAlchemy()
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), unique=True, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)</pre></div><div class='content'></div><h1>Initializing Flask and Extensions</h1>
+<div class='content'><p>In <code>app.py</code>, initialize Flask and the extensions:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBjb25maWcgaW1wb3J0IENvbmZpZwpmcm9tIG1vZGVscyBpbXBvcnQgZGIsIFVzZXIKZnJvbSBmbGFza19sb2dpbiBpbXBvcnQgTG9naW5NYW5hZ2VyCgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZy5mcm9tX29iamVjdChDb25maWcpCgpkYi5pbml0X2FwcChhcHApCmxvZ2luID0gTG9naW5NYW5hZ2VyKGFwcCkKbG9naW4ubG9naW5fdmlldyA9ICdsb2dpbicKCkBsb2dpbi51c2VyX2xvYWRlcgpkZWYgbG9hZF91c2VyKHVzZXJfaWQpOgogICAgcmV0dXJuIFVzZXIucXVlcnkuZ2V0KGludCh1c2VyX2lkKSkKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask import Flask
+from config import Config
+from models import db, User
+from flask_login import LoginManager
+
+app = Flask(__name__)
+app.config.from_object(Config)
+
+db.init_app(app)
+login = LoginManager(app)
+login.login_view = 'login'
+
+@login.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Creating Forms</h1>
+<div class='content'><p>Create forms for login and registration using Flask-WTF in <code>forms.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBmb3Jtcy5weQpmcm9tIGZsYXNrX3d0ZiBpbXBvcnQgRmxhc2tGb3JtCmZyb20gd3Rmb3JtcyBpbXBvcnQgU3RyaW5nRmllbGQsIFBhc3N3b3JkRmllbGQsIFN1Ym1pdEZpZWxkCmZyb20gd3Rmb3Jtcy52YWxpZGF0b3JzIGltcG9ydCBEYXRhUmVxdWlyZWQsIEVtYWlsLCBFcXVhbFRvCgpjbGFzcyBMb2dpbkZvcm0oRmxhc2tGb3JtKToKICAgIGVtYWlsID0gU3RyaW5nRmllbGQoJ0VtYWlsJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCksIEVtYWlsKCldKQogICAgcGFzc3dvcmQgPSBQYXNzd29yZEZpZWxkKCdQYXNzd29yZCcsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpXSkKICAgIHN1Ym1pdCA9IFN1Ym1pdEZpZWxkKCdMb2dpbicpCgpjbGFzcyBSZWdpc3RyYXRpb25Gb3JtKEZsYXNrRm9ybSk6CiAgICB1c2VybmFtZSA9IFN0cmluZ0ZpZWxkKCdVc2VybmFtZScsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpXSkKICAgIGVtYWlsID0gU3RyaW5nRmllbGQoJ0VtYWlsJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCksIEVtYWlsKCldKQogICAgcGFzc3dvcmQgPSBQYXNzd29yZEZpZWxkKCdQYXNzd29yZCcsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpXSkKICAgIGNvbmZpcm1fcGFzc3dvcmQgPSBQYXNzd29yZEZpZWxkKCdDb25maXJtIFBhc3N3b3JkJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCksIEVxdWFsVG8oJ3Bhc3N3b3JkJyldKQogICAgc3VibWl0ID0gU3VibWl0RmllbGQoJ1JlZ2lzdGVyJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># forms.py
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    submit = SubmitField('Login')
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Register')</pre></div><div class='content'></div><h1>Implementing Routes</h1>
+<div class='content'><p>Add routes for login, logout, and registration in <code>app.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkgKGNvbnRpbnVlZCkKZnJvbSBmbGFzayBpbXBvcnQgcmVuZGVyX3RlbXBsYXRlLCByZWRpcmVjdCwgdXJsX2ZvciwgZmxhc2gKZnJvbSBmb3JtcyBpbXBvcnQgTG9naW5Gb3JtLCBSZWdpc3RyYXRpb25Gb3JtCmZyb20gZmxhc2tfbG9naW4gaW1wb3J0IGxvZ2luX3VzZXIsIGxvZ291dF91c2VyLCBsb2dpbl9yZXF1aXJlZAoKQGFwcC5yb3V0ZSgnL2xvZ2luJywgbWV0aG9kcz1bJ0dFVCcsICdQT1NUJ10pCmRlZiBsb2dpbigpOgogICAgZm9ybSA9IExvZ2luRm9ybSgpCiAgICBpZiBmb3JtLnZhbGlkYXRlX29uX3N1Ym1pdCgpOgogICAgICAgIHVzZXIgPSBVc2VyLnF1ZXJ5LmZpbHRlcl9ieShlbWFpbD1mb3JtLmVtYWlsLmRhdGEpLmZpcnN0KCkKICAgICAgICBpZiB1c2VyIGFuZCB1c2VyLnBhc3N3b3JkID09IGZvcm0ucGFzc3dvcmQuZGF0YToKICAgICAgICAgICAgbG9naW5fdXNlcih1c2VyKQogICAgICAgICAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcignaW5kZXgnKSkKICAgICAgICBlbHNlOgogICAgICAgICAgICBmbGFzaCgnTG9naW4gVW5zdWNjZXNzZnVsLiBQbGVhc2UgY2hlY2sgZW1haWwgYW5kIHBhc3N3b3JkJywgJ2RhbmdlcicpCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCdsb2dpbi5odG1sJywgdGl0bGU9J0xvZ2luJywgZm9ybT1mb3JtKQoKQGFwcC5yb3V0ZSgnL2xvZ291dCcpCkBsb2dpbl9yZXF1aXJlZApkZWYgbG9nb3V0KCk6CiAgICBsb2dvdXRfdXNlcigpCiAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcignaW5kZXgnKSkKCkBhcHAucm91dGUoJy9yZWdpc3RlcicsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgcmVnaXN0ZXIoKToKICAgIGZvcm0gPSBSZWdpc3RyYXRpb25Gb3JtKCkKICAgIGlmIGZvcm0udmFsaWRhdGVfb25fc3VibWl0KCk6CiAgICAgICAgdXNlciA9IFVzZXIodXNlcm5hbWU9Zm9ybS51c2VybmFtZS5kYXRhLCBlbWFpbD1mb3JtLmVtYWlsLmRhdGEsIHBhc3N3b3JkPWZvcm0ucGFzc3dvcmQuZGF0YSkKICAgICAgICBkYi5zZXNzaW9uLmFkZCh1c2VyKQogICAgICAgIGRiLnNlc3Npb24uY29tbWl0KCkKICAgICAgICBmbGFzaCgnQWNjb3VudCBjcmVhdGVkIGZvciB7Zm9ybS51c2VybmFtZS5kYXRhfSEnLCAnc3VjY2VzcycpCiAgICAgICAgcmV0dXJuIHJlZGlyZWN0KHVybF9mb3IoJ2xvZ2luJykpCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCdyZWdpc3Rlci5odG1sJywgdGl0bGU9J1JlZ2lzdGVyJywgZm9ybT1mb3JtKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py (continued)
+from flask import render_template, redirect, url_for, flash
+from forms import LoginForm, RegistrationForm
+from flask_login import login_user, logout_user, login_required
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and user.password == form.password.data:
+            login_user(user)
+            return redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Account created for {form.username.data}!', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)</pre></div><div class='content'></div><h1>Creating Templates</h1>
+<div class='content'><p>Create HTML templates for login and registration in the <code>templates</code> directory.</p>
+</div><h2>login.html</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvbG9naW4uaHRtbCAtLT4KPCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+TG9naW48L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkxvZ2luPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIiPgogICAgICAgIHt7IGZvcm0uaGlkZGVuX3RhZygpIH19CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uc3VibWl0KCkgfX0KICAgICAgICA8L3A+CiAgICA8L2Zvcm0+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/login.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Login&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+        {{ form.hidden_tag() }}
+        &lt;p&gt;
+            {{ form.email.label }}&lt;br&gt;
+            {{ form.email(size=32) }}&lt;br&gt;
+            {{ form.password.label }}&lt;br&gt;
+            {{ form.password(size=32) }}&lt;br&gt;
+            {{ form.submit() }}
+        &lt;/p&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>register.html</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvcmVnaXN0ZXIuaHRtbCAtLT4KPCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+UmVnaXN0ZXI8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPlJlZ2lzdGVyPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIiPgogICAgICAgIHt7IGZvcm0uaGlkZGVuX3RhZygpIH19CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0udXNlcm5hbWUubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0udXNlcm5hbWUoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uY29uZmlybV9wYXNzd29yZC5sYWJlbCB9fTxicj4KICAgICAgICAgICAge3sgZm9ybS5jb25maXJtX3Bhc3N3b3JkKHNpemU9MzIpIH19PGJyPgogICAgICAgICAgICB7eyBmb3JtLnN1Ym1pdCgpIH19CiAgICAgICAgPC9wPgogICAgPC9mb3JtPgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/register.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Register&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+        {{ form.hidden_tag() }}
+        &lt;p&gt;
+            {{ form.username.label }}&lt;br&gt;
+            {{ form.username(size=32) }}&lt;br&gt;
+            {{ form.email.label }}&lt;br&gt;
+            {{ form.email(size=32) }}&lt;br&gt;
+            {{ form.password.label }}&lt;br&gt;
+            {{ form.password(size=32) }}&lt;br&gt;
+            {{ form.confirm_password.label }}&lt;br&gt;
+            {{ form.confirm_password(size=32) }}&lt;br&gt;
+            {{ form.submit() }}
+        &lt;/p&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have covered the basics of implementing login and logout functionality in a Flask application. We started by setting up the project structure, configuring the application, creating the user model, and initializing Flask and its extensions. We then created forms for login and registration, implemented the necessary routes, and created HTML templates for the forms.</p>
+<p>By following these steps, you should now have a basic understanding of how to implement user authentication in Flask. As you progress, you can enhance this system by adding features such as password hashing, email verification, and more advanced user management functionalities.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-authentication'>&#x25C4;User Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementing Login and Logout</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-registration'>User Registration &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

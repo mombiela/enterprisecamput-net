@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the Node.js Event Loop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/event-loop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/event-loop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/event-loop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/event-loop" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/event-loop" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='first-nodejs-app'>&#x25C4;Your First Node.js Application</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding the Node.js Event Loop</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules-and-require'>Modules and require() &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>The Node.js Event Loop is a fundamental concept that allows Node.js to perform non-blocking I/O operations. Understanding how the event loop works is crucial for writing efficient and performant Node.js applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Single-threaded Nature</strong>: Node.js operates on a single thread, but it can handle multiple operations concurrently using the event loop.</li>
+<li><strong>Non-blocking I/O</strong>: Node.js uses non-blocking I/O operations to handle multiple requests without waiting for any of them to complete.</li>
+<li><strong>Event Loop Phases</strong>: The event loop has several phases, each responsible for different types of operations.</li>
+</ul>
+</div><h1>Event Loop Phases</h1>
+<div class='content'><p>The event loop in Node.js consists of the following phases:</p>
+<ol>
+<li><strong>Timers</strong>: This phase executes callbacks scheduled by <code>setTimeout()</code> and <code>setInterval()</code>.</li>
+<li><strong>Pending Callbacks</strong>: Executes I/O callbacks deferred to the next loop iteration.</li>
+<li><strong>Idle, Prepare</strong>: Internal use only.</li>
+<li><strong>Poll</strong>: Retrieves new I/O events; executes I/O-related callbacks (excluding close callbacks, timers, and <code>setImmediate()</code>).</li>
+<li><strong>Check</strong>: Executes callbacks scheduled by <code>setImmediate()</code>.</li>
+<li><strong>Close Callbacks</strong>: Executes close callbacks, e.g., <code>socket.on('close', ...)</code>.</li>
+</ol>
+</div><h1>Code Example: Basic Event Loop</h1>
+<div class='content'><p>Here's a simple example to illustrate how the event loop works in Node.js:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKY29uc29sZS5sb2coJ1N0YXJ0Jyk7CgpzZXRUaW1lb3V0KCgpID0+IHsKICBjb25zb2xlLmxvZygnVGltZW91dCAxJyk7Cn0sIDApOwoKc2V0SW1tZWRpYXRlKCgpID0+IHsKICBjb25zb2xlLmxvZygnSW1tZWRpYXRlIDEnKTsKfSk7Cgpmcy5yZWFkRmlsZShfX2ZpbGVuYW1lLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ0ZpbGUgUmVhZCcpOwp9KTsKCmNvbnNvbGUubG9nKCdFbmQnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+console.log('Start');
+
+setTimeout(() =&gt; {
+  console.log('Timeout 1');
+}, 0);
+
+setImmediate(() =&gt; {
+  console.log('Immediate 1');
+});
+
+fs.readFile(__filename, () =&gt; {
+  console.log('File Read');
+});
+
+console.log('End');</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Synchronous Code</strong>: <code>console.log('Start')</code> and <code>console.log('End')</code> are executed first.</li>
+<li><strong>Timers Phase</strong>: <code>setTimeout(() =&gt; { console.log('Timeout 1'); }, 0);</code> is scheduled to run after the poll phase.</li>
+<li><strong>Check Phase</strong>: <code>setImmediate(() =&gt; { console.log('Immediate 1'); });</code> is scheduled to run after the poll phase.</li>
+<li><strong>Poll Phase</strong>: <code>fs.readFile(__filename, () =&gt; { console.log('File Read'); });</code> reads the file asynchronously and schedules the callback.</li>
+</ol>
+</div><h2>Expected Output</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3RhcnQKRW5kCkZpbGUgUmVhZApJbW1lZGlhdGUgMQpUaW1lb3V0IDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Start
+End
+File Read
+Immediate 1
+Timeout 1</pre></div><div class='content'></div><h1>Advanced Concepts</h1>
+<div class='content'><ul>
+<li><strong>Microtasks</strong>: Microtasks (e.g., <code>process.nextTick()</code> and Promises) are executed immediately after the currently executing script and before the event loop continues.</li>
+<li><strong>Blocking Operations</strong>: Avoid blocking operations (e.g., synchronous file reads) as they can halt the event loop and degrade performance.</li>
+</ul>
+</div><h1>Code Example: Microtasks</h1>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc29sZS5sb2coJ1N0YXJ0Jyk7CgpzZXRUaW1lb3V0KCgpID0+IHsKICBjb25zb2xlLmxvZygnVGltZW91dCcpOwp9LCAwKTsKClByb21pc2UucmVzb2x2ZSgpLnRoZW4oKCkgPT4gewogIGNvbnNvbGUubG9nKCdQcm9taXNlJyk7Cn0pOwoKcHJvY2Vzcy5uZXh0VGljaygoKSA9PiB7CiAgY29uc29sZS5sb2coJ05leHQgVGljaycpOwp9KTsKCmNvbnNvbGUubG9nKCdFbmQnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>console.log('Start');
+
+setTimeout(() =&gt; {
+  console.log('Timeout');
+}, 0);
+
+Promise.resolve().then(() =&gt; {
+  console.log('Promise');
+});
+
+process.nextTick(() =&gt; {
+  console.log('Next Tick');
+});
+
+console.log('End');</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Synchronous Code</strong>: <code>console.log('Start')</code> and <code>console.log('End')</code> are executed first.</li>
+<li><strong>Microtasks</strong>: <code>process.nextTick()</code> and <code>Promise</code> callbacks are executed before the event loop continues.</li>
+<li><strong>Timers Phase</strong>: <code>setTimeout(() =&gt; { console.log('Timeout'); }, 0);</code> is scheduled to run after the poll phase.</li>
+</ol>
+</div><h2>Expected Output</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3RhcnQKRW5kCk5leHQgVGljawpQcm9taXNlClRpbWVvdXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Start
+End
+Next Tick
+Promise
+Timeout</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>Understanding the Node.js event loop is essential for writing efficient and performant applications. Key points to remember:</p>
+<ul>
+<li>Node.js is single-threaded but can handle multiple operations concurrently using the event loop.</li>
+<li>The event loop has several phases, each responsible for different types of operations.</li>
+<li>Microtasks are executed before the event loop continues to the next phase.</li>
+<li>Avoid blocking operations to ensure the event loop runs smoothly.</li>
+</ul>
+<p>By mastering the event loop, you can write more efficient and responsive Node.js applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='first-nodejs-app'>&#x25C4;Your First Node.js Application</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Understanding the Node.js Event Loop</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules-and-require'>Modules and require() &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

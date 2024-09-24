@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation with WTForms</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/form-validation-wtforms" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/form-validation-wtforms" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/form-validation-wtforms" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/form-validation-wtforms" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/form-validation-wtforms" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-forms'>&#x25C4;Handling Forms in Flask</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Form Validation with WTForms</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-uploads'>File Uploads &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to WTForms</h1>
+<div class='content'><p>WTForms is a flexible form validation and rendering library for Python web development. It is particularly useful in Flask applications for handling form data and ensuring that user inputs meet specific criteria.</p>
+<ul>
+<li><strong>Key Concepts:</strong>
+<ul>
+<li>WTForms provides a way to define forms as Python classes.</li>
+<li>It includes built-in validators to ensure data integrity.</li>
+<li>WTForms can be easily integrated with Flask.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up WTForms in Flask</h1>
+<div class='content'><p>To use WTForms with Flask, you need to install the <code>Flask-WTF</code> extension, which bridges Flask and WTForms.</p>
+</div><h2>Installation</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stV1RG"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-WTF</pre></div><div class='content'></div><h2>Basic Configuration</h2>
+<div class='content'><p>In your Flask application, you need to configure the secret key and initialize the <code>Flask-WTF</code> extension.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFza193dGYgaW1wb3J0IEZsYXNrRm9ybQpmcm9tIHd0Zm9ybXMgaW1wb3J0IFN0cmluZ0ZpZWxkLCBTdWJtaXRGaWVsZApmcm9tIHd0Zm9ybXMudmFsaWRhdG9ycyBpbXBvcnQgRGF0YVJlcXVpcmVkCgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZ1snU0VDUkVUX0tFWSddID0gJ3lvdXJfc2VjcmV0X2tleScKCmNsYXNzIE15Rm9ybShGbGFza0Zvcm0pOgogICAgbmFtZSA9IFN0cmluZ0ZpZWxkKCdOYW1lJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCldKQogICAgc3VibWl0ID0gU3VibWl0RmllbGQoJ1N1Ym1pdCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+
+class MyForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    submit = SubmitField('Submit')</pre></div><div class='content'></div><h1>Creating Forms with WTForms</h1>
+<div class='content'><p>Forms in WTForms are created as Python classes, where each field is an instance of a WTForms field class.</p>
+</div><h2>Example Form</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3dGZvcm1zIGltcG9ydCBTdHJpbmdGaWVsZCwgUGFzc3dvcmRGaWVsZCwgQm9vbGVhbkZpZWxkLCBTdWJtaXRGaWVsZApmcm9tIHd0Zm9ybXMudmFsaWRhdG9ycyBpbXBvcnQgRGF0YVJlcXVpcmVkLCBFbWFpbCwgTGVuZ3RoCgpjbGFzcyBMb2dpbkZvcm0oRmxhc2tGb3JtKToKICAgIGVtYWlsID0gU3RyaW5nRmllbGQoJ0VtYWlsJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCksIEVtYWlsKCldKQogICAgcGFzc3dvcmQgPSBQYXNzd29yZEZpZWxkKCdQYXNzd29yZCcsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpLCBMZW5ndGgobWluPTYpXSkKICAgIHJlbWVtYmVyX21lID0gQm9vbGVhbkZpZWxkKCdSZW1lbWJlciBNZScpCiAgICBzdWJtaXQgPSBTdWJtaXRGaWVsZCgnTG9nIEluJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired, Email, Length
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=6)])
+    remember_me = BooleanField('Remember Me')
+    submit = SubmitField('Log In')</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>StringField</code>, <code>PasswordField</code>, and <code>BooleanField</code> are different types of fields.</li>
+<li><code>validators</code> ensure that the input meets certain criteria, such as being required or having a minimum length.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Handling Form Submissions</h1>
+<div class='content'><p>To handle form submissions, you need to render the form in your template and process the form data in your view function.</p>
+</div><h2>Rendering the Form</h2>
+<div class='content'><p>In your HTML template, use Jinja2 syntax to render the form.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGZvcm0gbWV0aG9kPSJQT1NUIiBhY3Rpb249IiI+CiAgICB7eyBmb3JtLmhpZGRlbl90YWcoKSB9fQogICAgPHA+CiAgICAgICAge3sgZm9ybS5lbWFpbC5sYWJlbCB9fTxicj4KICAgICAgICB7eyBmb3JtLmVtYWlsKHNpemU9MzIpIH19PGJyPgogICAgICAgIHt7IGZvcm0uZW1haWwuZXJyb3JzIH19CiAgICA8L3A+CiAgICA8cD4KICAgICAgICB7eyBmb3JtLnBhc3N3b3JkLmxhYmVsIH19PGJyPgogICAgICAgIHt7IGZvcm0ucGFzc3dvcmQoc2l6ZT0zMikgfX08YnI+CiAgICAgICAge3sgZm9ybS5wYXNzd29yZC5lcnJvcnMgfX0KICAgIDwvcD4KICAgIDxwPgogICAgICAgIHt7IGZvcm0ucmVtZW1iZXJfbWUoKSB9fSB7eyBmb3JtLnJlbWVtYmVyX21lLmxhYmVsIH19CiAgICA8L3A+CiAgICA8cD57eyBmb3JtLnN1Ym1pdCgpIH19PC9wPgo8L2Zvcm0+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+    {{ form.hidden_tag() }}
+    &lt;p&gt;
+        {{ form.email.label }}&lt;br&gt;
+        {{ form.email(size=32) }}&lt;br&gt;
+        {{ form.email.errors }}
+    &lt;/p&gt;
+    &lt;p&gt;
+        {{ form.password.label }}&lt;br&gt;
+        {{ form.password(size=32) }}&lt;br&gt;
+        {{ form.password.errors }}
+    &lt;/p&gt;
+    &lt;p&gt;
+        {{ form.remember_me() }} {{ form.remember_me.label }}
+    &lt;/p&gt;
+    &lt;p&gt;{{ form.submit() }}&lt;/p&gt;
+&lt;/form&gt;</pre></div><div class='content'></div><h2>Processing the Form Data</h2>
+<div class='content'><p>In your Flask view function, check if the form is submitted and valid.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgcmVuZGVyX3RlbXBsYXRlLCBmbGFzaCwgcmVkaXJlY3QsIHVybF9mb3IKCkBhcHAucm91dGUoJy9sb2dpbicsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgbG9naW4oKToKICAgIGZvcm0gPSBMb2dpbkZvcm0oKQogICAgaWYgZm9ybS52YWxpZGF0ZV9vbl9zdWJtaXQoKToKICAgICAgICBmbGFzaChmJ0xvZ2luIHJlcXVlc3RlZCBmb3IgdXNlciB7Zm9ybS5lbWFpbC5kYXRhfSwgcmVtZW1iZXJfbWU9e2Zvcm0ucmVtZW1iZXJfbWUuZGF0YX0nKQogICAgICAgIHJldHVybiByZWRpcmVjdCh1cmxfZm9yKCdpbmRleCcpKQogICAgcmV0dXJuIHJlbmRlcl90ZW1wbGF0ZSgnbG9naW4uaHRtbCcsIGZvcm09Zm9ybSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import render_template, flash, redirect, url_for
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        flash(f'Login requested for user {form.email.data}, remember_me={form.remember_me.data}')
+        return redirect(url_for('index'))
+    return render_template('login.html', form=form)</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>validate_on_submit()</code> checks if the form is submitted and all validators pass.</li>
+<li><code>flash()</code> is used to show a message to the user.</li>
+<li><code>redirect()</code> and <code>url_for()</code> are used to navigate to another route.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Custom Validators</h1>
+<div class='content'><p>WTForms allows you to create custom validators if the built-in ones do not meet your needs.</p>
+</div><h2>Example Custom Validator</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3dGZvcm1zLnZhbGlkYXRvcnMgaW1wb3J0IFZhbGlkYXRpb25FcnJvcgoKZGVmIG15X2N1c3RvbV92YWxpZGF0b3IoZm9ybSwgZmllbGQpOgogICAgaWYgIkAiIG5vdCBpbiBmaWVsZC5kYXRhOgogICAgICAgIHJhaXNlIFZhbGlkYXRpb25FcnJvcignRmllbGQgbXVzdCBjb250YWluIGFuIEAgc3ltYm9sJykKCmNsYXNzIEN1c3RvbUZvcm0oRmxhc2tGb3JtKToKICAgIGN1c3RvbV9maWVsZCA9IFN0cmluZ0ZpZWxkKCdDdXN0b20gRmllbGQnLCB2YWxpZGF0b3JzPVtteV9jdXN0b21fdmFsaWRhdG9yXSkKICAgIHN1Ym1pdCA9IFN1Ym1pdEZpZWxkKCdTdWJtaXQnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from wtforms.validators import ValidationError
+
+def my_custom_validator(form, field):
+    if &quot;@&quot; not in field.data:
+        raise ValidationError('Field must contain an @ symbol')
+
+class CustomForm(FlaskForm):
+    custom_field = StringField('Custom Field', validators=[my_custom_validator])
+    submit = SubmitField('Submit')</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li>Custom validators are functions that raise <code>ValidationError</code> if the validation fails.</li>
+<li>They can be added to any field's <code>validators</code> list.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>WTForms is a powerful tool for form validation in Flask applications. It simplifies the process of creating, rendering, and validating forms, ensuring that user input is clean and meets the required criteria. By leveraging built-in validators and creating custom ones, you can handle a wide range of form validation scenarios effectively.</p>
+<ul>
+<li><strong>Summary:</strong>
+<ul>
+<li>WTForms integrates seamlessly with Flask.</li>
+<li>Forms are defined as Python classes.</li>
+<li>Validators ensure data integrity.</li>
+<li>Custom validators can be created for specific needs.</li>
+<li>Handling form submissions involves rendering the form in templates and processing data in view functions.</li>
+</ul>
+</li>
+</ul>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-forms'>&#x25C4;Handling Forms in Flask</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Form Validation with WTForms</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-uploads'>File Uploads &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

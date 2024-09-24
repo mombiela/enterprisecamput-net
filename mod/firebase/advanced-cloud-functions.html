@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Cloud Functions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/advanced-cloud-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/advanced-cloud-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/advanced-cloud-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/firebase/advanced-cloud-functions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/advanced-cloud-functions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='triggering-functions'>&#x25C4;Triggering Functions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced Cloud Functions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-firebase-hosting'>Introduction to Firebase Hosting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will delve into advanced concepts and techniques for using Firebase Cloud Functions. This will include optimizing performance, handling complex data structures, and integrating with other Firebase services and third-party APIs.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Optimization Techniques</strong>: Learn how to optimize your Cloud Functions for performance and cost-efficiency.</li>
+<li><strong>Complex Data Handling</strong>: Understand how to manage and manipulate complex data structures within your functions.</li>
+<li><strong>Integration with Firebase Services</strong>: Explore how to integrate Cloud Functions with other Firebase services like Firestore, Authentication, and Storage.</li>
+<li><strong>Third-Party API Integration</strong>: Learn how to connect your Cloud Functions with external APIs to extend functionality.</li>
+</ul>
+</div><h1>Optimization Techniques</h1>
+<h2>Cold Starts</h2>
+<div class='content'><p>Cold starts occur when a Cloud Function is invoked after being idle for a while, leading to increased latency. To minimize cold starts:</p>
+<ul>
+<li><strong>Use Global Variables</strong>: Declare variables outside the function scope to reuse them across invocations.</li>
+<li><strong>Keep Functions Warm</strong>: Use tools like Cloud Scheduler to periodically invoke functions.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiB1c2luZyBnbG9iYWwgdmFyaWFibGVzIHRvIHJlZHVjZSBjb2xkIHN0YXJ0cwpsZXQgY2FjaGVkRGF0YTsKCmV4cG9ydHMubXlGdW5jdGlvbiA9IGZ1bmN0aW9ucy5odHRwcy5vblJlcXVlc3QoKHJlcSwgcmVzKSA9PiB7CiAgaWYgKCFjYWNoZWREYXRhKSB7CiAgICBjYWNoZWREYXRhID0gZmV0Y2hEYXRhRnJvbURhdGFiYXNlKCk7IC8vIFNpbXVsYXRlIGEgZGF0YWJhc2UgY2FsbAogIH0KICByZXMuc2VuZChjYWNoZWREYXRhKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of using global variables to reduce cold starts
+let cachedData;
+
+exports.myFunction = functions.https.onRequest((req, res) =&gt; {
+  if (!cachedData) {
+    cachedData = fetchDataFromDatabase(); // Simulate a database call
+  }
+  res.send(cachedData);
+});</pre></div><div class='content'></div><h2>Memory and Timeout Settings</h2>
+<div class='content'><p>Adjust memory and timeout settings based on your function's requirements to optimize performance and cost.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBzZXR0aW5nIG1lbW9yeSBhbmQgdGltZW91dApleHBvcnRzLm15RnVuY3Rpb24gPSBmdW5jdGlvbnMucnVuV2l0aCh7CiAgbWVtb3J5OiAnNTEyTUInLAogIHRpbWVvdXRTZWNvbmRzOiA2MAp9KS5odHRwcy5vblJlcXVlc3QoKHJlcSwgcmVzKSA9PiB7CiAgLy8gRnVuY3Rpb24gbG9naWMgaGVyZQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of setting memory and timeout
+exports.myFunction = functions.runWith({
+  memory: '512MB',
+  timeoutSeconds: 60
+}).https.onRequest((req, res) =&gt; {
+  // Function logic here
+});</pre></div><div class='content'></div><h1>Complex Data Handling</h1>
+<h2>Working with Firestore</h2>
+<div class='content'><p>Handling nested data structures in Firestore can be challenging. Use batched writes and transactions to manage complex data efficiently.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBhIGJhdGNoZWQgd3JpdGUgaW4gRmlyZXN0b3JlCmNvbnN0IGJhdGNoID0gZGIuYmF0Y2goKTsKCmNvbnN0IGRvY1JlZjEgPSBkYi5jb2xsZWN0aW9uKCd1c2VycycpLmRvYygndXNlcjEnKTsKYmF0Y2guc2V0KGRvY1JlZjEsIHsgbmFtZTogJ0pvaG4gRG9lJyB9KTsKCmNvbnN0IGRvY1JlZjIgPSBkYi5jb2xsZWN0aW9uKCd1c2VycycpLmRvYygndXNlcjInKTsKYmF0Y2gudXBkYXRlKGRvY1JlZjIsIHsgYWdlOiAzMCB9KTsKCmJhdGNoLmNvbW1pdCgpLnRoZW4oKCkgPT4gewogIGNvbnNvbGUubG9nKCdCYXRjaCB3cml0ZSBjb21wbGV0ZWQnKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of a batched write in Firestore
+const batch = db.batch();
+
+const docRef1 = db.collection('users').doc('user1');
+batch.set(docRef1, { name: 'John Doe' });
+
+const docRef2 = db.collection('users').doc('user2');
+batch.update(docRef2, { age: 30 });
+
+batch.commit().then(() =&gt; {
+  console.log('Batch write completed');
+});</pre></div><div class='content'></div><h2>Transactions</h2>
+<div class='content'><p>Transactions ensure that a series of read and write operations are executed atomically.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBhIEZpcmVzdG9yZSB0cmFuc2FjdGlvbgpkYi5ydW5UcmFuc2FjdGlvbihhc3luYyAodHJhbnNhY3Rpb24pID0+IHsKICBjb25zdCBkb2NSZWYgPSBkYi5jb2xsZWN0aW9uKCd1c2VycycpLmRvYygndXNlcjEnKTsKICBjb25zdCBkb2MgPSBhd2FpdCB0cmFuc2FjdGlvbi5nZXQoZG9jUmVmKTsKICAKICBpZiAoIWRvYy5leGlzdHMpIHsKICAgIHRocm93ICJEb2N1bWVudCBkb2VzIG5vdCBleGlzdCEiOwogIH0KCiAgY29uc3QgbmV3QWdlID0gZG9jLmRhdGEoKS5hZ2UgKyAxOwogIHRyYW5zYWN0aW9uLnVwZGF0ZShkb2NSZWYsIHsgYWdlOiBuZXdBZ2UgfSk7Cn0pLnRoZW4oKCkgPT4gewogIGNvbnNvbGUubG9nKCdUcmFuc2FjdGlvbiBzdWNjZXNzZnVsbHkgY29tbWl0dGVkJyk7Cn0pLmNhdGNoKChlcnJvcikgPT4gewogIGNvbnNvbGUubG9nKCdUcmFuc2FjdGlvbiBmYWlsZWQ6ICcsIGVycm9yKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of a Firestore transaction
+db.runTransaction(async (transaction) =&gt; {
+  const docRef = db.collection('users').doc('user1');
+  const doc = await transaction.get(docRef);
+  
+  if (!doc.exists) {
+    throw &quot;Document does not exist!&quot;;
+  }
+
+  const newAge = doc.data().age + 1;
+  transaction.update(docRef, { age: newAge });
+}).then(() =&gt; {
+  console.log('Transaction successfully committed');
+}).catch((error) =&gt; {
+  console.log('Transaction failed: ', error);
+});</pre></div><div class='content'></div><h1>Integration with Firebase Services</h1>
+<h2>Firestore Triggers</h2>
+<div class='content'><p>Firestore triggers allow you to execute functions in response to changes in your Firestore database.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBhIEZpcmVzdG9yZSB0cmlnZ2VyCmV4cG9ydHMub25Vc2VyQ3JlYXRlID0gZnVuY3Rpb25zLmZpcmVzdG9yZQogIC5kb2N1bWVudCgndXNlcnMve3VzZXJJZH0nKQogIC5vbkNyZWF0ZSgoc25hcCwgY29udGV4dCkgPT4gewogICAgY29uc3QgbmV3VmFsdWUgPSBzbmFwLmRhdGEoKTsKICAgIGNvbnNvbGUubG9nKCdOZXcgdXNlciBjcmVhdGVkOicsIG5ld1ZhbHVlKTsKICB9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of a Firestore trigger
+exports.onUserCreate = functions.firestore
+  .document('users/{userId}')
+  .onCreate((snap, context) =&gt; {
+    const newValue = snap.data();
+    console.log('New user created:', newValue);
+  });</pre></div><div class='content'></div><h2>Authentication Triggers</h2>
+<div class='content'><p>Authentication triggers can be used to perform actions when users sign up or delete their accounts.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBhbiBBdXRoZW50aWNhdGlvbiB0cmlnZ2VyCmV4cG9ydHMub25Vc2VyU2lnblVwID0gZnVuY3Rpb25zLmF1dGgudXNlcigpLm9uQ3JlYXRlKCh1c2VyKSA9PiB7CiAgY29uc29sZS5sb2coJ05ldyB1c2VyIHNpZ25lZCB1cDonLCB1c2VyLmVtYWlsKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of an Authentication trigger
+exports.onUserSignUp = functions.auth.user().onCreate((user) =&gt; {
+  console.log('New user signed up:', user.email);
+});</pre></div><div class='content'></div><h1>Third-Party API Integration</h1>
+<h2>Making HTTP Requests</h2>
+<div class='content'><p>Use the <code>axios</code> library to make HTTP requests to third-party APIs from your Cloud Functions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgYXhpb3MgPSByZXF1aXJlKCdheGlvcycpOwoKZXhwb3J0cy5jYWxsRXh0ZXJuYWxBUEkgPSBmdW5jdGlvbnMuaHR0cHMub25SZXF1ZXN0KChyZXEsIHJlcykgPT4gewogIGF4aW9zLmdldCgnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YScpCiAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgIHJlcy5zZW5kKHJlc3BvbnNlLmRhdGEpOwogICAgfSkKICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGNhbGxpbmcgZXh0ZXJuYWwgQVBJOicsIGVycm9yKTsKICAgICAgcmVzLnN0YXR1cyg1MDApLnNlbmQoJ0Vycm9yIGNhbGxpbmcgZXh0ZXJuYWwgQVBJJyk7CiAgICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const axios = require('axios');
+
+exports.callExternalAPI = functions.https.onRequest((req, res) =&gt; {
+  axios.get('https://api.example.com/data')
+    .then(response =&gt; {
+      res.send(response.data);
+    })
+    .catch(error =&gt; {
+      console.error('Error calling external API:', error);
+      res.status(500).send('Error calling external API');
+    });
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered advanced topics in Firebase Cloud Functions, including optimization techniques, handling complex data structures, and integrating with both Firebase services and third-party APIs. By mastering these concepts, you can build more efficient, scalable, and feature-rich applications using Firebase Cloud Functions.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='triggering-functions'>&#x25C4;Triggering Functions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced Cloud Functions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-firebase-hosting'>Introduction to Firebase Hosting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

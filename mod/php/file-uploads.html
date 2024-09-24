@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploads in PHP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/file-uploads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/file-uploads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/file-uploads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/php/file-uploads" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/php/file-uploads" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='reading-and-writing-files'>&#x25C4;Reading and Writing Files</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">File Uploads in PHP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-databases'>Introduction to Databases &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>File uploads are a common feature in web applications, allowing users to upload files such as images, documents, and videos to the server. PHP provides robust support for handling file uploads, making it easy to implement this functionality in your web applications.</p>
+</div><h1>Basic Concepts</h1>
+<div class='content'><p>Before diving into the code, let's cover some key concepts related to file uploads in PHP:</p>
+<ul>
+<li><strong>HTML Form</strong>: The form element in HTML is used to collect user input. For file uploads, the form must include the <code>enctype=&quot;multipart/form-data&quot;</code> attribute.</li>
+<li><strong>$_FILES Superglobal</strong>: PHP uses the <code>$_FILES</code> superglobal array to store information about uploaded files.</li>
+<li><strong>Temporary Storage</strong>: Uploaded files are temporarily stored on the server before being moved to a permanent location.</li>
+</ul>
+</div><h1>Creating an HTML Form for File Uploads</h1>
+<div class='content'><p>To allow users to upload files, you need to create an HTML form with the appropriate attributes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGZvcm0gYWN0aW9uPSJ1cGxvYWQucGhwIiBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgPGxhYmVsIGZvcj0iZmlsZVRvVXBsb2FkIj5TZWxlY3QgZmlsZSB0byB1cGxvYWQ6PC9sYWJlbD4KICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBuYW1lPSJmaWxlVG9VcGxvYWQiIGlkPSJmaWxlVG9VcGxvYWQiPgogICAgPGlucHV0IHR5cGU9InN1Ym1pdCIgdmFsdWU9IlVwbG9hZCBGaWxlIiBuYW1lPSJzdWJtaXQiPgo8L2Zvcm0+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;form action=&quot;upload.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;label for=&quot;fileToUpload&quot;&gt;Select file to upload:&lt;/label&gt;
+    &lt;input type=&quot;file&quot; name=&quot;fileToUpload&quot; id=&quot;fileToUpload&quot;&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Upload File&quot; name=&quot;submit&quot;&gt;
+&lt;/form&gt;</pre></div><div class='content'><ul>
+<li><code>action=&quot;upload.php&quot;</code>: Specifies the PHP script that will handle the file upload.</li>
+<li><code>method=&quot;post&quot;</code>: Uses the POST method to submit the form data.</li>
+<li><code>enctype=&quot;multipart/form-data&quot;</code>: Ensures that the form can handle file uploads.</li>
+</ul>
+</div><h1>Handling File Uploads in PHP</h1>
+<div class='content'><p>In the <code>upload.php</code> script, you will handle the file upload process. This involves checking for errors, validating the file, and moving it to a permanent location.</p>
+</div><h2>Step-by-Step Process</h2>
+<div class='content'><ol>
+<li><strong>Check for Errors</strong>: Ensure there are no errors during the file upload.</li>
+<li><strong>Validate the File</strong>: Check the file type and size to ensure it meets your criteria.</li>
+<li><strong>Move the File</strong>: Move the file from the temporary location to a permanent directory.</li>
+</ol>
+</div><h2>Example Code</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKaWYgKCRfU0VSVkVSWydSRVFVRVNUX01FVEhPRCddID09ICdQT1NUJykgewogICAgJHRhcmdldF9kaXIgPSAidXBsb2Fkcy8iOwogICAgJHRhcmdldF9maWxlID0gJHRhcmdldF9kaXIgLiBiYXNlbmFtZSgkX0ZJTEVTWyJmaWxlVG9VcGxvYWQiXVsibmFtZSJdKTsKICAgICR1cGxvYWRPayA9IDE7CiAgICAkZmlsZVR5cGUgPSBzdHJ0b2xvd2VyKHBhdGhpbmZvKCR0YXJnZXRfZmlsZSwgUEFUSElORk9fRVhURU5TSU9OKSk7CgogICAgLy8gQ2hlY2sgaWYgZmlsZSB3YXMgdXBsb2FkZWQgd2l0aG91dCBlcnJvcnMKICAgIGlmICgkX0ZJTEVTWyJmaWxlVG9VcGxvYWQiXVsiZXJyb3IiXSAhPSAwKSB7CiAgICAgICAgZWNobyAiRXJyb3I6ICIgLiAkX0ZJTEVTWyJmaWxlVG9VcGxvYWQiXVsiZXJyb3IiXSAuICI8YnI+IjsKICAgICAgICAkdXBsb2FkT2sgPSAwOwogICAgfQoKICAgIC8vIENoZWNrIGZpbGUgc2l6ZSAobGltaXQgdG8gNU1CKQogICAgaWYgKCRfRklMRVNbImZpbGVUb1VwbG9hZCJdWyJzaXplIl0gPiA1MDAwMDAwKSB7CiAgICAgICAgZWNobyAiU29ycnksIHlvdXIgZmlsZSBpcyB0b28gbGFyZ2UuIjsKICAgICAgICAkdXBsb2FkT2sgPSAwOwogICAgfQoKICAgIC8vIEFsbG93IGNlcnRhaW4gZmlsZSBmb3JtYXRzCiAgICAkYWxsb3dlZFR5cGVzID0gYXJyYXkoImpwZyIsICJwbmciLCAianBlZyIsICJnaWYiKTsKICAgIGlmICghaW5fYXJyYXkoJGZpbGVUeXBlLCAkYWxsb3dlZFR5cGVzKSkgewogICAgICAgIGVjaG8gIlNvcnJ5LCBvbmx5IEpQRywgSlBFRywgUE5HICYgR0lGIGZpbGVzIGFyZSBhbGxvd2VkLiI7CiAgICAgICAgJHVwbG9hZE9rID0gMDsKICAgIH0KCiAgICAvLyBDaGVjayBpZiAkdXBsb2FkT2sgaXMgc2V0IHRvIDAgYnkgYW4gZXJyb3IKICAgIGlmICgkdXBsb2FkT2sgPT0gMCkgewogICAgICAgIGVjaG8gIlNvcnJ5LCB5b3VyIGZpbGUgd2FzIG5vdCB1cGxvYWRlZC4iOwogICAgfSBlbHNlIHsKICAgICAgICBpZiAobW92ZV91cGxvYWRlZF9maWxlKCRfRklMRVNbImZpbGVUb1VwbG9hZCJdWyJ0bXBfbmFtZSJdLCAkdGFyZ2V0X2ZpbGUpKSB7CiAgICAgICAgICAgIGVjaG8gIlRoZSBmaWxlICIgLiBodG1sc3BlY2lhbGNoYXJzKGJhc2VuYW1lKCRfRklMRVNbImZpbGVUb1VwbG9hZCJdWyJuYW1lIl0pKSAuICIgaGFzIGJlZW4gdXBsb2FkZWQuIjsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBlY2hvICJTb3JyeSwgdGhlcmUgd2FzIGFuIGVycm9yIHVwbG9hZGluZyB5b3VyIGZpbGUuIjsKICAgICAgICB9CiAgICB9Cn0KPz4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $target_dir = &quot;uploads/&quot;;
+    $target_file = $target_dir . basename($_FILES[&quot;fileToUpload&quot;][&quot;name&quot;]);
+    $uploadOk = 1;
+    $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+    // Check if file was uploaded without errors
+    if ($_FILES[&quot;fileToUpload&quot;][&quot;error&quot;] != 0) {
+        echo &quot;Error: &quot; . $_FILES[&quot;fileToUpload&quot;][&quot;error&quot;] . &quot;&lt;br&gt;&quot;;
+        $uploadOk = 0;
+    }
+
+    // Check file size (limit to 5MB)
+    if ($_FILES[&quot;fileToUpload&quot;][&quot;size&quot;] &gt; 5000000) {
+        echo &quot;Sorry, your file is too large.&quot;;
+        $uploadOk = 0;
+    }
+
+    // Allow certain file formats
+    $allowedTypes = array(&quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;gif&quot;);
+    if (!in_array($fileType, $allowedTypes)) {
+        echo &quot;Sorry, only JPG, JPEG, PNG &amp; GIF files are allowed.&quot;;
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo &quot;Sorry, your file was not uploaded.&quot;;
+    } else {
+        if (move_uploaded_file($_FILES[&quot;fileToUpload&quot;][&quot;tmp_name&quot;], $target_file)) {
+            echo &quot;The file &quot; . htmlspecialchars(basename($_FILES[&quot;fileToUpload&quot;][&quot;name&quot;])) . &quot; has been uploaded.&quot;;
+        } else {
+            echo &quot;Sorry, there was an error uploading your file.&quot;;
+        }
+    }
+}
+?&gt;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Check for Errors</strong>: The <code>$_FILES[&quot;fileToUpload&quot;][&quot;error&quot;]</code> property is checked to ensure there are no errors.</li>
+<li><strong>Validate the File</strong>: The file size and type are validated to ensure they meet the specified criteria.</li>
+<li><strong>Move the File</strong>: The <code>move_uploaded_file()</code> function is used to move the file from the temporary location to the target directory.</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<h2>Multiple File Uploads</h2>
+<div class='content'><p>To allow users to upload multiple files, modify the HTML form and handle the files in the PHP script accordingly.</p>
+<h4>HTML Form for Multiple Files</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGZvcm0gYWN0aW9uPSJ1cGxvYWQucGhwIiBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgPGxhYmVsIGZvcj0iZmlsZXNUb1VwbG9hZCI+U2VsZWN0IGZpbGVzIHRvIHVwbG9hZDo8L2xhYmVsPgogICAgPGlucHV0IHR5cGU9ImZpbGUiIG5hbWU9ImZpbGVzVG9VcGxvYWRbXSIgaWQ9ImZpbGVzVG9VcGxvYWQiIG11bHRpcGxlPgogICAgPGlucHV0IHR5cGU9InN1Ym1pdCIgdmFsdWU9IlVwbG9hZCBGaWxlcyIgbmFtZT0ic3VibWl0Ij4KPC9mb3JtPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;form action=&quot;upload.php&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+    &lt;label for=&quot;filesToUpload&quot;&gt;Select files to upload:&lt;/label&gt;
+    &lt;input type=&quot;file&quot; name=&quot;filesToUpload[]&quot; id=&quot;filesToUpload&quot; multiple&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Upload Files&quot; name=&quot;submit&quot;&gt;
+&lt;/form&gt;</pre></div><div class='content'><h4>PHP Script for Handling Multiple Files</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKaWYgKCRfU0VSVkVSWydSRVFVRVNUX01FVEhPRCddID09ICdQT1NUJykgewogICAgJHRhcmdldF9kaXIgPSAidXBsb2Fkcy8iOwogICAgJHVwbG9hZE9rID0gMTsKICAgICRhbGxvd2VkVHlwZXMgPSBhcnJheSgianBnIiwgInBuZyIsICJqcGVnIiwgImdpZiIpOwoKICAgIGZvcmVhY2ggKCRfRklMRVNbImZpbGVzVG9VcGxvYWQiXVsibmFtZSJdIGFzICRrZXkgPT4gJG5hbWUpIHsKICAgICAgICAkdGFyZ2V0X2ZpbGUgPSAkdGFyZ2V0X2RpciAuIGJhc2VuYW1lKCRuYW1lKTsKICAgICAgICAkZmlsZVR5cGUgPSBzdHJ0b2xvd2VyKHBhdGhpbmZvKCR0YXJnZXRfZmlsZSwgUEFUSElORk9fRVhURU5TSU9OKSk7CgogICAgICAgIC8vIENoZWNrIGlmIGZpbGUgd2FzIHVwbG9hZGVkIHdpdGhvdXQgZXJyb3JzCiAgICAgICAgaWYgKCRfRklMRVNbImZpbGVzVG9VcGxvYWQiXVsiZXJyb3IiXVska2V5XSAhPSAwKSB7CiAgICAgICAgICAgIGVjaG8gIkVycm9yOiAiIC4gJF9GSUxFU1siZmlsZXNUb1VwbG9hZCJdWyJlcnJvciJdWyRrZXldIC4gIjxicj4iOwogICAgICAgICAgICAkdXBsb2FkT2sgPSAwOwogICAgICAgIH0KCiAgICAgICAgLy8gQ2hlY2sgZmlsZSBzaXplIChsaW1pdCB0byA1TUIpCiAgICAgICAgaWYgKCRfRklMRVNbImZpbGVzVG9VcGxvYWQiXVsic2l6ZSJdWyRrZXldID4gNTAwMDAwMCkgewogICAgICAgICAgICBlY2hvICJTb3JyeSwgeW91ciBmaWxlICIgLiAkbmFtZSAuICIgaXMgdG9vIGxhcmdlLjxicj4iOwogICAgICAgICAgICAkdXBsb2FkT2sgPSAwOwogICAgICAgIH0KCiAgICAgICAgLy8gQWxsb3cgY2VydGFpbiBmaWxlIGZvcm1hdHMKICAgICAgICBpZiAoIWluX2FycmF5KCRmaWxlVHlwZSwgJGFsbG93ZWRUeXBlcykpIHsKICAgICAgICAgICAgZWNobyAiU29ycnksIG9ubHkgSlBHLCBKUEVHLCBQTkcgJiBHSUYgZmlsZXMgYXJlIGFsbG93ZWQgZm9yIGZpbGUgIiAuICRuYW1lIC4gIi48YnI+IjsKICAgICAgICAgICAgJHVwbG9hZE9rID0gMDsKICAgICAgICB9CgogICAgICAgIC8vIENoZWNrIGlmICR1cGxvYWRPayBpcyBzZXQgdG8gMCBieSBhbiBlcnJvcgogICAgICAgIGlmICgkdXBsb2FkT2sgPT0gMCkgewogICAgICAgICAgICBlY2hvICJTb3JyeSwgeW91ciBmaWxlICIgLiAkbmFtZSAuICIgd2FzIG5vdCB1cGxvYWRlZC48YnI+IjsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBpZiAobW92ZV91cGxvYWRlZF9maWxlKCRfRklMRVNbImZpbGVzVG9VcGxvYWQiXVsidG1wX25hbWUiXVska2V5XSwgJHRhcmdldF9maWxlKSkgewogICAgICAgICAgICAgICAgZWNobyAiVGhlIGZpbGUgIiAuIGh0bWxzcGVjaWFsY2hhcnMoYmFzZW5hbWUoJG5hbWUpKSAuICIgaGFzIGJlZW4gdXBsb2FkZWQuPGJyPiI7CiAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICBlY2hvICJTb3JyeSwgdGhlcmUgd2FzIGFuIGVycm9yIHVwbG9hZGluZyB5b3VyIGZpbGUgIiAuICRuYW1lIC4gIi48YnI+IjsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $target_dir = &quot;uploads/&quot;;
+    $uploadOk = 1;
+    $allowedTypes = array(&quot;jpg&quot;, &quot;png&quot;, &quot;jpeg&quot;, &quot;gif&quot;);
+
+    foreach ($_FILES[&quot;filesToUpload&quot;][&quot;name&quot;] as $key =&gt; $name) {
+        $target_file = $target_dir . basename($name);
+        $fileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        // Check if file was uploaded without errors
+        if ($_FILES[&quot;filesToUpload&quot;][&quot;error&quot;][$key] != 0) {
+            echo &quot;Error: &quot; . $_FILES[&quot;filesToUpload&quot;][&quot;error&quot;][$key] . &quot;&lt;br&gt;&quot;;
+            $uploadOk = 0;
+        }
+
+        // Check file size (limit to 5MB)
+        if ($_FILES[&quot;filesToUpload&quot;][&quot;size&quot;][$key] &gt; 5000000) {
+            echo &quot;Sorry, your file &quot; . $name . &quot; is too large.&lt;br&gt;&quot;;
+            $uploadOk = 0;
+        }
+
+        // Allow certain file formats
+        if (!in_array($fileType, $allowedTypes)) {
+            echo &quot;Sorry, only JPG, JPEG, PNG &amp; GIF files are allowed for file &quot; . $name . &quot;.&lt;br&gt;&quot;;
+            $uploadOk = 0;
+        }
+
+        // Check if $uploadOk is set to 0 by an error
+        if ($uploadOk == 0) {
+            echo &quot;Sorry, your file &quot; . $name . &quot; was not uploaded.&lt;br&gt;&quot;;
+        } else {
+            if (move_uploaded_file($_FILES[&quot;filesToUpload&quot;][&quot;tmp_name&quot;][$key], $target_file)) {
+                echo &quot;The file &quot; . htmlspecialchars(basename($name)) . &quot; has been uploaded.&lt;br&gt;&quot;;
+            } else {
+                echo &quot;Sorry, there was an error uploading your file &quot; . $name . &quot;.&lt;br&gt;&quot;;
+            }
+        }
+    }
+}
+?&gt;</pre></div><div class='content'></div><h2>Security Considerations</h2>
+<div class='content'><p>When handling file uploads, it's crucial to consider security to prevent malicious files from being uploaded.</p>
+<ul>
+<li><strong>File Type Validation</strong>: Always validate the file type to ensure only allowed types are uploaded.</li>
+<li><strong>File Size Limit</strong>: Set a maximum file size to prevent large files from consuming server resources.</li>
+<li><strong>Sanitize File Names</strong>: Use functions like <code>basename()</code> and <code>htmlspecialchars()</code> to sanitize file names and prevent directory traversal attacks.</li>
+<li><strong>Store Files Outside Web Root</strong>: Store uploaded files outside the web root to prevent direct access via URL.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>File uploads are a powerful feature in PHP that allow users to upload files to your server. By understanding the basics and implementing proper validation and security measures, you can effectively handle file uploads in your web applications. Whether you're dealing with single or multiple file uploads, PHP provides the tools you need to manage this functionality efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='reading-and-writing-files'>&#x25C4;Reading and Writing Files</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">File Uploads in PHP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-databases'>Introduction to Databases &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

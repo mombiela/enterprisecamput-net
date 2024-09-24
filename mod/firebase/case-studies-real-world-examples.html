@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies and Real-World Examples</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/case-studies-real-world-examples" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/case-studies-real-world-examples" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/case-studies-real-world-examples" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/firebase/case-studies-real-world-examples" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/case-studies-real-world-examples" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cost-management'>&#x25C4;Cost Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Studies and Real-World Examples</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore various case studies and real-world examples to understand how Firebase can be effectively utilized in different scenarios. By examining these case studies, you will gain insights into practical applications of Firebase, from simple projects to complex, large-scale applications.</p>
+</div><h1>Case Study 1: Building a Chat Application</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Firebase Authentication</strong>: To manage user sign-ups and logins.</li>
+<li><strong>Firestore Database</strong>: For storing chat messages.</li>
+<li><strong>Firebase Cloud Functions</strong>: To handle server-side logic.</li>
+<li><strong>Firebase Cloud Messaging</strong>: For push notifications.</li>
+</ul>
+</div><h2>Implementation Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Set Up Firebase Authentication</strong>:</p>
+<pre><code class="language-javascript">// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Sign up new users
+firebase.auth().createUserWithEmailAndPassword(email, password)
+  .then((userCredential) =&gt; {
+    // Signed up
+    var user = userCredential.user;
+  })
+  .catch((error) =&gt; {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Store Chat Messages in Firestore</strong>:</p>
+<pre><code class="language-javascript">// Reference to Firestore
+var db = firebase.firestore();
+
+// Add a new message
+db.collection(&quot;messages&quot;).add({
+    user: &quot;user_id&quot;,
+    message: &quot;Hello, world!&quot;,
+    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+})
+.then((docRef) =&gt; {
+    console.log(&quot;Document written with ID: &quot;, docRef.id);
+})
+.catch((error) =&gt; {
+    console.error(&quot;Error adding document: &quot;, error);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Use Cloud Functions for Server-Side Logic</strong>:</p>
+<pre><code class="language-javascript">const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+exports.sendNotification = functions.firestore
+  .document('messages/{messageId}')
+  .onCreate((snap, context) =&gt; {
+    const newValue = snap.data();
+    const message = newValue.message;
+
+    // Notification content
+    const payload = {
+      notification: {
+        title: 'New Message',
+        body: message,
+      }
+    };
+
+    // Send notification
+    return admin.messaging().sendToTopic('chat', payload);
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Send Push Notifications with Firebase Cloud Messaging</strong>:</p>
+<pre><code class="language-javascript">// Request permission to send notifications
+const messaging = firebase.messaging();
+messaging.requestPermission()
+  .then(() =&gt; {
+    console.log('Notification permission granted.');
+    return messaging.getToken();
+  })
+  .then((token) =&gt; {
+    console.log('FCM Token:', token);
+  })
+  .catch((error) =&gt; {
+    console.error('Unable to get permission to notify.', error);
+  });
+</code></pre>
+</li>
+</ol>
+</div><h1>Case Study 2: E-commerce Application</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Firebase Authentication</strong>: For user accounts.</li>
+<li><strong>Firestore Database</strong>: To store product information and user orders.</li>
+<li><strong>Firebase Hosting</strong>: To deploy the web application.</li>
+<li><strong>Firebase Analytics</strong>: To track user interactions and sales.</li>
+</ul>
+</div><h2>Implementation Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>User Authentication</strong>:</p>
+<pre><code class="language-javascript">// Sign in existing users
+firebase.auth().signInWithEmailAndPassword(email, password)
+  .then((userCredential) =&gt; {
+    // Signed in
+    var user = userCredential.user;
+  })
+  .catch((error) =&gt; {
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Store Product Information in Firestore</strong>:</p>
+<pre><code class="language-javascript">// Add a new product
+db.collection(&quot;products&quot;).add({
+    name: &quot;Product Name&quot;,
+    price: 29.99,
+    description: &quot;Product Description&quot;,
+    imageUrl: &quot;http://example.com/image.jpg&quot;
+})
+.then((docRef) =&gt; {
+    console.log(&quot;Document written with ID: &quot;, docRef.id);
+})
+.catch((error) =&gt; {
+    console.error(&quot;Error adding document: &quot;, error);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Application with Firebase Hosting</strong>:</p>
+<pre><code class="language-bash"># Install Firebase CLI
+npm install -g firebase-tools
+
+# Initialize Firebase project
+firebase init
+
+# Deploy to Firebase Hosting
+firebase deploy
+</code></pre>
+</li>
+<li>
+<p><strong>Track User Interactions with Firebase Analytics</strong>:</p>
+<pre><code class="language-javascript">// Log an event
+firebase.analytics().logEvent('purchase', {
+  item_id: 'P12345',
+  item_name: 'Product Name',
+  value: 29.99,
+  currency: 'USD'
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Case Study 3: Real-Time Collaboration Tool</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Firebase Authentication</strong>: For user management.</li>
+<li><strong>Firestore Database</strong>: For real-time data synchronization.</li>
+<li><strong>Firebase Cloud Functions</strong>: For backend logic.</li>
+<li><strong>Firebase Hosting</strong>: To serve the application.</li>
+</ul>
+</div><h2>Implementation Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>User Management with Firebase Authentication</strong>:</p>
+<pre><code class="language-javascript">// Sign out users
+firebase.auth().signOut().then(() =&gt; {
+  // Sign-out successful.
+}).catch((error) =&gt; {
+  // An error happened.
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Real-Time Data Synchronization with Firestore</strong>:</p>
+<pre><code class="language-javascript">// Listen for real-time updates
+db.collection(&quot;collaborations&quot;).doc(&quot;doc_id&quot;)
+  .onSnapshot((doc) =&gt; {
+    console.log(&quot;Current data: &quot;, doc.data());
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Backend Logic with Firebase Cloud Functions</strong>:</p>
+<pre><code class="language-javascript">exports.updateCollaboration = functions.firestore
+  .document('collaborations/{collabId}')
+  .onUpdate((change, context) =&gt; {
+    const newValue = change.after.data();
+    const previousValue = change.before.data();
+
+    // Perform some logic
+    if (newValue.status !== previousValue.status) {
+      // Status changed
+    }
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Application with Firebase Hosting</strong>:</p>
+<pre><code class="language-bash"># Deploy to Firebase Hosting
+firebase deploy --only hosting
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>By examining these case studies, you should now have a clearer understanding of how Firebase can be applied to various real-world scenarios. Whether you are building a chat application, an e-commerce platform, or a real-time collaboration tool, Firebase provides a comprehensive suite of tools to help you achieve your goals efficiently. Remember to explore Firebase's extensive documentation and experiment with different features to fully leverage its capabilities in your projects.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cost-management'>&#x25C4;Cost Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Studies and Real-World Examples</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

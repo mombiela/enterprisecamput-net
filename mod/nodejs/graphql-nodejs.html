@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL with Node.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/graphql-nodejs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/graphql-nodejs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/graphql-nodejs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/graphql-nodejs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/graphql-nodejs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-restful-apis'>&#x25C4;Building RESTful APIs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">GraphQL with Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='microservices-architecture'>Microservices Architecture &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to GraphQL</h1>
+<div class='content'><p>GraphQL is a query language for APIs and a runtime for executing those queries by using a type system you define for your data. It provides a more efficient, powerful, and flexible alternative to REST.</p>
+<ul>
+<li><strong>Key Concepts:</strong>
+<ul>
+<li><strong>Schema:</strong> Defines the structure of your API, including types and relationships.</li>
+<li><strong>Query:</strong> Requests specific data and shapes the response.</li>
+<li><strong>Mutation:</strong> Modifies data on the server.</li>
+<li><strong>Resolver:</strong> Functions that handle fetching the data for a query or mutation.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up a Node.js Project with GraphQL</h1>
+<div class='content'><p>To get started with GraphQL in Node.js, you need to set up a basic Node.js project and install the necessary packages.</p>
+</div><h2>Step-by-Step Setup</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Initialize a Node.js Project:</strong></p>
+<pre><code class="language-bash">mkdir graphql-nodejs
+cd graphql-nodejs
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Install Required Packages:</strong></p>
+<pre><code class="language-bash">npm install express express-graphql graphql
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Basic Server:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+// Define a schema
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Define a resolver
+const root = {
+  hello: () =&gt; {
+    return 'Hello world!';
+  },
+};
+
+const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Server running on http://localhost:4000/graphql'));
+</code></pre>
+</li>
+</ol>
+</div><h1>Defining a GraphQL Schema</h1>
+<div class='content'><p>The schema is the core of any GraphQL server. It defines the types and the relationships between them.</p>
+</div><h2>Example Schema</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBRdWVyeSB7CiAgYm9vayhpZDogSUQhKTogQm9vawogIGJvb2tzOiBbQm9va10KfQoKdHlwZSBCb29rIHsKICBpZDogSUQhCiAgdGl0bGU6IFN0cmluZyEKICBhdXRob3I6IEF1dGhvciEKfQoKdHlwZSBBdXRob3IgewogIGlkOiBJRCEKICBuYW1lOiBTdHJpbmchCiAgYm9va3M6IFtCb29rXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Query {
+  book(id: ID!): Book
+  books: [Book]
+}
+
+type Book {
+  id: ID!
+  title: String!
+  author: Author!
+}
+
+type Author {
+  id: ID!
+  name: String!
+  books: [Book]
+}</pre></div><div class='content'><ul>
+<li><strong>Types:</strong>
+<ul>
+<li><strong>Query:</strong> Entry point for read operations.</li>
+<li><strong>Book:</strong> Represents a book with an ID, title, and author.</li>
+<li><strong>Author:</strong> Represents an author with an ID, name, and list of books.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Writing Resolvers</h1>
+<div class='content'><p>Resolvers are functions that handle the logic for fetching the data defined in your schema.</p>
+</div><h2>Example Resolvers</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgYm9va3MgPSBbCiAgeyBpZDogJzEnLCB0aXRsZTogJzE5ODQnLCBhdXRob3JJZDogJzEnIH0sCiAgeyBpZDogJzInLCB0aXRsZTogJ0JyYXZlIE5ldyBXb3JsZCcsIGF1dGhvcklkOiAnMicgfSwKXTsKCmNvbnN0IGF1dGhvcnMgPSBbCiAgeyBpZDogJzEnLCBuYW1lOiAnR2VvcmdlIE9yd2VsbCcgfSwKICB7IGlkOiAnMicsIG5hbWU6ICdBbGRvdXMgSHV4bGV5JyB9LApdOwoKY29uc3QgcmVzb2x2ZXJzID0gewogIFF1ZXJ5OiB7CiAgICBib29rOiAoXywgeyBpZCB9KSA9PiBib29rcy5maW5kKGJvb2sgPT4gYm9vay5pZCA9PT0gaWQpLAogICAgYm9va3M6ICgpID0+IGJvb2tzLAogIH0sCiAgQm9vazogewogICAgYXV0aG9yOiAoYm9vaykgPT4gYXV0aG9ycy5maW5kKGF1dGhvciA9PiBhdXRob3IuaWQgPT09IGJvb2suYXV0aG9ySWQpLAogIH0sCiAgQXV0aG9yOiB7CiAgICBib29rczogKGF1dGhvcikgPT4gYm9va3MuZmlsdGVyKGJvb2sgPT4gYm9vay5hdXRob3JJZCA9PT0gYXV0aG9yLmlkKSwKICB9LAp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const books = [
+  { id: '1', title: '1984', authorId: '1' },
+  { id: '2', title: 'Brave New World', authorId: '2' },
+];
+
+const authors = [
+  { id: '1', name: 'George Orwell' },
+  { id: '2', name: 'Aldous Huxley' },
+];
+
+const resolvers = {
+  Query: {
+    book: (_, { id }) =&gt; books.find(book =&gt; book.id === id),
+    books: () =&gt; books,
+  },
+  Book: {
+    author: (book) =&gt; authors.find(author =&gt; author.id === book.authorId),
+  },
+  Author: {
+    books: (author) =&gt; books.filter(book =&gt; book.authorId === author.id),
+  },
+};</pre></div><div class='content'></div><h1>Integrating with a Database</h1>
+<div class='content'><p>To make your GraphQL API more dynamic, you can integrate it with a database.</p>
+</div><h2>Example with MongoDB</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Mongoose:</strong></p>
+<pre><code class="language-bash">npm install mongoose
+</code></pre>
+</li>
+<li>
+<p><strong>Connect to MongoDB:</strong></p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/graphql', { useNewUrlParser: true, useUnifiedTopology: true });
+
+const BookSchema = new mongoose.Schema({
+  title: String,
+  authorId: String,
+});
+
+const Book = mongoose.model('Book', BookSchema);
+
+const AuthorSchema = new mongoose.Schema({
+  name: String,
+});
+
+const Author = mongoose.model('Author', AuthorSchema);
+</code></pre>
+</li>
+<li>
+<p><strong>Update Resolvers to Use Mongoose:</strong></p>
+<pre><code class="language-javascript">const resolvers = {
+  Query: {
+    book: async (_, { id }) =&gt; await Book.findById(id),
+    books: async () =&gt; await Book.find(),
+  },
+  Book: {
+    author: async (book) =&gt; await Author.findById(book.authorId),
+  },
+  Author: {
+    books: async (author) =&gt; await Book.find({ authorId: author.id }),
+  },
+};
+</code></pre>
+</li>
+</ol>
+</div><h1>Advanced Topics</h1>
+<h2>Authentication and Authorization</h2>
+<div class='content'><p>Implementing authentication and authorization in GraphQL can be done using middleware.</p>
+</div><h2>Example Middleware</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgand0ID0gcmVxdWlyZSgnanNvbndlYnRva2VuJyk7Cgpjb25zdCBhdXRoTWlkZGxld2FyZSA9IChyZXEsIHJlcywgbmV4dCkgPT4gewogIGNvbnN0IHRva2VuID0gcmVxLmhlYWRlcnMuYXV0aG9yaXphdGlvbjsKICBpZiAodG9rZW4pIHsKICAgIHRyeSB7CiAgICAgIGNvbnN0IHVzZXIgPSBqd3QudmVyaWZ5KHRva2VuLCAneW91cl9zZWNyZXRfa2V5Jyk7CiAgICAgIHJlcS51c2VyID0gdXNlcjsKICAgIH0gY2F0Y2ggKGVycikgewogICAgICBjb25zb2xlLmVycm9yKGVycik7CiAgICB9CiAgfQogIG5leHQoKTsKfTsKCmFwcC51c2UoYXV0aE1pZGRsZXdhcmUpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const jwt = require('jsonwebtoken');
+
+const authMiddleware = (req, res, next) =&gt; {
+  const token = req.headers.authorization;
+  if (token) {
+    try {
+      const user = jwt.verify(token, 'your_secret_key');
+      req.user = user;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+  next();
+};
+
+app.use(authMiddleware);</pre></div><div class='content'></div><h2>Subscriptions</h2>
+<div class='content'><p>GraphQL subscriptions allow you to subscribe to real-time updates.</p>
+</div><h2>Example with Apollo Server</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Apollo Server and WebSocket:</strong></p>
+<pre><code class="language-bash">npm install apollo-server apollo-server-express graphql-subscriptions
+</code></pre>
+</li>
+<li>
+<p><strong>Set Up Subscriptions:</strong></p>
+<pre><code class="language-javascript">const { ApolloServer, gql, PubSub } = require('apollo-server');
+const pubsub = new PubSub();
+
+const typeDefs = gql`
+  type Query {
+    _: Boolean
+  }
+
+  type Subscription {
+    bookAdded: Book
+  }
+
+  type Book {
+    id: ID!
+    title: String!
+    author: Author!
+  }
+
+  type Author {
+    id: ID!
+    name: String!
+    books: [Book]
+  }
+`;
+
+const resolvers = {
+  Subscription: {
+    bookAdded: {
+      subscribe: () =&gt; pubsub.asyncIterator(['BOOK_ADDED']),
+    },
+  },
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>GraphQL with Node.js provides a powerful and flexible way to build APIs. By understanding the core concepts, setting up a basic server, defining schemas, writing resolvers, and integrating with a database, you can create robust and efficient APIs. Advanced topics like authentication, authorization, and subscriptions further enhance the capabilities of your GraphQL server.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-restful-apis'>&#x25C4;Building RESTful APIs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">GraphQL with Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='microservices-architecture'>Microservices Architecture &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

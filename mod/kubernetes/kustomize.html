@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kustomize</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/kustomize" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/kustomize" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/kustomize" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/kustomize" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/kustomize" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='kubernetes-dashboard'>&#x25C4;Kubernetes Dashboard</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Kustomize</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='kubeadm'>Kubeadm &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Kustomize is a tool for customizing Kubernetes configurations. It allows you to manage and customize Kubernetes manifests without the need to use templates. This topic will guide you from the basics of Kustomize to advanced usage, providing clear explanations, examples, and exercises.</p>
+</div><h1>Introduction to Kustomize</h1>
+<div class='content'><p>Kustomize is built into <code>kubectl</code> and provides a way to manage Kubernetes resources declaratively. It allows you to define a base set of resources and then create overlays to customize these resources for different environments.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Base</strong>: A set of Kubernetes manifests that define the common resources.</li>
+<li><strong>Overlay</strong>: Customizations applied on top of the base manifests for different environments (e.g., development, staging, production).</li>
+<li><strong>kustomization.yaml</strong>: The configuration file used by Kustomize to define how resources should be customized.</li>
+</ul>
+</div><h1>Getting Started with Kustomize</h1>
+<div class='content'></div><h2>Installing Kustomize</h2>
+<div class='content'><p>Kustomize is integrated into <code>kubectl</code>, but you can also install it as a standalone tool.</p>
+<h4>Using kubectl</h4>
+<p>Kustomize is included in <code>kubectl</code> starting from version 1.14. You can use it directly with the <code>kubectl kustomize</code> command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBrdXN0b21pemUgPHBhdGgtdG8ta3VzdG9taXphdGlvbi1kaXJlY3Rvcnk+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl kustomize &lt;path-to-kustomization-directory&gt;</pre></div><div class='content'><h4>Standalone Installation</h4>
+<p>To install Kustomize as a standalone tool, follow the instructions on the <a href="https://github.com/kubernetes-sigs/kustomize">Kustomize GitHub page</a>.</p>
+</div><h2>Creating a Base</h2>
+<div class='content'><p>A base is a set of Kubernetes manifests that define the common resources. Let's create a simple base for a Deployment and a Service.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBkZXBsb3ltZW50LnlhbWwKYXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAyCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBteS1hcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwCiAgICAgICAgaW1hZ2U6IG15LWFwcDoxLjAuMAogICAgICAgIHBvcnRzOgogICAgICAgIC0gY29udGFpbmVyUG9ydDogODA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:1.0.0
+        ports:
+        - containerPort: 80</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzZXJ2aWNlLnlhbWwKYXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAKc3BlYzoKICBzZWxlY3RvcjoKICAgIGFwcDogbXktYXBwCiAgcG9ydHM6CiAgLSBwcm90b2NvbDogVENQCiAgICBwb3J0OiA4MAogICAgdGFyZ2V0UG9ydDogODA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80</pre></div><div class='content'></div><h2>Creating a kustomization.yaml</h2>
+<div class='content'><p>Create a <code>kustomization.yaml</code> file to define the base.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBrdXN0b21pemF0aW9uLnlhbWwKcmVzb3VyY2VzOgotIGRlcGxveW1lbnQueWFtbAotIHNlcnZpY2UueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># kustomization.yaml
+resources:
+- deployment.yaml
+- service.yaml</pre></div><div class='content'></div><h2>Applying the Base</h2>
+<div class='content'><p>To apply the base, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtayA8cGF0aC10by1iYXNlLWRpcmVjdG9yeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -k &lt;path-to-base-directory&gt;</pre></div><div class='content'></div><h1>Creating Overlays</h1>
+<div class='content'><p>Overlays allow you to customize the base resources for different environments.</p>
+</div><h2>Example: Development Overlay</h2>
+<div class='content'><p>Create a directory for the development overlay and a <code>kustomization.yaml</code> file within it.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBvdmVybGF5cy9kZXZlbG9wbWVudC9rdXN0b21pemF0aW9uLnlhbWwKcmVzb3VyY2VzOgotIC4uLy4uL2Jhc2UKCnBhdGNoZXNTdHJhdGVnaWNNZXJnZToKLSBkZXBsb3ltZW50LXBhdGNoLnlhbWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># overlays/development/kustomization.yaml
+resources:
+- ../../base
+
+patchesStrategicMerge:
+- deployment-patch.yaml</pre></div><div class='content'><p>Create a patch file to customize the Deployment for the development environment.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBvdmVybGF5cy9kZXZlbG9wbWVudC9kZXBsb3ltZW50LXBhdGNoLnlhbWwKYXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAxCiAgdGVtcGxhdGU6CiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcAogICAgICAgIGltYWdlOiBteS1hcHA6MS4wLjE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># overlays/development/deployment-patch.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:1.0.1</pre></div><div class='content'></div><h2>Applying the Overlay</h2>
+<div class='content'><p>To apply the development overlay, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtayBvdmVybGF5cy9kZXZlbG9wbWVudA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -k overlays/development</pre></div><div class='content'></div><h1>Advanced Kustomize Features</h1>
+<div class='content'></div><h2>Using ConfigMaps and Secrets</h2>
+<div class='content'><p>Kustomize allows you to generate ConfigMaps and Secrets from files or literals.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBrdXN0b21pemF0aW9uLnlhbWwKY29uZmlnTWFwR2VuZXJhdG9yOgotIG5hbWU6IG15LWNvbmZpZwogIGZpbGVzOgogIC0gY29uZmlnLnByb3BlcnRpZXMKCnNlY3JldEdlbmVyYXRvcjoKLSBuYW1lOiBteS1zZWNyZXQKICBsaXRlcmFsczoKICAtIHVzZXJuYW1lPWFkbWluCiAgLSBwYXNzd29yZD1zZWNyZXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># kustomization.yaml
+configMapGenerator:
+- name: my-config
+  files:
+  - config.properties
+
+secretGenerator:
+- name: my-secret
+  literals:
+  - username=admin
+  - password=secret</pre></div><div class='content'></div><h2>Common Labels and Annotations</h2>
+<div class='content'><p>You can add common labels and annotations to all resources.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBrdXN0b21pemF0aW9uLnlhbWwKY29tbW9uTGFiZWxzOgogIGFwcDogbXktYXBwCmNvbW1vbkFubm90YXRpb25zOgogIGVudmlyb25tZW50OiBkZXZlbG9wbWVudA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># kustomization.yaml
+commonLabels:
+  app: my-app
+commonAnnotations:
+  environment: development</pre></div><div class='content'></div><h2>Transformations</h2>
+<div class='content'><p>Kustomize supports various transformations, such as namePrefix, nameSuffix, and image transformations.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBrdXN0b21pemF0aW9uLnlhbWwKbmFtZVByZWZpeDogZGV2LQpuYW1lU3VmZml4OiAtdjEKCmltYWdlczoKLSBuYW1lOiBteS1hcHAKICBuZXdOYW1lOiBteS1hcHAKICBuZXdUYWc6IDEuMC4x"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># kustomization.yaml
+namePrefix: dev-
+nameSuffix: -v1
+
+images:
+- name: my-app
+  newName: my-app
+  newTag: 1.0.1</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Kustomize is a powerful tool for managing and customizing Kubernetes configurations. It allows you to define a base set of resources and create overlays for different environments, making it easier to manage complex deployments. By understanding and utilizing Kustomize, you can streamline your Kubernetes workflows and improve the maintainability of your configurations.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li><strong>Base</strong>: Common set of Kubernetes manifests.</li>
+<li><strong>Overlay</strong>: Customizations for different environments.</li>
+<li><strong>kustomization.yaml</strong>: Configuration file for Kustomize.</li>
+<li><strong>Key Features</strong>: ConfigMap and Secret generation, common labels and annotations, transformations.</li>
+</ul>
+<p>Practice using Kustomize by creating your own bases and overlays, and explore its advanced features to fully leverage its capabilities in your Kubernetes deployments.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='kubernetes-dashboard'>&#x25C4;Kubernetes Dashboard</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Kustomize</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='kubeadm'>Kubeadm &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

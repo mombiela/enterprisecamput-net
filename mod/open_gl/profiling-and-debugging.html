@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profiling and Debugging</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/profiling-and-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/profiling-and-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/profiling-and-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/open_gl/profiling-and-debugging" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/profiling-and-debugging" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='efficient-memory-management'>&#x25C4;Efficient Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Profiling and Debugging</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='opengl-extensions'>OpenGL Extensions &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Profiling and debugging are essential skills for any OpenGL programmer. These processes help identify performance bottlenecks and logical errors in your graphics applications. This section will cover the tools and techniques used to profile and debug OpenGL applications, from beginner to advanced levels.</p>
+</div><h1>Debugging OpenGL Applications</h1>
+<div class='content'></div><h2>Understanding OpenGL Errors</h2>
+<div class='content'><ul>
+<li><strong>glGetError()</strong>: This function returns error codes that indicate what went wrong in your OpenGL code.
+<pre><code class="language-cpp">GLenum error = glGetError();
+if (error != GL_NO_ERROR) {
+    // Handle the error
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Using Debug Output</h2>
+<div class='content'><ul>
+<li><strong>Debug Output</strong>: OpenGL provides a mechanism to get more detailed error messages and warnings.
+<pre><code class="language-cpp">glEnable(GL_DEBUG_OUTPUT);
+glDebugMessageCallback(MessageCallback, 0);
+
+void APIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+    std::cerr &lt;&lt; &quot;GL CALLBACK: &quot; &lt;&lt; (type == GL_DEBUG_TYPE_ERROR ? &quot;** GL ERROR **&quot; : &quot;&quot;) 
+              &lt;&lt; &quot; type = &quot; &lt;&lt; type 
+              &lt;&lt; &quot;, severity = &quot; &lt;&lt; severity 
+              &lt;&lt; &quot;, message = &quot; &lt;&lt; message &lt;&lt; std::endl;
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Common Debugging Tools</h2>
+<div class='content'><ul>
+<li><strong>gDEBugger</strong>: A powerful tool for debugging and profiling OpenGL applications.</li>
+<li><strong>RenderDoc</strong>: An open-source graphics debugger that allows you to capture and inspect frames.</li>
+<li><strong>Visual Studio Graphics Debugger</strong>: Integrated into Visual Studio, useful for Windows developers.</li>
+</ul>
+</div><h1>Profiling OpenGL Applications</h1>
+<div class='content'></div><h2>Measuring Performance</h2>
+<div class='content'><ul>
+<li><strong>glFinish() and glFlush()</strong>: These functions can be used to measure the time taken by OpenGL commands.
+<pre><code class="language-cpp">auto start = std::chrono::high_resolution_clock::now();
+glFinish(); // Ensure all commands are completed
+auto end = std::chrono::high_resolution_clock::now();
+std::chrono::duration&lt;double&gt; elapsed = end - start;
+std::cout &lt;&lt; &quot;Time taken: &quot; &lt;&lt; elapsed.count() &lt;&lt; &quot; seconds&quot; &lt;&lt; std::endl;
+</code></pre>
+</li>
+</ul>
+</div><h2>Using Timer Queries</h2>
+<div class='content'><ul>
+<li><strong>Timer Queries</strong>: OpenGL provides timer queries to measure the time taken by GPU operations.
+<pre><code class="language-cpp">GLuint query;
+glGenQueries(1, &amp;query);
+glBeginQuery(GL_TIME_ELAPSED, query);
+
+// Your rendering code here
+
+glEndQuery(GL_TIME_ELAPSED);
+GLuint64 timeElapsed;
+glGetQueryObjectui64v(query, GL_QUERY_RESULT, &amp;timeElapsed);
+std::cout &lt;&lt; &quot;Time taken: &quot; &lt;&lt; timeElapsed / 1000000.0 &lt;&lt; &quot; ms&quot; &lt;&lt; std::endl;
+</code></pre>
+</li>
+</ul>
+</div><h2>Profiling Tools</h2>
+<div class='content'><ul>
+<li><strong>NVIDIA Nsight</strong>: A comprehensive tool for profiling and debugging on NVIDIA GPUs.</li>
+<li><strong>AMD GPU PerfStudio</strong>: A tool for profiling and debugging on AMD GPUs.</li>
+<li><strong>Intel GPA</strong>: A tool for profiling and debugging on Intel GPUs.</li>
+</ul>
+</div><h1>Best Practices for Debugging and Profiling</h1>
+<div class='content'><ul>
+<li><strong>Use Debug Contexts</strong>: Enable debug contexts during development to get more detailed error messages.</li>
+<li><strong>Check for Errors Frequently</strong>: Use <code>glGetError()</code> frequently to catch errors early.</li>
+<li><strong>Optimize Shaders</strong>: Profile and optimize your shaders to improve performance.</li>
+<li><strong>Minimize State Changes</strong>: Reduce the number of state changes to improve performance.</li>
+<li><strong>Batch Rendering</strong>: Group similar rendering commands to reduce overhead.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Profiling and debugging are crucial for developing efficient and error-free OpenGL applications. By understanding and utilizing the tools and techniques discussed in this section, you can identify and resolve performance bottlenecks and logical errors, leading to more robust and optimized graphics applications. Remember to frequently check for errors, use debug output, and leverage profiling tools to gain insights into your application's performance.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='efficient-memory-management'>&#x25C4;Efficient Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Profiling and Debugging</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='opengl-extensions'>OpenGL Extensions &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

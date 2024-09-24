@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Spark SQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/advanced-spark-sql" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/advanced-spark-sql" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/advanced-spark-sql" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/advanced-spark-sql" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/advanced-spark-sql" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-data-sources'>&#x25C4;Custom Data Sources</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced Spark SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-streaming-techniques'>Advanced Streaming Techniques &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Advanced Spark SQL</h1>
+<div class='content'><p>In this section, we will delve deeper into Spark SQL, exploring advanced features and optimizations that can help you write more efficient and powerful queries. We will cover topics such as window functions, UDFs (User-Defined Functions), and performance tuning.</p>
+</div><h1>Window Functions</h1>
+<div class='content'><p>Window functions are a powerful feature in Spark SQL that allow you to perform calculations across a set of table rows that are somehow related to the current row.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Partitioning</strong>: Divides the dataset into partitions.</li>
+<li><strong>Ordering</strong>: Defines the order of rows within each partition.</li>
+<li><strong>Frame Specification</strong>: Defines the subset of rows to be considered for each row.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsuc3FsLmV4cHJlc3Npb25zLldpbmRvdwppbXBvcnQgb3JnLmFwYWNoZS5zcGFyay5zcWwuZnVuY3Rpb25zLl8KCnZhbCBkZiA9IFNlcSgKICAoMSwgIkEiLCAxMDApLAogICgyLCAiQiIsIDIwMCksCiAgKDMsICJBIiwgMzAwKSwKICAoNCwgIkIiLCA0MDApLAogICg1LCAiQSIsIDUwMCkKKS50b0RGKCJpZCIsICJjYXRlZ29yeSIsICJ2YWx1ZSIpCgp2YWwgd2luZG93U3BlYyA9IFdpbmRvdy5wYXJ0aXRpb25CeSgiY2F0ZWdvcnkiKS5vcmRlckJ5KCJpZCIpCgp2YWwgcmVzdWx0ID0gZGYud2l0aENvbHVtbigicmFuayIsIHJhbmsoKS5vdmVyKHdpbmRvd1NwZWMpKQpyZXN1bHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.sql.expressions.Window
+import org.apache.spark.sql.functions._
+
+val df = Seq(
+  (1, &quot;A&quot;, 100),
+  (2, &quot;B&quot;, 200),
+  (3, &quot;A&quot;, 300),
+  (4, &quot;B&quot;, 400),
+  (5, &quot;A&quot;, 500)
+).toDF(&quot;id&quot;, &quot;category&quot;, &quot;value&quot;)
+
+val windowSpec = Window.partitionBy(&quot;category&quot;).orderBy(&quot;id&quot;)
+
+val result = df.withColumn(&quot;rank&quot;, rank().over(windowSpec))
+result.show()</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li>We create a DataFrame <code>df</code> with columns <code>id</code>, <code>category</code>, and <code>value</code>.</li>
+<li>We define a window specification <code>windowSpec</code> that partitions the data by <code>category</code> and orders it by <code>id</code>.</li>
+<li>We add a new column <code>rank</code> that calculates the rank of each row within its partition.</li>
+</ul>
+</div><h1>User-Defined Functions (UDFs)</h1>
+<div class='content'><p>UDFs allow you to define custom functions to use in your Spark SQL queries.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Defining UDFs</strong>: Create a function and register it as a UDF.</li>
+<li><strong>Using UDFs</strong>: Apply the UDF in DataFrame operations.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsuc3FsLmZ1bmN0aW9ucy51ZGYKCnZhbCB0b1VwcGVyQ2FzZSA9IHVkZigoczogU3RyaW5nKSA9PiBzLnRvVXBwZXJDYXNlKQoKdmFsIGRmID0gU2VxKAogICgxLCAiaGVsbG8iKSwKICAoMiwgIndvcmxkIikKKS50b0RGKCJpZCIsICJ0ZXh0IikKCnZhbCByZXN1bHQgPSBkZi53aXRoQ29sdW1uKCJ1cHBlcl90ZXh0IiwgdG9VcHBlckNhc2UoY29sKCJ0ZXh0IikpKQpyZXN1bHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.sql.functions.udf
+
+val toUpperCase = udf((s: String) =&gt; s.toUpperCase)
+
+val df = Seq(
+  (1, &quot;hello&quot;),
+  (2, &quot;world&quot;)
+).toDF(&quot;id&quot;, &quot;text&quot;)
+
+val result = df.withColumn(&quot;upper_text&quot;, toUpperCase(col(&quot;text&quot;)))
+result.show()</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li>We define a UDF <code>toUpperCase</code> that converts a string to uppercase.</li>
+<li>We create a DataFrame <code>df</code> with columns <code>id</code> and <code>text</code>.</li>
+<li>We add a new column <code>upper_text</code> that applies the <code>toUpperCase</code> UDF to the <code>text</code> column.</li>
+</ul>
+</div><h1>Performance Tuning</h1>
+<div class='content'><p>Optimizing Spark SQL queries can significantly improve performance. Key techniques include using DataFrame API over RDDs, caching, and proper partitioning.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>DataFrame API</strong>: Prefer DataFrame API over RDDs for better optimization.</li>
+<li><strong>Caching</strong>: Cache intermediate results to avoid recomputation.</li>
+<li><strong>Partitioning</strong>: Properly partition data to balance the load across nodes.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRmID0gc3BhcmsucmVhZC5wYXJxdWV0KCJoZGZzOi8vcGF0aC90by9kYXRhIikKCi8vIENhY2hpbmcgdGhlIERhdGFGcmFtZQpkZi5jYWNoZSgpCgovLyBQZXJmb3JtaW5nIG9wZXJhdGlvbnMgb24gdGhlIGNhY2hlZCBEYXRhRnJhbWUKdmFsIHJlc3VsdCA9IGRmLmdyb3VwQnkoImNhdGVnb3J5IikuYWdnKHN1bSgidmFsdWUiKS5hcygidG90YWxfdmFsdWUiKSkKcmVzdWx0LnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val df = spark.read.parquet(&quot;hdfs://path/to/data&quot;)
+
+// Caching the DataFrame
+df.cache()
+
+// Performing operations on the cached DataFrame
+val result = df.groupBy(&quot;category&quot;).agg(sum(&quot;value&quot;).as(&quot;total_value&quot;))
+result.show()</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li>We read a DataFrame <code>df</code> from a Parquet file.</li>
+<li>We cache the DataFrame to avoid recomputation of intermediate results.</li>
+<li>We perform a groupBy operation on the cached DataFrame and calculate the sum of <code>value</code> for each <code>category</code>.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored advanced features of Spark SQL, including window functions, UDFs, and performance tuning techniques. These tools and techniques can help you write more efficient and powerful Spark SQL queries, enabling you to handle complex data processing tasks with ease. By mastering these advanced features, you can significantly improve the performance and scalability of your Spark applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-data-sources'>&#x25C4;Custom Data Sources</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced Spark SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-streaming-techniques'>Advanced Streaming Techniques &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

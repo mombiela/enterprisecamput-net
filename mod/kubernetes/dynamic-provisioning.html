@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Provisioning in Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/dynamic-provisioning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/dynamic-provisioning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/dynamic-provisioning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/dynamic-provisioning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/dynamic-provisioning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='storage-classes'>&#x25C4;Storage Classes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Provisioning in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='statefulsets'>StatefulSets &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Dynamic provisioning in Kubernetes allows for the automatic creation of storage resources when they are needed by applications. This feature simplifies storage management and enhances the flexibility and scalability of Kubernetes clusters.</p>
+</div><h1>Introduction to Dynamic Provisioning</h1>
+<div class='content'><p>Dynamic provisioning automates the process of creating and managing storage volumes, which is essential for stateful applications. This section covers the basics and importance of dynamic provisioning in Kubernetes.</p>
+<ul>
+<li><strong>Definition</strong>: Dynamic provisioning is the process by which Kubernetes automatically provisions storage resources when a PersistentVolumeClaim (PVC) is created.</li>
+<li><strong>Importance</strong>:
+<ul>
+<li>Simplifies storage management.</li>
+<li>Enhances scalability and flexibility.</li>
+<li>Reduces manual intervention and potential errors.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Key Concepts</h1>
+<div class='content'><p>Understanding the key concepts is crucial for mastering dynamic provisioning in Kubernetes.</p>
+<ul>
+<li><strong>PersistentVolume (PV)</strong>: A piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using StorageClasses.</li>
+<li><strong>PersistentVolumeClaim (PVC)</strong>: A request for storage by a user. It is similar to a pod in that pods consume node resources and PVCs consume PV resources.</li>
+<li><strong>StorageClass</strong>: Defines the storage type and configuration for dynamic provisioning. It is used to specify the provisioner, parameters, and reclaim policy.</li>
+</ul>
+</div><h1>How Dynamic Provisioning Works</h1>
+<div class='content'><p>Dynamic provisioning involves several components and steps. This section explains the workflow and components involved.</p>
+<ol>
+<li><strong>Create a StorageClass</strong>: Define the storage type and configuration.</li>
+<li><strong>Create a PersistentVolumeClaim (PVC)</strong>: Request storage using the StorageClass.</li>
+<li><strong>Provisioning</strong>: Kubernetes automatically provisions a PersistentVolume (PV) that matches the PVC request.</li>
+<li><strong>Binding</strong>: The PVC is bound to the newly created PV.</li>
+</ol>
+</div><h2>Example Workflow</h2>
+<div class='content'><p>Let's go through an example to illustrate the dynamic provisioning process.</p>
+<ol>
+<li>
+<p><strong>Create a StorageClass</strong>:</p>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+</code></pre>
+</li>
+<li>
+<p><strong>Create a PersistentVolumeClaim (PVC)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: fast
+</code></pre>
+</li>
+<li>
+<p><strong>Provisioning and Binding</strong>:</p>
+<ul>
+<li>Kubernetes detects the PVC and uses the specified StorageClass to provision a new PV.</li>
+<li>The PV is created and bound to the PVC automatically.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Advanced Configuration</h1>
+<div class='content'><p>For advanced users, dynamic provisioning can be customized further.</p>
+<ul>
+<li><strong>Custom Parameters</strong>: StorageClasses can include custom parameters specific to the storage backend.</li>
+<li><strong>Reclaim Policy</strong>: Defines what happens to the PV when the PVC is deleted. Common policies are <code>Retain</code>, <code>Recycle</code>, and <code>Delete</code>.</li>
+<li><strong>Binding Mode</strong>: Controls when volume binding and dynamic provisioning should occur. Options include <code>Immediate</code> and <code>WaitForFirstConsumer</code>.</li>
+</ul>
+</div><h2>Example with Custom Parameters</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGN1c3RvbS1mYXN0CnByb3Zpc2lvbmVyOiBrdWJlcm5ldGVzLmlvL2F3cy1lYnMKcGFyYW1ldGVyczoKICB0eXBlOiBpbzEKICBpb3BzUGVyR0I6ICIxMCIKcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBXYWl0Rm9yRmlyc3RDb25zdW1lcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: custom-fast
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: &quot;10&quot;
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer</pre></div><div class='content'></div><h1>Troubleshooting</h1>
+<div class='content'><p>Common issues and troubleshooting steps for dynamic provisioning.</p>
+<ul>
+<li><strong>PVC Pending</strong>: Ensure the StorageClass exists and is correctly configured.</li>
+<li><strong>PV Not Bound</strong>: Check if the storage backend has sufficient resources.</li>
+<li><strong>Provisioning Failures</strong>: Review the Kubernetes events and logs for errors related to the storage provisioner.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Dynamic provisioning in Kubernetes automates the creation and management of storage resources, making it easier to deploy and scale stateful applications. By understanding the key concepts, workflow, and advanced configurations, you can effectively manage storage in your Kubernetes clusters.</p>
+<ul>
+<li><strong>Key Takeaways</strong>:
+<ul>
+<li>Dynamic provisioning simplifies storage management.</li>
+<li>StorageClasses play a crucial role in defining storage configurations.</li>
+<li>Advanced configurations and troubleshooting are essential for optimizing and maintaining dynamic provisioning.</li>
+</ul>
+</li>
+</ul>
+<p>By mastering dynamic provisioning, you can ensure that your Kubernetes applications have the necessary storage resources to operate efficiently and reliably.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='storage-classes'>&#x25C4;Storage Classes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Provisioning in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='statefulsets'>StatefulSets &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

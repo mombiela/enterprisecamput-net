@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling with Result</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/error-handling-with-result" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/error-handling-with-result" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/error-handling-with-result" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rust/error-handling-with-result" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/error-handling-with-result" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hashmaps'>&#x25C4;HashMaps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling with Result</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-with-option'>Error Handling with Option &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Error handling is a crucial aspect of programming, ensuring that your code can gracefully handle unexpected situations. In Rust, the <code>Result</code> type is a powerful tool for managing errors. This topic will guide you from the basics to advanced usage of <code>Result</code> for error handling in Rust.</p>
+</div><h1>Introduction to `Result`</h1>
+<div class='content'><p>The <code>Result</code> type is an enum that represents either success (<code>Ok</code>) or failure (<code>Err</code>). It is defined as:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBSZXN1bHQ8VCwgRT4gewogICAgT2soVCksCiAgICBFcnIoRSksCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}</pre></div><div class='content'><ul>
+<li><code>T</code>: The type of the value returned in the success case.</li>
+<li><code>E</code>: The type of the error returned in the failure case.</li>
+</ul>
+</div><h2>Basic Usage</h2>
+<div class='content'><p>Let's start with a simple example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlKGE6IGY2NCwgYjogZjY0KSAtPiBSZXN1bHQ8ZjY0LCBTdHJpbmc+IHsKICAgIGlmIGIgPT0gMC4wIHsKICAgICAgICBFcnIoU3RyaW5nOjpmcm9tKCJEaXZpc2lvbiBieSB6ZXJvIikpCiAgICB9IGVsc2UgewogICAgICAgIE9rKGEgLyBiKQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbWF0Y2ggZGl2aWRlKDQuMCwgMi4wKSB7CiAgICAgICAgT2socmVzdWx0KSA9PiBwcmludGxuISgiUmVzdWx0OiB7fSIsIHJlc3VsdCksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjoge30iLCBlKSwKICAgIH0KCiAgICBtYXRjaCBkaXZpZGUoNC4wLCAwLjApIHsKICAgICAgICBPayhyZXN1bHQpID0+IHByaW50bG4hKCJSZXN1bHQ6IHt9IiwgcmVzdWx0KSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIkVycm9yOiB7fSIsIGUpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide(a: f64, b: f64) -&gt; Result&lt;f64, String&gt; {
+    if b == 0.0 {
+        Err(String::from(&quot;Division by zero&quot;))
+    } else {
+        Ok(a / b)
+    }
+}
+
+fn main() {
+    match divide(4.0, 2.0) {
+        Ok(result) =&gt; println!(&quot;Result: {}&quot;, result),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+
+    match divide(4.0, 0.0) {
+        Ok(result) =&gt; println!(&quot;Result: {}&quot;, result),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+}</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>divide</code> function returns a <code>Result&lt;f64, String&gt;</code>.</li>
+<li>If the division is successful, it returns <code>Ok(result)</code>.</li>
+<li>If there is an error (division by zero), it returns <code>Err(error_message)</code>.</li>
+</ul>
+</div><h1>Handling `Result` with `match`</h1>
+<div class='content'><p>The <code>match</code> statement is a common way to handle <code>Result</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBkaXZpZGUoMTAuMCwgMi4wKTsKCiAgICBtYXRjaCByZXN1bHQgewogICAgICAgIE9rKHZhbHVlKSA9PiBwcmludGxuISgiU3VjY2Vzczoge30iLCB2YWx1ZSksCiAgICAgICAgRXJyKGVycm9yKSA9PiBwcmludGxuISgiRXJyb3I6IHt9IiwgZXJyb3IpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let result = divide(10.0, 2.0);
+
+    match result {
+        Ok(value) =&gt; println!(&quot;Success: {}&quot;, value),
+        Err(error) =&gt; println!(&quot;Error: {}&quot;, error),
+    }
+}</pre></div><div class='content'></div><h2>Using `unwrap` and `expect`</h2>
+<div class='content'><p>For quick prototyping, you can use <code>unwrap</code> and <code>expect</code> to handle <code>Result</code>:</p>
+<ul>
+<li><code>unwrap</code>: Returns the value inside <code>Ok</code> or panics if it's <code>Err</code>.</li>
+<li><code>expect</code>: Similar to <code>unwrap</code>, but allows you to provide a custom panic message.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBkaXZpZGUoMTAuMCwgMi4wKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJSZXN1bHQ6IHt9IiwgcmVzdWx0KTsKCiAgICBsZXQgcmVzdWx0ID0gZGl2aWRlKDEwLjAsIDAuMCkuZXhwZWN0KCJGYWlsZWQgdG8gZGl2aWRlIik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let result = divide(10.0, 2.0).unwrap();
+    println!(&quot;Result: {}&quot;, result);
+
+    let result = divide(10.0, 0.0).expect(&quot;Failed to divide&quot;);
+}</pre></div><div class='content'><p><strong>Note:</strong> Using <code>unwrap</code> and <code>expect</code> is not recommended for production code as they can cause your program to panic.</p>
+</div><h1>Advanced Error Handling</h1>
+<div class='content'></div><h2>Chaining Methods with `and_then` and `or_else`</h2>
+<div class='content'><p>You can chain multiple operations that return <code>Result</code> using <code>and_then</code> and <code>or_else</code>:</p>
+<ul>
+<li><code>and_then</code>: Chains another operation if the result is <code>Ok</code>.</li>
+<li><code>or_else</code>: Chains another operation if the result is <code>Err</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gYWRkX29uZSh4OiBmNjQpIC0+IFJlc3VsdDxmNjQsIFN0cmluZz4gewogICAgT2soeCArIDEuMCkKfQoKZm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBkaXZpZGUoMTAuMCwgMi4wKQogICAgICAgIC5hbmRfdGhlbihhZGRfb25lKQogICAgICAgIC5vcl9lbHNlKHxlfCBFcnIoZm9ybWF0ISgiRmFpbGVkOiB7fSIsIGUpKSk7CgogICAgbWF0Y2ggcmVzdWx0IHsKICAgICAgICBPayh2YWx1ZSkgPT4gcHJpbnRsbiEoIlN1Y2Nlc3M6IHt9IiwgdmFsdWUpLAogICAgICAgIEVycihlcnJvcikgPT4gcHJpbnRsbiEoIkVycm9yOiB7fSIsIGVycm9yKSwKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn add_one(x: f64) -&gt; Result&lt;f64, String&gt; {
+    Ok(x + 1.0)
+}
+
+fn main() {
+    let result = divide(10.0, 2.0)
+        .and_then(add_one)
+        .or_else(|e| Err(format!(&quot;Failed: {}&quot;, e)));
+
+    match result {
+        Ok(value) =&gt; println!(&quot;Success: {}&quot;, value),
+        Err(error) =&gt; println!(&quot;Error: {}&quot;, error),
+    }
+}</pre></div><div class='content'></div><h2>Using `?` Operator</h2>
+<div class='content'><p>The <code>?</code> operator is a shorthand for propagating errors. It can only be used in functions that return <code>Result</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlX2FuZF9hZGQoYTogZjY0LCBiOiBmNjQpIC0+IFJlc3VsdDxmNjQsIFN0cmluZz4gewogICAgbGV0IHJlc3VsdCA9IGRpdmlkZShhLCBiKT87CiAgICBhZGRfb25lKHJlc3VsdCkKfQoKZm4gbWFpbigpIHsKICAgIG1hdGNoIGRpdmlkZV9hbmRfYWRkKDEwLjAsIDIuMCkgewogICAgICAgIE9rKHZhbHVlKSA9PiBwcmludGxuISgiU3VjY2Vzczoge30iLCB2YWx1ZSksCiAgICAgICAgRXJyKGVycm9yKSA9PiBwcmludGxuISgiRXJyb3I6IHt9IiwgZXJyb3IpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide_and_add(a: f64, b: f64) -&gt; Result&lt;f64, String&gt; {
+    let result = divide(a, b)?;
+    add_one(result)
+}
+
+fn main() {
+    match divide_and_add(10.0, 2.0) {
+        Ok(value) =&gt; println!(&quot;Success: {}&quot;, value),
+        Err(error) =&gt; println!(&quot;Error: {}&quot;, error),
+    }
+}</pre></div><div class='content'></div><h2>Custom Error Types</h2>
+<div class='content'><p>For more complex applications, you might want to define custom error types:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I1tkZXJpdmUoRGVidWcpXQplbnVtIE1hdGhFcnJvciB7CiAgICBEaXZpc2lvbkJ5WmVybywKICAgIE5lZ2F0aXZlTG9nYXJpdGhtLAp9CgpmbiBkaXZpZGUoYTogZjY0LCBiOiBmNjQpIC0+IFJlc3VsdDxmNjQsIE1hdGhFcnJvcj4gewogICAgaWYgYiA9PSAwLjAgewogICAgICAgIEVycihNYXRoRXJyb3I6OkRpdmlzaW9uQnlaZXJvKQogICAgfSBlbHNlIHsKICAgICAgICBPayhhIC8gYikKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIG1hdGNoIGRpdmlkZSgxMC4wLCAwLjApIHsKICAgICAgICBPayh2YWx1ZSkgPT4gcHJpbnRsbiEoIlN1Y2Nlc3M6IHt9IiwgdmFsdWUpLAogICAgICAgIEVycihlcnJvcikgPT4gcHJpbnRsbiEoIkVycm9yOiB7Oj99IiwgZXJyb3IpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#[derive(Debug)]
+enum MathError {
+    DivisionByZero,
+    NegativeLogarithm,
+}
+
+fn divide(a: f64, b: f64) -&gt; Result&lt;f64, MathError&gt; {
+    if b == 0.0 {
+        Err(MathError::DivisionByZero)
+    } else {
+        Ok(a / b)
+    }
+}
+
+fn main() {
+    match divide(10.0, 0.0) {
+        Ok(value) =&gt; println!(&quot;Success: {}&quot;, value),
+        Err(error) =&gt; println!(&quot;Error: {:?}&quot;, error),
+    }
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><ul>
+<li>The <code>Result</code> type is essential for error handling in Rust.</li>
+<li>Use <code>match</code> to handle <code>Result</code> explicitly.</li>
+<li><code>unwrap</code> and <code>expect</code> can be used for quick prototyping but are not recommended for production.</li>
+<li>The <code>?</code> operator simplifies error propagation.</li>
+<li>Custom error types provide more flexibility and clarity in error handling.</li>
+</ul>
+<p>By mastering <code>Result</code>, you can write robust and error-resistant Rust code.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hashmaps'>&#x25C4;HashMaps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling with Result</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-with-option'>Error Handling with Option &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

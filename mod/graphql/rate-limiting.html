@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Limiting in GraphQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/rate-limiting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/rate-limiting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/rate-limiting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/rate-limiting" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/rate-limiting" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pagination'>&#x25C4;Pagination</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rate Limiting in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Authentication and Authorization &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Rate limiting is a crucial concept in API design and implementation, ensuring that the resources are used efficiently and preventing abuse. In this section, we'll explore how to implement rate limiting in a GraphQL API, from basic concepts to advanced techniques.</p>
+</div><h1>What is Rate Limiting?</h1>
+<div class='content'><p>Rate limiting is a technique used to control the amount of incoming requests to a server within a specified time frame. It helps to:</p>
+<ul>
+<li>Prevent abuse and overuse of resources.</li>
+<li>Ensure fair usage among all clients.</li>
+<li>Protect the server from being overwhelmed by too many requests.</li>
+</ul>
+</div><h1>Why Rate Limiting is Important in GraphQL</h1>
+<div class='content'><p>GraphQL APIs can be particularly vulnerable to abuse because:</p>
+<ul>
+<li>Clients can request a large amount of data in a single query.</li>
+<li>Complex queries can be constructed that are computationally expensive.</li>
+</ul>
+<p>Implementing rate limiting helps to mitigate these risks and ensures the stability and performance of your GraphQL API.</p>
+</div><h1>Basic Rate Limiting Concepts</h1>
+<div class='content'><p>Before diving into implementation, let's understand some basic concepts:</p>
+<ul>
+<li><strong>Request Count</strong>: The number of requests a client can make within a time window.</li>
+<li><strong>Time Window</strong>: The duration in which the request count is measured (e.g., per minute, per hour).</li>
+<li><strong>Client Identification</strong>: Identifying clients typically using API keys, IP addresses, or user tokens.</li>
+</ul>
+</div><h1>Implementing Rate Limiting in GraphQL</h1>
+<div class='content'></div><h2>Using Middleware</h2>
+<div class='content'><p>One common approach to implement rate limiting in GraphQL is by using middleware. Middleware can intercept requests and apply rate limiting logic before passing the request to the GraphQL resolver.</p>
+<h4>Example with Express and Apollo Server</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlci1leHByZXNzJyk7CmNvbnN0IHJhdGVMaW1pdCA9IHJlcXVpcmUoJ2V4cHJlc3MtcmF0ZS1saW1pdCcpOwoKLy8gRGVmaW5lIHlvdXIgR3JhcGhRTCBzY2hlbWEKY29uc3QgdHlwZURlZnMgPSBncWxgCiAgdHlwZSBRdWVyeSB7CiAgICBoZWxsbzogU3RyaW5nCiAgfQpgOwoKLy8gRGVmaW5lIHlvdXIgcmVzb2x2ZXJzCmNvbnN0IHJlc29sdmVycyA9IHsKICBRdWVyeTogewogICAgaGVsbG86ICgpID0+ICdIZWxsbyB3b3JsZCEnLAogIH0sCn07CgovLyBDcmVhdGUgYW4gaW5zdGFuY2Ugb2YgQXBvbGxvU2VydmVyCmNvbnN0IHNlcnZlciA9IG5ldyBBcG9sbG9TZXJ2ZXIoeyB0eXBlRGVmcywgcmVzb2x2ZXJzIH0pOwoKLy8gQ3JlYXRlIGFuIGluc3RhbmNlIG9mIEV4cHJlc3MKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRGVmaW5lIHJhdGUgbGltaXRpbmcgbWlkZGxld2FyZQpjb25zdCBsaW1pdGVyID0gcmF0ZUxpbWl0KHsKICB3aW5kb3dNczogMSAqIDYwICogMTAwMCwgLy8gMSBtaW51dGUKICBtYXg6IDEwLCAvLyBsaW1pdCBlYWNoIElQIHRvIDEwIHJlcXVlc3RzIHBlciB3aW5kb3dNcwogIG1lc3NhZ2U6ICdUb28gbWFueSByZXF1ZXN0cywgcGxlYXNlIHRyeSBhZ2FpbiBsYXRlci4nLAp9KTsKCi8vIEFwcGx5IHJhdGUgbGltaXRpbmcgbWlkZGxld2FyZSB0byBhbGwgcmVxdWVzdHMKYXBwLnVzZShsaW1pdGVyKTsKCi8vIEFwcGx5IEFwb2xsbyBHcmFwaFFMIG1pZGRsZXdhcmUKc2VydmVyLmFwcGx5TWlkZGxld2FyZSh7IGFwcCB9KTsKCi8vIFN0YXJ0IHRoZSBzZXJ2ZXIKYXBwLmxpc3Rlbih7IHBvcnQ6IDQwMDAgfSwgKCkgPT4KICBjb25zb2xlLmxvZyhgU2VydmVyIHJlYWR5IGF0IGh0dHA6Ly9sb2NhbGhvc3Q6NDAwMCR7c2VydmVyLmdyYXBocWxQYXRofWApCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const rateLimit = require('express-rate-limit');
+
+// Define your GraphQL schema
+const typeDefs = gql`
+  type Query {
+    hello: String
+  }
+`;
+
+// Define your resolvers
+const resolvers = {
+  Query: {
+    hello: () =&gt; 'Hello world!',
+  },
+};
+
+// Create an instance of ApolloServer
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// Create an instance of Express
+const app = express();
+
+// Define rate limiting middleware
+const limiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: 'Too many requests, please try again later.',
+});
+
+// Apply rate limiting middleware to all requests
+app.use(limiter);
+
+// Apply Apollo GraphQL middleware
+server.applyMiddleware({ app });
+
+// Start the server
+app.listen({ port: 4000 }, () =&gt;
+  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+);</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>We use <code>express-rate-limit</code> to define a rate limiter.</li>
+<li>The rate limiter is configured to allow 10 requests per minute per IP address.</li>
+<li>If the limit is exceeded, a message is returned to the client.</li>
+</ul>
+</div><h2>Advanced Rate Limiting Techniques</h2>
+<div class='content'><p>For more advanced rate limiting, you might want to consider:</p>
+<ul>
+<li><strong>Dynamic Limits</strong>: Adjusting limits based on user roles or subscription plans.</li>
+<li><strong>Distributed Rate Limiting</strong>: Implementing rate limiting across multiple servers or instances.</li>
+<li><strong>GraphQL-Specific Limits</strong>: Limiting based on query complexity or depth.</li>
+</ul>
+<h4>Example with Dynamic Limits</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmF0ZUxpbWl0ID0gcmVxdWlyZSgnZXhwcmVzcy1yYXRlLWxpbWl0Jyk7CgovLyBGdW5jdGlvbiB0byBkZXRlcm1pbmUgcmF0ZSBsaW1pdCBiYXNlZCBvbiB1c2VyIHJvbGUKY29uc3QgZ2V0UmF0ZUxpbWl0ID0gKHJvbGUpID0+IHsKICBzd2l0Y2ggKHJvbGUpIHsKICAgIGNhc2UgJ3ByZW1pdW0nOgogICAgICByZXR1cm4geyB3aW5kb3dNczogMSAqIDYwICogMTAwMCwgbWF4OiAxMDAgfTsKICAgIGNhc2UgJ3N0YW5kYXJkJzoKICAgICAgcmV0dXJuIHsgd2luZG93TXM6IDEgKiA2MCAqIDEwMDAsIG1heDogNTAgfTsKICAgIGRlZmF1bHQ6CiAgICAgIHJldHVybiB7IHdpbmRvd01zOiAxICogNjAgKiAxMDAwLCBtYXg6IDEwIH07CiAgfQp9OwoKLy8gTWlkZGxld2FyZSB0byBhcHBseSBkeW5hbWljIHJhdGUgbGltaXRzCmNvbnN0IGR5bmFtaWNSYXRlTGltaXQgPSAocmVxLCByZXMsIG5leHQpID0+IHsKICBjb25zdCB1c2VyUm9sZSA9IHJlcS51c2VyLnJvbGU7IC8vIEFzc3VtZSB1c2VyIHJvbGUgaXMgYXZhaWxhYmxlIGluIHJlcS51c2VyCiAgY29uc3QgbGltaXQgPSBnZXRSYXRlTGltaXQodXNlclJvbGUpOwogIHJhdGVMaW1pdChsaW1pdCkocmVxLCByZXMsIG5leHQpOwp9OwoKLy8gQXBwbHkgZHluYW1pYyByYXRlIGxpbWl0aW5nIG1pZGRsZXdhcmUKYXBwLnVzZShkeW5hbWljUmF0ZUxpbWl0KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const rateLimit = require('express-rate-limit');
+
+// Function to determine rate limit based on user role
+const getRateLimit = (role) =&gt; {
+  switch (role) {
+    case 'premium':
+      return { windowMs: 1 * 60 * 1000, max: 100 };
+    case 'standard':
+      return { windowMs: 1 * 60 * 1000, max: 50 };
+    default:
+      return { windowMs: 1 * 60 * 1000, max: 10 };
+  }
+};
+
+// Middleware to apply dynamic rate limits
+const dynamicRateLimit = (req, res, next) =&gt; {
+  const userRole = req.user.role; // Assume user role is available in req.user
+  const limit = getRateLimit(userRole);
+  rateLimit(limit)(req, res, next);
+};
+
+// Apply dynamic rate limiting middleware
+app.use(dynamicRateLimit);</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>We define a function <code>getRateLimit</code> to return different rate limits based on the user's role.</li>
+<li>The <code>dynamicRateLimit</code> middleware applies the appropriate rate limit for each request.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Rate limiting is an essential aspect of building robust and secure GraphQL APIs. By implementing rate limiting, you can:</p>
+<ul>
+<li>Protect your server from abuse and overuse.</li>
+<li>Ensure fair usage among clients.</li>
+<li>Maintain the performance and stability of your API.</li>
+</ul>
+<p>Whether you use basic middleware or more advanced techniques, understanding and applying rate limiting will help you build better GraphQL applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pagination'>&#x25C4;Pagination</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rate Limiting in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Authentication and Authorization &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

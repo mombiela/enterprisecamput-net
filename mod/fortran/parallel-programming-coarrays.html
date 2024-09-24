@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Programming with Coarrays</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/parallel-programming-coarrays" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/parallel-programming-coarrays" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/parallel-programming-coarrays" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fortran/parallel-programming-coarrays" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/parallel-programming-coarrays" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='modules-packages'>&#x25C4;Modules and Packages</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Parallel Programming with Coarrays</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='interfacing-with-c'>Interfacing with C &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Coarrays</h1>
+<div class='content'><p>Coarrays are a parallel programming feature in Fortran that allows for simple and efficient parallel computation. They provide a way to distribute data across multiple processors and perform parallel operations.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Image</strong>: An independent execution thread with its own local memory.</li>
+<li><strong>Coarray</strong>: A data structure that is distributed across multiple images.</li>
+<li><strong>Synchronization</strong>: Mechanisms to coordinate operations between images.</li>
+</ul>
+</div><h1>Basic Syntax and Usage</h1>
+<div class='content'><p>To use coarrays, you need to declare them with the <code>codimension</code> attribute. Here’s a simple example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBoZWxsb19jb2FycmF5CiAgaW1wbGljaXQgbm9uZQogIGludGVnZXIgOjogbXlfaW1hZ2UsIG51bV9pbWFnZXMKICBpbnRlZ2VyLCBjb2RpbWVuc2lvblsqXSA6OiB4CgogICEgR2V0IHRoZSBjdXJyZW50IGltYWdlIG51bWJlciBhbmQgdG90YWwgbnVtYmVyIG9mIGltYWdlcwogIG15X2ltYWdlID0gdGhpc19pbWFnZSgpCiAgbnVtX2ltYWdlcyA9IG51bV9pbWFnZXMoKQoKICAhIEluaXRpYWxpemUgdGhlIGNvYXJyYXkKICB4ID0gbXlfaW1hZ2UKCiAgISBTeW5jaHJvbml6ZSBhbGwgaW1hZ2VzCiAgc3luYyBhbGwKCiAgISBQcmludCB0aGUgdmFsdWUgb2YgeCBmcm9tIGVhY2ggaW1hZ2UKICBwcmludCAqLCAnSW1hZ2UgJywgbXlfaW1hZ2UsICcgaGFzIHggPSAnLCB4CgplbmQgcHJvZ3JhbSBoZWxsb19jb2FycmF5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program hello_coarray
+  implicit none
+  integer :: my_image, num_images
+  integer, codimension[*] :: x
+
+  ! Get the current image number and total number of images
+  my_image = this_image()
+  num_images = num_images()
+
+  ! Initialize the coarray
+  x = my_image
+
+  ! Synchronize all images
+  sync all
+
+  ! Print the value of x from each image
+  print *, 'Image ', my_image, ' has x = ', x
+
+end program hello_coarray</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>this_image()</code>: Returns the current image number.</li>
+<li><code>num_images()</code>: Returns the total number of images.</li>
+<li><code>codimension[*]</code>: Declares <code>x</code> as a coarray.</li>
+<li><code>sync all</code>: Synchronizes all images to ensure they have reached the same point in the program.</li>
+</ul>
+</div><h1>Advanced Coarray Features</h1>
+<h2>Coarray Communication</h2>
+<div class='content'><p>Coarrays allow direct communication between images. You can access and modify data on other images using square brackets.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBjb2FycmF5X2NvbW11bmljYXRpb24KICBpbXBsaWNpdCBub25lCiAgaW50ZWdlciA6OiBteV9pbWFnZSwgbnVtX2ltYWdlcwogIGludGVnZXIsIGNvZGltZW5zaW9uWypdIDo6IHgKCiAgbXlfaW1hZ2UgPSB0aGlzX2ltYWdlKCkKICBudW1faW1hZ2VzID0gbnVtX2ltYWdlcygpCgogICEgSW5pdGlhbGl6ZSB0aGUgY29hcnJheQogIHggPSBteV9pbWFnZQoKICAhIFN5bmNocm9uaXplIGFsbCBpbWFnZXMKICBzeW5jIGFsbAoKICAhIEV4YW1wbGUgb2YgYWNjZXNzaW5nIGRhdGEgZnJvbSBhbm90aGVyIGltYWdlCiAgaWYgKG15X2ltYWdlID09IDEpIHRoZW4KICAgIHhbMl0gPSAxMAogIGVuZCBpZgoKICAhIFN5bmNocm9uaXplIGFsbCBpbWFnZXMKICBzeW5jIGFsbAoKICBwcmludCAqLCAnSW1hZ2UgJywgbXlfaW1hZ2UsICcgaGFzIHggPSAnLCB4CgplbmQgcHJvZ3JhbSBjb2FycmF5X2NvbW11bmljYXRpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program coarray_communication
+  implicit none
+  integer :: my_image, num_images
+  integer, codimension[*] :: x
+
+  my_image = this_image()
+  num_images = num_images()
+
+  ! Initialize the coarray
+  x = my_image
+
+  ! Synchronize all images
+  sync all
+
+  ! Example of accessing data from another image
+  if (my_image == 1) then
+    x[2] = 10
+  end if
+
+  ! Synchronize all images
+  sync all
+
+  print *, 'Image ', my_image, ' has x = ', x
+
+end program coarray_communication</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>x[2] = 10</code>: Image 1 sets the value of <code>x</code> on Image 2 to 10.</li>
+<li>This demonstrates how images can directly communicate and modify each other's data.</li>
+</ul>
+</div><h1>Synchronization Techniques</h1>
+<h2>Sync All</h2>
+<div class='content'><p>Synchronizes all images to ensure they have reached the same point in the program.</p>
+</div><h2>Sync Images</h2>
+<div class='content'><p>Synchronizes a specific set of images.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBzeW5jX2ltYWdlc19leGFtcGxlCiAgaW1wbGljaXQgbm9uZQogIGludGVnZXIgOjogbXlfaW1hZ2UsIG51bV9pbWFnZXMKICBpbnRlZ2VyLCBjb2RpbWVuc2lvblsqXSA6OiB4CgogIG15X2ltYWdlID0gdGhpc19pbWFnZSgpCiAgbnVtX2ltYWdlcyA9IG51bV9pbWFnZXMoKQoKICB4ID0gbXlfaW1hZ2UKCiAgISBTeW5jaHJvbml6ZSBvbmx5IGltYWdlcyAxIGFuZCAyCiAgaWYgKG15X2ltYWdlIDw9IDIpIHRoZW4KICAgIHN5bmMgaW1hZ2VzKDEsIDIpCiAgZW5kIGlmCgogIHByaW50ICosICdJbWFnZSAnLCBteV9pbWFnZSwgJyBoYXMgeCA9ICcsIHgKCmVuZCBwcm9ncmFtIHN5bmNfaW1hZ2VzX2V4YW1wbGU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program sync_images_example
+  implicit none
+  integer :: my_image, num_images
+  integer, codimension[*] :: x
+
+  my_image = this_image()
+  num_images = num_images()
+
+  x = my_image
+
+  ! Synchronize only images 1 and 2
+  if (my_image &lt;= 2) then
+    sync images(1, 2)
+  end if
+
+  print *, 'Image ', my_image, ' has x = ', x
+
+end program sync_images_example</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>sync images(1, 2)</code>: Only images 1 and 2 are synchronized.</li>
+</ul>
+</div><h1>Performance Considerations</h1>
+<div class='content'><ul>
+<li><strong>Load Balancing</strong>: Ensure that work is evenly distributed across images.</li>
+<li><strong>Minimize Communication</strong>: Excessive communication between images can degrade performance.</li>
+<li><strong>Memory Usage</strong>: Be mindful of memory usage, especially with large coarrays.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Coarrays in Fortran provide a powerful and efficient way to perform parallel computations. By understanding the basic syntax, communication methods, and synchronization techniques, you can leverage coarrays to write high-performance parallel programs. Remember to consider performance implications such as load balancing and communication overhead to optimize your parallel applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='modules-packages'>&#x25C4;Modules and Packages</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Parallel Programming with Coarrays</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='interfacing-with-c'>Interfacing with C &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scripting with Lua in Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/scripting-with-lua" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/scripting-with-lua" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/scripting-with-lua" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/scripting-with-lua" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/scripting-with-lua" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pipelining'>&#x25C4;Pipelining</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scripting with Lua in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='snapshots-rdb'>Snapshots (RDB) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Redis is not just a key-value store; it also supports server-side scripting using Lua. This allows for more complex operations and atomic transactions. This section will guide you from the basics of Lua scripting in Redis to advanced techniques.</p>
+</div><h1>Introduction to Lua Scripting in Redis</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What is Lua?</strong></p>
+<ul>
+<li>Lua is a lightweight, high-level, multi-paradigm programming language designed primarily for embedded use in applications.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why use Lua in Redis?</strong></p>
+<ul>
+<li>Atomicity: All commands in a script are executed as a single atomic operation.</li>
+<li>Performance: Reduces the number of round trips between the client and server.</li>
+<li>Flexibility: Allows for complex operations that are not possible with standard Redis commands.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Basic Lua Scripting</h1>
+<div class='content'></div><h2>Writing Your First Script</h2>
+<div class='content'><p>To run a Lua script in Redis, you use the <code>EVAL</code> command. Here’s a simple example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB0byByZXR1cm4gYSBzaW1wbGUgc3RyaW5nCnJldHVybiAiSGVsbG8sIFJlZGlzISI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script to return a simple string
+return &quot;Hello, Redis!&quot;</pre></div><div class='content'><p>To execute this script in Redis:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVZBTCAicmV0dXJuICdIZWxsbywgUmVkaXMhJyIgMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EVAL &quot;return 'Hello, Redis!'&quot; 0</pre></div><div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Script Execution:</strong></p>
+<ul>
+<li><code>EVAL script numkeys key [key ...] arg [arg ...]</code></li>
+<li><code>script</code>: The Lua script to execute.</li>
+<li><code>numkeys</code>: The number of keys the script will access.</li>
+<li><code>key [key ...]</code>: The keys that the script will access.</li>
+<li><code>arg [arg ...]</code>: Additional arguments passed to the script.</li>
+</ul>
+</li>
+<li>
+<p><strong>Accessing Keys and Arguments:</strong></p>
+<ul>
+<li><code>KEYS</code>: A table (array) containing the keys.</li>
+<li><code>ARGV</code>: A table (array) containing the arguments.</li>
+</ul>
+</li>
+</ul>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB0byBnZXQgYW5kIHNldCBhIGtleQpsb2NhbCBrZXkgPSBLRVlTWzFdCmxvY2FsIHZhbHVlID0gQVJHVlsxXQpyZWRpcy5jYWxsKCJTRVQiLCBrZXksIHZhbHVlKQpyZXR1cm4gcmVkaXMuY2FsbCgiR0VUIiwga2V5KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script to get and set a key
+local key = KEYS[1]
+local value = ARGV[1]
+redis.call(&quot;SET&quot;, key, value)
+return redis.call(&quot;GET&quot;, key)</pre></div><div class='content'><p>To execute this script:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVZBTCAibG9jYWwga2V5ID0gS0VZU1sxXTsgbG9jYWwgdmFsdWUgPSBBUkdWWzFdOyByZWRpcy5jYWxsKCdTRVQnLCBrZXksIHZhbHVlKTsgcmV0dXJuIHJlZGlzLmNhbGwoJ0dFVCcsIGtleSk7IiAxIG15a2V5IG15dmFsdWU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EVAL &quot;local key = KEYS[1]; local value = ARGV[1]; redis.call('SET', key, value); return redis.call('GET', key);&quot; 1 mykey myvalue</pre></div><div class='content'></div><h1>Intermediate Lua Scripting</h1>
+<div class='content'></div><h2>Conditional Logic</h2>
+<div class='content'><p>Lua scripts can include conditional logic to perform more complex operations.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB0byBjb25kaXRpb25hbGx5IHNldCBhIGtleQpsb2NhbCBrZXkgPSBLRVlTWzFdCmxvY2FsIHZhbHVlID0gQVJHVlsxXQppZiByZWRpcy5jYWxsKCJFWElTVFMiLCBrZXkpID09IDAgdGhlbgogICAgcmVkaXMuY2FsbCgiU0VUIiwga2V5LCB2YWx1ZSkKICAgIHJldHVybiAiS2V5IHNldCIKZWxzZQogICAgcmV0dXJuICJLZXkgYWxyZWFkeSBleGlzdHMiCmVuZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script to conditionally set a key
+local key = KEYS[1]
+local value = ARGV[1]
+if redis.call(&quot;EXISTS&quot;, key) == 0 then
+    redis.call(&quot;SET&quot;, key, value)
+    return &quot;Key set&quot;
+else
+    return &quot;Key already exists&quot;
+end</pre></div><div class='content'></div><h2>Looping</h2>
+<div class='content'><p>You can use loops to iterate over keys or arguments.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB0byBpbmNyZW1lbnQgbXVsdGlwbGUga2V5cwpmb3IgaSwga2V5IGluIGlwYWlycyhLRVlTKSBkbwogICAgcmVkaXMuY2FsbCgiSU5DUiIsIGtleSkKZW5kCnJldHVybiAiQWxsIGtleXMgaW5jcmVtZW50ZWQi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script to increment multiple keys
+for i, key in ipairs(KEYS) do
+    redis.call(&quot;INCR&quot;, key)
+end
+return &quot;All keys incremented&quot;</pre></div><div class='content'></div><h1>Advanced Lua Scripting</h1>
+<div class='content'></div><h2>Error Handling</h2>
+<div class='content'><p>Lua scripts can handle errors using <code>pcall</code> (protected call).</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTHVhIHNjcmlwdCB3aXRoIGVycm9yIGhhbmRsaW5nCmxvY2FsIHN0YXR1cywgZXJyID0gcGNhbGwoZnVuY3Rpb24oKQogICAgbG9jYWwga2V5ID0gS0VZU1sxXQogICAgcmVkaXMuY2FsbCgiSU5DUiIsIGtleSkKZW5kKQppZiBub3Qgc3RhdHVzIHRoZW4KICAgIHJldHVybiAiRXJyb3I6ICIgLi4gZXJyCmVsc2UKICAgIHJldHVybiAiU3VjY2VzcyIKZW5k"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lua script with error handling
+local status, err = pcall(function()
+    local key = KEYS[1]
+    redis.call(&quot;INCR&quot;, key)
+end)
+if not status then
+    return &quot;Error: &quot; .. err
+else
+    return &quot;Success&quot;
+end</pre></div><div class='content'></div><h2>Optimizing Performance</h2>
+<div class='content'><ul>
+<li><strong>Minimize the number of Redis calls:</strong> Combine multiple operations into a single script.</li>
+<li><strong>Use local variables:</strong> Accessing local variables is faster than accessing global variables or tables.</li>
+</ul>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gT3B0aW1pemVkIEx1YSBzY3JpcHQKbG9jYWwga2V5ID0gS0VZU1sxXQpsb2NhbCB2YWx1ZSA9IHRvbnVtYmVyKHJlZGlzLmNhbGwoIkdFVCIsIGtleSkpCmlmIHZhbHVlIHRoZW4KICAgIHJlZGlzLmNhbGwoIlNFVCIsIGtleSwgdmFsdWUgKyAxKQplbHNlCiAgICByZWRpcy5jYWxsKCJTRVQiLCBrZXksIDEpCmVuZApyZXR1cm4gcmVkaXMuY2FsbCgiR0VUIiwga2V5KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Optimized Lua script
+local key = KEYS[1]
+local value = tonumber(redis.call(&quot;GET&quot;, key))
+if value then
+    redis.call(&quot;SET&quot;, key, value + 1)
+else
+    redis.call(&quot;SET&quot;, key, 1)
+end
+return redis.call(&quot;GET&quot;, key)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Lua scripting in Redis is a powerful feature that allows you to perform complex operations atomically and efficiently. By understanding the basics, intermediate, and advanced techniques, you can leverage Lua to enhance your Redis applications significantly. Practice writing and optimizing scripts to become proficient in using Lua with Redis.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pipelining'>&#x25C4;Pipelining</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scripting with Lua in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='snapshots-rdb'>Snapshots (RDB) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

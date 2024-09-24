@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metaprogramming in Lua</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/lua/metaprogramming" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/lua/metaprogramming" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/lua/metaprogramming" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/lua/metaprogramming" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/lua/metaprogramming" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='developing-a-gui-application'>&#x25C4;Developing a GUI Application</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Metaprogramming in Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='luajit'>LuaJIT &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Metaprogramming is a programming technique where code can generate, modify, or analyze other code. Lua, being a highly flexible and dynamic language, provides powerful metaprogramming capabilities. This topic will guide you from the basics to advanced concepts of metaprogramming in Lua.</p>
+</div><h1>Introduction to Metaprogramming</h1>
+<div class='content'><p>Metaprogramming allows you to write code that can manipulate other code. This can be useful for:</p>
+<ul>
+<li>Reducing redundancy</li>
+<li>Creating domain-specific languages</li>
+<li>Implementing advanced features like serialization, validation, and more</li>
+</ul>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Metatables</h2>
+<div class='content'><p>Metatables are a core feature in Lua's metaprogramming capabilities. They allow you to change the behavior of tables.</p>
+<ul>
+<li><strong>Basic Usage</strong>: A metatable is a regular table that can be attached to another table to modify its behavior.</li>
+<li><strong>Metamethods</strong>: Special keys in a metatable that define how operations on the table should behave.</li>
+</ul>
+<h4>Example: Basic Metatable</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgbXlUYWJsZSA9IHt9CmxvY2FsIG15TWV0YXRhYmxlID0gewogICAgX19pbmRleCA9IGZ1bmN0aW9uKHRhYmxlLCBrZXkpCiAgICAgICAgcmV0dXJuICJLZXkgbm90IGZvdW5kIgogICAgZW5kCn0KCnNldG1ldGF0YWJsZShteVRhYmxlLCBteU1ldGF0YWJsZSkKCnByaW50KG15VGFibGUuc29tZUtleSkgIC0tIE91dHB1dDogS2V5IG5vdCBmb3VuZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local myTable = {}
+local myMetatable = {
+    __index = function(table, key)
+        return &quot;Key not found&quot;
+    end
+}
+
+setmetatable(myTable, myMetatable)
+
+print(myTable.someKey)  -- Output: Key not found</pre></div><div class='content'></div><h2>2. Metamethods</h2>
+<div class='content'><p>Metamethods are special functions in a metatable that override the default behavior of tables.</p>
+<ul>
+<li><strong>Common Metamethods</strong>:
+<ul>
+<li><code>__index</code>: Customizes table indexing.</li>
+<li><code>__newindex</code>: Customizes table assignment.</li>
+<li><code>__add</code>, <code>__sub</code>, etc.: Customizes arithmetic operations.</li>
+<li><code>__call</code>: Makes a table callable like a function.</li>
+</ul>
+</li>
+</ul>
+<h4>Example: Custom Indexing</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgZGVmYXVsdFRhYmxlID0ge2EgPSAxLCBiID0gMn0KbG9jYWwgbXlUYWJsZSA9IHNldG1ldGF0YWJsZSh7fSwgewogICAgX19pbmRleCA9IGRlZmF1bHRUYWJsZQp9KQoKcHJpbnQobXlUYWJsZS5hKSAgLS0gT3V0cHV0OiAxCnByaW50KG15VGFibGUuYikgIC0tIE91dHB1dDogMgpwcmludChteVRhYmxlLmMpICAtLSBPdXRwdXQ6IG5pbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local defaultTable = {a = 1, b = 2}
+local myTable = setmetatable({}, {
+    __index = defaultTable
+})
+
+print(myTable.a)  -- Output: 1
+print(myTable.b)  -- Output: 2
+print(myTable.c)  -- Output: nil</pre></div><div class='content'></div><h2>3. Proxy Tables</h2>
+<div class='content'><p>Proxy tables are used to intercept operations on another table.</p>
+<h4>Example: Proxy Table for Logging</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgb3JpZ2luYWxUYWJsZSA9IHt4ID0gMTAsIHkgPSAyMH0KbG9jYWwgcHJveHkgPSB7fQoKc2V0bWV0YXRhYmxlKHByb3h5LCB7CiAgICBfX2luZGV4ID0gZnVuY3Rpb24oXywga2V5KQogICAgICAgIHByaW50KCJBY2Nlc3Npbmcga2V5OiIsIGtleSkKICAgICAgICByZXR1cm4gb3JpZ2luYWxUYWJsZVtrZXldCiAgICBlbmQsCiAgICBfX25ld2luZGV4ID0gZnVuY3Rpb24oXywga2V5LCB2YWx1ZSkKICAgICAgICBwcmludCgiU2V0dGluZyBrZXk6Iiwga2V5LCAidG8gdmFsdWU6IiwgdmFsdWUpCiAgICAgICAgb3JpZ2luYWxUYWJsZVtrZXldID0gdmFsdWUKICAgIGVuZAp9KQoKcHJpbnQocHJveHkueCkgIC0tIE91dHB1dDogQWNjZXNzaW5nIGtleTogeCBcbiAxMApwcm94eS55ID0gMzAgICAgLS0gT3V0cHV0OiBTZXR0aW5nIGtleTogeSB0byB2YWx1ZTogMzA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local originalTable = {x = 10, y = 20}
+local proxy = {}
+
+setmetatable(proxy, {
+    __index = function(_, key)
+        print(&quot;Accessing key:&quot;, key)
+        return originalTable[key]
+    end,
+    __newindex = function(_, key, value)
+        print(&quot;Setting key:&quot;, key, &quot;to value:&quot;, value)
+        originalTable[key] = value
+    end
+})
+
+print(proxy.x)  -- Output: Accessing key: x \n 10
+proxy.y = 30    -- Output: Setting key: y to value: 30</pre></div><div class='content'></div><h2>4. Reflection</h2>
+<div class='content'><p>Reflection is the ability of a program to inspect and modify its structure and behavior at runtime.</p>
+<ul>
+<li><strong>Functions</strong>: <code>type</code>, <code>getmetatable</code>, <code>setmetatable</code>, <code>pairs</code>, <code>ipairs</code>, etc.</li>
+<li><strong>Use Cases</strong>: Debugging, serialization, dynamic function calls.</li>
+</ul>
+<h4>Example: Using Reflection</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgZnVuY3Rpb24gZGVzY3JpYmVUYWJsZSh0KQogICAgZm9yIGtleSwgdmFsdWUgaW4gcGFpcnModCkgZG8KICAgICAgICBwcmludChrZXksIHR5cGUodmFsdWUpKQogICAgZW5kCmVuZAoKbG9jYWwgbXlUYWJsZSA9IHthID0gMSwgYiA9ICJoZWxsbyIsIGMgPSBmdW5jdGlvbigpIGVuZH0KZGVzY3JpYmVUYWJsZShteVRhYmxlKQotLSBPdXRwdXQ6Ci0tIGEgbnVtYmVyCi0tIGIgc3RyaW5nCi0tIGMgZnVuY3Rpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local function describeTable(t)
+    for key, value in pairs(t) do
+        print(key, type(value))
+    end
+end
+
+local myTable = {a = 1, b = &quot;hello&quot;, c = function() end}
+describeTable(myTable)
+-- Output:
+-- a number
+-- b string
+-- c function</pre></div><div class='content'></div><h1>Advanced Metaprogramming</h1>
+<div class='content'></div><h2>1. Custom Operators</h2>
+<div class='content'><p>Lua allows you to define custom behavior for operators using metamethods.</p>
+<h4>Example: Custom Addition</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgdmVjdG9yID0ge30KdmVjdG9yLl9faW5kZXggPSB2ZWN0b3IKCmZ1bmN0aW9uIHZlY3Rvci5uZXcoeCwgeSkKICAgIHJldHVybiBzZXRtZXRhdGFibGUoe3ggPSB4LCB5ID0geX0sIHZlY3RvcikKZW5kCgpmdW5jdGlvbiB2ZWN0b3IuX19hZGQodjEsIHYyKQogICAgcmV0dXJuIHZlY3Rvci5uZXcodjEueCArIHYyLngsIHYxLnkgKyB2Mi55KQplbmQKCmxvY2FsIHYxID0gdmVjdG9yLm5ldygxLCAyKQpsb2NhbCB2MiA9IHZlY3Rvci5uZXcoMywgNCkKbG9jYWwgdjMgPSB2MSArIHYyCgpwcmludCh2My54LCB2My55KSAgLS0gT3V0cHV0OiA0IDY="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local vector = {}
+vector.__index = vector
+
+function vector.new(x, y)
+    return setmetatable({x = x, y = y}, vector)
+end
+
+function vector.__add(v1, v2)
+    return vector.new(v1.x + v2.x, v1.y + v2.y)
+end
+
+local v1 = vector.new(1, 2)
+local v2 = vector.new(3, 4)
+local v3 = v1 + v2
+
+print(v3.x, v3.y)  -- Output: 4 6</pre></div><div class='content'></div><h2>2. Dynamic Code Generation</h2>
+<div class='content'><p>Lua can generate and execute code at runtime using the <code>load</code> and <code>loadstring</code> functions.</p>
+<h4>Example: Generating Functions</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgY29kZSA9ICJyZXR1cm4gZnVuY3Rpb24oYSwgYikgcmV0dXJuIGEgKyBiIGVuZCIKbG9jYWwgYWRkRnVuY3Rpb24gPSBsb2FkKGNvZGUpKCkKcHJpbnQoYWRkRnVuY3Rpb24oMiwgMykpICAtLSBPdXRwdXQ6IDU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local code = &quot;return function(a, b) return a + b end&quot;
+local addFunction = load(code)()
+print(addFunction(2, 3))  -- Output: 5</pre></div><div class='content'></div><h2>3. Domain-Specific Languages (DSLs)</h2>
+<div class='content'><p>Lua's flexibility allows you to create mini-languages tailored to specific tasks.</p>
+<h4>Example: Simple DSL for Configuration</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYWwgY29uZmlnID0ge30KCmZ1bmN0aW9uIGNvbmZpZy5zZXQoa2V5LCB2YWx1ZSkKICAgIGNvbmZpZ1trZXldID0gdmFsdWUKZW5kCgpmdW5jdGlvbiBjb25maWcuZ2V0KGtleSkKICAgIHJldHVybiBjb25maWdba2V5XQplbmQKCi0tIEV4YW1wbGUgdXNhZ2UKY29uZmlnLnNldCgidXNlcm5hbWUiLCAiYWRtaW4iKQpjb25maWcuc2V0KCJwYXNzd29yZCIsICIxMjM0IikKCnByaW50KGNvbmZpZy5nZXQoInVzZXJuYW1lIikpICAtLSBPdXRwdXQ6IGFkbWluCnByaW50KGNvbmZpZy5nZXQoInBhc3N3b3JkIikpICAtLSBPdXRwdXQ6IDEyMzQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>local config = {}
+
+function config.set(key, value)
+    config[key] = value
+end
+
+function config.get(key)
+    return config[key]
+end
+
+-- Example usage
+config.set(&quot;username&quot;, &quot;admin&quot;)
+config.set(&quot;password&quot;, &quot;1234&quot;)
+
+print(config.get(&quot;username&quot;))  -- Output: admin
+print(config.get(&quot;password&quot;))  -- Output: 1234</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Metaprogramming in Lua provides powerful tools to write more flexible, reusable, and dynamic code. By understanding and utilizing metatables, metamethods, proxy tables, reflection, custom operators, dynamic code generation, and DSLs, you can significantly enhance your Lua programming capabilities. Practice these concepts with various examples and exercises to master metaprogramming in Lua.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='developing-a-gui-application'>&#x25C4;Developing a GUI Application</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Metaprogramming in Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='luajit'>LuaJIT &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

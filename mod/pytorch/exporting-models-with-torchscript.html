@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exporting Models with TorchScript</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/exporting-models-with-torchscript" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/exporting-models-with-torchscript" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/exporting-models-with-torchscript" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/exporting-models-with-torchscript" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/exporting-models-with-torchscript" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='torchaudio'>&#x25C4;TorchAudio</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Exporting Models with TorchScript</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='serving-pytorch-models'>Serving PyTorch Models &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to TorchScript</h1>
+<div class='content'><p>TorchScript is a way to create serializable and optimizable models from PyTorch code. It allows you to save your models and run them independently from Python, which is useful for deploying models in production environments.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>TorchScript</strong>: A way to convert PyTorch models to a format that can be run in a non-Python environment.</li>
+<li><strong>Tracing</strong>: A method to convert a model by recording the operations as they are executed with example inputs.</li>
+<li><strong>Scripting</strong>: A method to convert a model by directly compiling the Python code into TorchScript.</li>
+</ul>
+</div><h1>Methods to Export Models</h1>
+<div class='content'></div><h2>Tracing</h2>
+<div class='content'><p>Tracing captures the operations in the model by running an example input through it. This method is straightforward but has limitations, especially with control flow operations like loops and conditionals.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgoKIyBEZWZpbmUgYSBzaW1wbGUgbW9kZWwKY2xhc3MgU2ltcGxlTW9kZWwobm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzdXBlcihTaW1wbGVNb2RlbCwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMgPSBubi5MaW5lYXIoMTAsIDUpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHJldHVybiBzZWxmLmZjKHgpCgojIEluc3RhbnRpYXRlIHRoZSBtb2RlbCBhbmQgY3JlYXRlIGV4YW1wbGUgaW5wdXQKbW9kZWwgPSBTaW1wbGVNb2RlbCgpCmV4YW1wbGVfaW5wdXQgPSB0b3JjaC5yYW5kbigxLCAxMCkKCiMgVHJhY2UgdGhlIG1vZGVsCnRyYWNlZF9tb2RlbCA9IHRvcmNoLmppdC50cmFjZShtb2RlbCwgZXhhbXBsZV9pbnB1dCkKCiMgU2F2ZSB0aGUgdHJhY2VkIG1vZGVsCnRyYWNlZF9tb2RlbC5zYXZlKCJ0cmFjZWRfbW9kZWwucHQiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+
+# Define a simple model
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 5)
+    
+    def forward(self, x):
+        return self.fc(x)
+
+# Instantiate the model and create example input
+model = SimpleModel()
+example_input = torch.randn(1, 10)
+
+# Trace the model
+traced_model = torch.jit.trace(model, example_input)
+
+# Save the traced model
+traced_model.save(&quot;traced_model.pt&quot;)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li>We define a simple linear model.</li>
+<li>We create an example input tensor.</li>
+<li>We use <code>torch.jit.trace</code> to trace the model with the example input.</li>
+<li>We save the traced model to a file.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Scripting</h2>
+<div class='content'><p>Scripting converts the model by compiling the Python code directly. This method is more flexible and can handle models with dynamic control flow.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgoKIyBEZWZpbmUgYSBtb2RlbCB3aXRoIGNvbnRyb2wgZmxvdwpjbGFzcyBDb250cm9sRmxvd01vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoQ29udHJvbEZsb3dNb2RlbCwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMxID0gbm4uTGluZWFyKDEwLCA1KQogICAgICAgIHNlbGYuZmMyID0gbm4uTGluZWFyKDUsIDIpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIGlmIHguc3VtKCkgPiAwOgogICAgICAgICAgICByZXR1cm4gc2VsZi5mYzEoeCkKICAgICAgICBlbHNlOgogICAgICAgICAgICByZXR1cm4gc2VsZi5mYzIoeCkKCiMgSW5zdGFudGlhdGUgdGhlIG1vZGVsCm1vZGVsID0gQ29udHJvbEZsb3dNb2RlbCgpCgojIFNjcmlwdCB0aGUgbW9kZWwKc2NyaXB0ZWRfbW9kZWwgPSB0b3JjaC5qaXQuc2NyaXB0KG1vZGVsKQoKIyBTYXZlIHRoZSBzY3JpcHRlZCBtb2RlbApzY3JpcHRlZF9tb2RlbC5zYXZlKCJzY3JpcHRlZF9tb2RlbC5wdCIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+
+# Define a model with control flow
+class ControlFlowModel(nn.Module):
+    def __init__(self):
+        super(ControlFlowModel, self).__init__()
+        self.fc1 = nn.Linear(10, 5)
+        self.fc2 = nn.Linear(5, 2)
+    
+    def forward(self, x):
+        if x.sum() &gt; 0:
+            return self.fc1(x)
+        else:
+            return self.fc2(x)
+
+# Instantiate the model
+model = ControlFlowModel()
+
+# Script the model
+scripted_model = torch.jit.script(model)
+
+# Save the scripted model
+scripted_model.save(&quot;scripted_model.pt&quot;)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li>We define a model with a conditional statement in the forward method.</li>
+<li>We use <code>torch.jit.script</code> to script the model.</li>
+<li>We save the scripted model to a file.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Comparing Tracing and Scripting</h1>
+<div class='content'><p>| Feature                | Tracing                            | Scripting                          |
+|------------------------|------------------------------------|------------------------------------|
+| <strong>Ease of Use</strong>        | Easier, requires example input     | Slightly more complex              |
+| <strong>Control Flow</strong>       | Limited, cannot handle dynamic flow| Handles dynamic control flow       |
+| <strong>Performance</strong>        | Generally faster for static models | May be slower due to flexibility   |
+| <strong>Use Cases</strong>          | Simple, static models              | Complex models with control flow   |</p>
+</div><h1>Loading and Using Exported Models</h1>
+<div class='content'><p>Once a model is exported, it can be loaded and used in any environment that supports TorchScript.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCgojIExvYWQgdGhlIHRyYWNlZCBtb2RlbApsb2FkZWRfdHJhY2VkX21vZGVsID0gdG9yY2guaml0LmxvYWQoInRyYWNlZF9tb2RlbC5wdCIpCgojIExvYWQgdGhlIHNjcmlwdGVkIG1vZGVsCmxvYWRlZF9zY3JpcHRlZF9tb2RlbCA9IHRvcmNoLmppdC5sb2FkKCJzY3JpcHRlZF9tb2RlbC5wdCIpCgojIENyZWF0ZSBleGFtcGxlIGlucHV0CmV4YW1wbGVfaW5wdXQgPSB0b3JjaC5yYW5kbigxLCAxMCkKCiMgVXNlIHRoZSBsb2FkZWQgbW9kZWxzCm91dHB1dF90cmFjZWQgPSBsb2FkZWRfdHJhY2VkX21vZGVsKGV4YW1wbGVfaW5wdXQpCm91dHB1dF9zY3JpcHRlZCA9IGxvYWRlZF9zY3JpcHRlZF9tb2RlbChleGFtcGxlX2lucHV0KQoKcHJpbnQob3V0cHV0X3RyYWNlZCkKcHJpbnQob3V0cHV0X3NjcmlwdGVkKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+
+# Load the traced model
+loaded_traced_model = torch.jit.load(&quot;traced_model.pt&quot;)
+
+# Load the scripted model
+loaded_scripted_model = torch.jit.load(&quot;scripted_model.pt&quot;)
+
+# Create example input
+example_input = torch.randn(1, 10)
+
+# Use the loaded models
+output_traced = loaded_traced_model(example_input)
+output_scripted = loaded_scripted_model(example_input)
+
+print(output_traced)
+print(output_scripted)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li>We load the previously saved traced and scripted models using <code>torch.jit.load</code>.</li>
+<li>We create an example input tensor.</li>
+<li>We run the example input through the loaded models and print the outputs.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Exporting models with TorchScript is a powerful feature of PyTorch that allows for the deployment of models in production environments. Tracing is suitable for simple, static models, while scripting is more flexible and can handle complex models with dynamic control flow. Understanding when to use each method and how to load and use exported models is essential for effective model deployment.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='torchaudio'>&#x25C4;TorchAudio</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Exporting Models with TorchScript</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='serving-pytorch-models'>Serving PyTorch Models &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

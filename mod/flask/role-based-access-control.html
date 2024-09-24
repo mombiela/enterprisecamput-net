@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Access Control in Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/role-based-access-control" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/role-based-access-control" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/role-based-access-control" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/role-based-access-control" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/role-based-access-control" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-registration'>&#x25C4;User Registration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control in Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='blueprints-large-applications'>Blueprints for Large Applications &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Role-Based Access Control (RBAC)</h1>
+<div class='content'><p>Role-Based Access Control (RBAC) is a method of regulating access to resources based on the roles of individual users within an organization. In a Flask application, RBAC can be implemented to ensure that users have appropriate permissions to access certain parts of the application.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Roles</strong>: A role is a collection of permissions. Examples include 'admin', 'editor', 'viewer'.</li>
+<li><strong>Permissions</strong>: Permissions are the rights to perform certain actions. Examples include 'read', 'write', 'delete'.</li>
+<li><strong>Users</strong>: Users are assigned roles that determine their permissions.</li>
+</ul>
+</div><h1>Setting Up Flask for RBAC</h1>
+<div class='content'><p>To implement RBAC in Flask, we will use the <code>Flask-Security</code> extension, which provides a simple way to handle authentication and role management.</p>
+</div><h2>Installation</h2>
+<div class='content'><p>First, install the necessary packages:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2sgRmxhc2stU1FMQWxjaGVteSBGbGFzay1TZWN1cml0eQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask Flask-SQLAlchemy Flask-Security</pre></div><div class='content'></div><h2>Basic Configuration</h2>
+<div class='content'><p>Create a basic Flask application and configure it to use Flask-Security.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CmZyb20gZmxhc2tfc2VjdXJpdHkgaW1wb3J0IFNlY3VyaXR5LCBTUUxBbGNoZW15VXNlckRhdGFzdG9yZSwgVXNlck1peGluLCBSb2xlTWl4aW4KCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQphcHAuY29uZmlnWydTRUNSRVRfS0VZJ10gPSAnc3VwZXItc2VjcmV0JwphcHAuY29uZmlnWydTUUxBTENIRU1ZX0RBVEFCQVNFX1VSSSddID0gJ3NxbGl0ZTovLy9yYmFjLmRiJwphcHAuY29uZmlnWydTRUNVUklUWV9SRUdJU1RFUkFCTEUnXSA9IFRydWUKYXBwLmNvbmZpZ1snU0VDVVJJVFlfUEFTU1dPUkRfU0FMVCddID0gJ3N1cGVyLXNlY3JldC1zYWx0JwoKZGIgPSBTUUxBbGNoZW15KGFwcCkKCiMgRGVmaW5lIG1vZGVscwpyb2xlc191c2VycyA9IGRiLlRhYmxlKCdyb2xlc191c2VycycsCiAgICBkYi5Db2x1bW4oJ3VzZXJfaWQnLCBkYi5JbnRlZ2VyKCksIGRiLkZvcmVpZ25LZXkoJ3VzZXIuaWQnKSksCiAgICBkYi5Db2x1bW4oJ3JvbGVfaWQnLCBkYi5JbnRlZ2VyKCksIGRiLkZvcmVpZ25LZXkoJ3JvbGUuaWQnKSkKKQoKY2xhc3MgUm9sZShkYi5Nb2RlbCwgUm9sZU1peGluKToKICAgIGlkID0gZGIuQ29sdW1uKGRiLkludGVnZXIoKSwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIG5hbWUgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDgwKSwgdW5pcXVlPVRydWUpCiAgICBkZXNjcmlwdGlvbiA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMjU1KSkKCmNsYXNzIFVzZXIoZGIuTW9kZWwsIFVzZXJNaXhpbik6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyKCksIHByaW1hcnlfa2V5PVRydWUpCiAgICBlbWFpbCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMjU1KSwgdW5pcXVlPVRydWUpCiAgICBwYXNzd29yZCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMjU1KSkKICAgIGFjdGl2ZSA9IGRiLkNvbHVtbihkYi5Cb29sZWFuKCkpCiAgICByb2xlcyA9IGRiLnJlbGF0aW9uc2hpcCgnUm9sZScsIHNlY29uZGFyeT1yb2xlc191c2VycywgYmFja3JlZj1kYi5iYWNrcmVmKCd1c2VycycsIGxhenk9J2R5bmFtaWMnKSkKCiMgU2V0dXAgRmxhc2stU2VjdXJpdHkKdXNlcl9kYXRhc3RvcmUgPSBTUUxBbGNoZW15VXNlckRhdGFzdG9yZShkYiwgVXNlciwgUm9sZSkKc2VjdXJpdHkgPSBTZWN1cml0eShhcHAsIHVzZXJfZGF0YXN0b3JlKQoKQGFwcC5iZWZvcmVfZmlyc3RfcmVxdWVzdApkZWYgY3JlYXRlX3VzZXIoKToKICAgIGRiLmNyZWF0ZV9hbGwoKQogICAgaWYgbm90IHVzZXJfZGF0YXN0b3JlLmZpbmRfdXNlcihlbWFpbD0iYWRtaW5AZXhhbXBsZS5jb20iKToKICAgICAgICB1c2VyX2RhdGFzdG9yZS5jcmVhdGVfdXNlcihlbWFpbD0iYWRtaW5AZXhhbXBsZS5jb20iLCBwYXNzd29yZD0icGFzc3dvcmQiKQogICAgZGIuc2Vzc2lvbi5jb21taXQoKQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'super-secret'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rbac.db'
+app.config['SECURITY_REGISTERABLE'] = True
+app.config['SECURITY_PASSWORD_SALT'] = 'super-secret-salt'
+
+db = SQLAlchemy(app)
+
+# Define models
+roles_users = db.Table('roles_users',
+    db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+    db.Column('role_id', db.Integer(), db.ForeignKey('role.id'))
+)
+
+class Role(db.Model, RoleMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer(), primary_key=True)
+    email = db.Column(db.String(255), unique=True)
+    password = db.Column(db.String(255))
+    active = db.Column(db.Boolean())
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+
+# Setup Flask-Security
+user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+security = Security(app, user_datastore)
+
+@app.before_first_request
+def create_user():
+    db.create_all()
+    if not user_datastore.find_user(email=&quot;admin@example.com&quot;):
+        user_datastore.create_user(email=&quot;admin@example.com&quot;, password=&quot;password&quot;)
+    db.session.commit()
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Assigning Roles to Users</h1>
+<div class='content'><p>To assign roles to users, you can use the Flask-Security API. Here is an example of how to create roles and assign them to a user.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5iZWZvcmVfZmlyc3RfcmVxdWVzdApkZWYgY3JlYXRlX3VzZXIoKToKICAgIGRiLmNyZWF0ZV9hbGwoKQogICAgaWYgbm90IHVzZXJfZGF0YXN0b3JlLmZpbmRfdXNlcihlbWFpbD0iYWRtaW5AZXhhbXBsZS5jb20iKToKICAgICAgICBhZG1pbl9yb2xlID0gdXNlcl9kYXRhc3RvcmUuY3JlYXRlX3JvbGUobmFtZT0nYWRtaW4nLCBkZXNjcmlwdGlvbj0nQWRtaW5pc3RyYXRvcicpCiAgICAgICAgdXNlciA9IHVzZXJfZGF0YXN0b3JlLmNyZWF0ZV91c2VyKGVtYWlsPSJhZG1pbkBleGFtcGxlLmNvbSIsIHBhc3N3b3JkPSJwYXNzd29yZCIpCiAgICAgICAgdXNlcl9kYXRhc3RvcmUuYWRkX3JvbGVfdG9fdXNlcih1c2VyLCBhZG1pbl9yb2xlKQogICAgZGIuc2Vzc2lvbi5jb21taXQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.before_first_request
+def create_user():
+    db.create_all()
+    if not user_datastore.find_user(email=&quot;admin@example.com&quot;):
+        admin_role = user_datastore.create_role(name='admin', description='Administrator')
+        user = user_datastore.create_user(email=&quot;admin@example.com&quot;, password=&quot;password&quot;)
+        user_datastore.add_role_to_user(user, admin_role)
+    db.session.commit()</pre></div><div class='content'></div><h1>Protecting Routes with Roles</h1>
+<div class='content'><p>You can protect routes by specifying the required roles using the <code>@roles_required</code> decorator.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19zZWN1cml0eSBpbXBvcnQgcm9sZXNfcmVxdWlyZWQKCkBhcHAucm91dGUoJy9hZG1pbicpCkByb2xlc19yZXF1aXJlZCgnYWRtaW4nKQpkZWYgYWRtaW5fcGFnZSgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBhZG1pbiBwYWdlISIKCkBhcHAucm91dGUoJy9lZGl0b3InKQpAcm9sZXNfcmVxdWlyZWQoJ2VkaXRvcicpCmRlZiBlZGl0b3JfcGFnZSgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBlZGl0b3IgcGFnZSEi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_security import roles_required
+
+@app.route('/admin')
+@roles_required('admin')
+def admin_page():
+    return &quot;Welcome to the admin page!&quot;
+
+@app.route('/editor')
+@roles_required('editor')
+def editor_page():
+    return &quot;Welcome to the editor page!&quot;</pre></div><div class='content'></div><h1>Advanced Role Management</h1>
+<div class='content'><p>For more advanced role management, you might need to create custom decorators or use the <code>@roles_accepted</code> decorator to allow multiple roles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19zZWN1cml0eSBpbXBvcnQgcm9sZXNfYWNjZXB0ZWQKCkBhcHAucm91dGUoJy9kYXNoYm9hcmQnKQpAcm9sZXNfYWNjZXB0ZWQoJ2FkbWluJywgJ2VkaXRvcicpCmRlZiBkYXNoYm9hcmQoKToKICAgIHJldHVybiAiV2VsY29tZSB0byB0aGUgZGFzaGJvYXJkISI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_security import roles_accepted
+
+@app.route('/dashboard')
+@roles_accepted('admin', 'editor')
+def dashboard():
+    return &quot;Welcome to the dashboard!&quot;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Role-Based Access Control (RBAC) is a powerful way to manage user permissions in a Flask application. By using Flask-Security, you can easily set up roles and permissions, assign roles to users, and protect routes based on roles. This ensures that only authorized users can access certain parts of your application, enhancing security and organization.</p>
+<p>By following the steps outlined in this topic, you should now have a basic understanding of how to implement RBAC in your Flask applications. Continue exploring Flask-Security's documentation for more advanced features and customization options.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='user-registration'>&#x25C4;User Registration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control in Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='blueprints-large-applications'>Blueprints for Large Applications &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

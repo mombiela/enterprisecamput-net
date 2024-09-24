@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Access Control (RBAC) in Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/role-based-access-control" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/role-based-access-control" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/role-based-access-control" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/role-based-access-control" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/role-based-access-control" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='authentication-and-authorization'>&#x25C4;Authentication and Authorization</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control (RBAC) in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='network-policies-for-security'>Network Policies for Security &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to RBAC</h1>
+<div class='content'><p>Role-Based Access Control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within an enterprise. In Kubernetes, RBAC is used to control who can access the Kubernetes API and what actions they can perform.</p>
+</div><h1>Key Concepts of RBAC</h1>
+<div class='content'><ul>
+<li><strong>Role</strong>: Defines a set of permissions. Roles are namespaced, meaning they apply to resources within a specific namespace.</li>
+<li><strong>ClusterRole</strong>: Similar to a Role, but ClusterRoles are not namespaced and can be used to grant access to resources cluster-wide.</li>
+<li><strong>RoleBinding</strong>: Grants the permissions defined in a Role to a user or set of users within a namespace.</li>
+<li><strong>ClusterRoleBinding</strong>: Grants the permissions defined in a ClusterRole to a user or set of users across the entire cluster.</li>
+</ul>
+</div><h1>Creating Roles and RoleBindings</h1>
+<div class='content'></div><h2>Creating a Role</h2>
+<div class='content'><p>A Role in Kubernetes is a collection of permissions. Here is an example of a Role that allows reading pods in a namespace:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWVzcGFjZTogZGVmYXVsdAogIG5hbWU6IHBvZC1yZWFkZXIKcnVsZXM6Ci0gYXBpR3JvdXBzOiBbIiJdICMgIiIgaW5kaWNhdGVzIHRoZSBjb3JlIEFQSSBncm91cAogIHJlc291cmNlczogWyJwb2RzIl0KICB2ZXJiczogWyJnZXQiLCAid2F0Y2giLCAibGlzdCJd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [&quot;&quot;] # &quot;&quot; indicates the core API group
+  resources: [&quot;pods&quot;]
+  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</pre></div><div class='content'></div><h2>Creating a RoleBinding</h2>
+<div class='content'><p>A RoleBinding grants the permissions defined in a Role to a user or set of users. Here is an example of a RoleBinding that grants the <code>pod-reader</code> Role to a user named <code>jane</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiByZWFkLXBvZHMKICBuYW1lc3BhY2U6IGRlZmF1bHQKc3ViamVjdHM6Ci0ga2luZDogVXNlcgogIG5hbWU6IGphbmUKICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbwpyb2xlUmVmOgogIGtpbmQ6IFJvbGUKICBuYW1lOiBwb2QtcmVhZGVyCiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h1>Creating ClusterRoles and ClusterRoleBindings</h1>
+<div class='content'></div><h2>Creating a ClusterRole</h2>
+<div class='content'><p>A ClusterRole can be used to define permissions that are not namespace-specific. Here is an example of a ClusterRole that allows reading nodes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBDbHVzdGVyUm9sZQptZXRhZGF0YToKICBuYW1lOiBub2RlLXJlYWRlcgpydWxlczoKLSBhcGlHcm91cHM6IFsiIl0KICByZXNvdXJjZXM6IFsibm9kZXMiXQogIHZlcmJzOiBbImdldCIsICJ3YXRjaCIsICJsaXN0Il0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: node-reader
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;nodes&quot;]
+  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</pre></div><div class='content'></div><h2>Creating a ClusterRoleBinding</h2>
+<div class='content'><p>A ClusterRoleBinding grants the permissions defined in a ClusterRole to a user or set of users across the entire cluster. Here is an example of a ClusterRoleBinding that grants the <code>node-reader</code> ClusterRole to a user named <code>jane</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBDbHVzdGVyUm9sZUJpbmRpbmcKbWV0YWRhdGE6CiAgbmFtZTogcmVhZC1ub2RlcwpzdWJqZWN0czoKLSBraW5kOiBVc2VyCiAgbmFtZTogamFuZQogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlvCnJvbGVSZWY6CiAga2luZDogQ2x1c3RlclJvbGUKICBuYW1lOiBub2RlLXJlYWRlcgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlv"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-nodes
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: node-reader
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h1>Comparing Roles and ClusterRoles</h1>
+<div class='content'><p>| Feature         | Role                          | ClusterRole                    |
+|-----------------|-------------------------------|--------------------------------|
+| Scope           | Namespace-specific            | Cluster-wide                   |
+| Use Case        | Grant permissions within a namespace | Grant permissions across the entire cluster |
+| Example Resource | Pods, Services, ConfigMaps   | Nodes, PersistentVolumes, Cluster-wide resources |</p>
+</div><h1>Best Practices for Using RBAC</h1>
+<div class='content'><ul>
+<li><strong>Principle of Least Privilege</strong>: Always grant the minimum permissions necessary for a user to perform their tasks.</li>
+<li><strong>Namespace Isolation</strong>: Use Roles and RoleBindings to limit access to specific namespaces.</li>
+<li><strong>Audit and Review</strong>: Regularly audit and review RBAC policies to ensure they are up-to-date and follow security best practices.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>RBAC is a powerful feature in Kubernetes that helps manage access to resources in a secure and organized manner. By understanding and properly implementing Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings, you can ensure that your Kubernetes cluster is both secure and efficient. Always follow best practices to maintain a secure and manageable environment.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='authentication-and-authorization'>&#x25C4;Authentication and Authorization</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control (RBAC) in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='network-policies-for-security'>Network Policies for Security &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

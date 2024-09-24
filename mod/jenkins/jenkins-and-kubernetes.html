@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins and Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/jenkins-and-kubernetes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/jenkins-and-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/jenkins-and-kubernetes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jenkins/jenkins-and-kubernetes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/jenkins-and-kubernetes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jenkins-and-docker'>&#x25C4;Jenkins and Docker</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Jenkins and Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='jenkins-and-maven'>Jenkins and Maven &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Jenkins and Kubernetes</h1>
+<div class='content'><p>Jenkins and Kubernetes are powerful tools that, when combined, can significantly enhance your CI/CD pipeline. Jenkins is an open-source automation server that helps automate the parts of software development related to building, testing, and deploying, facilitating continuous integration and continuous delivery. Kubernetes, on the other hand, is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications.</p>
+</div><h1>Why Use Jenkins with Kubernetes?</h1>
+<div class='content'><ul>
+<li><strong>Scalability</strong>: Kubernetes can scale Jenkins agents up and down based on the workload.</li>
+<li><strong>Isolation</strong>: Each Jenkins job can run in its own isolated environment.</li>
+<li><strong>Resource Management</strong>: Kubernetes manages resources efficiently, ensuring optimal use of CPU and memory.</li>
+<li><strong>High Availability</strong>: Kubernetes ensures that Jenkins is highly available and resilient to failures.</li>
+</ul>
+</div><h1>Setting Up Jenkins on Kubernetes</h1>
+<h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Basic understanding of Jenkins and Kubernetes.</li>
+<li>A Kubernetes cluster up and running.</li>
+<li><code>kubectl</code> command-line tool installed and configured.</li>
+<li>Helm package manager installed.</li>
+</ul>
+</div><h2>Steps to Deploy Jenkins on Kubernetes</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add the Jenkins Helm Repository</strong>:</p>
+<pre><code class="language-sh">helm repo add jenkins https://charts.jenkins.io
+helm repo update
+</code></pre>
+</li>
+<li>
+<p><strong>Install Jenkins Using Helm</strong>:</p>
+<pre><code class="language-sh">helm install jenkins jenkins/jenkins --namespace jenkins --create-namespace
+</code></pre>
+</li>
+<li>
+<p><strong>Access Jenkins</strong>:</p>
+<ul>
+<li>Get the Jenkins admin password:
+<pre><code class="language-sh">printf $(kubectl get secret --namespace jenkins jenkins -o jsonpath=&quot;{.data.jenkins-admin-password}&quot; | base64 --decode); echo
+</code></pre>
+</li>
+<li>Access Jenkins using the Kubernetes service:
+<pre><code class="language-sh">kubectl --namespace jenkins port-forward svc/jenkins 8080:8080
+</code></pre>
+</li>
+<li>Open your browser and go to <code>http://localhost:8080</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuring Jenkins to Use Kubernetes Agents</h1>
+<h2>Installing the Kubernetes Plugin</h2>
+<div class='content'><ol>
+<li>Go to <code>Manage Jenkins</code> &gt; <code>Manage Plugins</code>.</li>
+<li>Search for <code>Kubernetes</code> and install the plugin.</li>
+</ol>
+</div><h2>Configuring the Kubernetes Cloud in Jenkins</h2>
+<div class='content'><ol>
+<li>Go to <code>Manage Jenkins</code> &gt; <code>Configure System</code>.</li>
+<li>Scroll down to <code>Cloud</code> and click <code>Add a new cloud</code> &gt; <code>Kubernetes</code>.</li>
+<li>Fill in the Kubernetes cluster details:
+<ul>
+<li><strong>Kubernetes URL</strong>: The URL of your Kubernetes API server.</li>
+<li><strong>Jenkins URL</strong>: The URL of your Jenkins instance.</li>
+<li><strong>Credentials</strong>: Add Kubernetes credentials if required.</li>
+</ul>
+</li>
+<li>Configure the Pod Templates:
+<ul>
+<li>Define the pod templates that Jenkins will use to spin up agents.</li>
+<li>Specify the container images and resource limits.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example Pod Template Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGplbmtpbnMtYWdlbnQKc3BlYzoKICBjb250YWluZXJzOgogIC0gbmFtZTogam5scAogICAgaW1hZ2U6IGplbmtpbnMvaW5ib3VuZC1hZ2VudDpsYXRlc3QKICAgIGFyZ3M6IFsnJChKRU5LSU5TX1NFQ1JFVCknLCAnJChKRU5LSU5TX05BTUUpJ10KICAtIG5hbWU6IG1hdmVuCiAgICBpbWFnZTogbWF2ZW46My42LjMtamRrLTgKICAgIGNvbW1hbmQ6IFsnY2F0J10KICAgIHR0eTogdHJ1ZQogIC0gbmFtZTogZG9ja2VyCiAgICBpbWFnZTogZG9ja2VyOjE5LjAzLjEyCiAgICBjb21tYW5kOiBbJ2NhdCddCiAgICB0dHk6IHRydWU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: jenkins-agent
+spec:
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
+    args: ['$(JENKINS_SECRET)', '$(JENKINS_NAME)']
+  - name: maven
+    image: maven:3.6.3-jdk-8
+    command: ['cat']
+    tty: true
+  - name: docker
+    image: docker:19.03.12
+    command: ['cat']
+    tty: true</pre></div><div class='content'></div><h1>Running Jenkins Jobs on Kubernetes</h1>
+<h2>Creating a Simple Pipeline Job</h2>
+<div class='content'><ol>
+<li>Go to <code>New Item</code> &gt; <code>Pipeline</code>.</li>
+<li>In the Pipeline definition, use the following script:
+<pre><code class="language-groovy">pipeline {
+    agent {
+        kubernetes {
+            yaml &quot;&quot;&quot;
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: maven
+                image: maven:3.6.3-jdk-8
+                command:
+                - cat
+                tty: true
+            &quot;&quot;&quot;
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                container('maven') {
+                    sh 'mvn --version'
+                }
+            }
+        }
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Advanced Pipeline Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgewogICAgICAgIGt1YmVybmV0ZXMgewogICAgICAgICAgICB5YW1sICIiIgogICAgICAgICAgICBhcGlWZXJzaW9uOiB2MQogICAgICAgICAgICBraW5kOiBQb2QKICAgICAgICAgICAgc3BlYzoKICAgICAgICAgICAgICBjb250YWluZXJzOgogICAgICAgICAgICAgIC0gbmFtZTogbWF2ZW4KICAgICAgICAgICAgICAgIGltYWdlOiBtYXZlbjozLjYuMy1qZGstOAogICAgICAgICAgICAgICAgY29tbWFuZDoKICAgICAgICAgICAgICAgIC0gY2F0CiAgICAgICAgICAgICAgICB0dHk6IHRydWUKICAgICAgICAgICAgICAtIG5hbWU6IGRvY2tlcgogICAgICAgICAgICAgICAgaW1hZ2U6IGRvY2tlcjoxOS4wMy4xMgogICAgICAgICAgICAgICAgY29tbWFuZDoKICAgICAgICAgICAgICAgIC0gY2F0CiAgICAgICAgICAgICAgICB0dHk6IHRydWUKICAgICAgICAgICAgIiIiCiAgICAgICAgfQogICAgfQogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGNvbnRhaW5lcignbWF2ZW4nKSB7CiAgICAgICAgICAgICAgICAgICAgc2ggJ212biBjbGVhbiBpbnN0YWxsJwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEb2NrZXIgQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGNvbnRhaW5lcignZG9ja2VyJykgewogICAgICAgICAgICAgICAgICAgIHNoICdkb2NrZXIgYnVpbGQgLXQgbXlhcHA6bGF0ZXN0IC4nCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent {
+        kubernetes {
+            yaml &quot;&quot;&quot;
+            apiVersion: v1
+            kind: Pod
+            spec:
+              containers:
+              - name: maven
+                image: maven:3.6.3-jdk-8
+                command:
+                - cat
+                tty: true
+              - name: docker
+                image: docker:19.03.12
+                command:
+                - cat
+                tty: true
+            &quot;&quot;&quot;
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                container('maven') {
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('Docker Build') {
+            steps {
+                container('docker') {
+                    sh 'docker build -t myapp:latest .'
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Integrating Jenkins with Kubernetes provides a robust, scalable, and efficient CI/CD pipeline. By leveraging Kubernetes' orchestration capabilities, Jenkins can dynamically scale its agents, ensuring optimal resource utilization and isolation. This setup not only enhances the performance and reliability of your CI/CD processes but also simplifies the management of build environments.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jenkins-and-docker'>&#x25C4;Jenkins and Docker</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Jenkins and Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='jenkins-and-maven'>Jenkins and Maven &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

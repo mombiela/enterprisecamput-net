@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Swarm and Orchestration</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/docker-swarm-orchestration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/docker-swarm-orchestration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/docker-swarm-orchestration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/docker/docker-swarm-orchestration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/docker-swarm-orchestration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-docker-compose-projects'>&#x25C4;Managing Docker Compose Projects</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Docker Swarm and Orchestration</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-services-docker-swarm'>Scaling Services with Docker Swarm &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Docker Swarm</h1>
+<div class='content'><p>Docker Swarm is a native clustering and orchestration tool for Docker containers. It allows you to manage a cluster of Docker nodes as a single virtual system.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Swarm</strong>: A group of machines that are running Docker and joined into a cluster.</li>
+<li><strong>Node</strong>: An individual machine in a Swarm.
+<ul>
+<li><strong>Manager Node</strong>: Responsible for managing the Swarm and its resources.</li>
+<li><strong>Worker Node</strong>: Executes tasks assigned by the Manager.</li>
+</ul>
+</li>
+<li><strong>Service</strong>: A definition of how to run a container, including the image, ports, and replicas.</li>
+<li><strong>Task</strong>: A single instance of a running container that is part of a service.</li>
+<li><strong>Overlay Network</strong>: A network that spans all the nodes in the Swarm, allowing containers to communicate securely.</li>
+</ul>
+</div><h1>Setting Up a Docker Swarm</h1>
+<div class='content'><p>To set up a Docker Swarm, you need at least one machine to act as the Manager Node and one or more Worker Nodes.</p>
+</div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Initialize the Swarm on the Manager Node</strong>:</p>
+<pre><code class="language-sh">docker swarm init --advertise-addr &lt;MANAGER-IP&gt;
+</code></pre>
+<p>Replace <code>&lt;MANAGER-IP&gt;</code> with the IP address of your Manager Node.</p>
+</li>
+<li>
+<p><strong>Join Worker Nodes to the Swarm</strong>:
+On each Worker Node, run:</p>
+<pre><code class="language-sh">docker swarm join --token &lt;SWARM-TOKEN&gt; &lt;MANAGER-IP&gt;:2377
+</code></pre>
+<p>Replace <code>&lt;SWARM-TOKEN&gt;</code> with the token provided by the <code>docker swarm init</code> command and <code>&lt;MANAGER-IP&gt;</code> with the IP address of the Manager Node.</p>
+</li>
+</ol>
+</div><h1>Managing Services in Docker Swarm</h1>
+<div class='content'><p>Once your Swarm is set up, you can start creating and managing services.</p>
+</div><h2>Creating a Service</h2>
+<div class='content'><p>To create a service, use the <code>docker service create</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgY3JlYXRlIC0tbmFtZSBteS1zZXJ2aWNlIC0tcmVwbGljYXMgMyAtcCA4MDo4MCBuZ2lueA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service create --name my-service --replicas 3 -p 80:80 nginx</pre></div><div class='content'><p>This command creates a service named <code>my-service</code> with 3 replicas of the <code>nginx</code> container, exposing port 80.</p>
+</div><h2>Listing Services</h2>
+<div class='content'><p>To list all services in the Swarm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgbHM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service ls</pre></div><div class='content'></div><h2>Scaling a Service</h2>
+<div class='content'><p>To scale a service up or down:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2Ugc2NhbGUgbXktc2VydmljZT01"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service scale my-service=5</pre></div><div class='content'><p>This command scales <code>my-service</code> to 5 replicas.</p>
+</div><h2>Updating a Service</h2>
+<div class='content'><p>To update a service (e.g., change the image version):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgdXBkYXRlIC0taW1hZ2Ugbmdpbng6bGF0ZXN0IG15LXNlcnZpY2U="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service update --image nginx:latest my-service</pre></div><div class='content'></div><h1>Monitoring and Troubleshooting</h1>
+<div class='content'><p>Monitoring and troubleshooting are crucial for maintaining a healthy Swarm.</p>
+</div><h2>Viewing Service Logs</h2>
+<div class='content'><p>To view logs for a specific service:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgbG9ncyBteS1zZXJ2aWNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service logs my-service</pre></div><div class='content'></div><h2>Inspecting Nodes</h2>
+<div class='content'><p>To inspect the details of a node:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIG5vZGUgaW5zcGVjdCA8Tk9ERS1JRD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker node inspect &lt;NODE-ID&gt;</pre></div><div class='content'></div><h2>Removing a Node</h2>
+<div class='content'><p>To remove a node from the Swarm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIG5vZGUgcm0gPE5PREUtSUQ+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker node rm &lt;NODE-ID&gt;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Docker Swarm provides a powerful and straightforward way to manage containerized applications at scale. By understanding the key concepts and commands, you can effectively orchestrate and manage your Docker containers across multiple nodes. Whether you're deploying a simple web service or a complex microservices architecture, Docker Swarm offers the tools you need to ensure your applications run smoothly and efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-docker-compose-projects'>&#x25C4;Managing Docker Compose Projects</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Docker Swarm and Orchestration</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-services-docker-swarm'>Scaling Services with Docker Swarm &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging NGINX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/debugging-nginx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/debugging-nginx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/debugging-nginx" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/debugging-nginx" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/debugging-nginx" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='troubleshooting-common-issues'>&#x25C4;Troubleshooting Common Issues</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Debugging NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-nginx'>Deploying NGINX &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Debugging NGINX is a crucial skill for maintaining and optimizing web server performance. This topic will guide you through various techniques and tools to effectively debug NGINX configurations and issues.</p>
+</div><h1>Understanding NGINX Logs</h1>
+<div class='content'><p>Logs are the first place to look when debugging NGINX. NGINX maintains two primary logs:</p>
+<ul>
+<li><strong>Access Log</strong>: Records all requests processed by the server.</li>
+<li><strong>Error Log</strong>: Records any issues encountered by the server.</li>
+</ul>
+</div><h2>Access Log</h2>
+<div class='content'><p>The access log provides detailed information about each request made to the server. By default, it is located at <code>/var/log/nginx/access.log</code>.</p>
+<p>Example of an access log entry:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xIC0gLSBbMTAvT2N0LzIwMjM6MTM6NTU6MzYgKzAwMDBdICJHRVQgL2luZGV4Lmh0bWwgSFRUUC8xLjEiIDIwMCA2MTIgIi0iICJNb3ppbGxhLzUuMCI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1 - - [10/Oct/2023:13:55:36 +0000] &quot;GET /index.html HTTP/1.1&quot; 200 612 &quot;-&quot; &quot;Mozilla/5.0&quot;</pre></div><div class='content'><p>Key components:</p>
+<ul>
+<li><code>127.0.0.1</code>: Client IP address.</li>
+<li><code>10/Oct/2023:13:55:36 +0000</code>: Date and time of the request.</li>
+<li><code>&quot;GET /index.html HTTP/1.1&quot;</code>: Request method, URI, and protocol.</li>
+<li><code>200</code>: HTTP status code.</li>
+<li><code>612</code>: Size of the response in bytes.</li>
+<li><code>&quot;Mozilla/5.0&quot;</code>: User agent string.</li>
+</ul>
+</div><h2>Error Log</h2>
+<div class='content'><p>The error log captures any issues that occur while processing requests. By default, it is located at <code>/var/log/nginx/error.log</code>.</p>
+<p>Example of an error log entry:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MjAyMy8xMC8xMCAxMzo1NTozNiBbZXJyb3JdIDEyMzQ1IzA6ICoxIG9wZW4oKSAiL3Vzci9zaGFyZS9uZ2lueC9odG1sLzQwNC5odG1sIiBmYWlsZWQgKDI6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkpLCBjbGllbnQ6IDEyNy4wLjAuMSwgc2VydmVyOiBsb2NhbGhvc3QsIHJlcXVlc3Q6ICJHRVQgLzQwNC5odG1sIEhUVFAvMS4xIiwgaG9zdDogImxvY2FsaG9zdCI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>2023/10/10 13:55:36 [error] 12345#0: *1 open() &quot;/usr/share/nginx/html/404.html&quot; failed (2: No such file or directory), client: 127.0.0.1, server: localhost, request: &quot;GET /404.html HTTP/1.1&quot;, host: &quot;localhost&quot;</pre></div><div class='content'><p>Key components:</p>
+<ul>
+<li><code>2023/10/10 13:55:36</code>: Date and time of the error.</li>
+<li><code>[error]</code>: Log level.</li>
+<li><code>12345#0</code>: Process ID and thread ID.</li>
+<li><code>open() &quot;/usr/share/nginx/html/404.html&quot; failed (2: No such file or directory)</code>: Error message.</li>
+<li><code>client: 127.0.0.1</code>: Client IP address.</li>
+<li><code>server: localhost</code>: Server name.</li>
+<li><code>request: &quot;GET /404.html HTTP/1.1&quot;</code>: Request method, URI, and protocol.</li>
+<li><code>host: &quot;localhost&quot;</code>: Host header.</li>
+</ul>
+</div><h1>Debugging Configuration Issues</h1>
+<div class='content'><p>Configuration issues are common when setting up NGINX. Here are some steps to debug them:</p>
+</div><h2>Check Configuration Syntax</h2>
+<div class='content'><p>Before restarting NGINX, always check the configuration syntax:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuZ2lueCAtdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nginx -t</pre></div><div class='content'><p>This command will validate the configuration files and report any syntax errors.</p>
+</div><h2>Reload Configuration</h2>
+<div class='content'><p>After making changes to the configuration, reload NGINX to apply the changes without stopping the server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVsb2FkIG5naW54"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl reload nginx</pre></div><div class='content'></div><h2>Common Configuration Errors</h2>
+<div class='content'><ul>
+<li><strong>Incorrect File Paths</strong>: Ensure all file paths in the configuration are correct.</li>
+<li><strong>Syntax Errors</strong>: Look for missing semicolons, braces, or incorrect directives.</li>
+<li><strong>Permission Issues</strong>: Verify that NGINX has the necessary permissions to access files and directories.</li>
+</ul>
+</div><h1>Using Debug Mode</h1>
+<div class='content'><p>NGINX can be compiled with debug support to provide more detailed logging. This is useful for diagnosing complex issues.</p>
+</div><h2>Enabling Debug Logging</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Compile NGINX with Debug Support</strong>:</p>
+<pre><code class="language-bash">./configure --with-debug
+make
+sudo make install
+</code></pre>
+</li>
+<li>
+<p><strong>Set Debug Log Level</strong>:
+Edit the <code>nginx.conf</code> file to set the error log level to <code>debug</code>:</p>
+<pre><code class="language-nginx">error_log /var/log/nginx/error.log debug;
+</code></pre>
+</li>
+<li>
+<p><strong>Reload NGINX</strong>:</p>
+<pre><code class="language-bash">sudo systemctl reload nginx
+</code></pre>
+</li>
+</ol>
+</div><h1>Tools for Debugging</h1>
+<div class='content'><p>Several tools can assist in debugging NGINX:</p>
+<ul>
+<li>
+<p><strong>curl</strong>: Test HTTP requests and responses.</p>
+<pre><code class="language-bash">curl -I http://localhost
+</code></pre>
+</li>
+<li>
+<p><strong>ngrep</strong>: Network packet analyzer for HTTP traffic.</p>
+<pre><code class="language-bash">sudo ngrep -d any -W byline port 80
+</code></pre>
+</li>
+<li>
+<p><strong>strace</strong>: Trace system calls and signals.</p>
+<pre><code class="language-bash">sudo strace -p $(pgrep nginx)
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Debugging NGINX involves understanding and utilizing logs, validating configurations, and using various tools to diagnose issues. By mastering these techniques, you can ensure your NGINX server runs smoothly and efficiently. Always start with the basics—checking logs and configuration syntax—before diving into more advanced debugging methods.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='troubleshooting-common-issues'>&#x25C4;Troubleshooting Common Issues</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Debugging NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-nginx'>Deploying NGINX &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

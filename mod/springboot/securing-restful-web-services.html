@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing Security in RESTful Web Services</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/securing-restful-web-services" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/securing-restful-web-services" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/securing-restful-web-services" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/securing-restful-web-services" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/securing-restful-web-services" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-spring-security'>&#x25C4;Introduction to Spring Security</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementing Security in RESTful Web Services</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Authentication and Authorization &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to RESTful Web Services Security</h1>
+<div class='content'><ul>
+<li>Importance of securing RESTful APIs.</li>
+<li>Common security threats (e.g., SQL Injection, Cross-Site Scripting, Man-in-the-Middle attacks).</li>
+<li>Overview of security mechanisms (authentication, authorization, encryption).</li>
+</ul>
+</div><h1>Setting Up Spring Security in Spring Boot</h1>
+<div class='content'><ul>
+<li>Adding Spring Security dependency to your project.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXNlY3VyaXR5PC9hcnRpZmFjdElkPgo8L2RlcGVuZGVuY3k+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre></div><div class='content'><ul>
+<li>Basic configuration of Spring Security.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuY29udGV4dC5hbm5vdGF0aW9uLkNvbmZpZ3VyYXRpb247CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5LmNvbmZpZy5hbm5vdGF0aW9uLndlYi5idWlsZGVycy5IdHRwU2VjdXJpdHk7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5LmNvbmZpZy5hbm5vdGF0aW9uLndlYi5jb25maWd1cmF0aW9uLldlYlNlY3VyaXR5Q29uZmlndXJlckFkYXB0ZXI7CgpAQ29uZmlndXJhdGlvbgpwdWJsaWMgY2xhc3MgU2VjdXJpdHlDb25maWcgZXh0ZW5kcyBXZWJTZWN1cml0eUNvbmZpZ3VyZXJBZGFwdGVyIHsKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgY29uZmlndXJlKEh0dHBTZWN1cml0eSBodHRwKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBodHRwCiAgICAgICAgICAgIC5hdXRob3JpemVSZXF1ZXN0cygpCiAgICAgICAgICAgIC5hbnlSZXF1ZXN0KCkuYXV0aGVudGljYXRlZCgpCiAgICAgICAgICAgIC5hbmQoKQogICAgICAgICAgICAuaHR0cEJhc2ljKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            .anyRequest().authenticated()
+            .and()
+            .httpBasic();
+    }
+}</pre></div><div class='content'></div><h1>Authentication and Authorization</h1>
+<div class='content'><ul>
+<li><strong>Authentication</strong>: Verifying the identity of a user.</li>
+<li><strong>Authorization</strong>: Determining if the authenticated user has permission to access a resource.</li>
+</ul>
+</div><h2>Basic Authentication</h2>
+<div class='content'><ul>
+<li>Simple and easy to implement.</li>
+<li>Not recommended for production due to security vulnerabilities.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnByb3RlY3RlZCB2b2lkIGNvbmZpZ3VyZShIdHRwU2VjdXJpdHkgaHR0cCkgdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICBodHRwCiAgICAgICAgLmF1dGhvcml6ZVJlcXVlc3RzKCkKICAgICAgICAuYW55UmVxdWVzdCgpLmF1dGhlbnRpY2F0ZWQoKQogICAgICAgIC5hbmQoKQogICAgICAgIC5odHRwQmFzaWMoKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+}</pre></div><div class='content'></div><h2>Form-Based Authentication</h2>
+<div class='content'><ul>
+<li>More user-friendly than basic authentication.</li>
+<li>Example configuration:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnByb3RlY3RlZCB2b2lkIGNvbmZpZ3VyZShIdHRwU2VjdXJpdHkgaHR0cCkgdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICBodHRwCiAgICAgICAgLmF1dGhvcml6ZVJlcXVlc3RzKCkKICAgICAgICAuYW55UmVxdWVzdCgpLmF1dGhlbnRpY2F0ZWQoKQogICAgICAgIC5hbmQoKQogICAgICAgIC5mb3JtTG9naW4oKQogICAgICAgIC5sb2dpblBhZ2UoIi9sb2dpbiIpCiAgICAgICAgLnBlcm1pdEFsbCgpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+        .anyRequest().authenticated()
+        .and()
+        .formLogin()
+        .loginPage(&quot;/login&quot;)
+        .permitAll();
+}</pre></div><div class='content'></div><h2>JWT (JSON Web Token) Authentication</h2>
+<div class='content'><ul>
+<li>Stateless and scalable.</li>
+<li>Steps to implement JWT:
+<ol>
+<li>Generate JWT.</li>
+<li>Validate JWT.</li>
+<li>Use JWT in HTTP headers.</li>
+</ol>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gR2VuZXJhdGUgSldUClN0cmluZyB0b2tlbiA9IEp3dHMuYnVpbGRlcigpCiAgICAuc2V0U3ViamVjdCh1c2VybmFtZSkKICAgIC5zZXRFeHBpcmF0aW9uKG5ldyBEYXRlKFN5c3RlbS5jdXJyZW50VGltZU1pbGxpcygpICsgRVhQSVJBVElPTl9USU1FKSkKICAgIC5zaWduV2l0aChTaWduYXR1cmVBbGdvcml0aG0uSFM1MTIsIFNFQ1JFVCkKICAgIC5jb21wYWN0KCk7CgovLyBWYWxpZGF0ZSBKV1QKQ2xhaW1zIGNsYWltcyA9IEp3dHMucGFyc2VyKCkKICAgIC5zZXRTaWduaW5nS2V5KFNFQ1JFVCkKICAgIC5wYXJzZUNsYWltc0p3cyh0b2tlbikKICAgIC5nZXRCb2R5KCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Generate JWT
+String token = Jwts.builder()
+    .setSubject(username)
+    .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+    .signWith(SignatureAlgorithm.HS512, SECRET)
+    .compact();
+
+// Validate JWT
+Claims claims = Jwts.parser()
+    .setSigningKey(SECRET)
+    .parseClaimsJws(token)
+    .getBody();</pre></div><div class='content'></div><h1>Securing Endpoints</h1>
+<div class='content'><ul>
+<li>Restrict access to specific endpoints based on roles.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnByb3RlY3RlZCB2b2lkIGNvbmZpZ3VyZShIdHRwU2VjdXJpdHkgaHR0cCkgdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICBodHRwCiAgICAgICAgLmF1dGhvcml6ZVJlcXVlc3RzKCkKICAgICAgICAuYW50TWF0Y2hlcnMoIi9hZG1pbi8qKiIpLmhhc1JvbGUoIkFETUlOIikKICAgICAgICAuYW50TWF0Y2hlcnMoIi91c2VyLyoqIikuaGFzUm9sZSgiVVNFUiIpCiAgICAgICAgLmFueVJlcXVlc3QoKS5hdXRoZW50aWNhdGVkKCkKICAgICAgICAuYW5kKCkKICAgICAgICAuaHR0cEJhc2ljKCk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+        .antMatchers(&quot;/admin/**&quot;).hasRole(&quot;ADMIN&quot;)
+        .antMatchers(&quot;/user/**&quot;).hasRole(&quot;USER&quot;)
+        .anyRequest().authenticated()
+        .and()
+        .httpBasic();
+}</pre></div><div class='content'></div><h1>Cross-Site Request Forgery (CSRF) Protection</h1>
+<div class='content'><ul>
+<li>CSRF attacks and their impact.</li>
+<li>Enabling CSRF protection in Spring Security.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnByb3RlY3RlZCB2b2lkIGNvbmZpZ3VyZShIdHRwU2VjdXJpdHkgaHR0cCkgdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICBodHRwCiAgICAgICAgLmNzcmYoKS5jc3JmVG9rZW5SZXBvc2l0b3J5KENvb2tpZUNzcmZUb2tlblJlcG9zaXRvcnkud2l0aEh0dHBPbmx5RmFsc2UoKSkKICAgICAgICAuYW5kKCkKICAgICAgICAuYXV0aG9yaXplUmVxdWVzdHMoKQogICAgICAgIC5hbnlSZXF1ZXN0KCkuYXV0aGVudGljYXRlZCgpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        .and()
+        .authorizeRequests()
+        .anyRequest().authenticated();
+}</pre></div><div class='content'></div><h1>HTTPS and Secure Communication</h1>
+<div class='content'><ul>
+<li>Importance of using HTTPS.</li>
+<li>Configuring HTTPS in Spring Boot.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyOgogIHBvcnQ6IDg0NDMKICBzc2w6CiAgICBrZXktc3RvcmU6IGNsYXNzcGF0aDprZXlzdG9yZS5wMTIKICAgIGtleS1zdG9yZS1wYXNzd29yZDogcGFzc3dvcmQKICAgIGtleVN0b3JlVHlwZTogUEtDUzEyCiAgICBrZXlBbGlhczogdG9tY2F0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-password: password
+    keyStoreType: PKCS12
+    keyAlias: tomcat</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><ul>
+<li>Recap of key security concepts and their implementation in Spring Boot.</li>
+<li>Importance of continuously updating and testing security measures.</li>
+<li>Encouragement to explore advanced security topics and best practices.</li>
+</ul>
+<p>By following these guidelines and examples, you can effectively secure your RESTful web services in Spring Boot, ensuring that your applications are protected against common security threats.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-spring-security'>&#x25C4;Introduction to Spring Security</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementing Security in RESTful Web Services</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Authentication and Authorization &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

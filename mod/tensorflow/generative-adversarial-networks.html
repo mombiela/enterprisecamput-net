@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative Adversarial Networks (GANs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/generative-adversarial-networks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/generative-adversarial-networks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/generative-adversarial-networks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/generative-adversarial-networks" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/generative-adversarial-networks" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transfer-learning'>&#x25C4;Transfer Learning</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Generative Adversarial Networks (GANs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='autoencoders'>Autoencoders &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Generative Adversarial Networks (GANs) are a class of machine learning frameworks designed by Ian Goodfellow and his colleagues in 2014. GANs consist of two neural networks, the generator and the discriminator, which compete against each other in a zero-sum game. This topic will guide you through understanding GANs, implementing them using TensorFlow, and exploring advanced techniques.</p>
+</div><h1>Introduction to GANs</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: GANs are composed of two models: the generator, which creates data, and the discriminator, which evaluates data.</li>
+<li><strong>Objective</strong>: The generator aims to produce data that is indistinguishable from real data, while the discriminator aims to distinguish between real and generated data.</li>
+<li><strong>Applications</strong>: Image generation, data augmentation, style transfer, and more.</li>
+</ul>
+</div><h1>Basic Concepts</h1>
+<div class='content'><ul>
+<li><strong>Generator</strong>: A neural network that generates fake data from random noise.</li>
+<li><strong>Discriminator</strong>: A neural network that distinguishes between real and fake data.</li>
+<li><strong>Loss Functions</strong>:
+<ul>
+<li>Generator Loss: Measures how well the generator fools the discriminator.</li>
+<li>Discriminator Loss: Measures how well the discriminator distinguishes real from fake data.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Implementing a Basic GAN in TensorFlow</h1>
+<div class='content'></div><h2>Step 1: Setting Up the Environment</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmxheWVycyBpbXBvcnQgRGVuc2UsIEZsYXR0ZW4sIFJlc2hhcGUsIExlYWt5UmVMVQpmcm9tIHRlbnNvcmZsb3cua2VyYXMubW9kZWxzIGltcG9ydCBTZXF1ZW50aWFsCmltcG9ydCBudW1weSBhcyBucAppbXBvcnQgbWF0cGxvdGxpYi5weXBsb3QgYXMgcGx0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.layers import Dense, Flatten, Reshape, LeakyReLU
+from tensorflow.keras.models import Sequential
+import numpy as np
+import matplotlib.pyplot as plt</pre></div><div class='content'></div><h2>Step 2: Building the Generator</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2dlbmVyYXRvcigpOgogICAgbW9kZWwgPSBTZXF1ZW50aWFsKCkKICAgIG1vZGVsLmFkZChEZW5zZSgyNTYsIGlucHV0X2RpbT0xMDApKQogICAgbW9kZWwuYWRkKExlYWt5UmVMVShhbHBoYT0wLjIpKQogICAgbW9kZWwuYWRkKERlbnNlKDUxMikpCiAgICBtb2RlbC5hZGQoTGVha3lSZUxVKGFscGhhPTAuMikpCiAgICBtb2RlbC5hZGQoRGVuc2UoMTAyNCkpCiAgICBtb2RlbC5hZGQoTGVha3lSZUxVKGFscGhhPTAuMikpCiAgICBtb2RlbC5hZGQoRGVuc2UoMjggKiAyOCAqIDEsIGFjdGl2YXRpb249J3RhbmgnKSkKICAgIG1vZGVsLmFkZChSZXNoYXBlKCgyOCwgMjgsIDEpKSkKICAgIHJldHVybiBtb2RlbAoKZ2VuZXJhdG9yID0gYnVpbGRfZ2VuZXJhdG9yKCkKZ2VuZXJhdG9yLnN1bW1hcnkoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_generator():
+    model = Sequential()
+    model.add(Dense(256, input_dim=100))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(512))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(1024))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(28 * 28 * 1, activation='tanh'))
+    model.add(Reshape((28, 28, 1)))
+    return model
+
+generator = build_generator()
+generator.summary()</pre></div><div class='content'></div><h2>Step 3: Building the Discriminator</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2Rpc2NyaW1pbmF0b3IoKToKICAgIG1vZGVsID0gU2VxdWVudGlhbCgpCiAgICBtb2RlbC5hZGQoRmxhdHRlbihpbnB1dF9zaGFwZT0oMjgsIDI4LCAxKSkpCiAgICBtb2RlbC5hZGQoRGVuc2UoNTEyKSkKICAgIG1vZGVsLmFkZChMZWFreVJlTFUoYWxwaGE9MC4yKSkKICAgIG1vZGVsLmFkZChEZW5zZSgyNTYpKQogICAgbW9kZWwuYWRkKExlYWt5UmVMVShhbHBoYT0wLjIpKQogICAgbW9kZWwuYWRkKERlbnNlKDEsIGFjdGl2YXRpb249J3NpZ21vaWQnKSkKICAgIHJldHVybiBtb2RlbAoKZGlzY3JpbWluYXRvciA9IGJ1aWxkX2Rpc2NyaW1pbmF0b3IoKQpkaXNjcmltaW5hdG9yLnN1bW1hcnkoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_discriminator():
+    model = Sequential()
+    model.add(Flatten(input_shape=(28, 28, 1)))
+    model.add(Dense(512))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(256))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(1, activation='sigmoid'))
+    return model
+
+discriminator = build_discriminator()
+discriminator.summary()</pre></div><div class='content'></div><h2>Step 4: Compiling the Models</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzY3JpbWluYXRvci5jb21waWxlKGxvc3M9J2JpbmFyeV9jcm9zc2VudHJvcHknLCBvcHRpbWl6ZXI9J2FkYW0nLCBtZXRyaWNzPVsnYWNjdXJhY3knXSkKZGlzY3JpbWluYXRvci50cmFpbmFibGUgPSBGYWxzZQoKZ2FuX2lucHV0ID0gdGYua2VyYXMuSW5wdXQoc2hhcGU9KDEwMCwpKQpnZW5lcmF0ZWRfaW1hZ2UgPSBnZW5lcmF0b3IoZ2FuX2lucHV0KQpnYW5fb3V0cHV0ID0gZGlzY3JpbWluYXRvcihnZW5lcmF0ZWRfaW1hZ2UpCgpnYW4gPSB0Zi5rZXJhcy5Nb2RlbChnYW5faW5wdXQsIGdhbl9vdXRwdXQpCmdhbi5jb21waWxlKGxvc3M9J2JpbmFyeV9jcm9zc2VudHJvcHknLCBvcHRpbWl6ZXI9J2FkYW0nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>discriminator.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+discriminator.trainable = False
+
+gan_input = tf.keras.Input(shape=(100,))
+generated_image = generator(gan_input)
+gan_output = discriminator(generated_image)
+
+gan = tf.keras.Model(gan_input, gan_output)
+gan.compile(loss='binary_crossentropy', optimizer='adam')</pre></div><div class='content'></div><h2>Step 5: Training the GAN</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHRyYWluX2dhbihlcG9jaHMsIGJhdGNoX3NpemUsIHNhbXBsZV9pbnRlcnZhbCk6CiAgICAoWF90cmFpbiwgXyksIChfLCBfKSA9IHRmLmtlcmFzLmRhdGFzZXRzLm1uaXN0LmxvYWRfZGF0YSgpCiAgICBYX3RyYWluID0gWF90cmFpbiAvIDEyNy41IC0gMS4wCiAgICBYX3RyYWluID0gbnAuZXhwYW5kX2RpbXMoWF90cmFpbiwgYXhpcz0zKQogICAgdmFsaWQgPSBucC5vbmVzKChiYXRjaF9zaXplLCAxKSkKICAgIGZha2UgPSBucC56ZXJvcygoYmF0Y2hfc2l6ZSwgMSkpCgogICAgZm9yIGVwb2NoIGluIHJhbmdlKGVwb2Nocyk6CiAgICAgICAgaWR4ID0gbnAucmFuZG9tLnJhbmRpbnQoMCwgWF90cmFpbi5zaGFwZVswXSwgYmF0Y2hfc2l6ZSkKICAgICAgICByZWFsX2ltZ3MgPSBYX3RyYWluW2lkeF0KCiAgICAgICAgbm9pc2UgPSBucC5yYW5kb20ubm9ybWFsKDAsIDEsIChiYXRjaF9zaXplLCAxMDApKQogICAgICAgIGdlbl9pbWdzID0gZ2VuZXJhdG9yLnByZWRpY3Qobm9pc2UpCgogICAgICAgIGRfbG9zc19yZWFsID0gZGlzY3JpbWluYXRvci50cmFpbl9vbl9iYXRjaChyZWFsX2ltZ3MsIHZhbGlkKQogICAgICAgIGRfbG9zc19mYWtlID0gZGlzY3JpbWluYXRvci50cmFpbl9vbl9iYXRjaChnZW5faW1ncywgZmFrZSkKICAgICAgICBkX2xvc3MgPSAwLjUgKiBucC5hZGQoZF9sb3NzX3JlYWwsIGRfbG9zc19mYWtlKQoKICAgICAgICBub2lzZSA9IG5wLnJhbmRvbS5ub3JtYWwoMCwgMSwgKGJhdGNoX3NpemUsIDEwMCkpCiAgICAgICAgZ19sb3NzID0gZ2FuLnRyYWluX29uX2JhdGNoKG5vaXNlLCB2YWxpZCkKCiAgICAgICAgaWYgZXBvY2ggJSBzYW1wbGVfaW50ZXJ2YWwgPT0gMDoKICAgICAgICAgICAgcHJpbnQoZiJ7ZXBvY2h9IFtEIGxvc3M6IHtkX2xvc3NbMF19IHwgRCBhY2N1cmFjeTogezEwMCpkX2xvc3NbMV19XSBbRyBsb3NzOiB7Z19sb3NzfV0iKQogICAgICAgICAgICBzYW1wbGVfaW1hZ2VzKGVwb2NoKQoKZGVmIHNhbXBsZV9pbWFnZXMoZXBvY2gpOgogICAgbm9pc2UgPSBucC5yYW5kb20ubm9ybWFsKDAsIDEsICgyNSwgMTAwKSkKICAgIGdlbl9pbWdzID0gZ2VuZXJhdG9yLnByZWRpY3Qobm9pc2UpCiAgICBnZW5faW1ncyA9IDAuNSAqIGdlbl9pbWdzICsgMC41CgogICAgZmlnLCBheHMgPSBwbHQuc3VicGxvdHMoNSwgNSkKICAgIGNudCA9IDAKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIGZvciBqIGluIHJhbmdlKDUpOgogICAgICAgICAgICBheHNbaSwgal0uaW1zaG93KGdlbl9pbWdzW2NudCwgOiwgOiwgMF0sIGNtYXA9J2dyYXknKQogICAgICAgICAgICBheHNbaSwgal0uYXhpcygnb2ZmJykKICAgICAgICAgICAgY250ICs9IDEKICAgIHBsdC5zaG93KCkKCnRyYWluX2dhbihlcG9jaHM9MTAwMDAsIGJhdGNoX3NpemU9NjQsIHNhbXBsZV9pbnRlcnZhbD0xMDAwKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def train_gan(epochs, batch_size, sample_interval):
+    (X_train, _), (_, _) = tf.keras.datasets.mnist.load_data()
+    X_train = X_train / 127.5 - 1.0
+    X_train = np.expand_dims(X_train, axis=3)
+    valid = np.ones((batch_size, 1))
+    fake = np.zeros((batch_size, 1))
+
+    for epoch in range(epochs):
+        idx = np.random.randint(0, X_train.shape[0], batch_size)
+        real_imgs = X_train[idx]
+
+        noise = np.random.normal(0, 1, (batch_size, 100))
+        gen_imgs = generator.predict(noise)
+
+        d_loss_real = discriminator.train_on_batch(real_imgs, valid)
+        d_loss_fake = discriminator.train_on_batch(gen_imgs, fake)
+        d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+
+        noise = np.random.normal(0, 1, (batch_size, 100))
+        g_loss = gan.train_on_batch(noise, valid)
+
+        if epoch % sample_interval == 0:
+            print(f&quot;{epoch} [D loss: {d_loss[0]} | D accuracy: {100*d_loss[1]}] [G loss: {g_loss}]&quot;)
+            sample_images(epoch)
+
+def sample_images(epoch):
+    noise = np.random.normal(0, 1, (25, 100))
+    gen_imgs = generator.predict(noise)
+    gen_imgs = 0.5 * gen_imgs + 0.5
+
+    fig, axs = plt.subplots(5, 5)
+    cnt = 0
+    for i in range(5):
+        for j in range(5):
+            axs[i, j].imshow(gen_imgs[cnt, :, :, 0], cmap='gray')
+            axs[i, j].axis('off')
+            cnt += 1
+    plt.show()
+
+train_gan(epochs=10000, batch_size=64, sample_interval=1000)</pre></div><div class='content'></div><h1>Advanced Techniques</h1>
+<div class='content'><ul>
+<li><strong>Conditional GANs (cGANs)</strong>: GANs conditioned on additional information, such as class labels.</li>
+<li><strong>Wasserstein GANs (WGANs)</strong>: GANs with a different loss function to improve training stability.</li>
+<li><strong>CycleGANs</strong>: GANs for image-to-image translation without paired examples.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Generative Adversarial Networks are a powerful tool in the field of machine learning, capable of generating realistic data. By understanding the basic concepts and implementing a simple GAN in TensorFlow, you can build a foundation for exploring more advanced GAN architectures and applications. Continue experimenting with different types of GANs to deepen your understanding and enhance your skills.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transfer-learning'>&#x25C4;Transfer Learning</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Generative Adversarial Networks (GANs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='autoencoders'>Autoencoders &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

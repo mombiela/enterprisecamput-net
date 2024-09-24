@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling and Debugging</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/error-handling-and-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/error-handling-and-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/error-handling-and-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ansible/error-handling-and-debugging" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/error-handling-and-debugging" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ansible-plugins'>&#x25C4;Ansible Plugins</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling and Debugging</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-ansible-performance'>Optimizing Ansible Performance &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Error handling and debugging are crucial skills for anyone working with Ansible. This section will guide you through the basics of error handling, how to debug your Ansible playbooks, and advanced techniques to ensure your automation tasks run smoothly.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Error Handling</strong>: Techniques to manage and respond to errors in your playbooks.</li>
+<li><strong>Debugging</strong>: Methods to identify, diagnose, and fix issues in your Ansible code.</li>
+<li><strong>Ansible Modules for Debugging</strong>: Special modules provided by Ansible to assist in debugging.</li>
+</ul>
+</div><h1>Error Handling</h1>
+<div class='content'></div><h2>Basic Error Handling</h2>
+<div class='content'><p>Ansible provides several ways to handle errors in your playbooks. The most common methods include using <code>ignore_errors</code>, <code>failed_when</code>, and <code>block</code> statements.</p>
+<ul>
+<li>
+<p><strong>ignore_errors</strong>: This directive allows a task to continue even if it fails.</p>
+<pre><code class="language-yaml">- name: This task will continue even if it fails
+  command: /bin/false
+  ignore_errors: yes
+</code></pre>
+</li>
+<li>
+<p><strong>failed_when</strong>: This directive allows you to define custom failure conditions.</p>
+<pre><code class="language-yaml">- name: This task will fail if the output does not contain 'SUCCESS'
+  command: /bin/echo &quot;FAILURE&quot;
+  register: result
+  failed_when: &quot;'SUCCESS' not in result.stdout&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>block</strong>: This directive groups tasks and provides error handling for the entire block.</p>
+<pre><code class="language-yaml">- block:
+    - name: This task might fail
+      command: /bin/false
+  rescue:
+    - name: This task runs if the block fails
+      debug:
+        msg: &quot;The block has failed&quot;
+  always:
+    - name: This task always runs
+      debug:
+        msg: &quot;This always runs&quot;
+</code></pre>
+</li>
+</ul>
+</div><h2>Advanced Error Handling</h2>
+<div class='content'><p>Advanced error handling techniques include using <code>handlers</code>, <code>notify</code>, and <code>meta</code> directives.</p>
+<ul>
+<li>
+<p><strong>handlers</strong>: Handlers are tasks that run only when notified.</p>
+<pre><code class="language-yaml">- name: Install a package
+  apt:
+    name: nginx
+    state: present
+  notify: restart nginx
+
+handlers:
+  - name: restart nginx
+    service:
+      name: nginx
+      state: restarted
+</code></pre>
+</li>
+<li>
+<p><strong>notify</strong>: This directive is used to trigger handlers.</p>
+</li>
+<li>
+<p><strong>meta</strong>: This directive can be used to control the flow of playbooks.</p>
+<pre><code class="language-yaml">- meta: end_play
+</code></pre>
+</li>
+</ul>
+</div><h1>Debugging</h1>
+<div class='content'></div><h2>Basic Debugging</h2>
+<div class='content'><p>Ansible provides several built-in modules and options to help with debugging.</p>
+<ul>
+<li>
+<p><strong>debug module</strong>: This module prints statements during playbook execution.</p>
+<pre><code class="language-yaml">- name: Print a debug message
+  debug:
+    msg: &quot;This is a debug message&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>register</strong>: This directive captures the output of a task.</p>
+<pre><code class="language-yaml">- name: Capture the output of a command
+  command: /bin/echo &quot;Hello, World!&quot;
+  register: hello_output
+
+- name: Print the captured output
+  debug:
+    var: hello_output
+</code></pre>
+</li>
+</ul>
+</div><h2>Advanced Debugging</h2>
+<div class='content'><p>Advanced debugging techniques include using verbosity levels and the <code>assert</code> module.</p>
+<ul>
+<li>
+<p><strong>Verbosity Levels</strong>: Increase the verbosity of Ansible output to get more detailed information.</p>
+<pre><code class="language-sh">ansible-playbook playbook.yml -vvv
+</code></pre>
+</li>
+<li>
+<p><strong>assert module</strong>: This module is used to assert conditions in your playbook.</p>
+<pre><code class="language-yaml">- name: Assert that a variable is defined
+  assert:
+    that:
+      - my_variable is defined
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Error handling and debugging are essential skills for managing Ansible playbooks effectively. By understanding and utilizing the various techniques and modules provided by Ansible, you can ensure your automation tasks run smoothly and are easier to troubleshoot when issues arise. Practice these techniques regularly to become proficient in managing errors and debugging your Ansible code.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ansible-plugins'>&#x25C4;Ansible Plugins</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling and Debugging</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-ansible-performance'>Optimizing Ansible Performance &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperLogLogs in Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/hyperloglogs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/hyperloglogs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/hyperloglogs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/hyperloglogs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/hyperloglogs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='bitmaps'>&#x25C4;Bitmaps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">HyperLogLogs in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='geospatial-indexes'>Geospatial Indexes &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to HyperLogLogs</h1>
+<div class='content'><p>HyperLogLog is a probabilistic data structure used in Redis to estimate the cardinality of a set, which is the number of unique elements in that set. It is particularly useful for large datasets where an exact count is not necessary, and memory efficiency is crucial.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Cardinality</strong>: The number of unique elements in a set.</li>
+<li><strong>Probabilistic Data Structure</strong>: A data structure that provides approximate results with a certain probability of error.</li>
+<li><strong>Memory Efficiency</strong>: HyperLogLog uses a fixed amount of memory, making it suitable for large datasets.</li>
+</ul>
+</div><h1>How HyperLogLogs Work</h1>
+<div class='content'><p>HyperLogLog uses a hashing technique to estimate the number of unique elements. It hashes each element and uses the position of the first 1-bit in the hash to estimate the cardinality.</p>
+</div><h2>Steps to Estimate Cardinality</h2>
+<div class='content'><ol>
+<li><strong>Hashing</strong>: Each element is hashed using a hash function.</li>
+<li><strong>Bit Position</strong>: The position of the first 1-bit in the hash is recorded.</li>
+<li><strong>Estimation</strong>: The recorded positions are used to estimate the cardinality.</li>
+</ol>
+</div><h1>Using HyperLogLogs in Redis</h1>
+<div class='content'><p>Redis provides a set of commands to work with HyperLogLogs. The primary commands are <code>PFADD</code>, <code>PFCOUNT</code>, and <code>PFMERGE</code>.</p>
+</div><h2>PFADD Command</h2>
+<div class='content'><p>The <code>PFADD</code> command adds elements to the HyperLogLog.</p>
+<h4>Syntax</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZBREQga2V5IGVsZW1lbnQgW2VsZW1lbnQgLi4uXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFADD key element [element ...]</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZBREQgbXloeXBlcmxvZ2xvZyAiZWxlbWVudDEiICJlbGVtZW50MiIgImVsZW1lbnQzIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFADD myhyperloglog &quot;element1&quot; &quot;element2&quot; &quot;element3&quot;</pre></div><div class='content'><p>This command adds &quot;element1&quot;, &quot;element2&quot;, and &quot;element3&quot; to the HyperLogLog stored at <code>myhyperloglog</code>.</p>
+</div><h2>PFCOUNT Command</h2>
+<div class='content'><p>The <code>PFCOUNT</code> command returns the approximate cardinality of the set observed by the HyperLogLog.</p>
+<h4>Syntax</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZDT1VOVCBrZXkgW2tleSAuLi5d"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFCOUNT key [key ...]</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZDT1VOVCBteWh5cGVybG9nbG9n"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFCOUNT myhyperloglog</pre></div><div class='content'><p>This command returns the approximate number of unique elements in <code>myhyperloglog</code>.</p>
+</div><h2>PFMERGE Command</h2>
+<div class='content'><p>The <code>PFMERGE</code> command merges multiple HyperLogLogs into a single HyperLogLog.</p>
+<h4>Syntax</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZNRVJHRSBkZXN0a2V5IHNvdXJjZWtleSBbc291cmNla2V5IC4uLl0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFMERGE destkey sourcekey [sourcekey ...]</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UEZNRVJHRSBtZXJnZWRoeXBlcmxvZ2xvZyBoeXBlcmxvZ2xvZzEgaHlwZXJsb2dsb2cy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PFMERGE mergedhyperloglog hyperloglog1 hyperloglog2</pre></div><div class='content'><p>This command merges <code>hyperloglog1</code> and <code>hyperloglog2</code> into <code>mergedhyperloglog</code>.</p>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's go through a practical example to understand how to use HyperLogLogs in Redis.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add Elements</strong>:</p>
+<pre><code class="language-shell">PFADD user_visits &quot;user1&quot; &quot;user2&quot; &quot;user3&quot;
+PFADD user_visits &quot;user2&quot; &quot;user4&quot;
+</code></pre>
+<p>This adds users to the <code>user_visits</code> HyperLogLog.</p>
+</li>
+<li>
+<p><strong>Estimate Cardinality</strong>:</p>
+<pre><code class="language-shell">PFCOUNT user_visits
+</code></pre>
+<p>This returns the approximate number of unique users who visited.</p>
+</li>
+<li>
+<p><strong>Merge HyperLogLogs</strong>:</p>
+<pre><code class="language-shell">PFADD user_visits_day1 &quot;user1&quot; &quot;user2&quot;
+PFADD user_visits_day2 &quot;user2&quot; &quot;user3&quot;
+PFMERGE total_user_visits user_visits_day1 user_visits_day2
+PFCOUNT total_user_visits
+</code></pre>
+<p>This merges <code>user_visits_day1</code> and <code>user_visits_day2</code> into <code>total_user_visits</code> and estimates the total unique users over two days.</p>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>HyperLogLogs in Redis provide a memory-efficient way to estimate the cardinality of large datasets. By using commands like <code>PFADD</code>, <code>PFCOUNT</code>, and <code>PFMERGE</code>, you can easily manage and query these probabilistic data structures. While HyperLogLogs do not provide exact counts, their efficiency and ease of use make them invaluable for many applications where approximate counts are sufficient.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='bitmaps'>&#x25C4;Bitmaps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">HyperLogLogs in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='geospatial-indexes'>Geospatial Indexes &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

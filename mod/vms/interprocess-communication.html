@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interprocess Communication</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vms/interprocess-communication" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vms/interprocess-communication" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vms/interprocess-communication" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/vms/interprocess-communication" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/vms/interprocess-communication" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-system-service-calls'>&#x25C4;Using System Service Calls</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Interprocess Communication</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-io-operations'>File I/O Operations &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Interprocess Communication (IPC) is a fundamental concept in operating systems, allowing processes to exchange data and synchronize their actions. In OpenVMS, IPC mechanisms are robust and versatile, providing various methods for processes to communicate effectively. This topic will cover IPC from beginner to advanced levels, ensuring a comprehensive understanding of the concepts and practical implementations.</p>
+</div><h1>Introduction to Interprocess Communication</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: IPC is a mechanism that allows processes to communicate with each other and synchronize their actions.</li>
+<li><strong>Importance</strong>: IPC is crucial for multitasking environments where processes need to share data and resources efficiently.</li>
+</ul>
+</div><h1>IPC Mechanisms in OpenVMS</h1>
+<div class='content'><p>OpenVMS provides several IPC mechanisms, including:</p>
+<ol>
+<li><strong>Mailboxes</strong></li>
+<li><strong>Global Sections</strong></li>
+<li><strong>Event Flags</strong></li>
+<li><strong>Logical Names</strong></li>
+<li><strong>Queues</strong></li>
+</ol>
+</div><h2>Mailboxes</h2>
+<div class='content'><p>Mailboxes are a simple and effective way for processes to send and receive messages.</p>
+<ul>
+<li><strong>Concept</strong>: A mailbox is a buffer that processes can write to and read from.</li>
+<li><strong>Usage</strong>: Suitable for small messages and notifications.</li>
+</ul>
+<h4>Example: Creating and Using a Mailbox</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxkZXNjcmlwLmg+CiNpbmNsdWRlIDxsaWIkcm91dGluZXMuaD4KI2luY2x1ZGUgPHNzZGVmLmg+CiNpbmNsdWRlIDxzdGFybGV0Lmg+CgppbnQgbWFpbigpIHsKICAgIHVuc2lnbmVkIHNob3J0IGNoYW5uZWw7CiAgICBjaGFyIG1zZ1tdID0gIkhlbGxvLCBPcGVuVk1TISI7CiAgICBjaGFyIGJ1ZmZlclsyMF07CiAgICB1bnNpZ25lZCBzaG9ydCBpb3NiWzRdOwoKICAgIC8vIENyZWF0ZSBhIG1haWxib3gKICAgIGludCBzdGF0dXMgPSBzeXMkY3JlbWJ4KDAsICZjaGFubmVsLCAwLCAwLCAwLCAwLCAwKTsKICAgIGlmIChzdGF0dXMgIT0gU1MkX05PUk1BTCkgewogICAgICAgIHByaW50ZigiRXJyb3IgY3JlYXRpbmcgbWFpbGJveDogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgLy8gV3JpdGUgdG8gdGhlIG1haWxib3gKICAgIHN0YXR1cyA9IHN5cyRxaW93KDAsIGNoYW5uZWwsIElPJF9XUklURVZCTEssIGlvc2IsIDAsIDAsIG1zZywgc2l6ZW9mKG1zZykgLSAxLCAwLCAwLCAwLCAwKTsKICAgIGlmIChzdGF0dXMgIT0gU1MkX05PUk1BTCkgewogICAgICAgIHByaW50ZigiRXJyb3Igd3JpdGluZyB0byBtYWlsYm94OiAlZFxuIiwgc3RhdHVzKTsKICAgICAgICByZXR1cm4gMTsKICAgIH0KCiAgICAvLyBSZWFkIGZyb20gdGhlIG1haWxib3gKICAgIHN0YXR1cyA9IHN5cyRxaW93KDAsIGNoYW5uZWwsIElPJF9SRUFEVkJMSywgaW9zYiwgMCwgMCwgYnVmZmVyLCBzaXplb2YoYnVmZmVyKSAtIDEsIDAsIDAsIDAsIDApOwogICAgaWYgKHN0YXR1cyAhPSBTUyRfTk9STUFMKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciByZWFkaW5nIGZyb20gbWFpbGJveDogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgYnVmZmVyW2lvc2JbMV1dID0gJ1wwJzsgLy8gTnVsbC10ZXJtaW5hdGUgdGhlIHN0cmluZwogICAgcHJpbnRmKCJSZWNlaXZlZCBtZXNzYWdlOiAlc1xuIiwgYnVmZmVyKTsKCiAgICAvLyBEZWFzc2lnbiB0aGUgY2hhbm5lbAogICAgc3lzJGRhc3NnbihjaGFubmVsKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;descrip.h&gt;
+#include &lt;lib$routines.h&gt;
+#include &lt;ssdef.h&gt;
+#include &lt;starlet.h&gt;
+
+int main() {
+    unsigned short channel;
+    char msg[] = &quot;Hello, OpenVMS!&quot;;
+    char buffer[20];
+    unsigned short iosb[4];
+
+    // Create a mailbox
+    int status = sys$crembx(0, &amp;channel, 0, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error creating mailbox: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Write to the mailbox
+    status = sys$qiow(0, channel, IO$_WRITEVBLK, iosb, 0, 0, msg, sizeof(msg) - 1, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error writing to mailbox: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Read from the mailbox
+    status = sys$qiow(0, channel, IO$_READVBLK, iosb, 0, 0, buffer, sizeof(buffer) - 1, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error reading from mailbox: %d\n&quot;, status);
+        return 1;
+    }
+
+    buffer[iosb[1]] = '\0'; // Null-terminate the string
+    printf(&quot;Received message: %s\n&quot;, buffer);
+
+    // Deassign the channel
+    sys$dassgn(channel);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Global Sections</h2>
+<div class='content'><p>Global sections allow processes to share memory.</p>
+<ul>
+<li><strong>Concept</strong>: A global section is a shared memory segment that multiple processes can map into their address space.</li>
+<li><strong>Usage</strong>: Suitable for large data sharing and complex data structures.</li>
+</ul>
+<h4>Example: Creating and Using a Global Section</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxkZXNjcmlwLmg+CiNpbmNsdWRlIDxsaWIkcm91dGluZXMuaD4KI2luY2x1ZGUgPHNzZGVmLmg+CiNpbmNsdWRlIDxzdGFybGV0Lmg+CgppbnQgbWFpbigpIHsKICAgIHN0cnVjdCBkc2MkZGVzY3JpcHRvcl9zIG5hbWUgPSB7IDAsIERTQyRLX0RUWVBFX1QsIERTQyRLX0NMQVNTX1MsIDAgfTsKICAgIHVuc2lnbmVkIGxvbmcgZ3NkWzJdOwogICAgdW5zaWduZWQgbG9uZyAqc2hhcmVkX21lbW9yeTsKICAgIHVuc2lnbmVkIGxvbmcgc3RhdHVzOwoKICAgIC8vIERlZmluZSB0aGUgbmFtZSBvZiB0aGUgZ2xvYmFsIHNlY3Rpb24KICAgIG5hbWUuZHNjJHdfbGVuZ3RoID0gc3RybGVuKCJNWV9HTE9CQUxfU0VDVElPTiIpOwogICAgbmFtZS5kc2MkYV9wb2ludGVyID0gIk1ZX0dMT0JBTF9TRUNUSU9OIjsKCiAgICAvLyBDcmVhdGUgdGhlIGdsb2JhbCBzZWN0aW9uCiAgICBzdGF0dXMgPSBzeXMkY3JtcHNjKGdzZCwgMCwgMCwgU0VDJE1fR0JMLCAwLCAwLCAmbmFtZSwgMCwgMCwgMCwgMCwgMCk7CiAgICBpZiAoc3RhdHVzICE9IFNTJF9OT1JNQUwpIHsKICAgICAgICBwcmludGYoIkVycm9yIGNyZWF0aW5nIGdsb2JhbCBzZWN0aW9uOiAlZFxuIiwgc3RhdHVzKTsKICAgICAgICByZXR1cm4gMTsKICAgIH0KCiAgICAvLyBNYXAgdGhlIGdsb2JhbCBzZWN0aW9uIGludG8gdGhlIHByb2Nlc3MncyBhZGRyZXNzIHNwYWNlCiAgICBzdGF0dXMgPSBzeXMkbWdibHNjKGdzZCwgJnNoYXJlZF9tZW1vcnksIDAsIDAsIDAsIDAsIDApOwogICAgaWYgKHN0YXR1cyAhPSBTUyRfTk9STUFMKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciBtYXBwaW5nIGdsb2JhbCBzZWN0aW9uOiAlZFxuIiwgc3RhdHVzKTsKICAgICAgICByZXR1cm4gMTsKICAgIH0KCiAgICAvLyBVc2UgdGhlIHNoYXJlZCBtZW1vcnkKICAgIHNoYXJlZF9tZW1vcnlbMF0gPSA0MjsKICAgIHByaW50ZigiU2hhcmVkIG1lbW9yeSB2YWx1ZTogJWx1XG4iLCBzaGFyZWRfbWVtb3J5WzBdKTsKCiAgICAvLyBVbm1hcCB0aGUgZ2xvYmFsIHNlY3Rpb24KICAgIHN5cyRkZWx0dmEoJnNoYXJlZF9tZW1vcnksIDAsIDApOwoKICAgIHJldHVybiAwOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;descrip.h&gt;
+#include &lt;lib$routines.h&gt;
+#include &lt;ssdef.h&gt;
+#include &lt;starlet.h&gt;
+
+int main() {
+    struct dsc$descriptor_s name = { 0, DSC$K_DTYPE_T, DSC$K_CLASS_S, 0 };
+    unsigned long gsd[2];
+    unsigned long *shared_memory;
+    unsigned long status;
+
+    // Define the name of the global section
+    name.dsc$w_length = strlen(&quot;MY_GLOBAL_SECTION&quot;);
+    name.dsc$a_pointer = &quot;MY_GLOBAL_SECTION&quot;;
+
+    // Create the global section
+    status = sys$crmpsc(gsd, 0, 0, SEC$M_GBL, 0, 0, &amp;name, 0, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error creating global section: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Map the global section into the process's address space
+    status = sys$mgblsc(gsd, &amp;shared_memory, 0, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error mapping global section: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Use the shared memory
+    shared_memory[0] = 42;
+    printf(&quot;Shared memory value: %lu\n&quot;, shared_memory[0]);
+
+    // Unmap the global section
+    sys$deltva(&amp;shared_memory, 0, 0);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Event Flags</h2>
+<div class='content'><p>Event flags are used for process synchronization.</p>
+<ul>
+<li><strong>Concept</strong>: An event flag is a binary flag that processes can set, clear, and wait for.</li>
+<li><strong>Usage</strong>: Suitable for signaling between processes.</li>
+</ul>
+<h4>Example: Using Event Flags</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxkZXNjcmlwLmg+CiNpbmNsdWRlIDxsaWIkcm91dGluZXMuaD4KI2luY2x1ZGUgPHNzZGVmLmg+CiNpbmNsdWRlIDxzdGFybGV0Lmg+CgppbnQgbWFpbigpIHsKICAgIHVuc2lnbmVkIGxvbmcgZWZuID0gMDsgLy8gRXZlbnQgZmxhZyBudW1iZXIKICAgIHVuc2lnbmVkIGxvbmcgc3RhdHVzOwoKICAgIC8vIFNldCB0aGUgZXZlbnQgZmxhZwogICAgc3RhdHVzID0gc3lzJHNldGVmKGVmbik7CiAgICBpZiAoc3RhdHVzICE9IFNTJF9OT1JNQUwpIHsKICAgICAgICBwcmludGYoIkVycm9yIHNldHRpbmcgZXZlbnQgZmxhZzogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgLy8gV2FpdCBmb3IgdGhlIGV2ZW50IGZsYWcKICAgIHN0YXR1cyA9IHN5cyR3YWl0ZnIoZWZuKTsKICAgIGlmIChzdGF0dXMgIT0gU1MkX05PUk1BTCkgewogICAgICAgIHByaW50ZigiRXJyb3Igd2FpdGluZyBmb3IgZXZlbnQgZmxhZzogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgcHJpbnRmKCJFdmVudCBmbGFnIHNpZ25hbGVkLlxuIik7CgogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;descrip.h&gt;
+#include &lt;lib$routines.h&gt;
+#include &lt;ssdef.h&gt;
+#include &lt;starlet.h&gt;
+
+int main() {
+    unsigned long efn = 0; // Event flag number
+    unsigned long status;
+
+    // Set the event flag
+    status = sys$setef(efn);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error setting event flag: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Wait for the event flag
+    status = sys$waitfr(efn);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error waiting for event flag: %d\n&quot;, status);
+        return 1;
+    }
+
+    printf(&quot;Event flag signaled.\n&quot;);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Logical Names</h2>
+<div class='content'><p>Logical names are used to define symbolic names for system resources.</p>
+<ul>
+<li><strong>Concept</strong>: A logical name is a string that maps to a system resource, such as a file or device.</li>
+<li><strong>Usage</strong>: Suitable for abstracting resource names.</li>
+</ul>
+<h4>Example: Creating and Using Logical Names</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxkZXNjcmlwLmg+CiNpbmNsdWRlIDxsaWIkcm91dGluZXMuaD4KI2luY2x1ZGUgPHNzZGVmLmg+CiNpbmNsdWRlIDxzdGFybGV0Lmg+CgppbnQgbWFpbigpIHsKICAgIHN0cnVjdCBkc2MkZGVzY3JpcHRvcl9zIGxvZ25hbWUgPSB7IDAsIERTQyRLX0RUWVBFX1QsIERTQyRLX0NMQVNTX1MsIDAgfTsKICAgIHN0cnVjdCBkc2MkZGVzY3JpcHRvcl9zIGxvZ3ZhbHVlID0geyAwLCBEU0MkS19EVFlQRV9ULCBEU0MkS19DTEFTU19TLCAwIH07CiAgICB1bnNpZ25lZCBsb25nIHN0YXR1czsKCiAgICAvLyBEZWZpbmUgdGhlIGxvZ2ljYWwgbmFtZSBhbmQgdmFsdWUKICAgIGxvZ25hbWUuZHNjJHdfbGVuZ3RoID0gc3RybGVuKCJNWV9MT0dJQ0FMX05BTUUiKTsKICAgIGxvZ25hbWUuZHNjJGFfcG9pbnRlciA9ICJNWV9MT0dJQ0FMX05BTUUiOwogICAgbG9ndmFsdWUuZHNjJHdfbGVuZ3RoID0gc3RybGVuKCJNWV9MT0dJQ0FMX1ZBTFVFIik7CiAgICBsb2d2YWx1ZS5kc2MkYV9wb2ludGVyID0gIk1ZX0xPR0lDQUxfVkFMVUUiOwoKICAgIC8vIENyZWF0ZSB0aGUgbG9naWNhbCBuYW1lCiAgICBzdGF0dXMgPSBzeXMkY3JlbG5tKDAsICZsb2duYW1lLCAmbG9ndmFsdWUsIDApOwogICAgaWYgKHN0YXR1cyAhPSBTUyRfTk9STUFMKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciBjcmVhdGluZyBsb2dpY2FsIG5hbWU6ICVkXG4iLCBzdGF0dXMpOwogICAgICAgIHJldHVybiAxOwogICAgfQoKICAgIC8vIFRyYW5zbGF0ZSB0aGUgbG9naWNhbCBuYW1lCiAgICBjaGFyIGJ1ZmZlclsyNTZdOwogICAgc3RydWN0IGRzYyRkZXNjcmlwdG9yX3MgcmVzdWx0ID0geyBzaXplb2YoYnVmZmVyKSAtIDEsIERTQyRLX0RUWVBFX1QsIERTQyRLX0NMQVNTX1MsIGJ1ZmZlciB9OwogICAgc3RhdHVzID0gc3lzJHRybmxubSgwLCAmbG9nbmFtZSwgJnJlc3VsdCwgMCwgMCk7CiAgICBpZiAoc3RhdHVzICE9IFNTJF9OT1JNQUwpIHsKICAgICAgICBwcmludGYoIkVycm9yIHRyYW5zbGF0aW5nIGxvZ2ljYWwgbmFtZTogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgYnVmZmVyW3Jlc3VsdC5kc2Mkd19sZW5ndGhdID0gJ1wwJzsgLy8gTnVsbC10ZXJtaW5hdGUgdGhlIHN0cmluZwogICAgcHJpbnRmKCJMb2dpY2FsIG5hbWUgdmFsdWU6ICVzXG4iLCBidWZmZXIpOwoKICAgIHJldHVybiAwOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;descrip.h&gt;
+#include &lt;lib$routines.h&gt;
+#include &lt;ssdef.h&gt;
+#include &lt;starlet.h&gt;
+
+int main() {
+    struct dsc$descriptor_s logname = { 0, DSC$K_DTYPE_T, DSC$K_CLASS_S, 0 };
+    struct dsc$descriptor_s logvalue = { 0, DSC$K_DTYPE_T, DSC$K_CLASS_S, 0 };
+    unsigned long status;
+
+    // Define the logical name and value
+    logname.dsc$w_length = strlen(&quot;MY_LOGICAL_NAME&quot;);
+    logname.dsc$a_pointer = &quot;MY_LOGICAL_NAME&quot;;
+    logvalue.dsc$w_length = strlen(&quot;MY_LOGICAL_VALUE&quot;);
+    logvalue.dsc$a_pointer = &quot;MY_LOGICAL_VALUE&quot;;
+
+    // Create the logical name
+    status = sys$crelnm(0, &amp;logname, &amp;logvalue, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error creating logical name: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Translate the logical name
+    char buffer[256];
+    struct dsc$descriptor_s result = { sizeof(buffer) - 1, DSC$K_DTYPE_T, DSC$K_CLASS_S, buffer };
+    status = sys$trnlnm(0, &amp;logname, &amp;result, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error translating logical name: %d\n&quot;, status);
+        return 1;
+    }
+
+    buffer[result.dsc$w_length] = '\0'; // Null-terminate the string
+    printf(&quot;Logical name value: %s\n&quot;, buffer);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Queues</h2>
+<div class='content'><p>Queues are used for message passing between processes.</p>
+<ul>
+<li><strong>Concept</strong>: A queue is a data structure that holds messages for processes to read and write.</li>
+<li><strong>Usage</strong>: Suitable for complex message passing and job control.</li>
+</ul>
+<h4>Example: Using Queues</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxkZXNjcmlwLmg+CiNpbmNsdWRlIDxsaWIkcm91dGluZXMuaD4KI2luY2x1ZGUgPHNzZGVmLmg+CiNpbmNsdWRlIDxzdGFybGV0Lmg+CgppbnQgbWFpbigpIHsKICAgIHN0cnVjdCBkc2MkZGVzY3JpcHRvcl9zIHF1ZXVlX25hbWUgPSB7IDAsIERTQyRLX0RUWVBFX1QsIERTQyRLX0NMQVNTX1MsIDAgfTsKICAgIHVuc2lnbmVkIHNob3J0IGlvc2JbNF07CiAgICBjaGFyIG1zZ1tdID0gIkhlbGxvLCBRdWV1ZSEiOwogICAgY2hhciBidWZmZXJbMjBdOwogICAgdW5zaWduZWQgbG9uZyBzdGF0dXM7CgogICAgLy8gRGVmaW5lIHRoZSBxdWV1ZSBuYW1lCiAgICBxdWV1ZV9uYW1lLmRzYyR3X2xlbmd0aCA9IHN0cmxlbigiTVlfUVVFVUUiKTsKICAgIHF1ZXVlX25hbWUuZHNjJGFfcG9pbnRlciA9ICJNWV9RVUVVRSI7CgogICAgLy8gQ3JlYXRlIHRoZSBxdWV1ZQogICAgc3RhdHVzID0gc3lzJGNyZW1ieCgwLCAmcXVldWVfbmFtZSwgMCwgMCwgMCwgMCwgMCk7CiAgICBpZiAoc3RhdHVzICE9IFNTJF9OT1JNQUwpIHsKICAgICAgICBwcmludGYoIkVycm9yIGNyZWF0aW5nIHF1ZXVlOiAlZFxuIiwgc3RhdHVzKTsKICAgICAgICByZXR1cm4gMTsKICAgIH0KCiAgICAvLyBXcml0ZSB0byB0aGUgcXVldWUKICAgIHN0YXR1cyA9IHN5cyRxaW93KDAsIHF1ZXVlX25hbWUsIElPJF9XUklURVZCTEssIGlvc2IsIDAsIDAsIG1zZywgc2l6ZW9mKG1zZykgLSAxLCAwLCAwLCAwLCAwKTsKICAgIGlmIChzdGF0dXMgIT0gU1MkX05PUk1BTCkgewogICAgICAgIHByaW50ZigiRXJyb3Igd3JpdGluZyB0byBxdWV1ZTogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgLy8gUmVhZCBmcm9tIHRoZSBxdWV1ZQogICAgc3RhdHVzID0gc3lzJHFpb3coMCwgcXVldWVfbmFtZSwgSU8kX1JFQURWQkxLLCBpb3NiLCAwLCAwLCBidWZmZXIsIHNpemVvZihidWZmZXIpIC0gMSwgMCwgMCwgMCwgMCk7CiAgICBpZiAoc3RhdHVzICE9IFNTJF9OT1JNQUwpIHsKICAgICAgICBwcmludGYoIkVycm9yIHJlYWRpbmcgZnJvbSBxdWV1ZTogJWRcbiIsIHN0YXR1cyk7CiAgICAgICAgcmV0dXJuIDE7CiAgICB9CgogICAgYnVmZmVyW2lvc2JbMV1dID0gJ1wwJzsgLy8gTnVsbC10ZXJtaW5hdGUgdGhlIHN0cmluZwogICAgcHJpbnRmKCJSZWNlaXZlZCBtZXNzYWdlOiAlc1xuIiwgYnVmZmVyKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;descrip.h&gt;
+#include &lt;lib$routines.h&gt;
+#include &lt;ssdef.h&gt;
+#include &lt;starlet.h&gt;
+
+int main() {
+    struct dsc$descriptor_s queue_name = { 0, DSC$K_DTYPE_T, DSC$K_CLASS_S, 0 };
+    unsigned short iosb[4];
+    char msg[] = &quot;Hello, Queue!&quot;;
+    char buffer[20];
+    unsigned long status;
+
+    // Define the queue name
+    queue_name.dsc$w_length = strlen(&quot;MY_QUEUE&quot;);
+    queue_name.dsc$a_pointer = &quot;MY_QUEUE&quot;;
+
+    // Create the queue
+    status = sys$crembx(0, &amp;queue_name, 0, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error creating queue: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Write to the queue
+    status = sys$qiow(0, queue_name, IO$_WRITEVBLK, iosb, 0, 0, msg, sizeof(msg) - 1, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error writing to queue: %d\n&quot;, status);
+        return 1;
+    }
+
+    // Read from the queue
+    status = sys$qiow(0, queue_name, IO$_READVBLK, iosb, 0, 0, buffer, sizeof(buffer) - 1, 0, 0, 0, 0);
+    if (status != SS$_NORMAL) {
+        printf(&quot;Error reading from queue: %d\n&quot;, status);
+        return 1;
+    }
+
+    buffer[iosb[1]] = '\0'; // Null-terminate the string
+    printf(&quot;Received message: %s\n&quot;, buffer);
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Interprocess Communication in OpenVMS is a powerful feature that enables processes to communicate and synchronize effectively. By understanding and utilizing the various IPC mechanisms such as mailboxes, global sections, event flags, logical names, and queues, programmers can develop robust and efficient applications. Each method has its specific use cases and advantages, making OpenVMS a versatile platform for process communication.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-system-service-calls'>&#x25C4;Using System Service Calls</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Interprocess Communication</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-io-operations'>File I/O Operations &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUnit 5 Extensions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/junit/junit-5-extensions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/junit/junit-5-extensions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/junit/junit-5-extensions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/junit/junit-5-extensions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/junit/junit-5-extensions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='junit-5-annotations'>&#x25C4;JUnit 5 Annotations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">JUnit 5 Extensions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='migrating-from-junit-4-to-junit-5'>Migrating from JUnit 4 to JUnit 5 &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to JUnit 5 Extensions</h1>
+<div class='content'><p>JUnit 5 Extensions allow you to extend the functionality of JUnit 5 by creating custom behaviors that can be reused across multiple test classes. This feature is powerful for creating reusable testing logic, custom annotations, and more.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Extension Points</strong>: JUnit 5 provides several extension points that allow you to hook into the test lifecycle.</li>
+<li><strong>Extension Model</strong>: Extensions are implemented by creating classes that implement one or more of the extension interfaces provided by JUnit 5.</li>
+<li><strong>Registration</strong>: Extensions can be registered declaratively via annotations or programmatically.</li>
+</ul>
+</div><h1>Common Extension Points</h1>
+<div class='content'><ul>
+<li><strong>Test Instance Post-Processing</strong>: Modify test instances after they are created.</li>
+<li><strong>Test Execution Condition</strong>: Control whether tests should be executed or skipped.</li>
+<li><strong>Parameter Resolution</strong>: Provide custom parameters to test methods.</li>
+<li><strong>Lifecycle Callbacks</strong>: Hook into various stages of the test lifecycle (e.g., before all tests, before each test).</li>
+</ul>
+</div><h1>Creating a Simple Extension</h1>
+<div class='content'><p>Let's create a simple extension that logs messages before and after each test method.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define the Extension Class</strong>:</p>
+<pre><code class="language-java">import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+public class LoggingExtension implements BeforeEachCallback, AfterEachCallback {
+    @Override
+    public void beforeEach(ExtensionContext context) {
+        System.out.println(&quot;Before test method: &quot; + context.getDisplayName());
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+        System.out.println(&quot;After test method: &quot; + context.getDisplayName());
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Register the Extension</strong>:</p>
+<ul>
+<li>
+<p><strong>Declaratively</strong>: Use the <code>@ExtendWith</code> annotation.</p>
+<pre><code class="language-java">import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(LoggingExtension.class)
+public class MyTests {
+    @Test
+    void testExample() {
+        System.out.println(&quot;Executing testExample&quot;);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Programmatically</strong>: Use the <code>Extensions</code> annotation.</p>
+<pre><code class="language-java">import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+public class MyTests {
+    @RegisterExtension
+    static LoggingExtension loggingExtension = new LoggingExtension();
+
+    @Test
+    void testExample() {
+        System.out.println(&quot;Executing testExample&quot;);
+    }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>LoggingExtension Class</strong>: Implements <code>BeforeEachCallback</code> and <code>AfterEachCallback</code> to log messages before and after each test method.</li>
+<li><strong>@ExtendWith Annotation</strong>: Registers the extension declaratively at the class level.</li>
+<li><strong>@RegisterExtension Annotation</strong>: Registers the extension programmatically at the field level.</li>
+</ul>
+</div><h1>Advanced Extensions</h1>
+<h2>Conditional Test Execution</h2>
+<div class='content'><p>You can create extensions to conditionally execute tests based on custom logic.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uRXhlY3V0aW9uQ29uZGl0aW9uOwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLmV4dGVuc2lvbi5FeHRlbnNpb25Db250ZXh0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLmV4dGVuc2lvbi5Db25kaXRpb25FdmFsdWF0aW9uUmVzdWx0OwoKcHVibGljIGNsYXNzIEN1c3RvbUNvbmRpdGlvbiBpbXBsZW1lbnRzIEV4ZWN1dGlvbkNvbmRpdGlvbiB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBDb25kaXRpb25FdmFsdWF0aW9uUmVzdWx0IGV2YWx1YXRlRXhlY3V0aW9uQ29uZGl0aW9uKEV4dGVuc2lvbkNvbnRleHQgY29udGV4dCkgewogICAgICAgIGJvb2xlYW4gY29uZGl0aW9uID0gLy8geW91ciBjdXN0b20gY29uZGl0aW9uIGxvZ2ljCiAgICAgICAgcmV0dXJuIGNvbmRpdGlvbiA/IENvbmRpdGlvbkV2YWx1YXRpb25SZXN1bHQuZW5hYmxlZCgiQ29uZGl0aW9uIG1ldCIpIDoKICAgICAgICAgICAgICAgICAgICAgICAgICAgQ29uZGl0aW9uRXZhbHVhdGlvblJlc3VsdC5kaXNhYmxlZCgiQ29uZGl0aW9uIG5vdCBtZXQiKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+
+public class CustomCondition implements ExecutionCondition {
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
+        boolean condition = // your custom condition logic
+        return condition ? ConditionEvaluationResult.enabled(&quot;Condition met&quot;) :
+                           ConditionEvaluationResult.disabled(&quot;Condition not met&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Parameter Resolution</h2>
+<div class='content'><p>You can create extensions to provide custom parameters to test methods.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uUGFyYW1ldGVyQ29udGV4dDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uUGFyYW1ldGVyUmVzb2x2ZXI7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5hcGkuZXh0ZW5zaW9uLkV4dGVuc2lvbkNvbnRleHQ7CgpwdWJsaWMgY2xhc3MgQ3VzdG9tUGFyYW1ldGVyUmVzb2x2ZXIgaW1wbGVtZW50cyBQYXJhbWV0ZXJSZXNvbHZlciB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBib29sZWFuIHN1cHBvcnRzUGFyYW1ldGVyKFBhcmFtZXRlckNvbnRleHQgcGFyYW1ldGVyQ29udGV4dCwgRXh0ZW5zaW9uQ29udGV4dCBleHRlbnNpb25Db250ZXh0KSB7CiAgICAgICAgcmV0dXJuIHBhcmFtZXRlckNvbnRleHQuZ2V0UGFyYW1ldGVyKCkuZ2V0VHlwZSgpID09IFN0cmluZy5jbGFzczsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBPYmplY3QgcmVzb2x2ZVBhcmFtZXRlcihQYXJhbWV0ZXJDb250ZXh0IHBhcmFtZXRlckNvbnRleHQsIEV4dGVuc2lvbkNvbnRleHQgZXh0ZW5zaW9uQ29udGV4dCkgewogICAgICAgIHJldHVybiAiQ3VzdG9tIFBhcmFtZXRlciI7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+public class CustomParameterResolver implements ParameterResolver {
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+        return parameterContext.getParameter().getType() == String.class;
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+        return &quot;Custom Parameter&quot;;
+    }
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>JUnit 5 Extensions provide a powerful way to extend the functionality of your tests. By implementing various extension points, you can create reusable and modular testing logic. Extensions can be registered declaratively or programmatically, giving you flexibility in how you apply them. Whether you need to log messages, conditionally execute tests, or provide custom parameters, JUnit 5 Extensions offer a robust solution for enhancing your testing framework.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='junit-5-annotations'>&#x25C4;JUnit 5 Annotations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">JUnit 5 Extensions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='migrating-from-junit-4-to-junit-5'>Migrating from JUnit 4 to JUnit 5 &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

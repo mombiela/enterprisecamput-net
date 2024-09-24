@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Evaluation in Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/lazy-evaluation" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/lazy-evaluation" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/lazy-evaluation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/lazy-evaluation" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/lazy-evaluation" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transformations-and-actions'>&#x25C4;Transformations and Actions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Lazy Evaluation in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='spark-context'>Spark Context &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Lazy Evaluation</h1>
+<div class='content'><p>Lazy evaluation is a core concept in Apache Spark that can significantly improve the efficiency and performance of your data processing tasks. Understanding lazy evaluation is crucial for both beginners and advanced users to write optimized Spark applications.</p>
+</div><h2>What is Lazy Evaluation?</h2>
+<div class='content'><ul>
+<li>Lazy evaluation means that Spark will not immediately execute the transformations you apply to your data.</li>
+<li>Instead, Spark builds up a logical plan of transformations and only executes them when an action is called.</li>
+</ul>
+</div><h2>Why Use Lazy Evaluation?</h2>
+<div class='content'><ul>
+<li><strong>Efficiency</strong>: By delaying execution, Spark can optimize the overall data processing workflow.</li>
+<li><strong>Fault Tolerance</strong>: It allows Spark to recover from failures by re-computing only the lost data.</li>
+<li><strong>Optimization</strong>: Spark can combine multiple transformations into a single stage, reducing the amount of data shuffled between nodes.</li>
+</ul>
+</div><h1>How Lazy Evaluation Works</h1>
+<h2>Transformations vs. Actions</h2>
+<div class='content'><ul>
+<li><strong>Transformations</strong>: Operations that define a new RDD (Resilient Distributed Dataset) from an existing one. These are lazy and do not trigger computation.
+<ul>
+<li>Examples: <code>map()</code>, <code>filter()</code>, <code>flatMap()</code>, <code>groupByKey()</code></li>
+</ul>
+</li>
+<li><strong>Actions</strong>: Operations that trigger the execution of the transformations to return a result to the driver program or write data to an external storage system.
+<ul>
+<li>Examples: <code>collect()</code>, <code>count()</code>, <code>saveAsTextFile()</code>, <code>reduce()</code></li>
+</ul>
+</li>
+</ul>
+</div><h2>Example of Lazy Evaluation</h2>
+<div class='content'><p>Let's look at a simple example to illustrate lazy evaluation in Spark.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrIGltcG9ydCBTcGFya0NvbnRleHQKCiMgSW5pdGlhbGl6ZSBTcGFya0NvbnRleHQKc2MgPSBTcGFya0NvbnRleHQoImxvY2FsIiwgIkxhenkgRXZhbHVhdGlvbiBFeGFtcGxlIikKCiMgQ3JlYXRlIGFuIFJERCBmcm9tIGEgbGlzdApkYXRhID0gWzEsIDIsIDMsIDQsIDVdCnJkZCA9IHNjLnBhcmFsbGVsaXplKGRhdGEpCgojIEFwcGx5IHRyYW5zZm9ybWF0aW9ucyAodGhlc2UgYXJlIGxhenkpCnJkZDIgPSByZGQubWFwKGxhbWJkYSB4OiB4ICogMikKcmRkMyA9IHJkZDIuZmlsdGVyKGxhbWJkYSB4OiB4ID4gNSkKCiMgTm8gY29tcHV0YXRpb24gaGFzIGhhcHBlbmVkIHlldAoKIyBBcHBseSBhbiBhY3Rpb24gKHRoaXMgdHJpZ2dlcnMgdGhlIGNvbXB1dGF0aW9uKQpyZXN1bHQgPSByZGQzLmNvbGxlY3QoKQoKcHJpbnQocmVzdWx0KSAgIyBPdXRwdXQ6IFs2LCA4LCAxMF0KCiMgU3RvcCB0aGUgU3BhcmtDb250ZXh0CnNjLnN0b3AoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark import SparkContext
+
+# Initialize SparkContext
+sc = SparkContext(&quot;local&quot;, &quot;Lazy Evaluation Example&quot;)
+
+# Create an RDD from a list
+data = [1, 2, 3, 4, 5]
+rdd = sc.parallelize(data)
+
+# Apply transformations (these are lazy)
+rdd2 = rdd.map(lambda x: x * 2)
+rdd3 = rdd2.filter(lambda x: x &gt; 5)
+
+# No computation has happened yet
+
+# Apply an action (this triggers the computation)
+result = rdd3.collect()
+
+print(result)  # Output: [6, 8, 10]
+
+# Stop the SparkContext
+sc.stop()</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>map</code> and <code>filter</code> transformations are lazy and do not trigger any computation.</li>
+<li>The <code>collect</code> action triggers the execution of the transformations.</li>
+</ul>
+</div><h1>Advanced Concepts in Lazy Evaluation</h1>
+<h2>DAG (Directed Acyclic Graph)</h2>
+<div class='content'><ul>
+<li>Spark constructs a DAG of stages to execute the transformations.</li>
+<li>Each stage in the DAG represents a set of transformations that can be executed together.</li>
+</ul>
+</div><h2>Optimization Techniques</h2>
+<div class='content'><ul>
+<li><strong>Pipelining</strong>: Spark can pipeline transformations to minimize the number of passes over the data.</li>
+<li><strong>Stage Optimization</strong>: Spark can optimize the execution plan by combining stages and minimizing data shuffling.</li>
+</ul>
+</div><h2>Example of DAG Optimization</h2>
+<div class='content'><p>Consider the following example where multiple transformations are applied:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbml0aWFsaXplIFNwYXJrQ29udGV4dApzYyA9IFNwYXJrQ29udGV4dCgibG9jYWwiLCAiREFHIE9wdGltaXphdGlvbiBFeGFtcGxlIikKCiMgQ3JlYXRlIGFuIFJERCBmcm9tIGEgbGlzdApkYXRhID0gWzEsIDIsIDMsIDQsIDVdCnJkZCA9IHNjLnBhcmFsbGVsaXplKGRhdGEpCgojIEFwcGx5IG11bHRpcGxlIHRyYW5zZm9ybWF0aW9ucwpyZGQyID0gcmRkLm1hcChsYW1iZGEgeDogeCAqIDIpCnJkZDMgPSByZGQyLmZpbHRlcihsYW1iZGEgeDogeCA+IDUpCnJkZDQgPSByZGQzLm1hcChsYW1iZGEgeDogeCArIDEpCgojIEFwcGx5IGFuIGFjdGlvbgpyZXN1bHQgPSByZGQ0LmNvbGxlY3QoKQoKcHJpbnQocmVzdWx0KSAgIyBPdXRwdXQ6IFs3LCA5LCAxMV0KCiMgU3RvcCB0aGUgU3BhcmtDb250ZXh0CnNjLnN0b3AoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Initialize SparkContext
+sc = SparkContext(&quot;local&quot;, &quot;DAG Optimization Example&quot;)
+
+# Create an RDD from a list
+data = [1, 2, 3, 4, 5]
+rdd = sc.parallelize(data)
+
+# Apply multiple transformations
+rdd2 = rdd.map(lambda x: x * 2)
+rdd3 = rdd2.filter(lambda x: x &gt; 5)
+rdd4 = rdd3.map(lambda x: x + 1)
+
+# Apply an action
+result = rdd4.collect()
+
+print(result)  # Output: [7, 9, 11]
+
+# Stop the SparkContext
+sc.stop()</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>Spark will optimize the execution by combining the <code>map</code> and <code>filter</code> transformations into a single stage.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Lazy evaluation is a powerful feature in Apache Spark that allows for efficient and optimized data processing. By understanding how transformations and actions work, and how Spark optimizes the execution plan using DAGs, you can write more efficient Spark applications. Remember to leverage lazy evaluation to minimize unnecessary computations and improve the performance of your Spark jobs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transformations-and-actions'>&#x25C4;Transformations and Actions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Lazy Evaluation in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='spark-context'>Spark Context &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Kafka Connect</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/introduction-to-kafka-connect" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/introduction-to-kafka-connect" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/introduction-to-kafka-connect" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/introduction-to-kafka-connect" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/introduction-to-kafka-connect" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='stateful-vs-stateless-processing'>&#x25C4;Stateful vs Stateless Processing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introduction to Kafka Connect</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='source-and-sink-connectors'>Source and Sink Connectors &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Overview</h1>
+<div class='content'><p>Kafka Connect is a framework for connecting Kafka with external systems such as databases, key-value stores, search indexes, and file systems. It simplifies the process of integrating Kafka with other systems, allowing for scalable and reliable data pipelines.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Connector</strong>: A connector is a reusable component that captures data from a source system or sends data to a target system.
+<ul>
+<li><strong>Source Connector</strong>: Captures data from an external system and writes it to Kafka topics.</li>
+<li><strong>Sink Connector</strong>: Reads data from Kafka topics and writes it to an external system.</li>
+</ul>
+</li>
+<li><strong>Task</strong>: A task is a unit of work that a connector performs. Connectors can be configured to run multiple tasks in parallel for scalability.</li>
+<li><strong>Worker</strong>: A worker is a JVM process that executes connectors and tasks. Workers can be run in standalone or distributed mode.</li>
+<li><strong>Standalone Mode</strong>: Suitable for simple, single-node setups.</li>
+<li><strong>Distributed Mode</strong>: Suitable for large-scale, fault-tolerant setups.</li>
+</ul>
+</div><h1>Setting Up Kafka Connect</h1>
+<h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Apache Kafka installed and running.</li>
+<li>Java Development Kit (JDK) installed.</li>
+</ul>
+</div><h2>Standalone Mode Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a properties file for the connector</strong>:</p>
+<pre><code class="language-properties">name=local-file-source
+connector.class=FileStreamSource
+tasks.max=1
+file=/path/to/input/file.txt
+topic=connect-test
+</code></pre>
+</li>
+<li>
+<p><strong>Run Kafka Connect in standalone mode</strong>:</p>
+<pre><code class="language-sh">bin/connect-standalone.sh config/connect-standalone.properties config/connect-file-source.properties
+</code></pre>
+</li>
+</ol>
+</div><h2>Distributed Mode Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a properties file for the worker</strong>:</p>
+<pre><code class="language-properties">bootstrap.servers=localhost:9092
+group.id=connect-cluster
+key.converter=org.apache.kafka.connect.json.JsonConverter
+value.converter=org.apache.kafka.connect.json.JsonConverter
+config.storage.topic=connect-configs
+offset.storage.topic=connect-offsets
+status.storage.topic=connect-status
+</code></pre>
+</li>
+<li>
+<p><strong>Start the Kafka Connect worker</strong>:</p>
+<pre><code class="language-sh">bin/connect-distributed.sh config/connect-distributed.properties
+</code></pre>
+</li>
+<li>
+<p><strong>Submit a connector configuration</strong>:</p>
+<pre><code class="language-sh">curl -X POST -H &quot;Content-Type: application/json&quot; --data '{
+    &quot;name&quot;: &quot;local-file-source&quot;,
+    &quot;config&quot;: {
+        &quot;connector.class&quot;: &quot;FileStreamSource&quot;,
+        &quot;tasks.max&quot;: &quot;1&quot;,
+        &quot;file&quot;: &quot;/path/to/input/file.txt&quot;,
+        &quot;topic&quot;: &quot;connect-test&quot;
+    }
+}' http://localhost:8083/connectors
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Connectors</h1>
+<h2>Source Connectors</h2>
+<div class='content'><ul>
+<li><strong>JDBC Source Connector</strong>: Captures data from relational databases.</li>
+<li><strong>File Source Connector</strong>: Captures data from files.</li>
+</ul>
+</div><h2>Sink Connectors</h2>
+<div class='content'><ul>
+<li><strong>JDBC Sink Connector</strong>: Writes data to relational databases.</li>
+<li><strong>Elasticsearch Sink Connector</strong>: Writes data to Elasticsearch.</li>
+</ul>
+</div><h1>Example: JDBC Source Connector</h1>
+<h2>Configuration</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a properties file for the JDBC Source Connector</strong>:</p>
+<pre><code class="language-properties">name=my-jdbc-source
+connector.class=io.confluent.connect.jdbc.JdbcSourceConnector
+tasks.max=1
+connection.url=jdbc:mysql://localhost:3306/mydb
+connection.user=myuser
+connection.password=mypassword
+table.whitelist=mytable
+mode=incrementing
+incrementing.column.name=id
+topic.prefix=mydb-
+</code></pre>
+</li>
+<li>
+<p><strong>Start the connector</strong>:</p>
+<pre><code class="language-sh">bin/connect-standalone.sh config/connect-standalone.properties config/my-jdbc-source.properties
+</code></pre>
+</li>
+</ol>
+</div><h1>Monitoring and Management</h1>
+<div class='content'><ul>
+<li><strong>REST API</strong>: Kafka Connect provides a REST API for managing connectors, tasks, and workers.</li>
+<li><strong>Metrics</strong>: Kafka Connect exposes metrics via JMX for monitoring performance and health.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Kafka Connect is a powerful tool for integrating Kafka with various external systems. By understanding its key concepts and configurations, you can build scalable and reliable data pipelines. Whether you are working in standalone or distributed mode, Kafka Connect simplifies the process of data ingestion and export, making it an essential component in the Kafka ecosystem.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='stateful-vs-stateless-processing'>&#x25C4;Stateful vs Stateless Processing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introduction to Kafka Connect</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='source-and-sink-connectors'>Source and Sink Connectors &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

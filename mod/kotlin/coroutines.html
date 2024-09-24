@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coroutines in Kotlin</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kotlin/coroutines" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kotlin/coroutines" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kotlin/coroutines" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kotlin/coroutines" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kotlin/coroutines" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='collections-and-functional-operations'>&#x25C4;Collections and Functional Operations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Coroutines in Kotlin</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-android-development-with-kotlin'>Introduction to Android Development with Kotlin &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Coroutines</h1>
+<div class='content'><p>Coroutines are a powerful feature in Kotlin that allow for writing asynchronous code in a sequential manner. They help manage long-running tasks, such as network requests or database operations, without blocking the main thread.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Suspending Functions</strong>: Functions that can be paused and resumed at a later time.</li>
+<li><strong>CoroutineScope</strong>: Defines the lifecycle of coroutines and can be used to launch new coroutines.</li>
+<li><strong>Job</strong>: A handle to manage the lifecycle of a coroutine.</li>
+<li><strong>Deferred</strong>: A Job with a result.</li>
+</ul>
+</div><h1>Setting Up Coroutines</h1>
+<div class='content'><p>To use coroutines in Kotlin, you need to include the Kotlin coroutines library in your project.</p>
+</div><h2>Gradle Dependency</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uICJvcmcuamV0YnJhaW5zLmtvdGxpbng6a290bGlueC1jb3JvdXRpbmVzLWNvcmU6MS41LjIiCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies {
+    implementation &quot;org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2&quot;
+}</pre></div><div class='content'></div><h1>Basic Usage</h1>
+<h2>Launching a Coroutine</h2>
+<div class='content'><p>The simplest way to start a coroutine is by using the <code>launch</code> function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgbGF1bmNoIHsKICAgICAgICBkZWxheSgxMDAwTCkKICAgICAgICBwcmludGxuKCJXb3JsZCEiKQogICAgfQogICAgcHJpbnRsbigiSGVsbG8sIikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    launch {
+        delay(1000L)
+        println(&quot;World!&quot;)
+    }
+    println(&quot;Hello,&quot;)
+}</pre></div><div class='content'><ul>
+<li><code>runBlocking</code>: Creates a blocking coroutine that blocks the current thread until its completion.</li>
+<li><code>launch</code>: Starts a new coroutine without blocking the current thread.</li>
+<li><code>delay</code>: Suspends the coroutine for a specific time without blocking the thread.</li>
+</ul>
+</div><h2>Suspending Functions</h2>
+<div class='content'><p>Suspending functions can be paused and resumed without blocking the thread.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VzcGVuZCBmdW4gZmV0Y2hEYXRhKCk6IFN0cmluZyB7CiAgICBkZWxheSgxMDAwTCkgLy8gU2ltdWxhdGUgbG9uZy1ydW5uaW5nIHRhc2sKICAgIHJldHVybiAiRGF0YSBmZXRjaGVkIgp9CgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgdmFsIGRhdGEgPSBmZXRjaERhdGEoKQogICAgcHJpbnRsbihkYXRhKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>suspend fun fetchData(): String {
+    delay(1000L) // Simulate long-running task
+    return &quot;Data fetched&quot;
+}
+
+fun main() = runBlocking {
+    val data = fetchData()
+    println(data)
+}</pre></div><div class='content'></div><h1>Coroutine Scopes</h1>
+<div class='content'><p>Coroutine scopes help manage the lifecycle of coroutines. Common scopes include <code>GlobalScope</code>, <code>CoroutineScope</code>, and <code>runBlocking</code>.</p>
+</div><h2>Example with CoroutineScope</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSA9IHJ1bkJsb2NraW5nIHsKICAgIHZhbCBzY29wZSA9IENvcm91dGluZVNjb3BlKERpc3BhdGNoZXJzLkRlZmF1bHQpCiAgICBzY29wZS5sYXVuY2ggewogICAgICAgIGRlbGF5KDEwMDBMKQogICAgICAgIHByaW50bG4oIkNvcm91dGluZSBpbiBjdXN0b20gc2NvcGUiKQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() = runBlocking {
+    val scope = CoroutineScope(Dispatchers.Default)
+    scope.launch {
+        delay(1000L)
+        println(&quot;Coroutine in custom scope&quot;)
+    }
+}</pre></div><div class='content'></div><h1>Structured Concurrency</h1>
+<div class='content'><p>Structured concurrency ensures that coroutines are launched in a structured way, making it easier to manage their lifecycle.</p>
+</div><h2>Example with Structured Concurrency</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSA9IHJ1bkJsb2NraW5nIHsKICAgIGxhdW5jaCB7CiAgICAgICAgZGVsYXkoMTAwMEwpCiAgICAgICAgcHJpbnRsbigiVGFzayBmcm9tIHJ1bkJsb2NraW5nIikKICAgIH0KICAgIGNvcm91dGluZVNjb3BlIHsKICAgICAgICBsYXVuY2ggewogICAgICAgICAgICBkZWxheSg1MDBMKQogICAgICAgICAgICBwcmludGxuKCJUYXNrIGZyb20gbmVzdGVkIGxhdW5jaCIpCiAgICAgICAgfQogICAgICAgIGRlbGF5KDEwMEwpCiAgICAgICAgcHJpbnRsbigiVGFzayBmcm9tIGNvcm91dGluZVNjb3BlIikKICAgIH0KICAgIHByaW50bG4oIkNvcm91dGluZSBzY29wZSBpcyBvdmVyIikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() = runBlocking {
+    launch {
+        delay(1000L)
+        println(&quot;Task from runBlocking&quot;)
+    }
+    coroutineScope {
+        launch {
+            delay(500L)
+            println(&quot;Task from nested launch&quot;)
+        }
+        delay(100L)
+        println(&quot;Task from coroutineScope&quot;)
+    }
+    println(&quot;Coroutine scope is over&quot;)
+}</pre></div><div class='content'></div><h1>Advanced Topics</h1>
+<h2>Coroutine Context and Dispatchers</h2>
+<div class='content'><p>Dispatchers determine the thread on which a coroutine runs.</p>
+<ul>
+<li><strong>Dispatchers.Default</strong>: Used for CPU-intensive tasks.</li>
+<li><strong>Dispatchers.IO</strong>: Used for I/O operations.</li>
+<li><strong>Dispatchers.Main</strong>: Used for UI operations.</li>
+</ul>
+</div><h2>Example with Dispatchers</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSA9IHJ1bkJsb2NraW5nIHsKICAgIGxhdW5jaChEaXNwYXRjaGVycy5EZWZhdWx0KSB7CiAgICAgICAgcHJpbnRsbigiUnVubmluZyBvbiBEZWZhdWx0IGRpc3BhdGNoZXIiKQogICAgfQogICAgbGF1bmNoKERpc3BhdGNoZXJzLklPKSB7CiAgICAgICAgcHJpbnRsbigiUnVubmluZyBvbiBJTyBkaXNwYXRjaGVyIikKICAgIH0KICAgIGxhdW5jaChEaXNwYXRjaGVycy5NYWluKSB7CiAgICAgICAgcHJpbnRsbigiUnVubmluZyBvbiBNYWluIGRpc3BhdGNoZXIiKQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() = runBlocking {
+    launch(Dispatchers.Default) {
+        println(&quot;Running on Default dispatcher&quot;)
+    }
+    launch(Dispatchers.IO) {
+        println(&quot;Running on IO dispatcher&quot;)
+    }
+    launch(Dispatchers.Main) {
+        println(&quot;Running on Main dispatcher&quot;)
+    }
+}</pre></div><div class='content'></div><h2>Exception Handling</h2>
+<div class='content'><p>Handling exceptions in coroutines can be done using <code>try-catch</code> blocks or <code>CoroutineExceptionHandler</code>.</p>
+</div><h2>Example with Exception Handling</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSA9IHJ1bkJsb2NraW5nIHsKICAgIHZhbCBoYW5kbGVyID0gQ29yb3V0aW5lRXhjZXB0aW9uSGFuZGxlciB7IF8sIGV4Y2VwdGlvbiAtPgogICAgICAgIHByaW50bG4oIkNhdWdodCAkZXhjZXB0aW9uIikKICAgIH0KICAgIHZhbCBqb2IgPSBHbG9iYWxTY29wZS5sYXVuY2goaGFuZGxlcikgewogICAgICAgIHRocm93IEFzc2VydGlvbkVycm9yKCJNeSBjdXN0b20gZXJyb3IiKQogICAgfQogICAgam9iLmpvaW4oKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() = runBlocking {
+    val handler = CoroutineExceptionHandler { _, exception -&gt;
+        println(&quot;Caught $exception&quot;)
+    }
+    val job = GlobalScope.launch(handler) {
+        throw AssertionError(&quot;My custom error&quot;)
+    }
+    job.join()
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Coroutines in Kotlin provide a robust way to handle asynchronous programming, making code easier to read and maintain. By understanding the basics of launching coroutines, using suspending functions, and managing coroutine scopes, you can effectively use coroutines in your Kotlin applications. Advanced topics like dispatchers and exception handling further enhance your ability to write efficient and safe asynchronous code.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='collections-and-functional-operations'>&#x25C4;Collections and Functional Operations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Coroutines in Kotlin</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-android-development-with-kotlin'>Introduction to Android Development with Kotlin &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

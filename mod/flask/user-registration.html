@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration in Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/user-registration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/user-registration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/user-registration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/user-registration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/user-registration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-login-logout'>&#x25C4;Implementing Login and Logout</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">User Registration in Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='role-based-access-control'>Role-Based Access Control &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>User registration is a fundamental feature for many web applications. In this section, we will cover how to implement a user registration system in Flask, from basic form handling to more advanced features like email verification and password hashing.</p>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before we start, ensure you have Flask installed. You can install Flask using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2s="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask</pre></div><div class='content'><p>Additionally, we will use Flask-WTF for form handling and Flask-SQLAlchemy for database interactions. Install these packages as well:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stV1RGIEZsYXNrLVNRTEFsY2hlbXk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-WTF Flask-SQLAlchemy</pre></div><div class='content'></div><h1>Basic User Registration Form</h1>
+<h2>Creating the Flask Application</h2>
+<div class='content'><p>First, create a basic Flask application structure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZSwgcmVkaXJlY3QsIHVybF9mb3IsIHJlcXVlc3QKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZ1snU0VDUkVUX0tFWSddID0gJ3lvdXJfc2VjcmV0X2tleScKYXBwLmNvbmZpZ1snU1FMQUxDSEVNWV9EQVRBQkFTRV9VUkknXSA9ICdzcWxpdGU6Ly8vc2l0ZS5kYicKZGIgPSBTUUxBbGNoZW15KGFwcCkKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template, redirect, url_for, request
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Creating the User Model</h2>
+<div class='content'><p>Define a User model using SQLAlchemy:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkYXRldGltZSBpbXBvcnQgZGF0ZXRpbWUKCmNsYXNzIFVzZXIoZGIuTW9kZWwpOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHVzZXJuYW1lID0gZGIuQ29sdW1uKGRiLlN0cmluZygyMCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKICAgIGVtYWlsID0gZGIuQ29sdW1uKGRiLlN0cmluZygxMjApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwYXNzd29yZCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoNjApLCBudWxsYWJsZT1GYWxzZSkKICAgIGRhdGVfY3JlYXRlZCA9IGRiLkNvbHVtbihkYi5EYXRlVGltZSwgbnVsbGFibGU9RmFsc2UsIGRlZmF1bHQ9ZGF0ZXRpbWUudXRjbm93KQoKICAgIGRlZiBfX3JlcHJfXyhzZWxmKToKICAgICAgICByZXR1cm4gZiJVc2VyKCd7c2VsZi51c2VybmFtZX0nLCAne3NlbGYuZW1haWx9Jyki"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from datetime import datetime
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f&quot;User('{self.username}', '{self.email}')&quot;</pre></div><div class='content'></div><h2>Creating the Registration Form</h2>
+<div class='content'><p>Use Flask-WTF to create a registration form:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza193dGYgaW1wb3J0IEZsYXNrRm9ybQpmcm9tIHd0Zm9ybXMgaW1wb3J0IFN0cmluZ0ZpZWxkLCBQYXNzd29yZEZpZWxkLCBTdWJtaXRGaWVsZApmcm9tIHd0Zm9ybXMudmFsaWRhdG9ycyBpbXBvcnQgRGF0YVJlcXVpcmVkLCBMZW5ndGgsIEVtYWlsLCBFcXVhbFRvCgpjbGFzcyBSZWdpc3RyYXRpb25Gb3JtKEZsYXNrRm9ybSk6CiAgICB1c2VybmFtZSA9IFN0cmluZ0ZpZWxkKCdVc2VybmFtZScsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpLCBMZW5ndGgobWluPTIsIG1heD0yMCldKQogICAgZW1haWwgPSBTdHJpbmdGaWVsZCgnRW1haWwnLCB2YWxpZGF0b3JzPVtEYXRhUmVxdWlyZWQoKSwgRW1haWwoKV0pCiAgICBwYXNzd29yZCA9IFBhc3N3b3JkRmllbGQoJ1Bhc3N3b3JkJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCldKQogICAgY29uZmlybV9wYXNzd29yZCA9IFBhc3N3b3JkRmllbGQoJ0NvbmZpcm0gUGFzc3dvcmQnLCB2YWxpZGF0b3JzPVtEYXRhUmVxdWlyZWQoKSwgRXF1YWxUbygncGFzc3dvcmQnKV0pCiAgICBzdWJtaXQgPSBTdWJtaXRGaWVsZCgnU2lnbiBVcCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Length, Email, EqualTo
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')</pre></div><div class='content'></div><h2>Handling Form Submission</h2>
+<div class='content'><p>Create a route to handle the registration form:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgiL3JlZ2lzdGVyIiwgbWV0aG9kcz1bJ0dFVCcsICdQT1NUJ10pCmRlZiByZWdpc3RlcigpOgogICAgZm9ybSA9IFJlZ2lzdHJhdGlvbkZvcm0oKQogICAgaWYgZm9ybS52YWxpZGF0ZV9vbl9zdWJtaXQoKToKICAgICAgICB1c2VyID0gVXNlcih1c2VybmFtZT1mb3JtLnVzZXJuYW1lLmRhdGEsIGVtYWlsPWZvcm0uZW1haWwuZGF0YSwgcGFzc3dvcmQ9Zm9ybS5wYXNzd29yZC5kYXRhKQogICAgICAgIGRiLnNlc3Npb24uYWRkKHVzZXIpCiAgICAgICAgZGIuc2Vzc2lvbi5jb21taXQoKQogICAgICAgIHJldHVybiByZWRpcmVjdCh1cmxfZm9yKCdob21lJykpCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCdyZWdpc3Rlci5odG1sJywgZm9ybT1mb3JtKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route(&quot;/register&quot;, methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('home'))
+    return render_template('register.html', form=form)</pre></div><div class='content'></div><h2>Creating the Registration Template</h2>
+<div class='content'><p>Create a <code>register.html</code> template:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+UmVnaXN0ZXI8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPlJlZ2lzdGVyPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIiPgogICAgICAgIHt7IGZvcm0uaGlkZGVuX3RhZygpIH19CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0udXNlcm5hbWUubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0udXNlcm5hbWUoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHslIGZvciBlcnJvciBpbiBmb3JtLnVzZXJuYW1lLmVycm9ycyAlfQogICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9ImNvbG9yOiByZWQ7Ij5be3sgZXJyb3IgfX1dPC9zcGFuPgogICAgICAgICAgICB7JSBlbmRmb3IgJX0KICAgICAgICA8L3A+CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHslIGZvciBlcnJvciBpbiBmb3JtLmVtYWlsLmVycm9ycyAlfQogICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9ImNvbG9yOiByZWQ7Ij5be3sgZXJyb3IgfX1dPC9zcGFuPgogICAgICAgICAgICB7JSBlbmRmb3IgJX0KICAgICAgICA8L3A+CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0ucGFzc3dvcmQoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHslIGZvciBlcnJvciBpbiBmb3JtLnBhc3N3b3JkLmVycm9ycyAlfQogICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9ImNvbG9yOiByZWQ7Ij5be3sgZXJyb3IgfX1dPC9zcGFuPgogICAgICAgICAgICB7JSBlbmRmb3IgJX0KICAgICAgICA8L3A+CiAgICAgICAgPHA+CiAgICAgICAgICAgIHt7IGZvcm0uY29uZmlybV9wYXNzd29yZC5sYWJlbCB9fTxicj4KICAgICAgICAgICAge3sgZm9ybS5jb25maXJtX3Bhc3N3b3JkKHNpemU9MzIpIH19PGJyPgogICAgICAgICAgICB7JSBmb3IgZXJyb3IgaW4gZm9ybS5jb25maXJtX3Bhc3N3b3JkLmVycm9ycyAlfQogICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9ImNvbG9yOiByZWQ7Ij5be3sgZXJyb3IgfX1dPC9zcGFuPgogICAgICAgICAgICB7JSBlbmRmb3IgJX0KICAgICAgICA8L3A+CiAgICAgICAgPHA+e3sgZm9ybS5zdWJtaXQoKSB9fTwvcD4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Register&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+        {{ form.hidden_tag() }}
+        &lt;p&gt;
+            {{ form.username.label }}&lt;br&gt;
+            {{ form.username(size=32) }}&lt;br&gt;
+            {% for error in form.username.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/p&gt;
+        &lt;p&gt;
+            {{ form.email.label }}&lt;br&gt;
+            {{ form.email(size=32) }}&lt;br&gt;
+            {% for error in form.email.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/p&gt;
+        &lt;p&gt;
+            {{ form.password.label }}&lt;br&gt;
+            {{ form.password(size=32) }}&lt;br&gt;
+            {% for error in form.password.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/p&gt;
+        &lt;p&gt;
+            {{ form.confirm_password.label }}&lt;br&gt;
+            {{ form.confirm_password(size=32) }}&lt;br&gt;
+            {% for error in form.confirm_password.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/p&gt;
+        &lt;p&gt;{{ form.submit() }}&lt;/p&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Advanced Features</h1>
+<h2>Password Hashing</h2>
+<div class='content'><p>To securely store passwords, use the <code>werkzeug.security</code> module for hashing:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3ZXJremV1Zy5zZWN1cml0eSBpbXBvcnQgZ2VuZXJhdGVfcGFzc3dvcmRfaGFzaCwgY2hlY2tfcGFzc3dvcmRfaGFzaAoKIyBVcGRhdGUgdGhlIHVzZXIgY3JlYXRpb24gaW4gdGhlIHJlZ2lzdGVyIHJvdXRlCmlmIGZvcm0udmFsaWRhdGVfb25fc3VibWl0KCk6CiAgICBoYXNoZWRfcGFzc3dvcmQgPSBnZW5lcmF0ZV9wYXNzd29yZF9oYXNoKGZvcm0ucGFzc3dvcmQuZGF0YSwgbWV0aG9kPSdzaGEyNTYnKQogICAgdXNlciA9IFVzZXIodXNlcm5hbWU9Zm9ybS51c2VybmFtZS5kYXRhLCBlbWFpbD1mb3JtLmVtYWlsLmRhdGEsIHBhc3N3b3JkPWhhc2hlZF9wYXNzd29yZCkKICAgIGRiLnNlc3Npb24uYWRkKHVzZXIpCiAgICBkYi5zZXNzaW9uLmNvbW1pdCgpCiAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcignaG9tZScpKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from werkzeug.security import generate_password_hash, check_password_hash
+
+# Update the user creation in the register route
+if form.validate_on_submit():
+    hashed_password = generate_password_hash(form.password.data, method='sha256')
+    user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+    db.session.add(user)
+    db.session.commit()
+    return redirect(url_for('home'))</pre></div><div class='content'></div><h2>Email Verification</h2>
+<div class='content'><p>To add email verification, you can use Flask-Mail. Install it with:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stTWFpbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-Mail</pre></div><div class='content'><p>Configure Flask-Mail in your application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19tYWlsIGltcG9ydCBNYWlsLCBNZXNzYWdlCgphcHAuY29uZmlnWydNQUlMX1NFUlZFUiddID0gJ3NtdHAuZXhhbXBsZS5jb20nCmFwcC5jb25maWdbJ01BSUxfUE9SVCddID0gNTg3CmFwcC5jb25maWdbJ01BSUxfVVNFX1RMUyddID0gVHJ1ZQphcHAuY29uZmlnWydNQUlMX1VTRVJOQU1FJ10gPSAneW91cl9lbWFpbEBleGFtcGxlLmNvbScKYXBwLmNvbmZpZ1snTUFJTF9QQVNTV09SRCddID0gJ3lvdXJfcGFzc3dvcmQnCm1haWwgPSBNYWlsKGFwcCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_mail import Mail, Message
+
+app.config['MAIL_SERVER'] = 'smtp.example.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'your_email@example.com'
+app.config['MAIL_PASSWORD'] = 'your_password'
+mail = Mail(app)</pre></div><div class='content'><p>Send a verification email upon registration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgiL3JlZ2lzdGVyIiwgbWV0aG9kcz1bJ0dFVCcsICdQT1NUJ10pCmRlZiByZWdpc3RlcigpOgogICAgZm9ybSA9IFJlZ2lzdHJhdGlvbkZvcm0oKQogICAgaWYgZm9ybS52YWxpZGF0ZV9vbl9zdWJtaXQoKToKICAgICAgICBoYXNoZWRfcGFzc3dvcmQgPSBnZW5lcmF0ZV9wYXNzd29yZF9oYXNoKGZvcm0ucGFzc3dvcmQuZGF0YSwgbWV0aG9kPSdzaGEyNTYnKQogICAgICAgIHVzZXIgPSBVc2VyKHVzZXJuYW1lPWZvcm0udXNlcm5hbWUuZGF0YSwgZW1haWw9Zm9ybS5lbWFpbC5kYXRhLCBwYXNzd29yZD1oYXNoZWRfcGFzc3dvcmQpCiAgICAgICAgZGIuc2Vzc2lvbi5hZGQodXNlcikKICAgICAgICBkYi5zZXNzaW9uLmNvbW1pdCgpCiAgICAgICAgCiAgICAgICAgdG9rZW4gPSB1c2VyLmdldF9yZXNldF90b2tlbigpCiAgICAgICAgbXNnID0gTWVzc2FnZSgnQ29uZmlybSBZb3VyIEFjY291bnQnLCBzZW5kZXI9J25vcmVwbHlAZGVtby5jb20nLCByZWNpcGllbnRzPVt1c2VyLmVtYWlsXSkKICAgICAgICBtc2cuYm9keSA9IGYnJydUbyBjb25maXJtIHlvdXIgYWNjb3VudCwgdmlzaXQgdGhlIGZvbGxvd2luZyBsaW5rOgp7dXJsX2ZvcignY29uZmlybV9lbWFpbCcsIHRva2VuPXRva2VuLCBfZXh0ZXJuYWw9VHJ1ZSl9CgpJZiB5b3UgZGlkIG5vdCBtYWtlIHRoaXMgcmVxdWVzdCB0aGVuIHNpbXBseSBpZ25vcmUgdGhpcyBlbWFpbCBhbmQgbm8gY2hhbmdlcyB3aWxsIGJlIG1hZGUuCicnJwogICAgICAgIG1haWwuc2VuZChtc2cpCiAgICAgICAgCiAgICAgICAgcmV0dXJuIHJlZGlyZWN0KHVybF9mb3IoJ2hvbWUnKSkKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3JlZ2lzdGVyLmh0bWwnLCBmb3JtPWZvcm0p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route(&quot;/register&quot;, methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        hashed_password = generate_password_hash(form.password.data, method='sha256')
+        user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+        db.session.add(user)
+        db.session.commit()
+        
+        token = user.get_reset_token()
+        msg = Message('Confirm Your Account', sender='noreply@demo.com', recipients=[user.email])
+        msg.body = f'''To confirm your account, visit the following link:
+{url_for('confirm_email', token=token, _external=True)}
+
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
+        mail.send(msg)
+        
+        return redirect(url_for('home'))
+    return render_template('register.html', form=form)</pre></div><div class='content'></div><h2>Handling Email Confirmation</h2>
+<div class='content'><p>Create a route to handle email confirmation:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgiL2NvbmZpcm1fZW1haWwvPHRva2VuPiIpCmRlZiBjb25maXJtX2VtYWlsKHRva2VuKToKICAgIHVzZXIgPSBVc2VyLnZlcmlmeV9yZXNldF90b2tlbih0b2tlbikKICAgIGlmIHVzZXIgaXMgTm9uZToKICAgICAgICBmbGFzaCgnVGhhdCBpcyBhbiBpbnZhbGlkIG9yIGV4cGlyZWQgdG9rZW4nLCAnd2FybmluZycpCiAgICAgICAgcmV0dXJuIHJlZGlyZWN0KHVybF9mb3IoJ3JlZ2lzdGVyJykpCiAgICB1c2VyLmVtYWlsX2NvbmZpcm1lZCA9IFRydWUKICAgIGRiLnNlc3Npb24uY29tbWl0KCkKICAgIGZsYXNoKCdZb3VyIGFjY291bnQgaGFzIGJlZW4gY29uZmlybWVkIScsICdzdWNjZXNzJykKICAgIHJldHVybiByZWRpcmVjdCh1cmxfZm9yKCdsb2dpbicpKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route(&quot;/confirm_email/&lt;token&gt;&quot;)
+def confirm_email(token):
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('register'))
+    user.email_confirmed = True
+    db.session.commit()
+    flash('Your account has been confirmed!', 'success')
+    return redirect(url_for('login'))</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of setting up a user registration system in Flask, including form handling, password hashing, and email verification. These are essential components for building a secure and user-friendly web application. By following these steps, you can create a robust user registration system that can be further expanded with additional features as needed.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-login-logout'>&#x25C4;Implementing Login and Logout</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">User Registration in Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='role-based-access-control'>Role-Based Access Control &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

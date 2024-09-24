@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Training</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/distributed-training" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/distributed-training" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/distributed-training" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/distributed-training" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/distributed-training" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='reinforcement-learning-project'>&#x25C4;Reinforcement Learning Project</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Distributed Training</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='quantization-and-pruning'>Quantization and Pruning &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Distributed training is a technique used to train machine learning models across multiple devices or machines. This can significantly reduce training time and allow for the handling of larger datasets and models. In this section, we will cover the basics of distributed training in PyTorch, progressing from beginner to advanced concepts.</p>
+</div><h1>Introduction to Distributed Training</h1>
+<div class='content'><p>Distributed training involves splitting the training process across multiple devices or nodes. This can be done in several ways, including data parallelism and model parallelism.</p>
+<ul>
+<li><strong>Data Parallelism</strong>: Each device processes a different subset of the data.</li>
+<li><strong>Model Parallelism</strong>: The model itself is split across multiple devices.</li>
+</ul>
+</div><h1>Setting Up Distributed Training in PyTorch</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><p>Before diving into distributed training, ensure you have the following:</p>
+<ul>
+<li>A basic understanding of PyTorch.</li>
+<li>Multiple GPUs or machines available for training.</li>
+<li>PyTorch installed with CUDA support.</li>
+</ul>
+</div><h2>Basic Concepts</h2>
+<div class='content'><ul>
+<li><strong>Distributed Data Parallel (DDP)</strong>: PyTorch's module for data parallelism.</li>
+<li><strong>Process Group</strong>: A group of processes that can communicate with each other.</li>
+<li><strong>Backend</strong>: The communication backend (e.g., <code>nccl</code>, <code>gloo</code>, <code>mpi</code>).</li>
+</ul>
+</div><h2>Initializing Distributed Training</h2>
+<div class='content'><p>To start with distributed training, you need to initialize the process group and set up the environment.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5kaXN0cmlidXRlZCBhcyBkaXN0CgpkZWYgaW5pdF9wcm9jZXNzKHJhbmssIHNpemUsIGJhY2tlbmQ9J25jY2wnKToKICAgICIiIiBJbml0aWFsaXplIHRoZSBkaXN0cmlidXRlZCBlbnZpcm9ubWVudC4gIiIiCiAgICBkaXN0LmluaXRfcHJvY2Vzc19ncm91cChiYWNrZW5kLCByYW5rPXJhbmssIHdvcmxkX3NpemU9c2l6ZSkKCiMgRXhhbXBsZSB1c2FnZQpyYW5rID0gMCAgIyBSYW5rIG9mIHRoZSBjdXJyZW50IHByb2Nlc3MKc2l6ZSA9IDQgICMgVG90YWwgbnVtYmVyIG9mIHByb2Nlc3Nlcwppbml0X3Byb2Nlc3MocmFuaywgc2l6ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.distributed as dist
+
+def init_process(rank, size, backend='nccl'):
+    &quot;&quot;&quot; Initialize the distributed environment. &quot;&quot;&quot;
+    dist.init_process_group(backend, rank=rank, world_size=size)
+
+# Example usage
+rank = 0  # Rank of the current process
+size = 4  # Total number of processes
+init_process(rank, size)</pre></div><div class='content'></div><h2>Distributed Data Parallel (DDP)</h2>
+<div class='content'><p>DDP is a wrapper that helps to parallelize the training process across multiple GPUs.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KaW1wb3J0IHRvcmNoLmRpc3RyaWJ1dGVkIGFzIGRpc3QKZnJvbSB0b3JjaC5ubi5wYXJhbGxlbCBpbXBvcnQgRGlzdHJpYnV0ZWREYXRhUGFyYWxsZWwgYXMgRERQCgojIERlZmluZSBhIHNpbXBsZSBtb2RlbApjbGFzcyBTaW1wbGVNb2RlbChubi5Nb2R1bGUpOgogICAgZGVmIF9faW5pdF9fKHNlbGYpOgogICAgICAgIHN1cGVyKFNpbXBsZU1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5mYyA9IG5uLkxpbmVhcigxMCwgMTApCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgcmV0dXJuIHNlbGYuZmMoeCkKCiMgSW5pdGlhbGl6ZSB0aGUgcHJvY2VzcyBncm91cApkaXN0LmluaXRfcHJvY2Vzc19ncm91cChiYWNrZW5kPSduY2NsJykKCiMgQ3JlYXRlIHRoZSBtb2RlbCBhbmQgbW92ZSBpdCB0byB0aGUgR1BVCm1vZGVsID0gU2ltcGxlTW9kZWwoKS5jdWRhKCkKZGRwX21vZGVsID0gRERQKG1vZGVsKQoKIyBEZWZpbmUgbG9zcyBmdW5jdGlvbiBhbmQgb3B0aW1pemVyCmNyaXRlcmlvbiA9IG5uLk1TRUxvc3MoKQpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QoZGRwX21vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEpCgojIER1bW15IGlucHV0IGFuZCB0YXJnZXQKaW5wdXQgPSB0b3JjaC5yYW5kbigyMCwgMTApLmN1ZGEoKQp0YXJnZXQgPSB0b3JjaC5yYW5kbigyMCwgMTApLmN1ZGEoKQoKIyBGb3J3YXJkIHBhc3MKb3V0cHV0ID0gZGRwX21vZGVsKGlucHV0KQpsb3NzID0gY3JpdGVyaW9uKG91dHB1dCwgdGFyZ2V0KQoKIyBCYWNrd2FyZCBwYXNzIGFuZCBvcHRpbWl6YXRpb24Kb3B0aW1pemVyLnplcm9fZ3JhZCgpCmxvc3MuYmFja3dhcmQoKQpvcHRpbWl6ZXIuc3RlcCgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+
+# Define a simple model
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 10)
+
+    def forward(self, x):
+        return self.fc(x)
+
+# Initialize the process group
+dist.init_process_group(backend='nccl')
+
+# Create the model and move it to the GPU
+model = SimpleModel().cuda()
+ddp_model = DDP(model)
+
+# Define loss function and optimizer
+criterion = nn.MSELoss()
+optimizer = optim.SGD(ddp_model.parameters(), lr=0.001)
+
+# Dummy input and target
+input = torch.randn(20, 10).cuda()
+target = torch.randn(20, 10).cuda()
+
+# Forward pass
+output = ddp_model(input)
+loss = criterion(output, target)
+
+# Backward pass and optimization
+optimizer.zero_grad()
+loss.backward()
+optimizer.step()</pre></div><div class='content'></div><h1>Advanced Distributed Training Techniques</h1>
+<div class='content'></div><h2>Gradient Accumulation</h2>
+<div class='content'><p>Gradient accumulation allows you to simulate a larger batch size by accumulating gradients over multiple iterations.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBY2N1bXVsYXRlIGdyYWRpZW50cyBvdmVyIG11bHRpcGxlIGl0ZXJhdGlvbnMKYWNjdW11bGF0aW9uX3N0ZXBzID0gNApmb3IgaSBpbiByYW5nZShhY2N1bXVsYXRpb25fc3RlcHMpOgogICAgb3V0cHV0ID0gZGRwX21vZGVsKGlucHV0KQogICAgbG9zcyA9IGNyaXRlcmlvbihvdXRwdXQsIHRhcmdldCkKICAgIGxvc3MgPSBsb3NzIC8gYWNjdW11bGF0aW9uX3N0ZXBzICAjIE5vcm1hbGl6ZSBsb3NzCiAgICBsb3NzLmJhY2t3YXJkKCkKCiAgICBpZiAoaSArIDEpICUgYWNjdW11bGF0aW9uX3N0ZXBzID09IDA6CiAgICAgICAgb3B0aW1pemVyLnN0ZXAoKQogICAgICAgIG9wdGltaXplci56ZXJvX2dyYWQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Accumulate gradients over multiple iterations
+accumulation_steps = 4
+for i in range(accumulation_steps):
+    output = ddp_model(input)
+    loss = criterion(output, target)
+    loss = loss / accumulation_steps  # Normalize loss
+    loss.backward()
+
+    if (i + 1) % accumulation_steps == 0:
+        optimizer.step()
+        optimizer.zero_grad()</pre></div><div class='content'></div><h2>Mixed Precision Training</h2>
+<div class='content'><p>Mixed precision training uses both 16-bit and 32-bit floating-point types to reduce memory usage and speed up training.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0b3JjaC5jdWRhLmFtcCBpbXBvcnQgR3JhZFNjYWxlciwgYXV0b2Nhc3QKCnNjYWxlciA9IEdyYWRTY2FsZXIoKQoKZm9yIGlucHV0LCB0YXJnZXQgaW4gZGF0YV9sb2FkZXI6CiAgICBpbnB1dCwgdGFyZ2V0ID0gaW5wdXQuY3VkYSgpLCB0YXJnZXQuY3VkYSgpCgogICAgd2l0aCBhdXRvY2FzdCgpOgogICAgICAgIG91dHB1dCA9IGRkcF9tb2RlbChpbnB1dCkKICAgICAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dCwgdGFyZ2V0KQoKICAgIHNjYWxlci5zY2FsZShsb3NzKS5iYWNrd2FyZCgpCiAgICBzY2FsZXIuc3RlcChvcHRpbWl6ZXIpCiAgICBzY2FsZXIudXBkYXRlKCkKICAgIG9wdGltaXplci56ZXJvX2dyYWQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from torch.cuda.amp import GradScaler, autocast
+
+scaler = GradScaler()
+
+for input, target in data_loader:
+    input, target = input.cuda(), target.cuda()
+
+    with autocast():
+        output = ddp_model(input)
+        loss = criterion(output, target)
+
+    scaler.scale(loss).backward()
+    scaler.step(optimizer)
+    scaler.update()
+    optimizer.zero_grad()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Distributed training in PyTorch allows for efficient scaling of machine learning models across multiple devices. By understanding the basics of Distributed Data Parallel (DDP), initializing process groups, and implementing advanced techniques like gradient accumulation and mixed precision training, you can significantly enhance your model training capabilities. As you progress, you can explore more complex setups and optimizations to further improve performance and efficiency.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='reinforcement-learning-project'>&#x25C4;Reinforcement Learning Project</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Distributed Training</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='quantization-and-pruning'>Quantization and Pruning &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

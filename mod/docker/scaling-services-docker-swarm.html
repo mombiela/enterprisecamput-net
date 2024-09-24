@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling Services with Docker Swarm</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/scaling-services-docker-swarm" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/scaling-services-docker-swarm" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/scaling-services-docker-swarm" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/docker/scaling-services-docker-swarm" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/scaling-services-docker-swarm" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='docker-swarm-orchestration'>&#x25C4;Docker Swarm and Orchestration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scaling Services with Docker Swarm</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='docker-secrets-configs'>Docker Secrets and Configs &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Docker Swarm</h1>
+<div class='content'><p>Docker Swarm is a native clustering and orchestration tool for Docker containers. It allows you to manage a cluster of Docker engines as a single virtual system. This section will cover the basics of Docker Swarm and its importance in scaling services.</p>
+<ul>
+<li>
+<p><strong>What is Docker Swarm?</strong></p>
+<ul>
+<li>Docker Swarm is a container orchestration tool that allows you to manage multiple Docker hosts as a single cluster.</li>
+<li>It provides high availability, load balancing, and scaling capabilities.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why use Docker Swarm?</strong></p>
+<ul>
+<li>Simplifies the deployment and management of containerized applications.</li>
+<li>Ensures high availability and fault tolerance.</li>
+<li>Facilitates easy scaling of services.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up a Docker Swarm Cluster</h1>
+<div class='content'><p>Before scaling services, you need to set up a Docker Swarm cluster. This section will guide you through the process of initializing a Swarm and adding nodes to it.</p>
+<ul>
+<li>
+<p><strong>Initialize a Swarm</strong></p>
+<pre><code class="language-bash">docker swarm init --advertise-addr &lt;MANAGER-IP&gt;
+</code></pre>
+<ul>
+<li><code>--advertise-addr</code>: The IP address that the manager node advertises to other nodes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add Worker Nodes to the Swarm</strong></p>
+<pre><code class="language-bash">docker swarm join --token &lt;SWARM-TOKEN&gt; &lt;MANAGER-IP&gt;:2377
+</code></pre>
+<ul>
+<li><code>--token</code>: The token provided by the manager node to join the Swarm.</li>
+<li><code>&lt;MANAGER-IP&gt;</code>: The IP address of the manager node.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Deploying Services in Docker Swarm</h1>
+<div class='content'><p>Once the Swarm cluster is set up, you can deploy services to it. This section will explain how to create and manage services in Docker Swarm.</p>
+<ul>
+<li>
+<p><strong>Create a Service</strong></p>
+<pre><code class="language-bash">docker service create --name my-service --replicas 3 nginx
+</code></pre>
+<ul>
+<li><code>--name</code>: The name of the service.</li>
+<li><code>--replicas</code>: The number of instances (replicas) of the service.</li>
+<li><code>nginx</code>: The image to use for the service.</li>
+</ul>
+</li>
+<li>
+<p><strong>List Services</strong></p>
+<pre><code class="language-bash">docker service ls
+</code></pre>
+</li>
+<li>
+<p><strong>Inspect a Service</strong></p>
+<pre><code class="language-bash">docker service inspect my-service
+</code></pre>
+</li>
+<li>
+<p><strong>Scale a Service</strong></p>
+<pre><code class="language-bash">docker service scale my-service=5
+</code></pre>
+<ul>
+<li>This command scales the service to 5 replicas.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Managing and Monitoring Services</h1>
+<div class='content'><p>Effective management and monitoring are crucial for maintaining the health and performance of your services. This section covers essential commands and tools for managing and monitoring services in Docker Swarm.</p>
+<ul>
+<li>
+<p><strong>Update a Service</strong></p>
+<pre><code class="language-bash">docker service update --image nginx:latest my-service
+</code></pre>
+<ul>
+<li>Updates the service to use the latest nginx image.</li>
+</ul>
+</li>
+<li>
+<p><strong>Remove a Service</strong></p>
+<pre><code class="language-bash">docker service rm my-service
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor Services</strong></p>
+<ul>
+<li>Use <code>docker service ps</code> to list the tasks of a service.
+<pre><code class="language-bash">docker service ps my-service
+</code></pre>
+</li>
+<li>Use <code>docker node ls</code> to list all nodes in the Swarm.
+<pre><code class="language-bash">docker node ls
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>High Availability and Load Balancing</h1>
+<div class='content'><p>Docker Swarm ensures high availability and load balancing out of the box. This section explains how these features work and how to configure them.</p>
+<ul>
+<li>
+<p><strong>High Availability</strong></p>
+<ul>
+<li>Docker Swarm automatically redistributes tasks from failed nodes to healthy ones.</li>
+<li>Ensure you have multiple manager nodes for fault tolerance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Load Balancing</strong></p>
+<ul>
+<li>Docker Swarm uses an internal load balancer to distribute requests among service replicas.</li>
+<li>You can also use external load balancers for more complex setups.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Scaling services with Docker Swarm is a powerful way to manage containerized applications efficiently. By setting up a Swarm cluster, deploying and scaling services, and leveraging high availability and load balancing features, you can ensure your applications are robust and scalable.</p>
+<ul>
+<li><strong>Key Takeaways:</strong>
+<ul>
+<li>Docker Swarm simplifies the orchestration of containerized applications.</li>
+<li>Setting up a Swarm cluster involves initializing the Swarm and adding nodes.</li>
+<li>Services can be easily deployed, scaled, and managed using Docker Swarm commands.</li>
+<li>High availability and load balancing are built-in features of Docker Swarm, ensuring reliable and efficient service delivery.</li>
+</ul>
+</li>
+</ul>
+<p>By mastering these concepts, you will be well-equipped to scale your services effectively using Docker Swarm.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='docker-swarm-orchestration'>&#x25C4;Docker Swarm and Orchestration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scaling Services with Docker Swarm</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='docker-secrets-configs'>Docker Secrets and Configs &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

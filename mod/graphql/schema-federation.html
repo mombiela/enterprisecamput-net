@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Federation</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/schema-federation" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/schema-federation" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/schema-federation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/schema-federation" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/schema-federation" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-scalars'>&#x25C4;Custom Scalars</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Schema Federation</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graphql-and-serverless'>GraphQL and Serverless &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Schema Federation is an advanced topic in GraphQL that allows you to compose multiple GraphQL services into a single, unified graph. This approach is particularly useful for large organizations where different teams manage different parts of the schema. In this topic, we will cover the basics of Schema Federation, its benefits, and how to implement it.</p>
+</div><h1>What is Schema Federation?</h1>
+<div class='content'><p>Schema Federation is a technique that enables you to split your GraphQL schema into multiple, smaller schemas that can be managed independently. These smaller schemas, known as &quot;subgraphs,&quot; are then combined into a single, federated schema.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Subgraph</strong>: A smaller, independently managed GraphQL schema.</li>
+<li><strong>Gateway</strong>: A service that composes multiple subgraphs into a single federated schema.</li>
+<li><strong>Federation Directives</strong>: Special annotations used to define how subgraphs relate to each other.</li>
+</ul>
+</div><h1>Benefits of Schema Federation</h1>
+<div class='content'><ul>
+<li><strong>Scalability</strong>: Allows different teams to work on different parts of the schema independently.</li>
+<li><strong>Modularity</strong>: Makes it easier to manage and maintain large schemas by breaking them into smaller, more manageable pieces.</li>
+<li><strong>Flexibility</strong>: Enables you to evolve your schema without affecting the entire system.</li>
+</ul>
+</div><h1>Implementing Schema Federation</h1>
+<div class='content'><p>To implement Schema Federation, you need to set up subgraphs and a gateway. Let's go through the steps to achieve this.</p>
+</div><h2>Step 1: Define Subgraphs</h2>
+<div class='content'><p>Each subgraph is a standalone GraphQL service. Here is an example of two subgraphs: <code>users</code> and <code>products</code>.</p>
+<h4>Users Subgraph</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB1c2Vycy1zY2hlbWEuZ3JhcGhxbAp0eXBlIFVzZXIgQGtleShmaWVsZHM6ICJpZCIpIHsKICBpZDogSUQhCiAgbmFtZTogU3RyaW5nIQogIGVtYWlsOiBTdHJpbmchCn0KCnR5cGUgUXVlcnkgewogIG1lOiBVc2VyCiAgdXNlcihpZDogSUQhKTogVXNlcgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># users-schema.graphql
+type User @key(fields: &quot;id&quot;) {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Query {
+  me: User
+  user(id: ID!): User
+}</pre></div><div class='content'><h4>Products Subgraph</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBwcm9kdWN0cy1zY2hlbWEuZ3JhcGhxbAp0eXBlIFByb2R1Y3QgQGtleShmaWVsZHM6ICJpZCIpIHsKICBpZDogSUQhCiAgbmFtZTogU3RyaW5nIQogIHByaWNlOiBGbG9hdCEKfQoKdHlwZSBRdWVyeSB7CiAgcHJvZHVjdChpZDogSUQhKTogUHJvZHVjdAogIHByb2R1Y3RzOiBbUHJvZHVjdF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># products-schema.graphql
+type Product @key(fields: &quot;id&quot;) {
+  id: ID!
+  name: String!
+  price: Float!
+}
+
+type Query {
+  product(id: ID!): Product
+  products: [Product]
+}</pre></div><div class='content'></div><h2>Step 2: Set Up the Gateway</h2>
+<div class='content'><p>The gateway is responsible for composing the subgraphs into a single federated schema.</p>
+<h4>Gateway Setup</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gaW5kZXguanMKY29uc3QgeyBBcG9sbG9TZXJ2ZXIgfSA9IHJlcXVpcmUoJ2Fwb2xsby1zZXJ2ZXInKTsKY29uc3QgeyBBcG9sbG9HYXRld2F5IH0gPSByZXF1aXJlKCdAYXBvbGxvL2dhdGV3YXknKTsKCmNvbnN0IGdhdGV3YXkgPSBuZXcgQXBvbGxvR2F0ZXdheSh7CiAgc2VydmljZUxpc3Q6IFsKICAgIHsgbmFtZTogJ3VzZXJzJywgdXJsOiAnaHR0cDovL2xvY2FsaG9zdDo0MDAxJyB9LAogICAgeyBuYW1lOiAncHJvZHVjdHMnLCB1cmw6ICdodHRwOi8vbG9jYWxob3N0OjQwMDInIH0sCiAgXSwKfSk7Cgpjb25zdCBzZXJ2ZXIgPSBuZXcgQXBvbGxvU2VydmVyKHsgZ2F0ZXdheSwgc3Vic2NyaXB0aW9uczogZmFsc2UgfSk7CgpzZXJ2ZXIubGlzdGVuKCkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFNlcnZlciByZWFkeSBhdCAke3VybH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// index.js
+const { ApolloServer } = require('apollo-server');
+const { ApolloGateway } = require('@apollo/gateway');
+
+const gateway = new ApolloGateway({
+  serviceList: [
+    { name: 'users', url: 'http://localhost:4001' },
+    { name: 'products', url: 'http://localhost:4002' },
+  ],
+});
+
+const server = new ApolloServer({ gateway, subscriptions: false });
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'></div><h2>Step 3: Run Subgraph Services</h2>
+<div class='content'><p>You need to run each subgraph service independently. Here is an example of how to run the <code>users</code> subgraph.</p>
+<h4>Users Subgraph Server</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gdXNlcnMtc2VydmVyLmpzCmNvbnN0IHsgQXBvbGxvU2VydmVyLCBncWwgfSA9IHJlcXVpcmUoJ2Fwb2xsby1zZXJ2ZXInKTsKY29uc3QgeyBidWlsZEZlZGVyYXRlZFNjaGVtYSB9ID0gcmVxdWlyZSgnQGFwb2xsby9mZWRlcmF0aW9uJyk7Cgpjb25zdCB0eXBlRGVmcyA9IGdxbGAKICB0eXBlIFVzZXIgQGtleShmaWVsZHM6ICJpZCIpIHsKICAgIGlkOiBJRCEKICAgIG5hbWU6IFN0cmluZyEKICAgIGVtYWlsOiBTdHJpbmchCiAgfQoKICB0eXBlIFF1ZXJ5IHsKICAgIG1lOiBVc2VyCiAgICB1c2VyKGlkOiBJRCEpOiBVc2VyCiAgfQpgOwoKY29uc3QgcmVzb2x2ZXJzID0gewogIFF1ZXJ5OiB7CiAgICBtZTogKCkgPT4gKHsgaWQ6ICcxJywgbmFtZTogJ0pvaG4gRG9lJywgZW1haWw6ICdqb2huQGV4YW1wbGUuY29tJyB9KSwKICAgIHVzZXI6IChfLCB7IGlkIH0pID0+ICh7IGlkLCBuYW1lOiAnSm9obiBEb2UnLCBlbWFpbDogJ2pvaG5AZXhhbXBsZS5jb20nIH0pLAogIH0sCiAgVXNlcjogewogICAgX19yZXNvbHZlUmVmZXJlbmNlOiAodXNlcikgPT4gKHsgaWQ6IHVzZXIuaWQsIG5hbWU6ICdKb2huIERvZScsIGVtYWlsOiAnam9obkBleGFtcGxlLmNvbScgfSksCiAgfSwKfTsKCmNvbnN0IHNlcnZlciA9IG5ldyBBcG9sbG9TZXJ2ZXIoewogIHNjaGVtYTogYnVpbGRGZWRlcmF0ZWRTY2hlbWEoW3sgdHlwZURlZnMsIHJlc29sdmVycyB9XSksCn0pOwoKc2VydmVyLmxpc3Rlbih7IHBvcnQ6IDQwMDEgfSkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFVzZXJzIHNlcnZpY2UgcmVhZHkgYXQgJHt1cmx9YCk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// users-server.js
+const { ApolloServer, gql } = require('apollo-server');
+const { buildFederatedSchema } = require('@apollo/federation');
+
+const typeDefs = gql`
+  type User @key(fields: &quot;id&quot;) {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Query {
+    me: User
+    user(id: ID!): User
+  }
+`;
+
+const resolvers = {
+  Query: {
+    me: () =&gt; ({ id: '1', name: 'John Doe', email: 'john@example.com' }),
+    user: (_, { id }) =&gt; ({ id, name: 'John Doe', email: 'john@example.com' }),
+  },
+  User: {
+    __resolveReference: (user) =&gt; ({ id: user.id, name: 'John Doe', email: 'john@example.com' }),
+  },
+};
+
+const server = new ApolloServer({
+  schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+});
+
+server.listen({ port: 4001 }).then(({ url }) =&gt; {
+  console.log(`🚀 Users service ready at ${url}`);
+});</pre></div><div class='content'><p>Repeat similar steps for the <code>products</code> subgraph.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Schema Federation in GraphQL allows you to manage large schemas more effectively by splitting them into smaller, independently managed subgraphs. This approach enhances scalability, modularity, and flexibility. By following the steps outlined in this topic, you can set up a federated schema that combines multiple subgraphs into a single, unified graph.</p>
+<p>Understanding and implementing Schema Federation can significantly improve the maintainability and scalability of your GraphQL services, especially in large and complex applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-scalars'>&#x25C4;Custom Scalars</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Schema Federation</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graphql-and-serverless'>GraphQL and Serverless &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Custom Native Modules</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/building-custom-native-modules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/building-custom-native-modules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/building-custom-native-modules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/building-custom-native-modules" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/building-custom-native-modules" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-typescript-react-native'>&#x25C4;Using TypeScript with React Native</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building Custom Native Modules</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integrating-third-party-libraries'>Integrating Third-Party Libraries &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore how to build custom native modules in React Native. Native modules allow you to extend the functionality of your React Native app by writing native code in Java (for Android) or Objective-C/Swift (for iOS). This is particularly useful when you need to access platform-specific APIs or optimize performance for certain tasks.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before diving into building custom native modules, ensure you have:</p>
+<ul>
+<li>Basic understanding of React Native.</li>
+<li>Familiarity with JavaScript and React.</li>
+<li>Basic knowledge of Java (for Android) or Objective-C/Swift (for iOS).</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>To build custom native modules, you need to set up your development environment for both Android and iOS.</p>
+</div><h2>Android Setup</h2>
+<div class='content'><ol>
+<li><strong>Install Android Studio</strong>: Make sure you have Android Studio installed and configured.</li>
+<li><strong>Configure Gradle</strong>: Ensure your <code>android/build.gradle</code> and <code>android/app/build.gradle</code> files are properly set up.</li>
+</ol>
+</div><h2>iOS Setup</h2>
+<div class='content'><ol>
+<li><strong>Install Xcode</strong>: Make sure you have Xcode installed.</li>
+<li><strong>CocoaPods</strong>: Ensure CocoaPods is installed and configured.</li>
+</ol>
+</div><h1>Creating a Custom Native Module for Android</h1>
+<h2>Step 1: Create a New Java Class</h2>
+<div class='content'><p>Create a new Java class in your Android project. This class will define the native module.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20ueW91cmFwcDsKCmltcG9ydCBjb20uZmFjZWJvb2sucmVhY3QuYnJpZGdlLlJlYWN0QXBwbGljYXRpb25Db250ZXh0OwppbXBvcnQgY29tLmZhY2Vib29rLnJlYWN0LmJyaWRnZS5SZWFjdENvbnRleHRCYXNlSmF2YU1vZHVsZTsKaW1wb3J0IGNvbS5mYWNlYm9vay5yZWFjdC5icmlkZ2UuUmVhY3RNZXRob2Q7CmltcG9ydCBjb20uZmFjZWJvb2sucmVhY3QuYnJpZGdlLkNhbGxiYWNrOwoKcHVibGljIGNsYXNzIE15Q3VzdG9tTW9kdWxlIGV4dGVuZHMgUmVhY3RDb250ZXh0QmFzZUphdmFNb2R1bGUgewoKICAgIE15Q3VzdG9tTW9kdWxlKFJlYWN0QXBwbGljYXRpb25Db250ZXh0IGNvbnRleHQpIHsKICAgICAgICBzdXBlcihjb250ZXh0KTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBTdHJpbmcgZ2V0TmFtZSgpIHsKICAgICAgICByZXR1cm4gIk15Q3VzdG9tTW9kdWxlIjsKICAgIH0KCiAgICBAUmVhY3RNZXRob2QKICAgIHB1YmxpYyB2b2lkIGN1c3RvbU1ldGhvZChTdHJpbmcgbWVzc2FnZSwgQ2FsbGJhY2sgY2FsbGJhY2spIHsKICAgICAgICAvLyBOYXRpdmUgY29kZSBoZXJlCiAgICAgICAgY2FsbGJhY2suaW52b2tlKCJSZWNlaXZlZCBtZXNzYWdlOiAiICsgbWVzc2FnZSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.yourapp;
+
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.Callback;
+
+public class MyCustomModule extends ReactContextBaseJavaModule {
+
+    MyCustomModule(ReactApplicationContext context) {
+        super(context);
+    }
+
+    @Override
+    public String getName() {
+        return &quot;MyCustomModule&quot;;
+    }
+
+    @ReactMethod
+    public void customMethod(String message, Callback callback) {
+        // Native code here
+        callback.invoke(&quot;Received message: &quot; + message);
+    }
+}</pre></div><div class='content'></div><h2>Step 2: Register the Module</h2>
+<div class='content'><p>Register the module in your <code>MainApplication.java</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNvbS55b3VyYXBwLk15Q3VzdG9tTW9kdWxlOyAvLyBJbXBvcnQgeW91ciBtb2R1bGUKCkBPdmVycmlkZQpwcm90ZWN0ZWQgTGlzdDxSZWFjdFBhY2thZ2U+IGdldFBhY2thZ2VzKCkgewogICAgcmV0dXJuIEFycmF5cy48UmVhY3RQYWNrYWdlPmFzTGlzdCgKICAgICAgICBuZXcgTWFpblJlYWN0UGFja2FnZSgpLAogICAgICAgIG5ldyBNeUN1c3RvbVBhY2thZ2UoKSAvLyBSZWdpc3RlciB5b3VyIHBhY2thZ2UKICAgICk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import com.yourapp.MyCustomModule; // Import your module
+
+@Override
+protected List&lt;ReactPackage&gt; getPackages() {
+    return Arrays.&lt;ReactPackage&gt;asList(
+        new MainReactPackage(),
+        new MyCustomPackage() // Register your package
+    );
+}</pre></div><div class='content'></div><h2>Step 3: Create a React Package</h2>
+<div class='content'><p>Create a package to expose the module to JavaScript.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20ueW91cmFwcDsKCmltcG9ydCBjb20uZmFjZWJvb2sucmVhY3QuUmVhY3RQYWNrYWdlOwppbXBvcnQgY29tLmZhY2Vib29rLnJlYWN0LmJyaWRnZS5OYXRpdmVNb2R1bGU7CmltcG9ydCBjb20uZmFjZWJvb2sucmVhY3QuYnJpZGdlLlJlYWN0QXBwbGljYXRpb25Db250ZXh0OwppbXBvcnQgY29tLmZhY2Vib29rLnJlYWN0LnVpbWFuYWdlci5WaWV3TWFuYWdlcjsKCmltcG9ydCBqYXZhLnV0aWwuQXJyYXlMaXN0OwppbXBvcnQgamF2YS51dGlsLkNvbGxlY3Rpb25zOwppbXBvcnQgamF2YS51dGlsLkxpc3Q7CgpwdWJsaWMgY2xhc3MgTXlDdXN0b21QYWNrYWdlIGltcGxlbWVudHMgUmVhY3RQYWNrYWdlIHsKCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBMaXN0PE5hdGl2ZU1vZHVsZT4gY3JlYXRlTmF0aXZlTW9kdWxlcyhSZWFjdEFwcGxpY2F0aW9uQ29udGV4dCByZWFjdENvbnRleHQpIHsKICAgICAgICBMaXN0PE5hdGl2ZU1vZHVsZT4gbW9kdWxlcyA9IG5ldyBBcnJheUxpc3Q8PigpOwogICAgICAgIG1vZHVsZXMuYWRkKG5ldyBNeUN1c3RvbU1vZHVsZShyZWFjdENvbnRleHQpKTsKICAgICAgICByZXR1cm4gbW9kdWxlczsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBMaXN0PFZpZXdNYW5hZ2VyPiBjcmVhdGVWaWV3TWFuYWdlcnMoUmVhY3RBcHBsaWNhdGlvbkNvbnRleHQgcmVhY3RDb250ZXh0KSB7CiAgICAgICAgcmV0dXJuIENvbGxlY3Rpb25zLmVtcHR5TGlzdCgpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.yourapp;
+
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class MyCustomPackage implements ReactPackage {
+
+    @Override
+    public List&lt;NativeModule&gt; createNativeModules(ReactApplicationContext reactContext) {
+        List&lt;NativeModule&gt; modules = new ArrayList&lt;&gt;();
+        modules.add(new MyCustomModule(reactContext));
+        return modules;
+    }
+
+    @Override
+    public List&lt;ViewManager&gt; createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
+}</pre></div><div class='content'></div><h1>Creating a Custom Native Module for iOS</h1>
+<h2>Step 1: Create a New Objective-C/Swift Class</h2>
+<div class='content'><p>Create a new Objective-C or Swift class in your iOS project. This class will define the native module.</p>
+<h4>Objective-C Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8UmVhY3QvUkNUQnJpZGdlTW9kdWxlLmg+CgpAaW50ZXJmYWNlIFJDVF9FWFRFUk5fTU9EVUxFKE15Q3VzdG9tTW9kdWxlLCBOU09iamVjdCkKClJDVF9FWFRFUk5fTUVUSE9EKGN1c3RvbU1ldGhvZDooTlNTdHJpbmcgKiltZXNzYWdlIGNhbGxiYWNrOihSQ1RSZXNwb25zZVNlbmRlckJsb2NrKWNhbGxiYWNrKQoKQGVuZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;React/RCTBridgeModule.h&gt;
+
+@interface RCT_EXTERN_MODULE(MyCustomModule, NSObject)
+
+RCT_EXTERN_METHOD(customMethod:(NSString *)message callback:(RCTResponseSenderBlock)callback)
+
+@end</pre></div><div class='content'><h4>Swift Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IEZvdW5kYXRpb24KCkBvYmpjKE15Q3VzdG9tTW9kdWxlKQpjbGFzcyBNeUN1c3RvbU1vZHVsZTogTlNPYmplY3QgewogIAogIEBvYmpjKGN1c3RvbU1ldGhvZDpjYWxsYmFjazopCiAgZnVuYyBjdXN0b21NZXRob2QobWVzc2FnZTogU3RyaW5nLCBjYWxsYmFjazogUkNUUmVzcG9uc2VTZW5kZXJCbG9jaykgewogICAgLy8gTmF0aXZlIGNvZGUgaGVyZQogICAgY2FsbGJhY2soWyJSZWNlaXZlZCBtZXNzYWdlOiBcKG1lc3NhZ2UpIl0pCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Foundation
+
+@objc(MyCustomModule)
+class MyCustomModule: NSObject {
+  
+  @objc(customMethod:callback:)
+  func customMethod(message: String, callback: RCTResponseSenderBlock) {
+    // Native code here
+    callback([&quot;Received message: \(message)&quot;])
+  }
+}</pre></div><div class='content'></div><h2>Step 2: Register the Module</h2>
+<div class='content'><p>Register the module in your <code>AppDelegate.m</code> or <code>AppDelegate.swift</code>.</p>
+<h4>Objective-C Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8UmVhY3QvUkNUQnJpZGdlLmg+CiNpbXBvcnQgPFJlYWN0L1JDVFJvb3RWaWV3Lmg+CiNpbXBvcnQgIk15Q3VzdG9tTW9kdWxlLmgiCgpAaW1wbGVtZW50YXRpb24gQXBwRGVsZWdhdGUKCi0gKEJPT0wpYXBwbGljYXRpb246KFVJQXBwbGljYXRpb24gKilhcHBsaWNhdGlvbiBkaWRGaW5pc2hMYXVuY2hpbmdXaXRoT3B0aW9uczooTlNEaWN0aW9uYXJ5ICopbGF1bmNoT3B0aW9ucyB7CiAgUkNUQnJpZGdlICpicmlkZ2UgPSBbW1JDVEJyaWRnZSBhbGxvY10gaW5pdFdpdGhEZWxlZ2F0ZTpzZWxmIGxhdW5jaE9wdGlvbnM6bGF1bmNoT3B0aW9uc107CiAgUkNUUm9vdFZpZXcgKnJvb3RWaWV3ID0gW1tSQ1RSb290VmlldyBhbGxvY10gaW5pdFdpdGhCcmlkZ2U6YnJpZGdlIG1vZHVsZU5hbWU6QCJZb3VyQXBwTmFtZSIgaW5pdGlhbFByb3BlcnRpZXM6bmlsXTsKICAKICAvLyBPdGhlciBzZXR1cCBjb2RlCiAgcmV0dXJuIFlFUzsKfQoKQGVuZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;React/RCTBridge.h&gt;
+#import &lt;React/RCTRootView.h&gt;
+#import &quot;MyCustomModule.h&quot;
+
+@implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:@&quot;YourAppName&quot; initialProperties:nil];
+  
+  // Other setup code
+  return YES;
+}
+
+@end</pre></div><div class='content'><h4>Swift Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFVJS2l0CmltcG9ydCBSZWFjdAoKQFVJQXBwbGljYXRpb25NYWluCmNsYXNzIEFwcERlbGVnYXRlOiBVSVJlc3BvbmRlciwgVUlBcHBsaWNhdGlvbkRlbGVnYXRlIHsKCiAgdmFyIHdpbmRvdzogVUlXaW5kb3c/CgogIGZ1bmMgYXBwbGljYXRpb24oXyBhcHBsaWNhdGlvbjogVUlBcHBsaWNhdGlvbiwgZGlkRmluaXNoTGF1bmNoaW5nV2l0aE9wdGlvbnMgbGF1bmNoT3B0aW9uczogW1VJQXBwbGljYXRpb24uTGF1bmNoT3B0aW9uc0tleTogQW55XT8pIC0+IEJvb2wgewogICAgbGV0IGJyaWRnZSA9IFJDVEJyaWRnZShkZWxlZ2F0ZTogc2VsZiwgbGF1bmNoT3B0aW9uczogbGF1bmNoT3B0aW9ucykKICAgIGxldCByb290VmlldyA9IFJDVFJvb3RWaWV3KGJyaWRnZTogYnJpZGdlLCBtb2R1bGVOYW1lOiAiWW91ckFwcE5hbWUiLCBpbml0aWFsUHJvcGVydGllczogbmlsKQogICAgCiAgICAvLyBPdGhlciBzZXR1cCBjb2RlCiAgICByZXR1cm4gdHJ1ZQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import UIKit
+import React
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+  var window: UIWindow?
+
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+    let bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
+    let rootView = RCTRootView(bridge: bridge, moduleName: &quot;YourAppName&quot;, initialProperties: nil)
+    
+    // Other setup code
+    return true
+  }
+}</pre></div><div class='content'></div><h1>Using the Custom Native Module in JavaScript</h1>
+<div class='content'><p>Once the native module is created and registered, you can use it in your JavaScript code.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmF0aXZlTW9kdWxlcyB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CmNvbnN0IHsgTXlDdXN0b21Nb2R1bGUgfSA9IE5hdGl2ZU1vZHVsZXM7CgpNeUN1c3RvbU1vZHVsZS5jdXN0b21NZXRob2QoJ0hlbGxvIGZyb20gSlMnLCAocmVzcG9uc2UpID0+IHsKICBjb25zb2xlLmxvZyhyZXNwb25zZSk7IC8vIE91dHB1dDogUmVjZWl2ZWQgbWVzc2FnZTogSGVsbG8gZnJvbSBKUwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NativeModules } from 'react-native';
+const { MyCustomModule } = NativeModules;
+
+MyCustomModule.customMethod('Hello from JS', (response) =&gt; {
+  console.log(response); // Output: Received message: Hello from JS
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Building custom native modules in React Native allows you to leverage platform-specific features and optimize performance for certain tasks. By following the steps outlined in this guide, you can create and register custom native modules for both Android and iOS, and use them seamlessly in your JavaScript code. This enhances the capabilities of your React Native applications and provides a more integrated user experience.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-typescript-react-native'>&#x25C4;Using TypeScript with React Native</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building Custom Native Modules</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integrating-third-party-libraries'>Integrating Third-Party Libraries &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

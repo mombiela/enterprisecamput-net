@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Blog Application with Spring Boot</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/building-a-blog-application" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/building-a-blog-application" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/building-a-blog-application" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/building-a-blog-application" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/building-a-blog-application" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='troubleshooting-and-debugging'>&#x25C4;Troubleshooting and Debugging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a Blog Application with Spring Boot</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='creating-an-e-commerce-platform'>Creating an E-commerce Platform &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this course, we will guide you through building a fully functional blog application using Spring Boot. This course is designed to take you from a beginner to an advanced level, covering all the essential aspects of Spring Boot development.</p>
+</div><h1>Setting Up the Development Environment</h1>
+<div class='content'><ul>
+<li><strong>Install Java Development Kit (JDK)</strong></li>
+<li><strong>Install an Integrated Development Environment (IDE)</strong>
+<ul>
+<li>IntelliJ IDEA</li>
+<li>Eclipse</li>
+</ul>
+</li>
+<li><strong>Install Maven</strong></li>
+<li><strong>Create a Spring Boot Project</strong>
+<pre><code class="language-bash">spring init --dependencies=web,data-jpa,h2,thymeleaf blog-application
+cd blog-application
+</code></pre>
+</li>
+</ul>
+</div><h1>Project Structure</h1>
+<div class='content'><ul>
+<li><strong>Understanding the Default Project Structure</strong>
+<ul>
+<li><code>src/main/java</code>: Main application code</li>
+<li><code>src/main/resources</code>: Configuration files and static resources</li>
+<li><code>src/test/java</code>: Test code</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creating the Blog Model</h1>
+<div class='content'><ul>
+<li><strong>Define the Blog Entity</strong>
+<pre><code class="language-java">@Entity
+public class Blog {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String title;
+    private String content;
+    private LocalDateTime createdAt;
+
+    // Getters and Setters
+}
+</code></pre>
+</li>
+<li><strong>Create the Blog Repository</strong>
+<pre><code class="language-java">public interface BlogRepository extends JpaRepository&lt;Blog, Long&gt; {
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Building the Service Layer</h1>
+<div class='content'><ul>
+<li><strong>Create the Blog Service</strong>
+<pre><code class="language-java">@Service
+public class BlogService {
+    @Autowired
+    private BlogRepository blogRepository;
+
+    public List&lt;Blog&gt; getAllBlogs() {
+        return blogRepository.findAll();
+    }
+
+    public Blog getBlogById(Long id) {
+        return blogRepository.findById(id).orElseThrow(() -&gt; new ResourceNotFoundException(&quot;Blog not found&quot;));
+    }
+
+    public Blog createBlog(Blog blog) {
+        blog.setCreatedAt(LocalDateTime.now());
+        return blogRepository.save(blog);
+    }
+
+    public Blog updateBlog(Long id, Blog blogDetails) {
+        Blog blog = getBlogById(id);
+        blog.setTitle(blogDetails.getTitle());
+        blog.setContent(blogDetails.getContent());
+        return blogRepository.save(blog);
+    }
+
+    public void deleteBlog(Long id) {
+        Blog blog = getBlogById(id);
+        blogRepository.delete(blog);
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Building the Controller Layer</h1>
+<div class='content'><ul>
+<li><strong>Create the Blog Controller</strong>
+<pre><code class="language-java">@RestController
+@RequestMapping(&quot;/api/blogs&quot;)
+public class BlogController {
+    @Autowired
+    private BlogService blogService;
+
+    @GetMapping
+    public List&lt;Blog&gt; getAllBlogs() {
+        return blogService.getAllBlogs();
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    public Blog getBlogById(@PathVariable Long id) {
+        return blogService.getBlogById(id);
+    }
+
+    @PostMapping
+    public Blog createBlog(@RequestBody Blog blog) {
+        return blogService.createBlog(blog);
+    }
+
+    @PutMapping(&quot;/{id}&quot;)
+    public Blog updateBlog(@PathVariable Long id, @RequestBody Blog blogDetails) {
+        return blogService.updateBlog(id, blogDetails);
+    }
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;?&gt; deleteBlog(@PathVariable Long id) {
+        blogService.deleteBlog(id);
+        return ResponseEntity.ok().build();
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Adding Frontend with Thymeleaf</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Create Thymeleaf Templates</strong></p>
+<ul>
+<li><code>index.html</code></li>
+</ul>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th=&quot;http://www.thymeleaf.org&quot;&gt;
+&lt;head&gt;
+    &lt;title&gt;Blog Application&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Blog Posts&lt;/h1&gt;
+    &lt;ul&gt;
+        &lt;li th:each=&quot;blog : ${blogs}&quot;&gt;
+            &lt;h2 th:text=&quot;${blog.title}&quot;&gt;&lt;/h2&gt;
+            &lt;p th:text=&quot;${blog.content}&quot;&gt;&lt;/p&gt;
+            &lt;p th:text=&quot;${blog.createdAt}&quot;&gt;&lt;/p&gt;
+        &lt;/li&gt;
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Controller for Thymeleaf</strong></p>
+<pre><code class="language-java">@Controller
+public class BlogViewController {
+    @Autowired
+    private BlogService blogService;
+
+    @GetMapping(&quot;/&quot;)
+    public String viewHomePage(Model model) {
+        model.addAttribute(&quot;blogs&quot;, blogService.getAllBlogs());
+        return &quot;index&quot;;
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Features</h1>
+<div class='content'><ul>
+<li><strong>User Authentication and Authorization</strong>
+<ul>
+<li>Integrate Spring Security</li>
+<li>Create User and Role entities</li>
+<li>Implement login and registration functionality</li>
+</ul>
+</li>
+<li><strong>Pagination and Sorting</strong>
+<ul>
+<li>Implement pagination in the BlogService</li>
+<li>Add sorting capabilities to the blog list</li>
+</ul>
+</li>
+<li><strong>RESTful API Enhancements</strong>
+<ul>
+<li>Add exception handling</li>
+<li>Implement HATEOAS for better API navigation</li>
+</ul>
+</li>
+</ul>
+</div><h1>Testing the Application</h1>
+<div class='content'><ul>
+<li><strong>Unit Testing with JUnit</strong>
+<pre><code class="language-java">@SpringBootTest
+public class BlogServiceTests {
+    @Autowired
+    private BlogService blogService;
+
+    @Test
+    public void testCreateBlog() {
+        Blog blog = new Blog();
+        blog.setTitle(&quot;Test Blog&quot;);
+        blog.setContent(&quot;This is a test blog.&quot;);
+        Blog createdBlog = blogService.createBlog(blog);
+        assertNotNull(createdBlog);
+        assertEquals(&quot;Test Blog&quot;, createdBlog.getTitle());
+    }
+}
+</code></pre>
+</li>
+<li><strong>Integration Testing</strong>
+<pre><code class="language-java">@SpringBootTest
+@AutoConfigureMockMvc
+public class BlogControllerTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Test
+    public void testGetAllBlogs() throws Exception {
+        mockMvc.perform(get(&quot;/api/blogs&quot;))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath(&quot;$&quot;, hasSize(greaterThan(0))));
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>By the end of this course, you will have a comprehensive understanding of how to build a robust blog application using Spring Boot. You will have learned how to set up a Spring Boot project, create models, services, and controllers, integrate a frontend with Thymeleaf, and add advanced features like security and pagination. Additionally, you will have gained experience in testing your application to ensure its reliability and performance.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='troubleshooting-and-debugging'>&#x25C4;Troubleshooting and Debugging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a Blog Application with Spring Boot</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='creating-an-e-commerce-platform'>Creating an E-commerce Platform &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

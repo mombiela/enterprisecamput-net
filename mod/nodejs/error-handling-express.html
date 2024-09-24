@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling in Express</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/error-handling-express" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/error-handling-express" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/error-handling-express" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/error-handling-express" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/error-handling-express" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='routing-express'>&#x25C4;Routing in Express</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling in Express</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-authentication'>Introduction to Authentication &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Error handling is a crucial part of building robust applications. In this section, we'll cover how to handle errors in Express, a popular web framework for Node.js. We'll start with the basics and move towards more advanced techniques.</p>
+</div><h1>Introduction to Error Handling</h1>
+<div class='content'><p>Error handling in Express involves catching and managing errors that occur during the execution of your application. This ensures that your application can gracefully handle unexpected situations and provide meaningful feedback to users.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Synchronous Errors</strong>: Errors that occur during the execution of synchronous code.</li>
+<li><strong>Asynchronous Errors</strong>: Errors that occur in asynchronous code, such as callbacks, promises, or async/await.</li>
+<li><strong>Middleware</strong>: Functions that have access to the request and response objects and can modify them or end the request-response cycle.</li>
+</ul>
+</div><h1>Basic Error Handling</h1>
+<div class='content'></div><h2>Synchronous Errors</h2>
+<div class='content'><p>In Express, synchronous errors can be caught using try-catch blocks. Here's an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLmdldCgnLycsIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICAvLyBTaW11bGF0ZSBhbiBlcnJvcgogICAgdGhyb3cgbmV3IEVycm9yKCdTb21ldGhpbmcgd2VudCB3cm9uZyEnKTsKICB9IGNhdGNoIChlcnIpIHsKICAgIHJlcy5zdGF0dXMoNTAwKS5zZW5kKCdJbnRlcm5hbCBTZXJ2ZXIgRXJyb3InKTsKICB9Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZlciBpcyBydW5uaW5nIG9uIHBvcnQgMzAwMCcpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+
+app.get('/', (req, res) =&gt; {
+  try {
+    // Simulate an error
+    throw new Error('Something went wrong!');
+  } catch (err) {
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server is running on port 3000');
+});</pre></div><div class='content'></div><h2>Asynchronous Errors</h2>
+<div class='content'><p>For asynchronous code, you can use promises or async/await along with try-catch blocks:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL2FzeW5jJywgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIC8vIFNpbXVsYXRlIGFuIGFzeW5jaHJvbm91cyBlcnJvcgogICAgYXdhaXQgUHJvbWlzZS5yZWplY3QobmV3IEVycm9yKCdBc3luYyBlcnJvciEnKSk7CiAgfSBjYXRjaCAoZXJyKSB7CiAgICByZXMuc3RhdHVzKDUwMCkuc2VuZCgnSW50ZXJuYWwgU2VydmVyIEVycm9yJyk7CiAgfQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/async', async (req, res) =&gt; {
+  try {
+    // Simulate an asynchronous error
+    await Promise.reject(new Error('Async error!'));
+  } catch (err) {
+    res.status(500).send('Internal Server Error');
+  }
+});</pre></div><div class='content'></div><h1>Error Handling Middleware</h1>
+<div class='content'><p>Express provides a special type of middleware for error handling. This middleware has four parameters: <code>err</code>, <code>req</code>, <code>res</code>, and <code>next</code>.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gTm9ybWFsIHJvdXRlCmFwcC5nZXQoJy8nLCAocmVxLCByZXMpID0+IHsKICB0aHJvdyBuZXcgRXJyb3IoJ09vcHMhJyk7Cn0pOwoKLy8gRXJyb3IgaGFuZGxpbmcgbWlkZGxld2FyZQphcHAudXNlKChlcnIsIHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgY29uc29sZS5lcnJvcihlcnIuc3RhY2spOwogIHJlcy5zdGF0dXMoNTAwKS5zZW5kKCdTb21ldGhpbmcgYnJva2UhJyk7Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZlciBpcyBydW5uaW5nIG9uIHBvcnQgMzAwMCcpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+
+// Normal route
+app.get('/', (req, res) =&gt; {
+  throw new Error('Oops!');
+});
+
+// Error handling middleware
+app.use((err, req, res, next) =&gt; {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server is running on port 3000');
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>err</strong>: The error object.</li>
+<li><strong>req</strong>: The request object.</li>
+<li><strong>res</strong>: The response object.</li>
+<li><strong>next</strong>: The next middleware function in the stack.</li>
+</ul>
+</div><h1>Advanced Error Handling</h1>
+<div class='content'></div><h2>Custom Error Classes</h2>
+<div class='content'><p>Creating custom error classes can help you manage different types of errors more effectively.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTm90Rm91bmRFcnJvciBleHRlbmRzIEVycm9yIHsKICBjb25zdHJ1Y3RvcihtZXNzYWdlKSB7CiAgICBzdXBlcihtZXNzYWdlKTsKICAgIHRoaXMubmFtZSA9ICdOb3RGb3VuZEVycm9yJzsKICAgIHRoaXMuc3RhdHVzQ29kZSA9IDQwNDsKICB9Cn0KCmFwcC5nZXQoJy9jdXN0b20tZXJyb3InLCAocmVxLCByZXMsIG5leHQpID0+IHsKICBuZXh0KG5ldyBOb3RGb3VuZEVycm9yKCdUaGlzIHJlc291cmNlIHdhcyBub3QgZm91bmQnKSk7Cn0pOwoKYXBwLnVzZSgoZXJyLCByZXEsIHJlcywgbmV4dCkgPT4gewogIHJlcy5zdGF0dXMoZXJyLnN0YXR1c0NvZGUgfHwgNTAwKS5zZW5kKGVyci5tZXNzYWdlKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NotFoundError';
+    this.statusCode = 404;
+  }
+}
+
+app.get('/custom-error', (req, res, next) =&gt; {
+  next(new NotFoundError('This resource was not found'));
+});
+
+app.use((err, req, res, next) =&gt; {
+  res.status(err.statusCode || 500).send(err.message);
+});</pre></div><div class='content'></div><h2>Centralized Error Handling</h2>
+<div class='content'><p>Centralizing error handling can make your code cleaner and easier to maintain.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXJyb3JIYW5kbGVyID0gKGVyciwgcmVxLCByZXMsIG5leHQpID0+IHsKICBjb25zb2xlLmVycm9yKGVyci5zdGFjayk7CiAgcmVzLnN0YXR1cyhlcnIuc3RhdHVzQ29kZSB8fCA1MDApLnNlbmQoZXJyLm1lc3NhZ2UpOwp9OwoKYXBwLnVzZShlcnJvckhhbmRsZXIpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const errorHandler = (err, req, res, next) =&gt; {
+  console.error(err.stack);
+  res.status(err.statusCode || 500).send(err.message);
+};
+
+app.use(errorHandler);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Error handling in Express is essential for building reliable applications. By understanding and implementing both basic and advanced error handling techniques, you can ensure that your application can gracefully handle unexpected situations and provide meaningful feedback to users.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li><strong>Synchronous Errors</strong>: Use try-catch blocks.</li>
+<li><strong>Asynchronous Errors</strong>: Use promises or async/await with try-catch blocks.</li>
+<li><strong>Error Handling Middleware</strong>: Use middleware with four parameters (<code>err</code>, <code>req</code>, <code>res</code>, <code>next</code>).</li>
+<li><strong>Custom Error Classes</strong>: Create custom error classes for specific error types.</li>
+<li><strong>Centralized Error Handling</strong>: Use a centralized error handler to manage errors in one place.</li>
+</ul>
+<p>By mastering these techniques, you'll be well-equipped to handle errors effectively in your Express applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='routing-express'>&#x25C4;Routing in Express</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling in Express</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-authentication'>Introduction to Authentication &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

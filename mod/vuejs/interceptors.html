@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interceptors in Vue.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/interceptors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/interceptors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/interceptors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/vuejs/interceptors" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/interceptors" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-responses-errors'>&#x25C4;Handling Responses and Errors</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Interceptors in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integrating-vuex'>Integrating with Vuex &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Interceptors are a powerful feature in Vue.js, especially when working with HTTP requests using libraries like Axios. They allow you to intercept requests or responses before they are handled by <code>then</code> or <code>catch</code>.</p>
+</div><h1>What are Interceptors?</h1>
+<div class='content'><p>Interceptors are functions that Axios calls for every request or response. They can be used to modify requests or responses, handle errors, or add additional logic before the request is sent or after the response is received.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Request Interceptors</strong>: Modify or log requests before they are sent.</li>
+<li><strong>Response Interceptors</strong>: Modify or log responses before they are handled by the application.</li>
+<li><strong>Error Handling</strong>: Manage errors globally by intercepting failed requests or responses.</li>
+</ul>
+</div><h1>Setting Up Axios with Vue.js</h1>
+<div class='content'><p>To use interceptors, you first need to set up Axios in your Vue.js project.</p>
+</div><h2>Installation</h2>
+<div class='content'><p>Install Axios using npm or yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgYXhpb3MKIyBvcgp5YXJuIGFkZCBheGlvcw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install axios
+# or
+yarn add axios</pre></div><div class='content'></div><h2>Basic Configuration</h2>
+<div class='content'><p>Create an Axios instance for custom configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2F4aW9zLmpzCmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBheGlvc0luc3RhbmNlID0gYXhpb3MuY3JlYXRlKHsKICBiYXNlVVJMOiAnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20nLAogIHRpbWVvdXQ6IDEwMDAsCiAgaGVhZGVyczogeydYLUN1c3RvbS1IZWFkZXInOiAnZm9vYmFyJ30KfSk7CgpleHBvcnQgZGVmYXVsdCBheGlvc0luc3RhbmNlOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/axios.js
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+
+export default axiosInstance;</pre></div><div class='content'></div><h1>Using Request Interceptors</h1>
+<div class='content'><p>Request interceptors allow you to modify requests before they are sent to the server.</p>
+</div><h2>Example: Adding Authorization Headers</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2F4aW9zLmpzCmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBheGlvc0luc3RhbmNlID0gYXhpb3MuY3JlYXRlKHsKICBiYXNlVVJMOiAnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20nLAogIHRpbWVvdXQ6IDEwMDAsCn0pOwoKYXhpb3NJbnN0YW5jZS5pbnRlcmNlcHRvcnMucmVxdWVzdC51c2UoCiAgZnVuY3Rpb24oY29uZmlnKSB7CiAgICAvLyBEbyBzb21ldGhpbmcgYmVmb3JlIHJlcXVlc3QgaXMgc2VudAogICAgY29uc3QgdG9rZW4gPSBsb2NhbFN0b3JhZ2UuZ2V0SXRlbSgndG9rZW4nKTsKICAgIGlmICh0b2tlbikgewogICAgICBjb25maWcuaGVhZGVycy5BdXRob3JpemF0aW9uID0gYEJlYXJlciAke3Rva2VufWA7CiAgICB9CiAgICByZXR1cm4gY29uZmlnOwogIH0sCiAgZnVuY3Rpb24oZXJyb3IpIHsKICAgIC8vIERvIHNvbWV0aGluZyB3aXRoIHJlcXVlc3QgZXJyb3IKICAgIHJldHVybiBQcm9taXNlLnJlamVjdChlcnJvcik7CiAgfQopOwoKZXhwb3J0IGRlZmF1bHQgYXhpb3NJbnN0YW5jZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/axios.js
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 1000,
+});
+
+axiosInstance.interceptors.request.use(
+  function(config) {
+    // Do something before request is sent
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  function(error) {
+    // Do something with request error
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>config</strong>: The configuration object for the request.</li>
+<li><strong>token</strong>: Retrieved from local storage and added to the request headers.</li>
+<li><strong>Promise.reject(error)</strong>: Ensures that the error is handled by the calling code.</li>
+</ul>
+</div><h1>Using Response Interceptors</h1>
+<div class='content'><p>Response interceptors allow you to handle responses globally.</p>
+</div><h2>Example: Handling Unauthorized Responses</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2F4aW9zLmpzCmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBheGlvc0luc3RhbmNlID0gYXhpb3MuY3JlYXRlKHsKICBiYXNlVVJMOiAnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20nLAogIHRpbWVvdXQ6IDEwMDAsCn0pOwoKYXhpb3NJbnN0YW5jZS5pbnRlcmNlcHRvcnMucmVzcG9uc2UudXNlKAogIGZ1bmN0aW9uKHJlc3BvbnNlKSB7CiAgICAvLyBBbnkgc3RhdHVzIGNvZGUgdGhhdCBsaWUgd2l0aGluIHRoZSByYW5nZSBvZiAyeHggY2F1c2UgdGhpcyBmdW5jdGlvbiB0byB0cmlnZ2VyCiAgICByZXR1cm4gcmVzcG9uc2U7CiAgfSwKICBmdW5jdGlvbihlcnJvcikgewogICAgLy8gQW55IHN0YXR1cyBjb2RlcyB0aGF0IGZhbGxzIG91dHNpZGUgdGhlIHJhbmdlIG9mIDJ4eCBjYXVzZSB0aGlzIGZ1bmN0aW9uIHRvIHRyaWdnZXIKICAgIGlmIChlcnJvci5yZXNwb25zZS5zdGF0dXMgPT09IDQwMSkgewogICAgICAvLyBSZWRpcmVjdCB0byBsb2dpbiBwYWdlIG9yIHNob3cgYSBtb2RhbAogICAgICB3aW5kb3cubG9jYXRpb24gPSAnL2xvZ2luJzsKICAgIH0KICAgIHJldHVybiBQcm9taXNlLnJlamVjdChlcnJvcik7CiAgfQopOwoKZXhwb3J0IGRlZmF1bHQgYXhpb3NJbnN0YW5jZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/axios.js
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 1000,
+});
+
+axiosInstance.interceptors.response.use(
+  function(response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    return response;
+  },
+  function(error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    if (error.response.status === 401) {
+      // Redirect to login page or show a modal
+      window.location = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>response</strong>: The response object from the server.</li>
+<li><strong>error.response.status</strong>: Checks the status code of the response.</li>
+<li><strong>window.location</strong>: Redirects the user to the login page if the status code is 401 (Unauthorized).</li>
+</ul>
+</div><h1>Combining Request and Response Interceptors</h1>
+<div class='content'><p>You can combine both request and response interceptors in a single Axios instance.</p>
+</div><h2>Example: Full Setup</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2F4aW9zLmpzCmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBheGlvc0luc3RhbmNlID0gYXhpb3MuY3JlYXRlKHsKICBiYXNlVVJMOiAnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20nLAogIHRpbWVvdXQ6IDEwMDAsCn0pOwoKYXhpb3NJbnN0YW5jZS5pbnRlcmNlcHRvcnMucmVxdWVzdC51c2UoCiAgZnVuY3Rpb24oY29uZmlnKSB7CiAgICBjb25zdCB0b2tlbiA9IGxvY2FsU3RvcmFnZS5nZXRJdGVtKCd0b2tlbicpOwogICAgaWYgKHRva2VuKSB7CiAgICAgIGNvbmZpZy5oZWFkZXJzLkF1dGhvcml6YXRpb24gPSBgQmVhcmVyICR7dG9rZW59YDsKICAgIH0KICAgIHJldHVybiBjb25maWc7CiAgfSwKICBmdW5jdGlvbihlcnJvcikgewogICAgcmV0dXJuIFByb21pc2UucmVqZWN0KGVycm9yKTsKICB9Cik7CgpheGlvc0luc3RhbmNlLmludGVyY2VwdG9ycy5yZXNwb25zZS51c2UoCiAgZnVuY3Rpb24ocmVzcG9uc2UpIHsKICAgIHJldHVybiByZXNwb25zZTsKICB9LAogIGZ1bmN0aW9uKGVycm9yKSB7CiAgICBpZiAoZXJyb3IucmVzcG9uc2Uuc3RhdHVzID09PSA0MDEpIHsKICAgICAgd2luZG93LmxvY2F0aW9uID0gJy9sb2dpbic7CiAgICB9CiAgICByZXR1cm4gUHJvbWlzZS5yZWplY3QoZXJyb3IpOwogIH0KKTsKCmV4cG9ydCBkZWZhdWx0IGF4aW9zSW5zdGFuY2U7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/axios.js
+import axios from 'axios';
+
+const axiosInstance = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 1000,
+});
+
+axiosInstance.interceptors.request.use(
+  function(config) {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  function(error) {
+    return Promise.reject(error);
+  }
+);
+
+axiosInstance.interceptors.response.use(
+  function(response) {
+    return response;
+  },
+  function(error) {
+    if (error.response.status === 401) {
+      window.location = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default axiosInstance;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Interceptors in Vue.js, when used with Axios, provide a robust way to handle HTTP requests and responses. They allow you to:</p>
+<ul>
+<li>Add authentication tokens to requests.</li>
+<li>Handle errors globally.</li>
+<li>Modify requests and responses as needed.</li>
+</ul>
+<p>By understanding and implementing interceptors, you can create more maintainable and scalable Vue.js applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handling-responses-errors'>&#x25C4;Handling Responses and Errors</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Interceptors in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integrating-vuex'>Integrating with Vuex &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

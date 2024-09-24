@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing and Debugging in Haskell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/testing-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/testing-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/testing-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/haskell/testing-debugging" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/testing-debugging" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='database-access'>&#x25C4;Database Access</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Testing and Debugging in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='project-building-haskell-application'>Project: Building a Haskell Application &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Testing and debugging are crucial aspects of software development. In Haskell, these practices ensure that your code is correct, efficient, and maintainable. This section will cover the basics of testing and debugging in Haskell, from beginner to advanced levels.</p>
+</div><h1>Testing in Haskell</h1>
+<div class='content'></div><h2>Why Testing is Important</h2>
+<div class='content'><ul>
+<li>Ensures code correctness.</li>
+<li>Facilitates code maintenance.</li>
+<li>Helps in identifying bugs early.</li>
+<li>Provides documentation for code behavior.</li>
+</ul>
+</div><h2>Types of Testing</h2>
+<div class='content'><ul>
+<li><strong>Unit Testing</strong>: Testing individual units of code.</li>
+<li><strong>Property-Based Testing</strong>: Testing properties that should hold for a range of inputs.</li>
+<li><strong>Integration Testing</strong>: Testing combined parts of an application to ensure they work together.</li>
+</ul>
+</div><h2>Unit Testing with HUnit</h2>
+<div class='content'><p>HUnit is a unit testing framework for Haskell, similar to JUnit for Java.</p>
+<h4>Installation</h4>
+<p>To install HUnit, add it to your project's <code>.cabal</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YnVpbGQtZGVwZW5kczogYmFzZSA+PSA0LjcgJiYgPCA1LCBIVW5pdCA+PSAxLjYgJiYgPCAy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>build-depends: base &gt;= 4.7 &amp;&amp; &lt; 5, HUnit &gt;= 1.6 &amp;&amp; &lt; 2</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFRlc3QuSFVuaXQKCi0tIEZ1bmN0aW9uIHRvIGJlIHRlc3RlZAphZGQgOjogSW50IC0+IEludCAtPiBJbnQKYWRkIHggeSA9IHggKyB5CgotLSBUZXN0IGNhc2VzCnRlc3QxID0gVGVzdENhc2UgKGFzc2VydEVxdWFsICJmb3IgKGFkZCAxIDIpLCIgMyAoYWRkIDEgMikpCnRlc3QyID0gVGVzdENhc2UgKGFzc2VydEVxdWFsICJmb3IgKGFkZCAoLTEpIDEpLCIgMCAoYWRkICgtMSkgMSkpCgotLSBHcm91cGluZyB0ZXN0cwp0ZXN0cyA9IFRlc3RMaXN0IFtUZXN0TGFiZWwgInRlc3QxIiB0ZXN0MSwgVGVzdExhYmVsICJ0ZXN0MiIgdGVzdDJdCgotLSBSdW5uaW5nIHRlc3RzCm1haW4gOjogSU8gQ291bnRzCm1haW4gPSBydW5UZXN0VFQgdGVzdHM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Test.HUnit
+
+-- Function to be tested
+add :: Int -&gt; Int -&gt; Int
+add x y = x + y
+
+-- Test cases
+test1 = TestCase (assertEqual &quot;for (add 1 2),&quot; 3 (add 1 2))
+test2 = TestCase (assertEqual &quot;for (add (-1) 1),&quot; 0 (add (-1) 1))
+
+-- Grouping tests
+tests = TestList [TestLabel &quot;test1&quot; test1, TestLabel &quot;test2&quot; test2]
+
+-- Running tests
+main :: IO Counts
+main = runTestTT tests</pre></div><div class='content'></div><h2>Property-Based Testing with QuickCheck</h2>
+<div class='content'><p>QuickCheck is a library for random testing of program properties.</p>
+<h4>Installation</h4>
+<p>To install QuickCheck, add it to your project's <code>.cabal</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YnVpbGQtZGVwZW5kczogYmFzZSA+PSA0LjcgJiYgPCA1LCBRdWlja0NoZWNrID49IDIuMTQgJiYgPCAz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>build-depends: base &gt;= 4.7 &amp;&amp; &lt; 5, QuickCheck &gt;= 2.14 &amp;&amp; &lt; 3</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFRlc3QuUXVpY2tDaGVjawoKLS0gUHJvcGVydHkgdG8gYmUgdGVzdGVkCnByb3BfcmV2ZXJzZSA6OiBbSW50XSAtPiBCb29sCnByb3BfcmV2ZXJzZSB4cyA9IHJldmVyc2UgKHJldmVyc2UgeHMpID09IHhzCgotLSBSdW5uaW5nIHRoZSBwcm9wZXJ0eSB0ZXN0Cm1haW4gOjogSU8gKCkKbWFpbiA9IHF1aWNrQ2hlY2sgcHJvcF9yZXZlcnNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Test.QuickCheck
+
+-- Property to be tested
+prop_reverse :: [Int] -&gt; Bool
+prop_reverse xs = reverse (reverse xs) == xs
+
+-- Running the property test
+main :: IO ()
+main = quickCheck prop_reverse</pre></div><div class='content'></div><h2>Integration Testing</h2>
+<div class='content'><p>Integration testing in Haskell often involves combining unit tests and property-based tests to ensure that different parts of the application work together as expected.</p>
+</div><h1>Debugging in Haskell</h1>
+<div class='content'></div><h2>Common Debugging Techniques</h2>
+<div class='content'><ul>
+<li><strong>Print Debugging</strong>: Using <code>print</code> statements to trace code execution.</li>
+<li><strong>GHCi Debugger</strong>: Interactive debugging using GHCi.</li>
+<li><strong>Logging</strong>: Using logging libraries to record runtime information.</li>
+</ul>
+</div><h2>Print Debugging</h2>
+<div class='content'><p>Using <code>print</code> statements to understand the flow of the program.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmFjdG9yaWFsIDo6IEludCAtPiBJbnQKZmFjdG9yaWFsIDAgPSAxCmZhY3RvcmlhbCBuID0gbiAqIGZhY3RvcmlhbCAobiAtIDEpCgptYWluIDo6IElPICgpCm1haW4gPSBkbwogICAgbGV0IHJlc3VsdCA9IGZhY3RvcmlhbCA1CiAgICBwcmludCByZXN1bHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>factorial :: Int -&gt; Int
+factorial 0 = 1
+factorial n = n * factorial (n - 1)
+
+main :: IO ()
+main = do
+    let result = factorial 5
+    print result</pre></div><div class='content'></div><h2>GHCi Debugger</h2>
+<div class='content'><p>GHCi provides an interactive environment to debug Haskell code.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTG9hZCB0aGUgZmlsZSBpbiBHSENpCjpsb2FkIE15TW9kdWxlLmhzCgotLSBTZXQgYSBicmVha3BvaW50CjpicmVhayAxMAoKLS0gUnVuIHRoZSBmdW5jdGlvbgptYWluCgotLSBTdGVwIHRocm91Z2ggdGhlIGNvZGUKOnN0ZXA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Load the file in GHCi
+:load MyModule.hs
+
+-- Set a breakpoint
+:break 10
+
+-- Run the function
+main
+
+-- Step through the code
+:step</pre></div><div class='content'></div><h2>Logging</h2>
+<div class='content'><p>Using the <code>hslogger</code> library for logging.</p>
+<h4>Installation</h4>
+<p>To install <code>hslogger</code>, add it to your project's <code>.cabal</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YnVpbGQtZGVwZW5kczogYmFzZSA+PSA0LjcgJiYgPCA1LCBoc2xvZ2dlciA+PSAxLjMgJiYgPCAy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>build-depends: base &gt;= 4.7 &amp;&amp; &lt; 5, hslogger &gt;= 1.3 &amp;&amp; &lt; 2</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFN5c3RlbS5Mb2cuTG9nZ2VyCgptYWluIDo6IElPICgpCm1haW4gPSBkbwogICAgdXBkYXRlR2xvYmFsTG9nZ2VyIHJvb3RMb2dnZXJOYW1lIChzZXRMZXZlbCBERUJVRykKICAgIGRlYnVnTSAiTWFpbiIgIlRoaXMgaXMgYSBkZWJ1ZyBtZXNzYWdlIgogICAgaW5mb00gIk1haW4iICJUaGlzIGlzIGFuIGluZm8gbWVzc2FnZSIKICAgIHdhcm5pbmdNICJNYWluIiAiVGhpcyBpcyBhIHdhcm5pbmcgbWVzc2FnZSIKICAgIGVycm9yTSAiTWFpbiIgIlRoaXMgaXMgYW4gZXJyb3IgbWVzc2FnZSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import System.Log.Logger
+
+main :: IO ()
+main = do
+    updateGlobalLogger rootLoggerName (setLevel DEBUG)
+    debugM &quot;Main&quot; &quot;This is a debug message&quot;
+    infoM &quot;Main&quot; &quot;This is an info message&quot;
+    warningM &quot;Main&quot; &quot;This is a warning message&quot;
+    errorM &quot;Main&quot; &quot;This is an error message&quot;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Testing and debugging are essential practices in Haskell programming. Unit testing with HUnit and property-based testing with QuickCheck help ensure code correctness. Debugging techniques such as print debugging, using the GHCi debugger, and logging are invaluable tools for identifying and fixing issues in your code. By mastering these techniques, you can write more reliable and maintainable Haskell programs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='database-access'>&#x25C4;Database Access</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Testing and Debugging in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='project-building-haskell-application'>Project: Building a Haskell Application &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

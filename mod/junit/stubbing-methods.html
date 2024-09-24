@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stubbing Methods in JUnit</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/junit/stubbing-methods" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/junit/stubbing-methods" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/junit/stubbing-methods" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/junit/stubbing-methods" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/junit/stubbing-methods" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-mocks'>&#x25C4;Creating Mocks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Stubbing Methods in JUnit</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='verifying-behavior'>Verifying Behavior &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Stubbing methods is a crucial concept in unit testing, allowing you to control the behavior of dependencies in your tests. This topic will guide you through the basics to advanced techniques of stubbing methods using JUnit and Mockito.</p>
+</div><h1>What is Stubbing?</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Stubbing is the process of creating a &quot;stub&quot; or a mock object that simulates the behavior of real objects.</li>
+<li><strong>Purpose</strong>: It isolates the unit of work being tested by providing controlled responses from dependencies.</li>
+</ul>
+</div><h1>Setting Up JUnit and Mockito</h1>
+<div class='content'><p>Before diving into stubbing, ensure you have JUnit and Mockito set up in your project.</p>
+</div><h2>Maven Dependency</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuanVuaXQuanVwaXRlcjwvZ3JvdXBJZD4KICAgIDxhcnRpZmFjdElkPmp1bml0LWp1cGl0ZXItZW5naW5lPC9hcnRpZmFjdElkPgogICAgPHZlcnNpb24+NS43LjA8L3ZlcnNpb24+CiAgICA8c2NvcGU+dGVzdDwvc2NvcGU+CjwvZGVwZW5kZW5jeT4KPGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcubW9ja2l0bzwvZ3JvdXBJZD4KICAgIDxhcnRpZmFjdElkPm1vY2tpdG8tY29yZTwvYXJ0aWZhY3RJZD4KICAgIDx2ZXJzaW9uPjMuNi4wPC92ZXJzaW9uPgogICAgPHNjb3BlPnRlc3Q8L3Njb3BlPgo8L2RlcGVuZGVuY3k+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+    &lt;version&gt;5.7.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.mockito&lt;/groupId&gt;
+    &lt;artifactId&gt;mockito-core&lt;/artifactId&gt;
+    &lt;version&gt;3.6.0&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Gradle Dependency</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVzdEltcGxlbWVudGF0aW9uICdvcmcuanVuaXQuanVwaXRlcjpqdW5pdC1qdXBpdGVyLWVuZ2luZTo1LjcuMCcKdGVzdEltcGxlbWVudGF0aW9uICdvcmcubW9ja2l0bzptb2NraXRvLWNvcmU6My42LjAn"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+testImplementation 'org.mockito:mockito-core:3.6.0'</pre></div><div class='content'></div><h1>Basic Stubbing with Mockito</h1>
+<h2>Creating a Stub</h2>
+<div class='content'><p>To create a stub, you need to use the <code>Mockito.mock()</code> method.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHN0YXRpYyBvcmcubW9ja2l0by5Nb2NraXRvLio7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5hcGkuVGVzdDsKaW1wb3J0IHN0YXRpYyBvcmcuanVuaXQuanVwaXRlci5hcGkuQXNzZXJ0aW9ucy4qOwoKY2xhc3MgTXlTZXJ2aWNlVGVzdCB7CgogICAgQFRlc3QKICAgIHZvaWQgdGVzdFNlcnZpY2VNZXRob2QoKSB7CiAgICAgICAgLy8gQ3JlYXRlIGEgbW9jayBvYmplY3QKICAgICAgICBNeURlcGVuZGVuY3kgZGVwZW5kZW5jeSA9IG1vY2soTXlEZXBlbmRlbmN5LmNsYXNzKTsKCiAgICAgICAgLy8gRGVmaW5lIHRoZSBiZWhhdmlvciBvZiB0aGUgbW9jawogICAgICAgIHdoZW4oZGVwZW5kZW5jeS5zb21lTWV0aG9kKCkpLnRoZW5SZXR1cm4oInN0dWJiZWQgcmVzcG9uc2UiKTsKCiAgICAgICAgLy8gVXNlIHRoZSBtb2NrIGluIHlvdXIgc2VydmljZQogICAgICAgIE15U2VydmljZSBzZXJ2aWNlID0gbmV3IE15U2VydmljZShkZXBlbmRlbmN5KTsKICAgICAgICBTdHJpbmcgcmVzdWx0ID0gc2VydmljZS5wZXJmb3JtQWN0aW9uKCk7CgogICAgICAgIC8vIFZlcmlmeSB0aGUgcmVzdWx0CiAgICAgICAgYXNzZXJ0RXF1YWxzKCJzdHViYmVkIHJlc3BvbnNlIiwgcmVzdWx0KTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+class MyServiceTest {
+
+    @Test
+    void testServiceMethod() {
+        // Create a mock object
+        MyDependency dependency = mock(MyDependency.class);
+
+        // Define the behavior of the mock
+        when(dependency.someMethod()).thenReturn(&quot;stubbed response&quot;);
+
+        // Use the mock in your service
+        MyService service = new MyService(dependency);
+        String result = service.performAction();
+
+        // Verify the result
+        assertEquals(&quot;stubbed response&quot;, result);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Mock Creation</strong>: <code>MyDependency dependency = mock(MyDependency.class);</code>
+<ul>
+<li>This creates a mock object of <code>MyDependency</code>.</li>
+</ul>
+</li>
+<li><strong>Stubbing</strong>: <code>when(dependency.someMethod()).thenReturn(&quot;stubbed response&quot;);</code>
+<ul>
+<li>This tells the mock object to return &quot;stubbed response&quot; when <code>someMethod()</code> is called.</li>
+</ul>
+</li>
+<li><strong>Using the Mock</strong>: The mock is passed to the service, which uses it as if it were a real dependency.</li>
+<li><strong>Verification</strong>: The test verifies that the service returns the expected stubbed response.</li>
+</ul>
+</div><h1>Advanced Stubbing Techniques</h1>
+<h2>Stubbing with Arguments</h2>
+<div class='content'><p>You can stub methods to return different values based on the input arguments.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2hlbihkZXBlbmRlbmN5LnNvbWVNZXRob2QoImlucHV0MSIpKS50aGVuUmV0dXJuKCJyZXNwb25zZTEiKTsKd2hlbihkZXBlbmRlbmN5LnNvbWVNZXRob2QoImlucHV0MiIpKS50aGVuUmV0dXJuKCJyZXNwb25zZTIiKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>when(dependency.someMethod(&quot;input1&quot;)).thenReturn(&quot;response1&quot;);
+when(dependency.someMethod(&quot;input2&quot;)).thenReturn(&quot;response2&quot;);</pre></div><div class='content'></div><h2>Throwing Exceptions</h2>
+<div class='content'><p>You can also stub methods to throw exceptions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2hlbihkZXBlbmRlbmN5LnNvbWVNZXRob2QoKSkudGhlblRocm93KG5ldyBSdW50aW1lRXhjZXB0aW9uKCJTdHViYmVkIGV4Y2VwdGlvbiIpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>when(dependency.someMethod()).thenThrow(new RuntimeException(&quot;Stubbed exception&quot;));</pre></div><div class='content'></div><h2>Stubbing Void Methods</h2>
+<div class='content'><p>For methods that return void, use <code>doNothing()</code>, <code>doThrow()</code>, etc.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9Ob3RoaW5nKCkud2hlbihkZXBlbmRlbmN5KS52b2lkTWV0aG9kKCk7CmRvVGhyb3cobmV3IFJ1bnRpbWVFeGNlcHRpb24oIlN0dWJiZWQgZXhjZXB0aW9uIikpLndoZW4oZGVwZW5kZW5jeSkudm9pZE1ldGhvZCgpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>doNothing().when(dependency).voidMethod();
+doThrow(new RuntimeException(&quot;Stubbed exception&quot;)).when(dependency).voidMethod();</pre></div><div class='content'></div><h2>Stubbing Consecutive Calls</h2>
+<div class='content'><p>You can define a sequence of responses for consecutive calls.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2hlbihkZXBlbmRlbmN5LnNvbWVNZXRob2QoKSkKICAgIC50aGVuUmV0dXJuKCJyZXNwb25zZTEiKQogICAgLnRoZW5SZXR1cm4oInJlc3BvbnNlMiIpCiAgICAudGhlblRocm93KG5ldyBSdW50aW1lRXhjZXB0aW9uKCJTdHViYmVkIGV4Y2VwdGlvbiIpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>when(dependency.someMethod())
+    .thenReturn(&quot;response1&quot;)
+    .thenReturn(&quot;response2&quot;)
+    .thenThrow(new RuntimeException(&quot;Stubbed exception&quot;));</pre></div><div class='content'></div><h1>Best Practices</h1>
+<div class='content'><ul>
+<li><strong>Keep it Simple</strong>: Only stub what is necessary for the test.</li>
+<li><strong>Avoid Over-Stubbing</strong>: Too much stubbing can make tests hard to read and maintain.</li>
+<li><strong>Use Annotations</strong>: Use <code>@Mock</code> and <code>@InjectMocks</code> annotations to simplify mock creation and injection.</li>
+</ul>
+</div><h2>Example with Annotations</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5tb2NraXRvLkluamVjdE1vY2tzOwppbXBvcnQgb3JnLm1vY2tpdG8uTW9jazsKaW1wb3J0IG9yZy5tb2NraXRvLmp1bml0Lmp1cGl0ZXIuTW9ja2l0b0V4dGVuc2lvbjsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uRXh0ZW5kV2l0aDsKCkBFeHRlbmRXaXRoKE1vY2tpdG9FeHRlbnNpb24uY2xhc3MpCmNsYXNzIE15U2VydmljZVRlc3QgewoKICAgIEBNb2NrCiAgICBNeURlcGVuZGVuY3kgZGVwZW5kZW5jeTsKCiAgICBASW5qZWN0TW9ja3MKICAgIE15U2VydmljZSBzZXJ2aWNlOwoKICAgIEBUZXN0CiAgICB2b2lkIHRlc3RTZXJ2aWNlTWV0aG9kKCkgewogICAgICAgIHdoZW4oZGVwZW5kZW5jeS5zb21lTWV0aG9kKCkpLnRoZW5SZXR1cm4oInN0dWJiZWQgcmVzcG9uc2UiKTsKCiAgICAgICAgU3RyaW5nIHJlc3VsdCA9IHNlcnZpY2UucGVyZm9ybUFjdGlvbigpOwoKICAgICAgICBhc3NlcnRFcXVhbHMoInN0dWJiZWQgcmVzcG9uc2UiLCByZXN1bHQpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(MockitoExtension.class)
+class MyServiceTest {
+
+    @Mock
+    MyDependency dependency;
+
+    @InjectMocks
+    MyService service;
+
+    @Test
+    void testServiceMethod() {
+        when(dependency.someMethod()).thenReturn(&quot;stubbed response&quot;);
+
+        String result = service.performAction();
+
+        assertEquals(&quot;stubbed response&quot;, result);
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Stubbing methods is a powerful technique in unit testing that allows you to isolate the unit under test by controlling the behavior of its dependencies. By mastering both basic and advanced stubbing techniques, you can write more effective and maintainable tests. Remember to follow best practices to keep your tests clean and readable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-mocks'>&#x25C4;Creating Mocks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Stubbing Methods in JUnit</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='verifying-behavior'>Verifying Behavior &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

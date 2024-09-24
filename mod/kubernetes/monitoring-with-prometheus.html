@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring with Prometheus</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/monitoring-with-prometheus" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/monitoring-with-prometheus" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/monitoring-with-prometheus" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/monitoring-with-prometheus" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/monitoring-with-prometheus" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='kubernetes-api-and-kubectl'>&#x25C4;Kubernetes API and kubectl</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monitoring with Prometheus</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='logging-with-efk'>Logging with Elasticsearch, Fluentd, and Kibana (EFK) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Prometheus</h1>
+<div class='content'><p>Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. Since its inception, it has become a popular choice for monitoring Kubernetes clusters due to its powerful querying language, flexible data model, and seamless integration with Kubernetes.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Time Series Database</strong>: Prometheus stores all data as time series, which are streams of timestamped values belonging to the same metric and set of labeled dimensions.</li>
+<li><strong>Metrics</strong>: These are the fundamental data points collected by Prometheus. Metrics can be counters, gauges, histograms, or summaries.</li>
+<li><strong>Labels</strong>: Labels are key-value pairs that are attached to metrics to add dimensions to them.</li>
+<li><strong>PromQL</strong>: Prometheus Query Language used to query the time series data.</li>
+<li><strong>Alertmanager</strong>: A component that handles alerts sent by Prometheus.</li>
+</ul>
+</div><h1>Setting Up Prometheus on Kubernetes</h1>
+<div class='content'><p>To monitor a Kubernetes cluster with Prometheus, you need to deploy Prometheus itself, configure it to scrape metrics from your Kubernetes components, and set up dashboards and alerts.</p>
+</div><h2>Deploying Prometheus</h2>
+<div class='content'><p>You can deploy Prometheus using Helm, a package manager for Kubernetes.</p>
+<ol>
+<li>
+<p><strong>Install Helm</strong>:</p>
+<pre><code class="language-bash">curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+</code></pre>
+</li>
+<li>
+<p><strong>Add Prometheus Helm Repository</strong>:</p>
+<pre><code class="language-bash">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+</code></pre>
+</li>
+<li>
+<p><strong>Install Prometheus</strong>:</p>
+<pre><code class="language-bash">helm install prometheus prometheus-community/prometheus
+</code></pre>
+</li>
+</ol>
+</div><h2>Configuring Prometheus</h2>
+<div class='content'><p>Prometheus configuration is done using a YAML file. Below is a basic example of a Prometheus configuration file (<code>prometheus.yml</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xvYmFsOgogIHNjcmFwZV9pbnRlcnZhbDogMTVzCgpzY3JhcGVfY29uZmlnczoKICAtIGpvYl9uYW1lOiAna3ViZXJuZXRlcy1hcGlzZXJ2ZXJzJwogICAga3ViZXJuZXRlc19zZF9jb25maWdzOgogICAgICAtIHJvbGU6IGVuZHBvaW50cwogICAgcmVsYWJlbF9jb25maWdzOgogICAgICAtIHNvdXJjZV9sYWJlbHM6IFtfX21ldGFfa3ViZXJuZXRlc19uYW1lc3BhY2UsIF9fbWV0YV9rdWJlcm5ldGVzX3NlcnZpY2VfbmFtZSwgX19tZXRhX2t1YmVybmV0ZXNfZW5kcG9pbnRfcG9ydF9uYW1lXQogICAgICAgIGFjdGlvbjoga2VlcAogICAgICAgIHJlZ2V4OiBkZWZhdWx0O2t1YmVybmV0ZXM7aHR0cHM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'kubernetes-apiservers'
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_name, __meta_kubernetes_endpoint_port_name]
+        action: keep
+        regex: default;kubernetes;https</pre></div><div class='content'></div><h2>Scraping Metrics</h2>
+<div class='content'><p>Prometheus scrapes metrics from various endpoints. In a Kubernetes environment, these endpoints are often exposed by services.</p>
+<ul>
+<li><strong>Node Exporter</strong>: Collects hardware and OS metrics.</li>
+<li><strong>Kube-State-Metrics</strong>: Exposes Kubernetes cluster state metrics.</li>
+<li><strong>cAdvisor</strong>: Provides container resource usage and performance metrics.</li>
+</ul>
+</div><h2>Example: Scraping Node Metrics</h2>
+<div class='content'><p>To scrape node metrics, you need to deploy the Node Exporter and configure Prometheus to scrape its metrics.</p>
+<ol>
+<li>
+<p><strong>Deploy Node Exporter</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f https://raw.githubusercontent.com/prometheus/node_exporter/main/examples/node-exporter-daemonset.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Configure Prometheus to Scrape Node Exporter</strong>:</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'node-exporter'
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+      - target_label: __address__
+        replacement: kubernetes.default.svc:9100
+      - source_labels: [__address__]
+        target_label: instance
+</code></pre>
+</li>
+</ol>
+</div><h1>Visualizing Metrics with Grafana</h1>
+<div class='content'><p>Grafana is a popular open-source platform for monitoring and observability. It integrates seamlessly with Prometheus to visualize metrics.</p>
+</div><h2>Deploying Grafana</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Grafana using Helm</strong>:</p>
+<pre><code class="language-bash">helm install grafana grafana/grafana
+</code></pre>
+</li>
+<li>
+<p><strong>Access Grafana</strong>:</p>
+<pre><code class="language-bash">kubectl port-forward service/grafana 3000:80
+</code></pre>
+</li>
+<li>
+<p><strong>Add Prometheus as a Data Source</strong>:</p>
+<ul>
+<li>Open Grafana in your browser at <code>http://localhost:3000</code>.</li>
+<li>Go to Configuration &gt; Data Sources &gt; Add data source.</li>
+<li>Select Prometheus and enter the URL of your Prometheus server (e.g., <code>http://prometheus-server</code>).</li>
+</ul>
+</li>
+</ol>
+</div><h2>Creating Dashboards</h2>
+<div class='content'><p>Grafana allows you to create custom dashboards to visualize your metrics.</p>
+<ol>
+<li>
+<p><strong>Create a New Dashboard</strong>:</p>
+<ul>
+<li>Click on the &quot;+&quot; icon in the left sidebar and select &quot;Dashboard&quot;.</li>
+<li>Click &quot;Add new panel&quot;.</li>
+<li>Use PromQL to query your metrics and visualize them.</li>
+</ul>
+<p>Example PromQL query to monitor CPU usage:</p>
+<pre><code class="language-promql">sum(rate(container_cpu_usage_seconds_total[5m])) by (instance)
+</code></pre>
+</li>
+</ol>
+</div><h1>Setting Up Alerts</h1>
+<div class='content'><p>Prometheus can send alerts based on the metrics it collects. Alerts are defined in the Prometheus configuration file.</p>
+</div><h2>Example Alert Rule</h2>
+<div class='content'><p>Below is an example of an alert rule that triggers if the CPU usage is above 80% for more than 5 minutes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JvdXBzOgogIC0gbmFtZTogZXhhbXBsZQogICAgcnVsZXM6CiAgICAgIC0gYWxlcnQ6IEhpZ2hDUFVVc2FnZQogICAgICAgIGV4cHI6IHN1bShyYXRlKGNvbnRhaW5lcl9jcHVfdXNhZ2Vfc2Vjb25kc190b3RhbFs1bV0pKSBieSAoaW5zdGFuY2UpID4gMC44CiAgICAgICAgZm9yOiA1bQogICAgICAgIGxhYmVsczoKICAgICAgICAgIHNldmVyaXR5OiB3YXJuaW5nCiAgICAgICAgYW5ub3RhdGlvbnM6CiAgICAgICAgICBzdW1tYXJ5OiAiSGlnaCBDUFUgdXNhZ2UgZGV0ZWN0ZWQiCiAgICAgICAgICBkZXNjcmlwdGlvbjogIkNQVSB1c2FnZSBpcyBhYm92ZSA4MCUgZm9yIG1vcmUgdGhhbiA1IG1pbnV0ZXMuIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>groups:
+  - name: example
+    rules:
+      - alert: HighCPUUsage
+        expr: sum(rate(container_cpu_usage_seconds_total[5m])) by (instance) &gt; 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: &quot;High CPU usage detected&quot;
+          description: &quot;CPU usage is above 80% for more than 5 minutes.&quot;</pre></div><div class='content'></div><h2>Configuring Alertmanager</h2>
+<div class='content'><p>Alertmanager handles alerts sent by Prometheus and can route them to various receivers like email, Slack, or PagerDuty.</p>
+<ol>
+<li>
+<p><strong>Deploy Alertmanager</strong>:</p>
+<pre><code class="language-bash">helm install alertmanager prometheus-community/alertmanager
+</code></pre>
+</li>
+<li>
+<p><strong>Configure Alertmanager</strong>:
+Create a configuration file (<code>alertmanager.yml</code>):</p>
+<pre><code class="language-yaml">global:
+  resolve_timeout: 5m
+
+route:
+  receiver: 'slack-notifications'
+
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+        channel: '#alerts'
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Monitoring a Kubernetes cluster with Prometheus involves setting up Prometheus, configuring it to scrape metrics from various sources, visualizing these metrics with Grafana, and setting up alerts to notify you of any issues. By following the steps outlined in this topic, you can ensure that your Kubernetes cluster is well-monitored and that you are promptly alerted to any potential problems.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='kubernetes-api-and-kubectl'>&#x25C4;Kubernetes API and kubectl</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monitoring with Prometheus</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='logging-with-efk'>Logging with Elasticsearch, Fluentd, and Kibana (EFK) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

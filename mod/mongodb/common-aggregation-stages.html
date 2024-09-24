@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Aggregation Stages</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/common-aggregation-stages" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/common-aggregation-stages" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/common-aggregation-stages" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/mongodb/common-aggregation-stages" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/common-aggregation-stages" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='aggregation-pipeline'>&#x25C4;Aggregation Pipeline</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Aggregation Stages</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-lookup-for-joins'>Using $lookup for Joins &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Aggregation operations in MongoDB process data records and return computed results. They are often used to group values from multiple documents, perform operations on the grouped data, and return a single result. This section will cover the most common aggregation stages you will encounter, from beginner to advanced levels.</p>
+</div><h1>Introduction to Aggregation Framework</h1>
+<div class='content'><p>The aggregation framework in MongoDB is a powerful tool for data analysis and transformation. It consists of a pipeline of stages, each performing a specific operation on the input documents.</p>
+</div><h1>Common Aggregation Stages</h1>
+<div class='content'></div><h2>$match</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Filters the documents to pass only those that match the specified condition(s) to the next pipeline stage.</li>
+<li><strong>Usage</strong>: Similar to the <code>find</code> query, but used within the aggregation pipeline.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJG1hdGNoOiB7IHN0YXR1czogIkEiIH0gfQpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $match: { status: &quot;A&quot; } }
+])</pre></div><div class='content'></div><h2>$group</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Groups input documents by a specified identifier expression and applies the accumulator expressions to each group.</li>
+<li><strong>Usage</strong>: Often used to calculate aggregates like sums, averages, counts, etc.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJGdyb3VwOiB7IF9pZDogIiRzdGF0dXMiLCB0b3RhbDogeyAkc3VtOiAiJGFtb3VudCIgfSB9IH0KXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $group: { _id: &quot;$status&quot;, total: { $sum: &quot;$amount&quot; } } }
+])</pre></div><div class='content'></div><h2>$project</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Reshapes each document in the stream, such as by adding new fields or removing existing fields.</li>
+<li><strong>Usage</strong>: Useful for including, excluding, or computing new fields.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJHByb2plY3Q6IHsgaXRlbTogMSwgdG90YWw6IHsgJG11bHRpcGx5OiBbIiRwcmljZSIsICIkcXVhbnRpdHkiXSB9IH0gfQpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $project: { item: 1, total: { $multiply: [&quot;$price&quot;, &quot;$quantity&quot;] } } }
+])</pre></div><div class='content'></div><h2>$sort</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Sorts all input documents and returns them in sorted order.</li>
+<li><strong>Usage</strong>: Similar to the <code>sort</code> method but used within the aggregation pipeline.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJHNvcnQ6IHsgdG90YWw6IC0xIH0gfQpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $sort: { total: -1 } }
+])</pre></div><div class='content'></div><h2>$limit</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Limits the number of documents passed to the next stage in the pipeline.</li>
+<li><strong>Usage</strong>: Useful for pagination or restricting the output size.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJGxpbWl0OiA1IH0KXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $limit: 5 }
+])</pre></div><div class='content'></div><h2>$skip</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Skips the first N documents and passes the remaining documents to the next stage.</li>
+<li><strong>Usage</strong>: Often used in conjunction with <code>$limit</code> for pagination.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJHNraXA6IDEwIH0KXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $skip: 10 }
+])</pre></div><div class='content'></div><h2>$unwind</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Deconstructs an array field from the input documents to output a document for each element.</li>
+<li><strong>Usage</strong>: Useful for normalizing data stored in arrays.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJHVud2luZDogIiRpdGVtcyIgfQpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $unwind: &quot;$items&quot; }
+])</pre></div><div class='content'></div><h2>$lookup</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Performs a left outer join to another collection in the same database to filter in documents from the &quot;joined&quot; collection for processing.</li>
+<li><strong>Usage</strong>: Useful for combining data from multiple collections.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsKICAgICRsb29rdXA6IHsKICAgICAgZnJvbTogIm90aGVyQ29sbGVjdGlvbiIsCiAgICAgIGxvY2FsRmllbGQ6ICJmb3JlaWduS2V5IiwKICAgICAgZm9yZWlnbkZpZWxkOiAiX2lkIiwKICAgICAgYXM6ICJqb2luZWREYXRhIgogICAgfQogIH0KXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  {
+    $lookup: {
+      from: &quot;otherCollection&quot;,
+      localField: &quot;foreignKey&quot;,
+      foreignField: &quot;_id&quot;,
+      as: &quot;joinedData&quot;
+    }
+  }
+])</pre></div><div class='content'></div><h2>$addFields</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Adds new fields to documents.</li>
+<li><strong>Usage</strong>: Useful for adding computed fields.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJGFkZEZpZWxkczogeyB0b3RhbFByaWNlOiB7ICRtdWx0aXBseTogWyIkcHJpY2UiLCAiJHF1YW50aXR5Il0gfSB9IH0KXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $addFields: { totalPrice: { $multiply: [&quot;$price&quot;, &quot;$quantity&quot;] } } }
+])</pre></div><div class='content'></div><h2>$out</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: Writes the resulting documents of the aggregation pipeline to a specified collection.</li>
+<li><strong>Usage</strong>: Useful for storing the results of an aggregation for future use.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5hZ2dyZWdhdGUoWwogIHsgJG1hdGNoOiB7IHN0YXR1czogIkEiIH0gfSwKICB7ICRvdXQ6ICJuZXdDb2xsZWN0aW9uIiB9Cl0p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.aggregate([
+  { $match: { status: &quot;A&quot; } },
+  { $out: &quot;newCollection&quot; }
+])</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>Understanding and utilizing the common aggregation stages in MongoDB is crucial for effective data analysis and transformation. Each stage serves a specific purpose, from filtering and grouping to reshaping and joining data. By mastering these stages, you can perform complex queries and gain deeper insights from your data.</p>
+<ul>
+<li><strong>$match</strong>: Filters documents.</li>
+<li><strong>$group</strong>: Groups documents and performs aggregations.</li>
+<li><strong>$project</strong>: Reshapes documents.</li>
+<li><strong>$sort</strong>: Sorts documents.</li>
+<li><strong>$limit</strong>: Limits the number of documents.</li>
+<li><strong>$skip</strong>: Skips documents.</li>
+<li><strong>$unwind</strong>: Deconstructs arrays.</li>
+<li><strong>$lookup</strong>: Joins collections.</li>
+<li><strong>$addFields</strong>: Adds new fields.</li>
+<li><strong>$out</strong>: Outputs results to a collection.</li>
+</ul>
+<p>These stages form the building blocks of the MongoDB aggregation framework, enabling you to create powerful and efficient data processing pipelines.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='aggregation-pipeline'>&#x25C4;Aggregation Pipeline</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Aggregation Stages</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-lookup-for-joins'>Using $lookup for Joins &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>
