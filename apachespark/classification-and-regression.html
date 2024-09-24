@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classification and Regression in Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/apachespark/classification-and-regression" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/apachespark/classification-and-regression" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/apachespark/classification-and-regression" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/apachespark/classification-and-regression" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/apachespark/classification-and-regression" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-preprocessing'>&#x25C4;Data Preprocessing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Classification and Regression in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='clustering'>Clustering &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Apache Spark is a powerful open-source processing engine built around speed, ease of use, and sophisticated analytics. In this section, we will explore two fundamental types of machine learning tasks: Classification and Regression. These tasks are essential for predictive modeling and are widely used in various applications such as spam detection, image recognition, and predicting house prices.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Classification</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Classification is a supervised learning task where the goal is to predict the categorical label of a given input based on training data.</li>
+<li><strong>Examples</strong>: Email spam detection, image classification, sentiment analysis.</li>
+<li><strong>Algorithms</strong>: Logistic Regression, Decision Trees, Random Forest, Gradient-Boosted Trees, Support Vector Machines (SVM).</li>
+</ul>
+</div><h2>Regression</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Regression is a supervised learning task where the goal is to predict a continuous value for a given input based on training data.</li>
+<li><strong>Examples</strong>: Predicting house prices, stock market forecasting, temperature prediction.</li>
+<li><strong>Algorithms</strong>: Linear Regression, Decision Trees, Random Forest, Gradient-Boosted Trees.</li>
+</ul>
+</div><h1>Setting Up Apache Spark</h1>
+<div class='content'><p>Before diving into classification and regression, ensure you have Apache Spark installed. You can use the following code to set up Spark in a Python environment:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCgojIEluaXRpYWxpemUgYSBTcGFyayBzZXNzaW9uCnNwYXJrID0gU3BhcmtTZXNzaW9uLmJ1aWxkZXIgXAogICAgLmFwcE5hbWUoIkNsYXNzaWZpY2F0aW9uIGFuZCBSZWdyZXNzaW9uIikgXAogICAgLmdldE9yQ3JlYXRlKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+
+# Initialize a Spark session
+spark = SparkSession.builder \
+    .appName(&quot;Classification and Regression&quot;) \
+    .getOrCreate()</pre></div><div class='content'></div><h1>Classification with Apache Spark</h1>
+<div class='content'></div><h2>Logistic Regression Example</h2>
+<div class='content'><p>Logistic Regression is a popular algorithm for binary classification tasks. Below is an example of how to implement Logistic Regression using PySpark:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLm1sLmNsYXNzaWZpY2F0aW9uIGltcG9ydCBMb2dpc3RpY1JlZ3Jlc3Npb24KZnJvbSBweXNwYXJrLm1sLmZlYXR1cmUgaW1wb3J0IFZlY3RvckFzc2VtYmxlcgpmcm9tIHB5c3BhcmsubWwuZXZhbHVhdGlvbiBpbXBvcnQgQmluYXJ5Q2xhc3NpZmljYXRpb25FdmFsdWF0b3IKCiMgTG9hZCBhbmQgcHJlcGFyZSB0aGUgZGF0YQpkYXRhID0gc3BhcmsucmVhZC5jc3YoImRhdGEuY3N2IiwgaGVhZGVyPVRydWUsIGluZmVyU2NoZW1hPVRydWUpCmFzc2VtYmxlciA9IFZlY3RvckFzc2VtYmxlcihpbnB1dENvbHM9WyJmZWF0dXJlMSIsICJmZWF0dXJlMiJdLCBvdXRwdXRDb2w9ImZlYXR1cmVzIikKZGF0YSA9IGFzc2VtYmxlci50cmFuc2Zvcm0oZGF0YSkKCiMgU3BsaXQgdGhlIGRhdGEgaW50byB0cmFpbmluZyBhbmQgdGVzdCBzZXRzCnRyYWluX2RhdGEsIHRlc3RfZGF0YSA9IGRhdGEucmFuZG9tU3BsaXQoWzAuNywgMC4zXSkKCiMgSW5pdGlhbGl6ZSBhbmQgdHJhaW4gdGhlIExvZ2lzdGljIFJlZ3Jlc3Npb24gbW9kZWwKbHIgPSBMb2dpc3RpY1JlZ3Jlc3Npb24obGFiZWxDb2w9ImxhYmVsIiwgZmVhdHVyZXNDb2w9ImZlYXR1cmVzIikKbHJfbW9kZWwgPSBsci5maXQodHJhaW5fZGF0YSkKCiMgTWFrZSBwcmVkaWN0aW9ucwpwcmVkaWN0aW9ucyA9IGxyX21vZGVsLnRyYW5zZm9ybSh0ZXN0X2RhdGEpCgojIEV2YWx1YXRlIHRoZSBtb2RlbApldmFsdWF0b3IgPSBCaW5hcnlDbGFzc2lmaWNhdGlvbkV2YWx1YXRvcihsYWJlbENvbD0ibGFiZWwiKQphY2N1cmFjeSA9IGV2YWx1YXRvci5ldmFsdWF0ZShwcmVkaWN0aW9ucykKcHJpbnQoZiJBY2N1cmFjeToge2FjY3VyYWN5fSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.ml.classification import LogisticRegression
+from pyspark.ml.feature import VectorAssembler
+from pyspark.ml.evaluation import BinaryClassificationEvaluator
+
+# Load and prepare the data
+data = spark.read.csv(&quot;data.csv&quot;, header=True, inferSchema=True)
+assembler = VectorAssembler(inputCols=[&quot;feature1&quot;, &quot;feature2&quot;], outputCol=&quot;features&quot;)
+data = assembler.transform(data)
+
+# Split the data into training and test sets
+train_data, test_data = data.randomSplit([0.7, 0.3])
+
+# Initialize and train the Logistic Regression model
+lr = LogisticRegression(labelCol=&quot;label&quot;, featuresCol=&quot;features&quot;)
+lr_model = lr.fit(train_data)
+
+# Make predictions
+predictions = lr_model.transform(test_data)
+
+# Evaluate the model
+evaluator = BinaryClassificationEvaluator(labelCol=&quot;label&quot;)
+accuracy = evaluator.evaluate(predictions)
+print(f&quot;Accuracy: {accuracy}&quot;)</pre></div><div class='content'></div><h2>Decision Trees Example</h2>
+<div class='content'><p>Decision Trees can handle both classification and regression tasks. Here's an example for classification:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLm1sLmNsYXNzaWZpY2F0aW9uIGltcG9ydCBEZWNpc2lvblRyZWVDbGFzc2lmaWVyCgojIEluaXRpYWxpemUgYW5kIHRyYWluIHRoZSBEZWNpc2lvbiBUcmVlIG1vZGVsCmR0ID0gRGVjaXNpb25UcmVlQ2xhc3NpZmllcihsYWJlbENvbD0ibGFiZWwiLCBmZWF0dXJlc0NvbD0iZmVhdHVyZXMiKQpkdF9tb2RlbCA9IGR0LmZpdCh0cmFpbl9kYXRhKQoKIyBNYWtlIHByZWRpY3Rpb25zCnByZWRpY3Rpb25zID0gZHRfbW9kZWwudHJhbnNmb3JtKHRlc3RfZGF0YSkKCiMgRXZhbHVhdGUgdGhlIG1vZGVsCmFjY3VyYWN5ID0gZXZhbHVhdG9yLmV2YWx1YXRlKHByZWRpY3Rpb25zKQpwcmludChmIkFjY3VyYWN5OiB7YWNjdXJhY3l9Iik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.ml.classification import DecisionTreeClassifier
+
+# Initialize and train the Decision Tree model
+dt = DecisionTreeClassifier(labelCol=&quot;label&quot;, featuresCol=&quot;features&quot;)
+dt_model = dt.fit(train_data)
+
+# Make predictions
+predictions = dt_model.transform(test_data)
+
+# Evaluate the model
+accuracy = evaluator.evaluate(predictions)
+print(f&quot;Accuracy: {accuracy}&quot;)</pre></div><div class='content'></div><h1>Regression with Apache Spark</h1>
+<div class='content'></div><h2>Linear Regression Example</h2>
+<div class='content'><p>Linear Regression is a fundamental algorithm for regression tasks. Below is an example of how to implement Linear Regression using PySpark:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLm1sLnJlZ3Jlc3Npb24gaW1wb3J0IExpbmVhclJlZ3Jlc3Npb24KZnJvbSBweXNwYXJrLm1sLmV2YWx1YXRpb24gaW1wb3J0IFJlZ3Jlc3Npb25FdmFsdWF0b3IKCiMgSW5pdGlhbGl6ZSBhbmQgdHJhaW4gdGhlIExpbmVhciBSZWdyZXNzaW9uIG1vZGVsCmxyID0gTGluZWFyUmVncmVzc2lvbihsYWJlbENvbD0ibGFiZWwiLCBmZWF0dXJlc0NvbD0iZmVhdHVyZXMiKQpscl9tb2RlbCA9IGxyLmZpdCh0cmFpbl9kYXRhKQoKIyBNYWtlIHByZWRpY3Rpb25zCnByZWRpY3Rpb25zID0gbHJfbW9kZWwudHJhbnNmb3JtKHRlc3RfZGF0YSkKCiMgRXZhbHVhdGUgdGhlIG1vZGVsCmV2YWx1YXRvciA9IFJlZ3Jlc3Npb25FdmFsdWF0b3IobGFiZWxDb2w9ImxhYmVsIiwgcHJlZGljdGlvbkNvbD0icHJlZGljdGlvbiIsIG1ldHJpY05hbWU9InJtc2UiKQpybXNlID0gZXZhbHVhdG9yLmV2YWx1YXRlKHByZWRpY3Rpb25zKQpwcmludChmIlJvb3QgTWVhbiBTcXVhcmVkIEVycm9yIChSTVNFKToge3Jtc2V9Iik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.ml.regression import LinearRegression
+from pyspark.ml.evaluation import RegressionEvaluator
+
+# Initialize and train the Linear Regression model
+lr = LinearRegression(labelCol=&quot;label&quot;, featuresCol=&quot;features&quot;)
+lr_model = lr.fit(train_data)
+
+# Make predictions
+predictions = lr_model.transform(test_data)
+
+# Evaluate the model
+evaluator = RegressionEvaluator(labelCol=&quot;label&quot;, predictionCol=&quot;prediction&quot;, metricName=&quot;rmse&quot;)
+rmse = evaluator.evaluate(predictions)
+print(f&quot;Root Mean Squared Error (RMSE): {rmse}&quot;)</pre></div><div class='content'></div><h2>Random Forest Regression Example</h2>
+<div class='content'><p>Random Forest is a versatile algorithm that can be used for both classification and regression. Here's an example for regression:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLm1sLnJlZ3Jlc3Npb24gaW1wb3J0IFJhbmRvbUZvcmVzdFJlZ3Jlc3NvcgoKIyBJbml0aWFsaXplIGFuZCB0cmFpbiB0aGUgUmFuZG9tIEZvcmVzdCBtb2RlbApyZiA9IFJhbmRvbUZvcmVzdFJlZ3Jlc3NvcihsYWJlbENvbD0ibGFiZWwiLCBmZWF0dXJlc0NvbD0iZmVhdHVyZXMiKQpyZl9tb2RlbCA9IHJmLmZpdCh0cmFpbl9kYXRhKQoKIyBNYWtlIHByZWRpY3Rpb25zCnByZWRpY3Rpb25zID0gcmZfbW9kZWwudHJhbnNmb3JtKHRlc3RfZGF0YSkKCiMgRXZhbHVhdGUgdGhlIG1vZGVsCnJtc2UgPSBldmFsdWF0b3IuZXZhbHVhdGUocHJlZGljdGlvbnMpCnByaW50KGYiUm9vdCBNZWFuIFNxdWFyZWQgRXJyb3IgKFJNU0UpOiB7cm1zZX0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.ml.regression import RandomForestRegressor
+
+# Initialize and train the Random Forest model
+rf = RandomForestRegressor(labelCol=&quot;label&quot;, featuresCol=&quot;features&quot;)
+rf_model = rf.fit(train_data)
+
+# Make predictions
+predictions = rf_model.transform(test_data)
+
+# Evaluate the model
+rmse = evaluator.evaluate(predictions)
+print(f&quot;Root Mean Squared Error (RMSE): {rmse}&quot;)</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of classification and regression using Apache Spark. We explored key concepts, set up Spark, and implemented various algorithms for both tasks. Understanding these fundamental machine learning tasks and how to implement them in Spark is crucial for building robust predictive models. As you progress, you can experiment with different algorithms and tuning parameters to improve your models' performance.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-preprocessing'>&#x25C4;Data Preprocessing</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Classification and Regression in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='clustering'>Clustering &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

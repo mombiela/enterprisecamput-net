@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Encryption in BigQuery</title>
+
+    <link rel="alternate" href="https://campusempresa.com/bigquery/data-encryption" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/bigquery/data-encryption" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/bigquery/data-encryption" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/bigquery/data-encryption" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/bigquery/data-encryption" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-access-control'>&#x25C4;Managing Access Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Encryption in BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='auditing-and-monitoring'>Auditing and Monitoring &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Data Encryption</h1>
+<div class='content'><p>Data encryption is a fundamental aspect of data security, ensuring that sensitive information is protected from unauthorized access. In BigQuery, encryption is used to safeguard data at rest and in transit.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Encryption</strong>: The process of converting data into a coded format that can only be read by someone who has the decryption key.</li>
+<li><strong>Decryption</strong>: The process of converting encrypted data back into its original format.</li>
+<li><strong>Encryption at Rest</strong>: Protecting data stored on disk.</li>
+<li><strong>Encryption in Transit</strong>: Protecting data as it moves across networks.</li>
+<li><strong>Customer-Managed Encryption Keys (CMEK)</strong>: Keys managed by the customer for encrypting data.</li>
+<li><strong>Google-Managed Encryption Keys (GMEK)</strong>: Keys managed by Google for encrypting data.</li>
+</ul>
+</div><h1>Encryption at Rest</h1>
+<div class='content'><p>BigQuery automatically encrypts all data at rest using Google-managed encryption keys. However, for additional control, you can use Customer-Managed Encryption Keys (CMEK).</p>
+</div><h2>Using Google-Managed Encryption Keys (GMEK)</h2>
+<div class='content'><p>By default, BigQuery uses GMEK to encrypt data at rest. This process is transparent to the user and requires no additional configuration.</p>
+</div><h2>Using Customer-Managed Encryption Keys (CMEK)</h2>
+<div class='content'><p>CMEK allows you to use your own encryption keys stored in Google Cloud Key Management Service (KMS).</p>
+<h4>Steps to Use CMEK in BigQuery</h4>
+<ol>
+<li>
+<p><strong>Create a Key Ring and Key in Google Cloud KMS</strong>:</p>
+<pre><code class="language-bash">gcloud kms keyrings create my-key-ring --location=global
+gcloud kms keys create my-key --location=global --keyring=my-key-ring --purpose=encryption
+</code></pre>
+</li>
+<li>
+<p><strong>Grant BigQuery Service Account Access to the Key</strong>:</p>
+<pre><code class="language-bash">gcloud kms keys add-iam-policy-binding my-key <br>        --location=global <br>        --keyring=my-key-ring <br>        --member=serviceAccount:your-bigquery-service-account <br>        --role=roles/cloudkms.cryptoKeyEncrypterDecrypter
+</code></pre>
+</li>
+<li>
+<p><strong>Create a BigQuery Dataset with CMEK</strong>:</p>
+<pre><code class="language-sql">CREATE SCHEMA my_dataset
+OPTIONS(
+    kms_key_name=&quot;projects/my-project/locations/global/keyRings/my-key-ring/cryptoKeys/my-key&quot;
+);
+</code></pre>
+</li>
+</ol>
+</div><h1>Encryption in Transit</h1>
+<div class='content'><p>BigQuery encrypts data in transit using TLS (Transport Layer Security) to ensure data integrity and privacy as it moves between your devices and Google’s servers.</p>
+</div><h2>Ensuring Secure Connections</h2>
+<div class='content'><ul>
+<li>Always use HTTPS to interact with BigQuery.</li>
+<li>Use secure APIs and client libraries provided by Google Cloud.</li>
+</ul>
+</div><h1>Advanced Encryption Techniques</h1>
+<div class='content'><p>For advanced users, BigQuery supports additional encryption features such as:</p>
+<ul>
+<li><strong>Column-Level Encryption</strong>: Encrypting specific columns within a dataset.</li>
+<li><strong>Hybrid Encryption</strong>: Combining symmetric and asymmetric encryption for enhanced security.</li>
+</ul>
+</div><h2>Example: Column-Level Encryption</h2>
+<div class='content'><p>To encrypt specific columns, you can use functions like <code>AEAD.ENCRYPT</code> and <code>AEAD.DECRYPT</code>.</p>
+<h4>Encrypting a Column</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRSBrZXkgQllURVMgPSBGUk9NX0hFWCgneW91ci1oZXgtZW5jb2RlZC1rZXknKTsKREVDTEFSRSBwbGFpbnRleHQgU1RSSU5HID0gJ1NlbnNpdGl2ZSBEYXRhJzsKClNFVCBlbmNyeXB0ZWRfZGF0YSA9IEFFQUQuRU5DUllQVChrZXksIHBsYWludGV4dCwgJycpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE key BYTES = FROM_HEX('your-hex-encoded-key');
+DECLARE plaintext STRING = 'Sensitive Data';
+
+SET encrypted_data = AEAD.ENCRYPT(key, plaintext, '');</pre></div><div class='content'><h4>Decrypting a Column</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRSBrZXkgQllURVMgPSBGUk9NX0hFWCgneW91ci1oZXgtZW5jb2RlZC1rZXknKTsKREVDTEFSRSBjaXBoZXJ0ZXh0IEJZVEVTID0gJ3lvdXItZW5jcnlwdGVkLWRhdGEnOwoKU0VUIGRlY3J5cHRlZF9kYXRhID0gQUVBRC5ERUNSWVBUKGtleSwgY2lwaGVydGV4dCwgJycpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE key BYTES = FROM_HEX('your-hex-encoded-key');
+DECLARE ciphertext BYTES = 'your-encrypted-data';
+
+SET decrypted_data = AEAD.DECRYPT(key, ciphertext, '');</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>Data encryption in BigQuery is a critical component of data security, ensuring that your data is protected both at rest and in transit. By understanding and utilizing both Google-managed and customer-managed encryption keys, you can enhance the security of your datasets. Additionally, advanced encryption techniques like column-level encryption provide further granularity and control over data protection.</p>
+<p>By following best practices and leveraging the encryption features provided by BigQuery, you can ensure that your data remains secure and compliant with industry standards.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-access-control'>&#x25C4;Managing Access Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Encryption in BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='auditing-and-monitoring'>Auditing and Monitoring &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

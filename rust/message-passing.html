@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Passing in Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/message-passing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/message-passing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/message-passing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/rust/message-passing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/rust/message-passing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='threads'>&#x25C4;Threads</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Message Passing in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='shared-state'>Shared State &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Message passing is a fundamental concept in concurrent programming, where threads or processes communicate by sending messages to each other. Rust, with its strong emphasis on safety and concurrency, provides robust tools for message passing. This topic will guide you through the basics to advanced concepts of message passing in Rust.</p>
+</div><h1>Introduction to Message Passing</h1>
+<div class='content'><p>Message passing involves the exchange of data between threads or processes. In Rust, this is typically achieved using channels. Channels provide a way for one part of your code to send data to another part, even if they are running concurrently.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Channels</strong>: A channel in Rust is a way to send data between threads.</li>
+<li><strong>Sender</strong>: The part of the channel that sends data.</li>
+<li><strong>Receiver</strong>: The part of the channel that receives data.</li>
+<li><strong>Concurrency</strong>: Running multiple computations simultaneously.</li>
+</ul>
+</div><h1>Basic Message Passing with Channels</h1>
+<div class='content'><p>Rust's standard library provides channels for message passing. Channels are created using the <code>std::sync::mpsc</code> module, where <code>mpsc</code> stands for &quot;multiple producer, single consumer&quot;.</p>
+</div><h2>Creating a Channel</h2>
+<div class='content'><p>To create a channel, you use the <code>channel</code> function, which returns a tuple containing a sender and a receiver.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6bXBzYzsKdXNlIHN0ZDo6dGhyZWFkOwoKZm4gbWFpbigpIHsKICAgIC8vIENyZWF0ZSBhIGNoYW5uZWwKICAgIGxldCAodHgsIHJ4KSA9IG1wc2M6OmNoYW5uZWwoKTsKCiAgICAvLyBTcGF3biBhIG5ldyB0aHJlYWQKICAgIHRocmVhZDo6c3Bhd24obW92ZSB8fCB7CiAgICAgICAgLy8gU2VuZCBhIG1lc3NhZ2UKICAgICAgICB0eC5zZW5kKCJIZWxsbyBmcm9tIHRoZSB0aHJlYWQhIikudW53cmFwKCk7CiAgICB9KTsKCiAgICAvLyBSZWNlaXZlIHRoZSBtZXNzYWdlCiAgICBsZXQgcmVjZWl2ZWQgPSByeC5yZWN2KCkudW53cmFwKCk7CiAgICBwcmludGxuISgiUmVjZWl2ZWQ6IHt9IiwgcmVjZWl2ZWQpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::mpsc;
+use std::thread;
+
+fn main() {
+    // Create a channel
+    let (tx, rx) = mpsc::channel();
+
+    // Spawn a new thread
+    thread::spawn(move || {
+        // Send a message
+        tx.send(&quot;Hello from the thread!&quot;).unwrap();
+    });
+
+    // Receive the message
+    let received = rx.recv().unwrap();
+    println!(&quot;Received: {}&quot;, received);
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Channel Creation</strong>: <code>let (tx, rx) = mpsc::channel();</code> creates a new channel. <code>tx</code> is the sender, and <code>rx</code> is the receiver.</li>
+<li><strong>Thread Spawning</strong>: <code>thread::spawn(move || { ... })</code> creates a new thread.</li>
+<li><strong>Sending a Message</strong>: <code>tx.send(&quot;Hello from the thread!&quot;).unwrap();</code> sends a message from the new thread.</li>
+<li><strong>Receiving a Message</strong>: <code>let received = rx.recv().unwrap();</code> receives the message in the main thread.</li>
+</ul>
+</div><h1>Advanced Message Passing</h1>
+<div class='content'></div><h2>Multiple Producers</h2>
+<div class='content'><p>Rust channels support multiple producers, meaning multiple threads can send messages to the same receiver.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6bXBzYzsKdXNlIHN0ZDo6dGhyZWFkOwp1c2Ugc3RkOjp0aW1lOjpEdXJhdGlvbjsKCmZuIG1haW4oKSB7CiAgICBsZXQgKHR4LCByeCkgPSBtcHNjOjpjaGFubmVsKCk7CgogICAgZm9yIGkgaW4gMC4uNSB7CiAgICAgICAgbGV0IHR4X2Nsb25lID0gdHguY2xvbmUoKTsKICAgICAgICB0aHJlYWQ6OnNwYXduKG1vdmUgfHwgewogICAgICAgICAgICBsZXQgbWVzc2FnZSA9IGZvcm1hdCEoIk1lc3NhZ2UgZnJvbSB0aHJlYWQge30iLCBpKTsKICAgICAgICAgICAgdHhfY2xvbmUuc2VuZChtZXNzYWdlKS51bndyYXAoKTsKICAgICAgICAgICAgdGhyZWFkOjpzbGVlcChEdXJhdGlvbjo6ZnJvbV9taWxsaXMoMTAwKSk7CiAgICAgICAgfSk7CiAgICB9CgogICAgZm9yIHJlY2VpdmVkIGluIHJ4IHsKICAgICAgICBwcmludGxuISgiUmVjZWl2ZWQ6IHt9IiwgcmVjZWl2ZWQpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    for i in 0..5 {
+        let tx_clone = tx.clone();
+        thread::spawn(move || {
+            let message = format!(&quot;Message from thread {}&quot;, i);
+            tx_clone.send(message).unwrap();
+            thread::sleep(Duration::from_millis(100));
+        });
+    }
+
+    for received in rx {
+        println!(&quot;Received: {}&quot;, received);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Cloning the Sender</strong>: <code>let tx_clone = tx.clone();</code> allows multiple threads to send messages to the same receiver.</li>
+<li><strong>Receiving Messages</strong>: <code>for received in rx { ... }</code> iterates over incoming messages.</li>
+</ul>
+</div><h2>Using `try_recv` for Non-blocking Receive</h2>
+<div class='content'><p>The <code>recv</code> method blocks until a message is available. If you need a non-blocking receive, use <code>try_recv</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6bXBzYzsKdXNlIHN0ZDo6dGhyZWFkOwp1c2Ugc3RkOjp0aW1lOjpEdXJhdGlvbjsKCmZuIG1haW4oKSB7CiAgICBsZXQgKHR4LCByeCkgPSBtcHNjOjpjaGFubmVsKCk7CgogICAgdGhyZWFkOjpzcGF3bihtb3ZlIHx8IHsKICAgICAgICB0aHJlYWQ6OnNsZWVwKER1cmF0aW9uOjpmcm9tX3NlY3MoMSkpOwogICAgICAgIHR4LnNlbmQoIkRlbGF5ZWQgbWVzc2FnZSIpLnVud3JhcCgpOwogICAgfSk7CgogICAgbG9vcCB7CiAgICAgICAgbWF0Y2ggcngudHJ5X3JlY3YoKSB7CiAgICAgICAgICAgIE9rKG1lc3NhZ2UpID0+IHsKICAgICAgICAgICAgICAgIHByaW50bG4hKCJSZWNlaXZlZDoge30iLCBtZXNzYWdlKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICB9CiAgICAgICAgICAgIEVycihfKSA9PiB7CiAgICAgICAgICAgICAgICBwcmludGxuISgiTm8gbWVzc2FnZSB5ZXQuLi4iKTsKICAgICAgICAgICAgICAgIHRocmVhZDo6c2xlZXAoRHVyYXRpb246OmZyb21fbWlsbGlzKDIwMCkpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        thread::sleep(Duration::from_secs(1));
+        tx.send(&quot;Delayed message&quot;).unwrap();
+    });
+
+    loop {
+        match rx.try_recv() {
+            Ok(message) =&gt; {
+                println!(&quot;Received: {}&quot;, message);
+                break;
+            }
+            Err(_) =&gt; {
+                println!(&quot;No message yet...&quot;);
+                thread::sleep(Duration::from_millis(200));
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Non-blocking Receive</strong>: <code>match rx.try_recv() { ... }</code> attempts to receive a message without blocking.</li>
+<li><strong>Handling Errors</strong>: The <code>Err(_)</code> branch handles the case where no message is available yet.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>Message passing in Rust is a powerful tool for concurrent programming. By using channels, you can safely and efficiently communicate between threads. Key points to remember:</p>
+<ul>
+<li>Channels are created using <code>std::sync::mpsc::channel</code>.</li>
+<li>A channel consists of a sender and a receiver.</li>
+<li>Multiple threads can send messages to the same receiver by cloning the sender.</li>
+<li>Use <code>recv</code> for blocking receive and <code>try_recv</code> for non-blocking receive.</li>
+</ul>
+<p>Understanding these concepts will help you write safe and concurrent Rust programs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='threads'>&#x25C4;Threads</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Message Passing in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='shared-state'>Shared State &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

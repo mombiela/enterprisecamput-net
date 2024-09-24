@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Updates and Rollbacks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/rolling-updates-and-rollbacks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/rolling-updates-and-rollbacks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/rolling-updates-and-rollbacks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/rolling-updates-and-rollbacks" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/rolling-updates-and-rollbacks" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='configmaps-and-secrets'>&#x25C4;ConfigMaps and Secrets</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rolling Updates and Rollbacks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-applications'>Scaling Applications &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Rolling updates and rollbacks are essential concepts in Kubernetes for managing application deployments. They allow you to update your applications without downtime and revert to previous versions if something goes wrong.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Rolling Update</strong>: A deployment strategy that updates pods incrementally to ensure minimal downtime.</li>
+<li><strong>Rollback</strong>: The process of reverting to a previous deployment version if the current one fails or has issues.</li>
+<li><strong>Deployment</strong>: A Kubernetes resource that manages a set of identical pods, ensuring that a specified number of them are running.</li>
+</ul>
+</div><h1>Rolling Updates</h1>
+<div class='content'></div><h2>How Rolling Updates Work</h2>
+<div class='content'><p>During a rolling update, Kubernetes incrementally replaces old pods with new ones. This ensures that your application remains available throughout the update process.</p>
+</div><h2>Steps to Perform a Rolling Update</h2>
+<div class='content'><ol>
+<li><strong>Update the Deployment</strong>: Modify the deployment configuration to specify the new version of the application.</li>
+<li><strong>Apply the Update</strong>: Use <code>kubectl apply</code> to apply the changes.</li>
+<li><strong>Monitor the Update</strong>: Check the status of the deployment to ensure that the update is proceeding as expected.</li>
+</ol>
+</div><h2>Example: Performing a Rolling Update</h2>
+<div class='content'><p>Let's say you have a deployment named <code>my-app</code> and you want to update its image to a new version.</p>
+<ol>
+<li>
+<p><strong>View the current deployment configuration</strong>:</p>
+<pre><code class="language-sh">kubectl get deployment my-app -o yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Update the deployment to use the new image</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-app:2.0  # Update the image version here
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the updated configuration</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f my-app-deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor the rollout status</strong>:</p>
+<pre><code class="language-sh">kubectl rollout status deployment/my-app
+</code></pre>
+</li>
+</ol>
+</div><h2>Rolling Update Strategies</h2>
+<div class='content'><ul>
+<li><strong>Max Surge</strong>: The maximum number of pods that can be created above the desired number of pods during the update.</li>
+<li><strong>Max Unavailable</strong>: The maximum number of pods that can be unavailable during the update.</li>
+</ul>
+<p>Example configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BlYzoKICBzdHJhdGVneToKICAgIHR5cGU6IFJvbGxpbmdVcGRhdGUKICAgIHJvbGxpbmdVcGRhdGU6CiAgICAgIG1heFN1cmdlOiAxCiAgICAgIG1heFVuYXZhaWxhYmxlOiAx"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1</pre></div><div class='content'></div><h1>Rollbacks</h1>
+<div class='content'></div><h2>How Rollbacks Work</h2>
+<div class='content'><p>A rollback reverts the deployment to a previous version if the current version has issues. Kubernetes keeps a history of previous deployments, making it easy to revert to a stable state.</p>
+</div><h2>Steps to Perform a Rollback</h2>
+<div class='content'><ol>
+<li><strong>Check the Deployment History</strong>: View the history of previous deployments.</li>
+<li><strong>Rollback to a Previous Revision</strong>: Use <code>kubectl rollout undo</code> to revert to a specific revision.</li>
+<li><strong>Monitor the Rollback</strong>: Ensure that the rollback is successful and the application is stable.</li>
+</ol>
+</div><h2>Example: Performing a Rollback</h2>
+<div class='content'><ol>
+<li>
+<p><strong>View the deployment history</strong>:</p>
+<pre><code class="language-sh">kubectl rollout history deployment/my-app
+</code></pre>
+</li>
+<li>
+<p><strong>Rollback to a previous revision</strong>:</p>
+<pre><code class="language-sh">kubectl rollout undo deployment/my-app --to-revision=2
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor the rollback status</strong>:</p>
+<pre><code class="language-sh">kubectl rollout status deployment/my-app
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Rolling updates and rollbacks are powerful features in Kubernetes that help ensure your applications are updated smoothly and can be reverted quickly if issues arise. By understanding and utilizing these features, you can maintain high availability and reliability for your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='configmaps-and-secrets'>&#x25C4;ConfigMaps and Secrets</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rolling Updates and Rollbacks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-applications'>Scaling Applications &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

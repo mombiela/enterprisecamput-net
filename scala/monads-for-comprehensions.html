@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monads and For-Comprehensions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/scala/monads-for-comprehensions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/scala/monads-for-comprehensions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/scala/monads-for-comprehensions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/scala/monads-for-comprehensions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/scala/monads-for-comprehensions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implicits-type-classes'>&#x25C4;Implicits and Type Classes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monads and For-Comprehensions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='functional-error-handling'>Functional Error Handling &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Monads and for-comprehensions are powerful tools in Scala that help manage side effects and enable more expressive code. This section will guide you from the basics to advanced usage, ensuring you understand both the theory and practical applications.</p>
+</div><h1>What is a Monad?</h1>
+<div class='content'><p>A Monad is a design pattern used to handle program-wide concerns in a functional way. It allows for the chaining of operations while managing side effects.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Functor</strong>: A type that implements <code>map</code>.</li>
+<li><strong>Monad</strong>: A type that implements <code>flatMap</code> and <code>unit</code> (or <code>pure</code>).</li>
+</ul>
+</div><h2>Monad Laws</h2>
+<div class='content'><p>Monads must satisfy three laws:</p>
+<ol>
+<li><strong>Left Identity</strong>: <code>unit(a).flatMap(f) == f(a)</code></li>
+<li><strong>Right Identity</strong>: <code>m.flatMap(unit) == m</code></li>
+<li><strong>Associativity</strong>: <code>m.flatMap(f).flatMap(g) == m.flatMap(x =&gt; f(x).flatMap(g))</code></li>
+</ol>
+</div><h1>Basic Monad Example</h1>
+<div class='content'><p>Let's start with a simple example using the <code>Option</code> monad.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHNvbWVWYWx1ZTogT3B0aW9uW0ludF0gPSBTb21lKDEwKQp2YWwgbm9uZVZhbHVlOiBPcHRpb25bSW50XSA9IE5vbmUKCnZhbCByZXN1bHQxID0gc29tZVZhbHVlLmZsYXRNYXAoeCA9PiBTb21lKHggKiAyKSkgLy8gU29tZSgyMCkKdmFsIHJlc3VsdDIgPSBub25lVmFsdWUuZmxhdE1hcCh4ID0+IFNvbWUoeCAqIDIpKSAvLyBOb25lCgpwcmludGxuKHJlc3VsdDEpIC8vIE91dHB1dDogU29tZSgyMCkKcHJpbnRsbihyZXN1bHQyKSAvLyBPdXRwdXQ6IE5vbmU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val someValue: Option[Int] = Some(10)
+val noneValue: Option[Int] = None
+
+val result1 = someValue.flatMap(x =&gt; Some(x * 2)) // Some(20)
+val result2 = noneValue.flatMap(x =&gt; Some(x * 2)) // None
+
+println(result1) // Output: Some(20)
+println(result2) // Output: None</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>someValue</code> is an <code>Option</code> containing a value.</li>
+<li><code>noneValue</code> is an <code>Option</code> containing no value.</li>
+<li><code>flatMap</code> is used to apply a function that returns an <code>Option</code>.</li>
+</ul>
+</div><h1>For-Comprehensions</h1>
+<div class='content'><p>For-comprehensions provide a more readable way to work with monads, especially when chaining multiple operations.</p>
+</div><h2>Basic For-Comprehension Example</h2>
+<div class='content'><p>Here’s how you can rewrite the previous example using a for-comprehension:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlc3VsdCA9IGZvciB7CiAgeCA8LSBzb21lVmFsdWUKfSB5aWVsZCB4ICogMgoKcHJpbnRsbihyZXN1bHQpIC8vIE91dHB1dDogU29tZSgyMCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val result = for {
+  x &lt;- someValue
+} yield x * 2
+
+println(result) // Output: Some(20)</pre></div><div class='content'></div><h2>For-Comprehensions with Multiple Monads</h2>
+<div class='content'><p>For-comprehensions can handle multiple monads seamlessly.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHNvbWVWYWx1ZTE6IE9wdGlvbltJbnRdID0gU29tZSgxMCkKdmFsIHNvbWVWYWx1ZTI6IE9wdGlvbltJbnRdID0gU29tZSgyMCkKCnZhbCByZXN1bHQgPSBmb3IgewogIHggPC0gc29tZVZhbHVlMQogIHkgPC0gc29tZVZhbHVlMgp9IHlpZWxkIHggKyB5CgpwcmludGxuKHJlc3VsdCkgLy8gT3V0cHV0OiBTb21lKDMwKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val someValue1: Option[Int] = Some(10)
+val someValue2: Option[Int] = Some(20)
+
+val result = for {
+  x &lt;- someValue1
+  y &lt;- someValue2
+} yield x + y
+
+println(result) // Output: Some(30)</pre></div><div class='content'></div><h1>Advanced Usage</h1>
+<h2>Combining Different Monads</h2>
+<div class='content'><p>Sometimes you need to work with different types of monads together. This can be more complex but is manageable with for-comprehensions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHNvbWVWYWx1ZTogT3B0aW9uW0ludF0gPSBTb21lKDEwKQp2YWwgZnV0dXJlVmFsdWU6IEZ1dHVyZVtJbnRdID0gRnV0dXJlLnN1Y2Nlc3NmdWwoMjApCgp2YWwgcmVzdWx0ID0gZm9yIHsKICB4IDwtIHNvbWVWYWx1ZQogIHkgPC0gZnV0dXJlVmFsdWUKfSB5aWVsZCB4ICsgeQoKcmVzdWx0Lm9uQ29tcGxldGUgewogIGNhc2UgU3VjY2Vzcyh2YWx1ZSkgPT4gcHJpbnRsbih2YWx1ZSkgLy8gT3V0cHV0OiAzMAogIGNhc2UgRmFpbHVyZShlKSA9PiBwcmludGxuKGUuZ2V0TWVzc2FnZSkKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val someValue: Option[Int] = Some(10)
+val futureValue: Future[Int] = Future.successful(20)
+
+val result = for {
+  x &lt;- someValue
+  y &lt;- futureValue
+} yield x + y
+
+result.onComplete {
+  case Success(value) =&gt; println(value) // Output: 30
+  case Failure(e) =&gt; println(e.getMessage)
+}</pre></div><div class='content'></div><h2>Custom Monads</h2>
+<div class='content'><p>You can create your own monads by implementing the <code>flatMap</code> and <code>unit</code> methods.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2FzZSBjbGFzcyBNeU1vbmFkW0FdKHZhbHVlOiBBKSB7CiAgZGVmIGZsYXRNYXBbQl0oZjogQSA9PiBNeU1vbmFkW0JdKTogTXlNb25hZFtCXSA9IGYodmFsdWUpCiAgZGVmIG1hcFtCXShmOiBBID0+IEIpOiBNeU1vbmFkW0JdID0gTXlNb25hZChmKHZhbHVlKSkKfQoKdmFsIG15TW9uYWQgPSBNeU1vbmFkKDEwKQp2YWwgcmVzdWx0ID0gZm9yIHsKICB4IDwtIG15TW9uYWQKfSB5aWVsZCB4ICogMgoKcHJpbnRsbihyZXN1bHQpIC8vIE91dHB1dDogTXlNb25hZCgyMCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>case class MyMonad[A](value: A) {
+  def flatMap[B](f: A =&gt; MyMonad[B]): MyMonad[B] = f(value)
+  def map[B](f: A =&gt; B): MyMonad[B] = MyMonad(f(value))
+}
+
+val myMonad = MyMonad(10)
+val result = for {
+  x &lt;- myMonad
+} yield x * 2
+
+println(result) // Output: MyMonad(20)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Monads and for-comprehensions are essential tools in Scala for managing side effects and writing clean, expressive code. By understanding the basics and exploring advanced usage, you can leverage these concepts to write more robust and maintainable Scala applications.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li>Monads encapsulate values and provide a way to chain operations.</li>
+<li>For-comprehensions offer a readable syntax for working with monads.</li>
+<li>Understanding monad laws ensures correct implementation.</li>
+<li>Combining different monads and creating custom monads can extend the power of your Scala programs.</li>
+</ul>
+<p>Practice these concepts with various examples to solidify your understanding and become proficient in using monads and for-comprehensions in Scala.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implicits-type-classes'>&#x25C4;Implicits and Type Classes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monads and For-Comprehensions</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='functional-error-handling'>Functional Error Handling &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

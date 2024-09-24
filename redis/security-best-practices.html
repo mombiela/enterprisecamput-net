@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/security-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/security-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='access-control-lists-acls'>&#x25C4;Access Control Lists (ACLs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-optimization'>Memory Optimization &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Redis is a powerful in-memory data structure store used as a database, cache, and message broker. While it is highly performant, it is crucial to implement security best practices to protect your data and ensure the integrity of your Redis instances. This section will guide you through essential security measures from beginner to advanced levels.</p>
+</div><h1>Basic Security Measures</h1>
+<div class='content'></div><h2>Password Protection</h2>
+<div class='content'><ul>
+<li><strong>Enable Password Authentication</strong>: Redis supports password authentication to restrict access.
+<pre><code class="language-redis"># redis.conf
+requirepass yourpassword
+</code></pre>
+This setting ensures that clients must authenticate with the specified password before executing commands.</li>
+</ul>
+</div><h2>Network Security</h2>
+<div class='content'><ul>
+<li><strong>Bind to Localhost</strong>: By default, Redis binds to all available network interfaces. Restrict it to localhost to prevent external access.
+<pre><code class="language-redis"># redis.conf
+bind 127.0.0.1
+</code></pre>
+</li>
+<li><strong>Use a Firewall</strong>: Configure your firewall to allow access only from trusted IP addresses.</li>
+</ul>
+</div><h2>Disable Dangerous Commands</h2>
+<div class='content'><ul>
+<li><strong>Rename or Disable Commands</strong>: Some Redis commands can be dangerous if misused. You can rename or disable them in the configuration file.
+<pre><code class="language-redis"># redis.conf
+rename-command FLUSHDB &quot;&quot;
+rename-command FLUSHALL &quot;&quot;
+rename-command CONFIG &quot;&quot;
+rename-command SHUTDOWN &quot;&quot;
+</code></pre>
+</li>
+</ul>
+</div><h1>Intermediate Security Measures</h1>
+<div class='content'></div><h2>Secure Communication</h2>
+<div class='content'><ul>
+<li><strong>Enable TLS/SSL</strong>: Encrypting communication between clients and the Redis server is crucial for protecting data in transit.
+<pre><code class="language-redis"># redis.conf
+tls-port 6379
+tls-cert-file /path/to/redis.crt
+tls-key-file /path/to/redis.key
+tls-ca-cert-file /path/to/ca.crt
+</code></pre>
+Ensure you have the necessary certificates and keys configured correctly.</li>
+</ul>
+</div><h2>User Authentication and Authorization</h2>
+<div class='content'><ul>
+<li><strong>Redis ACLs (Access Control Lists)</strong>: Redis 6.0 introduced ACLs, allowing fine-grained control over user permissions.
+<pre><code class="language-redis"># redis.conf
+user default on nopass ~* +@all
+user limited_user on &gt;password ~* +get +set -@dangerous
+</code></pre>
+This example creates a user <code>limited_user</code> with restricted permissions.</li>
+</ul>
+</div><h1>Advanced Security Measures</h1>
+<div class='content'></div><h2>Monitoring and Auditing</h2>
+<div class='content'><ul>
+<li><strong>Enable Logging</strong>: Configure Redis to log activities for monitoring and auditing purposes.
+<pre><code class="language-redis"># redis.conf
+logfile /var/log/redis/redis-server.log
+</code></pre>
+</li>
+<li><strong>Use Redis Sentinel</strong>: Redis Sentinel provides high availability and monitoring for Redis instances.</li>
+</ul>
+</div><h2>Secure Deployment</h2>
+<div class='content'><ul>
+<li><strong>Run Redis with Minimal Privileges</strong>: Run the Redis process with a dedicated user with minimal privileges.
+<pre><code class="language-bash">sudo useradd -r -s /bin/false redis
+sudo chown redis:redis /var/lib/redis
+sudo -u redis redis-server /etc/redis/redis.conf
+</code></pre>
+</li>
+<li><strong>Containerization</strong>: Deploy Redis in a containerized environment (e.g., Docker) to isolate it from other system processes.</li>
+</ul>
+</div><h2>Advanced Network Security</h2>
+<div class='content'><ul>
+<li><strong>Virtual Private Cloud (VPC)</strong>: Deploy Redis within a VPC to isolate it from the public internet.</li>
+<li><strong>IP Whitelisting</strong>: Use IP whitelisting to restrict access to Redis instances to known, trusted IP addresses.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Implementing security best practices in Redis is essential to protect your data and ensure the reliability of your services. Starting with basic measures like password protection and network security, you can progressively adopt more advanced techniques such as TLS/SSL encryption, ACLs, and secure deployment strategies. Regular monitoring and auditing, combined with a well-thought-out security plan, will help you maintain a robust and secure Redis environment.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='access-control-lists-acls'>&#x25C4;Access Control Lists (ACLs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Security Best Practices</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-optimization'>Memory Optimization &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study 1: Migrating to Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/case-study-1" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/case-study-1" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/case-study-1" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/case-study-1" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/case-study-1" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='minikube'>&#x25C4;Minikube</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Study 1: Migrating to Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-2'>Case Study 2: Scaling Applications &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Migrating an application to Kubernetes can be a complex but rewarding process. This case study will walk you through the steps of migrating a simple web application to Kubernetes, highlighting key concepts, best practices, and common pitfalls.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Containers</strong>: Lightweight, standalone, executable packages that include everything needed to run a piece of software.</li>
+<li><strong>Kubernetes</strong>: An open-source platform designed to automate deploying, scaling, and operating application containers.</li>
+<li><strong>Pods</strong>: The smallest deployable units in Kubernetes, which can contain one or more containers.</li>
+<li><strong>Services</strong>: Abstractions that define a logical set of Pods and a policy by which to access them.</li>
+<li><strong>Deployments</strong>: Provide declarative updates to applications, ensuring the desired state is maintained.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting the migration, ensure you have:</p>
+<ul>
+<li>A basic understanding of Docker and containerization.</li>
+<li>A Kubernetes cluster up and running (e.g., Minikube for local development or a cloud provider like GKE, EKS, or AKS).</li>
+<li>The <code>kubectl</code> command-line tool installed and configured to interact with your cluster.</li>
+</ul>
+</div><h1>Step-by-Step Migration</h1>
+<div class='content'></div><h2>Step 1: Containerize the Application</h2>
+<div class='content'><p>First, we need to containerize our web application using Docker.</p>
+<h4>Dockerfile Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2UgYW4gb2ZmaWNpYWwgTm9kZS5qcyBydW50aW1lIGFzIGEgcGFyZW50IGltYWdlCkZST00gbm9kZToxNAoKIyBTZXQgdGhlIHdvcmtpbmcgZGlyZWN0b3J5CldPUktESVIgL3Vzci9zcmMvYXBwCgojIENvcHkgcGFja2FnZS5qc29uIGFuZCBpbnN0YWxsIGRlcGVuZGVuY2llcwpDT1BZIHBhY2thZ2UqLmpzb24gLi8KUlVOIG5wbSBpbnN0YWxsCgojIENvcHkgdGhlIHJlc3Qgb2YgdGhlIGFwcGxpY2F0aW9uIGNvZGUKQ09QWSAuIC4KCiMgRXhwb3NlIHRoZSBwb3J0IHRoZSBhcHAgcnVucyBvbgpFWFBPU0UgODA4MAoKIyBEZWZpbmUgdGhlIGNvbW1hbmQgdG8gcnVuIHRoZSBhcHAKQ01EIFsibm9kZSIsICJhcHAuanMiXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Use an official Node.js runtime as a parent image
+FROM node:14
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Define the command to run the app
+CMD [&quot;node&quot;, &quot;app.js&quot;]</pre></div><div class='content'><ul>
+<li><strong>FROM</strong>: Specifies the base image.</li>
+<li><strong>WORKDIR</strong>: Sets the working directory inside the container.</li>
+<li><strong>COPY</strong>: Copies files from the host to the container.</li>
+<li><strong>RUN</strong>: Executes commands in the container.</li>
+<li><strong>EXPOSE</strong>: Informs Docker that the container listens on the specified network ports.</li>
+<li><strong>CMD</strong>: Provides the default command to run the application.</li>
+</ul>
+</div><h2>Step 2: Build and Push the Docker Image</h2>
+<div class='content'><p>Build the Docker image and push it to a container registry (e.g., Docker Hub).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCdWlsZCB0aGUgRG9ja2VyIGltYWdlCmRvY2tlciBidWlsZCAtdCB5b3VydXNlcm5hbWUveW91cmFwcDpsYXRlc3QgLgoKIyBQdXNoIHRoZSBpbWFnZSB0byBEb2NrZXIgSHViCmRvY2tlciBwdXNoIHlvdXJ1c2VybmFtZS95b3VyYXBwOmxhdGVzdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Build the Docker image
+docker build -t yourusername/yourapp:latest .
+
+# Push the image to Docker Hub
+docker push yourusername/yourapp:latest</pre></div><div class='content'></div><h2>Step 3: Create Kubernetes Manifests</h2>
+<div class='content'><p>Create Kubernetes manifests for the Deployment and Service.</p>
+<h4>Deployment Manifest (deployment.yaml)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IHdlYmFwcC1kZXBsb3ltZW50CnNwZWM6CiAgcmVwbGljYXM6IDMKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IHdlYmFwcAogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IHdlYmFwcAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiB3ZWJhcHAKICAgICAgICBpbWFnZTogeW91cnVzZXJuYW1lL3lvdXJhcHA6bGF0ZXN0CiAgICAgICAgcG9ydHM6CiAgICAgICAgLSBjb250YWluZXJQb3J0OiA4MDgw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: yourusername/yourapp:latest
+        ports:
+        - containerPort: 8080</pre></div><div class='content'><ul>
+<li><strong>replicas</strong>: Number of pod replicas.</li>
+<li><strong>selector</strong>: Identifies the pods managed by the deployment.</li>
+<li><strong>template</strong>: Defines the pod template.</li>
+</ul>
+<h4>Service Manifest (service.yaml)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiB3ZWJhcHAtc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiB3ZWJhcHAKICBwb3J0czoKICAgIC0gcHJvdG9jb2w6IFRDUAogICAgICBwb3J0OiA4MAogICAgICB0YXJnZXRQb3J0OiA4MDgwCiAgdHlwZTogTG9hZEJhbGFuY2Vy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer</pre></div><div class='content'><ul>
+<li><strong>selector</strong>: Matches the pods to expose.</li>
+<li><strong>ports</strong>: Defines the port mappings.</li>
+<li><strong>type</strong>: Specifies the service type (e.g., LoadBalancer for external access).</li>
+</ul>
+</div><h2>Step 4: Deploy to Kubernetes</h2>
+<div class='content'><p>Apply the manifests to deploy the application to the Kubernetes cluster.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBcHBseSB0aGUgZGVwbG95bWVudAprdWJlY3RsIGFwcGx5IC1mIGRlcGxveW1lbnQueWFtbAoKIyBBcHBseSB0aGUgc2VydmljZQprdWJlY3RsIGFwcGx5IC1mIHNlcnZpY2UueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Apply the deployment
+kubectl apply -f deployment.yaml
+
+# Apply the service
+kubectl apply -f service.yaml</pre></div><div class='content'></div><h2>Step 5: Verify the Deployment</h2>
+<div class='content'><p>Check the status of the deployment and service.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZXQgdGhlIHN0YXR1cyBvZiB0aGUgZGVwbG95bWVudAprdWJlY3RsIGdldCBkZXBsb3ltZW50cwoKIyBHZXQgdGhlIHN0YXR1cyBvZiB0aGUgcG9kcwprdWJlY3RsIGdldCBwb2RzCgojIEdldCB0aGUgc3RhdHVzIG9mIHRoZSBzZXJ2aWNlCmt1YmVjdGwgZ2V0IHNlcnZpY2Vz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Get the status of the deployment
+kubectl get deployments
+
+# Get the status of the pods
+kubectl get pods
+
+# Get the status of the service
+kubectl get services</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Migrating to Kubernetes involves several steps, including containerizing the application, creating Kubernetes manifests, and deploying to the cluster. By following this structured approach, you can ensure a smooth migration process. Kubernetes provides powerful tools for managing containerized applications, making it easier to scale and maintain your services.</p>
+<p>In this case study, we covered:</p>
+<ul>
+<li>Containerizing a web application with Docker.</li>
+<li>Creating Kubernetes manifests for deployment and service.</li>
+<li>Deploying and verifying the application in a Kubernetes cluster.</li>
+</ul>
+<p>This foundational knowledge will help you tackle more complex Kubernetes scenarios in the future.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='minikube'>&#x25C4;Minikube</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Study 1: Migrating to Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-2'>Case Study 2: Scaling Applications &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

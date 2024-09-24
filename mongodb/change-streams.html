@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Streams</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mongodb/change-streams" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mongodb/change-streams" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mongodb/change-streams" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mongodb/change-streams" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mongodb/change-streams" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transactions-in-mongodb'>&#x25C4;Transactions in MongoDB</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Change Streams</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='full-text-search'>Full-Text Search &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Change Streams in MongoDB provide a powerful way to listen to real-time changes in your database. This feature is particularly useful for applications that need to respond to database changes as they happen, such as real-time analytics, notifications, and data synchronization.</p>
+</div><h1>Introduction to Change Streams</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Change Streams allow applications to access real-time data changes without the complexity and overhead of polling.</li>
+<li><strong>Use Cases</strong>:
+<ul>
+<li>Real-time analytics</li>
+<li>Notifications and alerts</li>
+<li>Synchronizing data across different systems</li>
+<li>Auditing and logging changes</li>
+</ul>
+</li>
+</ul>
+</div><h1>Enabling Change Streams</h1>
+<div class='content'><p>To use Change Streams, you need to ensure that your MongoDB deployment meets the following requirements:</p>
+<ul>
+<li>MongoDB version 3.6 or later.</li>
+<li>Replica set or sharded cluster configuration.</li>
+</ul>
+</div><h1>Basic Usage</h1>
+<div class='content'></div><h2>Opening a Change Stream</h2>
+<div class='content'><p>To open a Change Stream, you can use the <code>watch</code> method on a collection, database, or the entire deployment.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBNb25nb0NsaWVudCB9ID0gcmVxdWlyZSgnbW9uZ29kYicpOwoKYXN5bmMgZnVuY3Rpb24gbWFpbigpIHsKICBjb25zdCB1cmkgPSAieW91cl9tb25nb2RiX2Nvbm5lY3Rpb25fc3RyaW5nIjsKICBjb25zdCBjbGllbnQgPSBuZXcgTW9uZ29DbGllbnQodXJpLCB7IHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwgdXNlVW5pZmllZFRvcG9sb2d5OiB0cnVlIH0pOwoKICB0cnkgewogICAgYXdhaXQgY2xpZW50LmNvbm5lY3QoKTsKICAgIGNvbnN0IGRhdGFiYXNlID0gY2xpZW50LmRiKCd5b3VyX2RhdGFiYXNlJyk7CiAgICBjb25zdCBjb2xsZWN0aW9uID0gZGF0YWJhc2UuY29sbGVjdGlvbigneW91cl9jb2xsZWN0aW9uJyk7CgogICAgY29uc3QgY2hhbmdlU3RyZWFtID0gY29sbGVjdGlvbi53YXRjaCgpOwoKICAgIGNoYW5nZVN0cmVhbS5vbignY2hhbmdlJywgKGNoYW5nZSkgPT4gewogICAgICBjb25zb2xlLmxvZygnQ2hhbmdlIGRldGVjdGVkOicsIGNoYW5nZSk7CiAgICB9KTsKCiAgfSBmaW5hbGx5IHsKICAgIC8vIGF3YWl0IGNsaWVudC5jbG9zZSgpOyAvLyBVbmNvbW1lbnQgdGhpcyBsaW5lIHRvIGNsb3NlIHRoZSBjb25uZWN0aW9uIHdoZW4gZG9uZQogIH0KfQoKbWFpbigpLmNhdGNoKGNvbnNvbGUuZXJyb3IpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { MongoClient } = require('mongodb');
+
+async function main() {
+  const uri = &quot;your_mongodb_connection_string&quot;;
+  const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+    const database = client.db('your_database');
+    const collection = database.collection('your_collection');
+
+    const changeStream = collection.watch();
+
+    changeStream.on('change', (change) =&gt; {
+      console.log('Change detected:', change);
+    });
+
+  } finally {
+    // await client.close(); // Uncomment this line to close the connection when done
+  }
+}
+
+main().catch(console.error);</pre></div><div class='content'></div><h2>Change Event Structure</h2>
+<div class='content'><p>A change event document contains several fields that provide information about the change:</p>
+<ul>
+<li><strong>_id</strong>: A unique identifier for the change event.</li>
+<li><strong>operationType</strong>: The type of operation that triggered the change (e.g., insert, update, delete).</li>
+<li><strong>fullDocument</strong>: The document affected by the change (only for insert and update operations).</li>
+<li><strong>ns</strong>: The namespace (database and collection) of the changed document.</li>
+<li><strong>documentKey</strong>: The unique identifier of the changed document.</li>
+</ul>
+</div><h2>Example Change Event</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJfaWQiOiB7ICJ0cyI6IHsgIiR0aW1lc3RhbXAiOiB7ICJ0IjogMTYyMDA3NTYwMCwgImkiOiAxIH0gfSwgIm5zIjogInlvdXJfZGF0YWJhc2UueW91cl9jb2xsZWN0aW9uIiwgImRvY3VtZW50S2V5IjogeyAiX2lkIjogMSB9IH0sCiAgIm9wZXJhdGlvblR5cGUiOiAiaW5zZXJ0IiwKICAiZnVsbERvY3VtZW50IjogeyAiX2lkIjogMSwgIm5hbWUiOiAiSm9obiBEb2UiLCAiYWdlIjogMzAgfSwKICAibnMiOiB7ICJkYiI6ICJ5b3VyX2RhdGFiYXNlIiwgImNvbGwiOiAieW91cl9jb2xsZWN0aW9uIiB9LAogICJkb2N1bWVudEtleSI6IHsgIl9pZCI6IDEgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;_id&quot;: { &quot;ts&quot;: { &quot;$timestamp&quot;: { &quot;t&quot;: 1620075600, &quot;i&quot;: 1 } }, &quot;ns&quot;: &quot;your_database.your_collection&quot;, &quot;documentKey&quot;: { &quot;_id&quot;: 1 } },
+  &quot;operationType&quot;: &quot;insert&quot;,
+  &quot;fullDocument&quot;: { &quot;_id&quot;: 1, &quot;name&quot;: &quot;John Doe&quot;, &quot;age&quot;: 30 },
+  &quot;ns&quot;: { &quot;db&quot;: &quot;your_database&quot;, &quot;coll&quot;: &quot;your_collection&quot; },
+  &quot;documentKey&quot;: { &quot;_id&quot;: 1 }
+}</pre></div><div class='content'></div><h1>Advanced Usage</h1>
+<div class='content'></div><h2>Filtering Change Events</h2>
+<div class='content'><p>You can filter change events using an aggregation pipeline to receive only the changes you're interested in.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGlwZWxpbmUgPSBbCiAgeyAkbWF0Y2g6IHsgJ2Z1bGxEb2N1bWVudC5hZ2UnOiB7ICRndGU6IDE4IH0gfSB9Cl07Cgpjb25zdCBjaGFuZ2VTdHJlYW0gPSBjb2xsZWN0aW9uLndhdGNoKHBpcGVsaW5lKTsKCmNoYW5nZVN0cmVhbS5vbignY2hhbmdlJywgKGNoYW5nZSkgPT4gewogIGNvbnNvbGUubG9nKCdGaWx0ZXJlZCBjaGFuZ2UgZGV0ZWN0ZWQ6JywgY2hhbmdlKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const pipeline = [
+  { $match: { 'fullDocument.age': { $gte: 18 } } }
+];
+
+const changeStream = collection.watch(pipeline);
+
+changeStream.on('change', (change) =&gt; {
+  console.log('Filtered change detected:', change);
+});</pre></div><div class='content'></div><h2>Resuming Change Streams</h2>
+<div class='content'><p>Change Streams can be resumed from a specific point in time using a resume token. This is useful for handling interruptions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmVzdW1lVG9rZW4gPSBjaGFuZ2VTdHJlYW0ucmVzdW1lVG9rZW47Cgpjb25zdCByZXN1bWVkQ2hhbmdlU3RyZWFtID0gY29sbGVjdGlvbi53YXRjaChbXSwgeyByZXN1bWVBZnRlcjogcmVzdW1lVG9rZW4gfSk7CgpyZXN1bWVkQ2hhbmdlU3RyZWFtLm9uKCdjaGFuZ2UnLCAoY2hhbmdlKSA9PiB7CiAgY29uc29sZS5sb2coJ1Jlc3VtZWQgY2hhbmdlIGRldGVjdGVkOicsIGNoYW5nZSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const resumeToken = changeStream.resumeToken;
+
+const resumedChangeStream = collection.watch([], { resumeAfter: resumeToken });
+
+resumedChangeStream.on('change', (change) =&gt; {
+  console.log('Resumed change detected:', change);
+});</pre></div><div class='content'></div><h2>Change Streams on a Database or Deployment</h2>
+<div class='content'><p>You can also watch changes on an entire database or deployment.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZGJDaGFuZ2VTdHJlYW0gPSBkYXRhYmFzZS53YXRjaCgpOwpjb25zdCBkZXBsb3ltZW50Q2hhbmdlU3RyZWFtID0gY2xpZW50LndhdGNoKCk7CgpkYkNoYW5nZVN0cmVhbS5vbignY2hhbmdlJywgKGNoYW5nZSkgPT4gewogIGNvbnNvbGUubG9nKCdEYXRhYmFzZSBjaGFuZ2UgZGV0ZWN0ZWQ6JywgY2hhbmdlKTsKfSk7CgpkZXBsb3ltZW50Q2hhbmdlU3RyZWFtLm9uKCdjaGFuZ2UnLCAoY2hhbmdlKSA9PiB7CiAgY29uc29sZS5sb2coJ0RlcGxveW1lbnQgY2hhbmdlIGRldGVjdGVkOicsIGNoYW5nZSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const dbChangeStream = database.watch();
+const deploymentChangeStream = client.watch();
+
+dbChangeStream.on('change', (change) =&gt; {
+  console.log('Database change detected:', change);
+});
+
+deploymentChangeStream.on('change', (change) =&gt; {
+  console.log('Deployment change detected:', change);
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Change Streams in MongoDB provide a robust mechanism for monitoring real-time changes in your database. By leveraging Change Streams, you can build responsive applications that react to data changes instantly. Whether you are working on real-time analytics, notifications, or data synchronization, Change Streams offer a flexible and efficient solution.</p>
+<ul>
+<li><strong>Key Takeaways</strong>:
+<ul>
+<li>Change Streams allow real-time monitoring of database changes.</li>
+<li>They can be used on collections, databases, or entire deployments.</li>
+<li>Filtering and resuming Change Streams provide additional control and reliability.</li>
+</ul>
+</li>
+</ul>
+<p>By mastering Change Streams, you can significantly enhance the responsiveness and interactivity of your MongoDB-based applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transactions-in-mongodb'>&#x25C4;Transactions in MongoDB</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Change Streams</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='full-text-search'>Full-Text Search &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Workers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/javascript/web-workers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/javascript/web-workers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/javascript/web-workers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/javascript/web-workers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/javascript/web-workers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='concurrency-model'>&#x25C4;Concurrency Model</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Web Workers</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-to-do-list-application'>Building a To-Do List Application &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Web Workers provide a way to run scripts in background threads. They can execute code without interfering with the user interface, enabling you to perform tasks like computations or data processing without causing the web page to become unresponsive.</p>
+</div><h1>Introduction to Web Workers</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Web Workers are JavaScript scripts that run in the background, separate from the main execution thread of a web application.</li>
+<li><strong>Purpose</strong>: They are used to perform tasks that are computationally intensive or require waiting for external resources, without blocking the main thread.</li>
+<li><strong>Types of Web Workers</strong>:
+<ul>
+<li><strong>Dedicated Workers</strong>: Used by a single script.</li>
+<li><strong>Shared Workers</strong>: Can be accessed by multiple scripts, even from different windows or iframes.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creating and Using a Web Worker</h1>
+<div class='content'></div><h2>Creating a Worker</h2>
+<div class='content'><p>To create a Web Worker, you need to write a separate JavaScript file for the worker and then instantiate it in your main script.</p>
+<p><strong>Example:</strong></p>
+<ol>
+<li>
+<p><strong>worker.js</strong> (Worker Script)</p>
+<pre><code class="language-javascript">// worker.js
+self.onmessage = function(event) {
+    const data = event.data;
+    // Perform some computation
+    const result = data * 2;
+    // Send the result back to the main thread
+    self.postMessage(result);
+};
+</code></pre>
+</li>
+<li>
+<p><strong>main.js</strong> (Main Script)</p>
+<pre><code class="language-javascript">// main.js
+if (window.Worker) {
+    const myWorker = new Worker('worker.js');
+
+    myWorker.onmessage = function(event) {
+        console.log('Received from worker:', event.data);
+    };
+
+    myWorker.postMessage(10); // Send data to the worker
+} else {
+    console.log('Web Workers are not supported in your browser.');
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Communicating with a Worker</h2>
+<div class='content'><ul>
+<li><strong>Sending Data to Worker</strong>: Use the <code>postMessage</code> method.</li>
+<li><strong>Receiving Data from Worker</strong>: Listen for the <code>message</code> event.</li>
+</ul>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2VuZGluZyBkYXRhIHRvIHRoZSB3b3JrZXIKbXlXb3JrZXIucG9zdE1lc3NhZ2UoJ0hlbGxvLCBXb3JrZXIhJyk7CgovLyBSZWNlaXZpbmcgZGF0YSBmcm9tIHRoZSB3b3JrZXIKbXlXb3JrZXIub25tZXNzYWdlID0gZnVuY3Rpb24oZXZlbnQpIHsKICAgIGNvbnNvbGUubG9nKCdNZXNzYWdlIGZyb20gd29ya2VyOicsIGV2ZW50LmRhdGEpOwp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Sending data to the worker
+myWorker.postMessage('Hello, Worker!');
+
+// Receiving data from the worker
+myWorker.onmessage = function(event) {
+    console.log('Message from worker:', event.data);
+};</pre></div><div class='content'></div><h1>Terminating a Worker</h1>
+<div class='content'><p>Workers can be terminated from the main script using the <code>terminate</code> method.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlXb3JrZXIudGVybWluYXRlKCk7CmNvbnNvbGUubG9nKCdXb3JrZXIgdGVybWluYXRlZC4nKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myWorker.terminate();
+console.log('Worker terminated.');</pre></div><div class='content'></div><h1>Error Handling in Workers</h1>
+<div class='content'><p>Errors in workers can be caught using the <code>onerror</code> event handler.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlXb3JrZXIub25lcnJvciA9IGZ1bmN0aW9uKGV2ZW50KSB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBpbiB3b3JrZXI6JywgZXZlbnQubWVzc2FnZSwgJ2F0JywgZXZlbnQuZmlsZW5hbWUsICdsaW5lJywgZXZlbnQubGluZW5vKTsKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myWorker.onerror = function(event) {
+    console.error('Error in worker:', event.message, 'at', event.filename, 'line', event.lineno);
+};</pre></div><div class='content'></div><h1>Advanced Usage</h1>
+<div class='content'></div><h2>Shared Workers</h2>
+<div class='content'><p>Shared Workers can be used by multiple scripts, even from different windows or iframes.</p>
+<p><strong>Example:</strong></p>
+<ol>
+<li>
+<p><strong>sharedWorker.js</strong> (Shared Worker Script)</p>
+<pre><code class="language-javascript">// sharedWorker.js
+self.onconnect = function(event) {
+    const port = event.ports[0];
+
+    port.onmessage = function(event) {
+        const data = event.data;
+        // Perform some computation
+        const result = data * 2;
+        // Send the result back to the main thread
+        port.postMessage(result);
+    };
+};
+</code></pre>
+</li>
+<li>
+<p><strong>main.js</strong> (Main Script)</p>
+<pre><code class="language-javascript">// main.js
+if (window.SharedWorker) {
+    const mySharedWorker = new SharedWorker('sharedWorker.js');
+
+    mySharedWorker.port.onmessage = function(event) {
+        console.log('Received from shared worker:', event.data);
+    };
+
+    mySharedWorker.port.postMessage(10); // Send data to the shared worker
+} else {
+    console.log('Shared Workers are not supported in your browser.');
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>Web Workers are a powerful feature in JavaScript that allow you to run scripts in the background, improving the performance and responsiveness of your web applications. By offloading heavy computations or long-running tasks to Web Workers, you can ensure that the main thread remains free to handle user interactions smoothly. Whether you use Dedicated Workers for single-threaded tasks or Shared Workers for multi-threaded tasks, understanding how to create, communicate with, and manage Web Workers is essential for building efficient and responsive web applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='concurrency-model'>&#x25C4;Concurrency Model</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Web Workers</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-to-do-list-application'>Building a To-Do List Application &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

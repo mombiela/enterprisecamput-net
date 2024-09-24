@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Requests and Limits</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/resource-requests-and-limits" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/resource-requests-and-limits" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/resource-requests-and-limits" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/resource-requests-and-limits" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/resource-requests-and-limits" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='health-checks-and-probes'>&#x25C4;Health Checks and Probes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Resource Requests and Limits</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cluster-networking'>Cluster Networking &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In Kubernetes, managing resources efficiently is crucial for ensuring that applications run smoothly and that the cluster remains stable. Resource requests and limits are two key concepts that help achieve this by controlling the amount of CPU and memory resources that containers can use.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Resource Requests</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: The minimum amount of CPU and memory resources that a container requires to run.</li>
+<li><strong>Purpose</strong>: Ensures that the Kubernetes scheduler can make informed decisions about where to place pods based on available resources.</li>
+<li><strong>Syntax</strong>: Specified in the pod's YAML configuration file under the <code>resources.requests</code> field.</li>
+</ul>
+</div><h2>Resource Limits</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: The maximum amount of CPU and memory resources that a container is allowed to use.</li>
+<li><strong>Purpose</strong>: Prevents a single container from consuming all the resources of a node, which could affect other containers running on the same node.</li>
+<li><strong>Syntax</strong>: Specified in the pod's YAML configuration file under the <code>resources.limits</code> field.</li>
+</ul>
+</div><h1>Example Configuration</h1>
+<div class='content'><p>Here is an example of how to set resource requests and limits in a pod's YAML configuration file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IHJlc291cmNlLWRlbW8Kc3BlYzoKICBjb250YWluZXJzOgogIC0gbmFtZTogcmVzb3VyY2UtZGVtby1jb250YWluZXIKICAgIGltYWdlOiBuZ2lueAogICAgcmVzb3VyY2VzOgogICAgICByZXF1ZXN0czoKICAgICAgICBtZW1vcnk6ICI2NE1pIgogICAgICAgIGNwdTogIjI1MG0iCiAgICAgIGxpbWl0czoKICAgICAgICBtZW1vcnk6ICIxMjhNaSIKICAgICAgICBjcHU6ICI1MDBtIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-demo
+spec:
+  containers:
+  - name: resource-demo-container
+    image: nginx
+    resources:
+      requests:
+        memory: &quot;64Mi&quot;
+        cpu: &quot;250m&quot;
+      limits:
+        memory: &quot;128Mi&quot;
+        cpu: &quot;500m&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>requests.memory</strong>: The container requests 64 MiB of memory.</li>
+<li><strong>requests.cpu</strong>: The container requests 250 milliCPU (0.25 CPU).</li>
+<li><strong>limits.memory</strong>: The container is limited to 128 MiB of memory.</li>
+<li><strong>limits.cpu</strong>: The container is limited to 500 milliCPU (0.5 CPU).</li>
+</ul>
+</div><h1>Best Practices</h1>
+<div class='content'><ul>
+<li><strong>Set Realistic Requests</strong>: Ensure that resource requests are based on the actual needs of the application to avoid over-provisioning.</li>
+<li><strong>Set Limits to Prevent Resource Hogging</strong>: Use resource limits to prevent any single container from consuming too many resources, which could affect other containers.</li>
+<li><strong>Monitor and Adjust</strong>: Continuously monitor resource usage and adjust requests and limits as necessary to optimize performance and resource utilization.</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<div class='content'></div><h2>Resource Quotas</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Resource quotas are used to limit the total amount of resources that can be consumed by all the pods in a namespace.</li>
+<li><strong>Purpose</strong>: Helps in managing resource allocation across different teams or projects within the same cluster.</li>
+<li><strong>Example</strong>:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUmVzb3VyY2VRdW90YQptZXRhZGF0YToKICBuYW1lOiBtZW0tY3B1LXF1b3RhCiAgbmFtZXNwYWNlOiBteW5hbWVzcGFjZQpzcGVjOgogIGhhcmQ6CiAgICByZXF1ZXN0cy5jcHU6ICIxIgogICAgcmVxdWVzdHMubWVtb3J5OiAxR2kKICAgIGxpbWl0cy5jcHU6ICIyIgogICAgbGltaXRzLm1lbW9yeTogMkdp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: mem-cpu-quota
+  namespace: mynamespace
+spec:
+  hard:
+    requests.cpu: &quot;1&quot;
+    requests.memory: 1Gi
+    limits.cpu: &quot;2&quot;
+    limits.memory: 2Gi</pre></div><div class='content'></div><h2>Limit Ranges</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Limit ranges are used to enforce minimum and maximum resource limits for containers in a namespace.</li>
+<li><strong>Purpose</strong>: Ensures that all containers in a namespace adhere to specified resource constraints.</li>
+<li><strong>Example</strong>:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogTGltaXRSYW5nZQptZXRhZGF0YToKICBuYW1lOiBtZW0tbGltaXQtcmFuZ2UKICBuYW1lc3BhY2U6IG15bmFtZXNwYWNlCnNwZWM6CiAgbGltaXRzOgogIC0gbWF4OgogICAgICBtZW1vcnk6ICIxR2kiCiAgICBtaW46CiAgICAgIG1lbW9yeTogIjI1Nk1pIgogICAgdHlwZTogQ29udGFpbmVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+  namespace: mynamespace
+spec:
+  limits:
+  - max:
+      memory: &quot;1Gi&quot;
+    min:
+      memory: &quot;256Mi&quot;
+    type: Container</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Understanding and properly configuring resource requests and limits is essential for efficient resource management in Kubernetes. By setting appropriate requests and limits, you can ensure that your applications run smoothly while preventing resource contention and ensuring fair resource distribution across your cluster. Advanced features like resource quotas and limit ranges provide additional control and can help manage resources at a namespace level. Continuously monitor and adjust these settings to maintain optimal performance and resource utilization.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='health-checks-and-probes'>&#x25C4;Health Checks and Probes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Resource Requests and Limits</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cluster-networking'>Cluster Networking &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

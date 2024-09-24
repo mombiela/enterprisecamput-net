@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Templates with Jinja2</title>
+
+    <link rel="alternate" href="https://campusempresa.com/ansible/templates-with-jinja2" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/ansible/templates-with-jinja2" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/ansible/templates-with-jinja2" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/ansible/templates-with-jinja2" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/ansible/templates-with-jinja2" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handlers-and-notifications'>&#x25C4;Handlers and Notifications</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Templates with Jinja2</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='roles-and-role-based-development'>Roles and Role-Based Development &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Jinja2</h1>
+<div class='content'><p>Jinja2 is a powerful templating engine for Python, which is widely used in Ansible for generating dynamic content. Understanding how to use Jinja2 templates is crucial for creating flexible and reusable playbooks.</p>
+<ul>
+<li><strong>What is Jinja2?</strong>
+<ul>
+<li>A templating engine for Python.</li>
+<li>Allows embedding Python-like expressions in static files.</li>
+<li>Used in Ansible for creating dynamic configurations.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Basic Syntax and Usage</h1>
+<div class='content'><p>Jinja2 templates use a combination of delimiters to distinguish between static text and dynamic expressions.</p>
+<ul>
+<li><strong>Delimiters:</strong>
+<ul>
+<li><code>{{ ... }}</code>: Expression to print the result.</li>
+<li><code>{% ... %}</code>: Statement for logic (loops, conditionals).</li>
+<li><code>{# ... #}</code>: Comment.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Simple Variable Substitution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIGdyZWV0aW5nOiAiSGVsbG8iCiAgbmFtZTogIldvcmxkIgoKIyB0ZW1wbGF0ZS5qMgp7eyBncmVldGluZyB9fSwge3sgbmFtZSB9fSEKCiMgcGxheWJvb2sueW1sCi0gaG9zdHM6IGxvY2FsaG9zdAogIHZhcnNfZmlsZXM6CiAgICAtIHZhcnMueW1sCiAgdGFza3M6CiAgICAtIG5hbWU6IFJlbmRlciB0ZW1wbGF0ZQogICAgICB0ZW1wbGF0ZToKICAgICAgICBzcmM6IHRlbXBsYXRlLmoyCiAgICAgICAgZGVzdDogL3RtcC9vdXRwdXQudHh0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  greeting: &quot;Hello&quot;
+  name: &quot;World&quot;
+
+# template.j2
+{{ greeting }}, {{ name }}!
+
+# playbook.yml
+- hosts: localhost
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Render template
+      template:
+        src: template.j2
+        dest: /tmp/output.txt</pre></div><div class='content'><p>This example will create a file <code>/tmp/output.txt</code> with the content <code>Hello, World!</code>.</p>
+</div><h1>Control Structures</h1>
+<div class='content'><p>Jinja2 supports various control structures such as loops and conditionals to create more complex templates.</p>
+</div><h2>Conditionals</h2>
+<div class='content'><p>Use <code>{% if %}</code> to include conditional logic in your templates.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIHVzZXI6ICJhZG1pbiIKICBpc19hZG1pbjogdHJ1ZQoKIyB0ZW1wbGF0ZS5qMgp7JSBpZiBpc19hZG1pbiAlfQpXZWxjb21lLCB7eyB1c2VyIH19ISBZb3UgaGF2ZSBhZG1pbmlzdHJhdGl2ZSBwcml2aWxlZ2VzLgp7JSBlbHNlICV9CldlbGNvbWUsIHt7IHVzZXIgfX0hCnslIGVuZGlmICV9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  user: &quot;admin&quot;
+  is_admin: true
+
+# template.j2
+{% if is_admin %}
+Welcome, {{ user }}! You have administrative privileges.
+{% else %}
+Welcome, {{ user }}!
+{% endif %}</pre></div><div class='content'></div><h2>Loops</h2>
+<div class='content'><p>Use <code>{% for %}</code> to iterate over lists or dictionaries.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIHVzZXJzOgogICAgLSBhbGljZQogICAgLSBib2IKICAgIC0gY2Fyb2wKCiMgdGVtcGxhdGUuajIKVXNlcnM6CnslIGZvciB1c2VyIGluIHVzZXJzICV9Ci0ge3sgdXNlciB9fQp7JSBlbmRmb3IgJX0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  users:
+    - alice
+    - bob
+    - carol
+
+# template.j2
+Users:
+{% for user in users %}
+- {{ user }}
+{% endfor %}</pre></div><div class='content'></div><h1>Filters and Functions</h1>
+<div class='content'><p>Jinja2 provides a variety of filters and functions to manipulate data within templates.</p>
+</div><h2>Common Filters</h2>
+<div class='content'><ul>
+<li><code>default</code>: Provide a default value if the variable is undefined.</li>
+<li><code>upper</code>: Convert a string to uppercase.</li>
+<li><code>lower</code>: Convert a string to lowercase.</li>
+<li><code>replace</code>: Replace parts of a string.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIG5hbWU6ICJBbnNpYmxlIgogIGRlc2NyaXB0aW9uOiAiQ29uZmlndXJhdGlvbiBNYW5hZ2VtZW50IFRvb2wiCgojIHRlbXBsYXRlLmoyCk5hbWU6IHt7IG5hbWUgfCB1cHBlciB9fQpEZXNjcmlwdGlvbjoge3sgZGVzY3JpcHRpb24gfCByZXBsYWNlKCJNYW5hZ2VtZW50IiwgIkF1dG9tYXRpb24iKSB9fQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  name: &quot;Ansible&quot;
+  description: &quot;Configuration Management Tool&quot;
+
+# template.j2
+Name: {{ name | upper }}
+Description: {{ description | replace(&quot;Management&quot;, &quot;Automation&quot;) }}</pre></div><div class='content'></div><h2>Custom Filters</h2>
+<div class='content'><p>You can also create custom filters in Ansible using Python.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBmaWx0ZXJfcGx1Z2lucy9teV9maWx0ZXJzLnB5CmRlZiByZXZlcnNlX3N0cmluZyh2YWx1ZSk6CiAgICByZXR1cm4gdmFsdWVbOjotMV0KCmNsYXNzIEZpbHRlck1vZHVsZShvYmplY3QpOgogICAgZGVmIGZpbHRlcnMoc2VsZik6CiAgICAgICAgcmV0dXJuIHsKICAgICAgICAgICAgJ3JldmVyc2UnOiByZXZlcnNlX3N0cmluZwogICAgICAgIH0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># filter_plugins/my_filters.py
+def reverse_string(value):
+    return value[::-1]
+
+class FilterModule(object):
+    def filters(self):
+        return {
+            'reverse': reverse_string
+        }</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIHdvcmQ6ICJBbnNpYmxlIgoKIyB0ZW1wbGF0ZS5qMgpSZXZlcnNlZDoge3sgd29yZCB8IHJldmVyc2UgfX0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  word: &quot;Ansible&quot;
+
+# template.j2
+Reversed: {{ word | reverse }}</pre></div><div class='content'></div><h1>Practical Examples</h1>
+<h2>Generating Configuration Files</h2>
+<div class='content'><p>Templates are often used to generate configuration files dynamically.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIHNlcnZlcl9uYW1lOiAiZXhhbXBsZS5jb20iCiAgZG9jdW1lbnRfcm9vdDogIi92YXIvd3d3L2h0bWwiCgojIHRlbXBsYXRlLmoyIChuZ2lueC5jb25mKQpzZXJ2ZXIgewogICAgbGlzdGVuIDgwOwogICAgc2VydmVyX25hbWUge3sgc2VydmVyX25hbWUgfX07CiAgICByb290IHt7IGRvY3VtZW50X3Jvb3QgfX07Cn0KCiMgcGxheWJvb2sueW1sCi0gaG9zdHM6IHdlYnNlcnZlcnMKICB2YXJzX2ZpbGVzOgogICAgLSB2YXJzLnltbAogIHRhc2tzOgogICAgLSBuYW1lOiBEZXBsb3kgbmdpbnggY29uZmlndXJhdGlvbgogICAgICB0ZW1wbGF0ZToKICAgICAgICBzcmM6IG5naW54LmNvbmYuajIKICAgICAgICBkZXN0OiAvZXRjL25naW54L3NpdGVzLWF2YWlsYWJsZS9kZWZhdWx0CiAgICAgIG5vdGlmeTogcmVzdGFydCBuZ2lueA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  server_name: &quot;example.com&quot;
+  document_root: &quot;/var/www/html&quot;
+
+# template.j2 (nginx.conf)
+server {
+    listen 80;
+    server_name {{ server_name }};
+    root {{ document_root }};
+}
+
+# playbook.yml
+- hosts: webservers
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Deploy nginx configuration
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/sites-available/default
+      notify: restart nginx</pre></div><div class='content'></div><h2>Email Templates</h2>
+<div class='content'><p>You can also use Jinja2 to create dynamic email content.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2YXJzLnltbAp2YXJzOgogIHJlY2lwaWVudDogInVzZXJAZXhhbXBsZS5jb20iCiAgc3ViamVjdDogIldlbGNvbWUgdG8gT3VyIFNlcnZpY2UiCiAgYm9keTogIlRoYW5rIHlvdSBmb3Igc2lnbmluZyB1cCEiCgojIHRlbXBsYXRlLmoyIChlbWFpbC50eHQpClRvOiB7eyByZWNpcGllbnQgfX0KU3ViamVjdDoge3sgc3ViamVjdCB9fQoKe3sgYm9keSB9fQoKIyBwbGF5Ym9vay55bWwKLSBob3N0czogbG9jYWxob3N0CiAgdmFyc19maWxlczoKICAgIC0gdmFycy55bWwKICB0YXNrczoKICAgIC0gbmFtZTogR2VuZXJhdGUgZW1haWwgY29udGVudAogICAgICB0ZW1wbGF0ZToKICAgICAgICBzcmM6IGVtYWlsLnR4dC5qMgogICAgICAgIGRlc3Q6IC90bXAvZW1haWwudHh0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># vars.yml
+vars:
+  recipient: &quot;user@example.com&quot;
+  subject: &quot;Welcome to Our Service&quot;
+  body: &quot;Thank you for signing up!&quot;
+
+# template.j2 (email.txt)
+To: {{ recipient }}
+Subject: {{ subject }}
+
+{{ body }}
+
+# playbook.yml
+- hosts: localhost
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Generate email content
+      template:
+        src: email.txt.j2
+        dest: /tmp/email.txt</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Jinja2 templates are a powerful tool in Ansible for creating dynamic and flexible configurations. By mastering the basic syntax, control structures, filters, and practical applications, you can significantly enhance the capabilities of your Ansible playbooks. Practice creating and using templates to become proficient in leveraging Jinja2 within your automation workflows.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='handlers-and-notifications'>&#x25C4;Handlers and Notifications</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Templates with Jinja2</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='roles-and-role-based-development'>Roles and Role-Based Development &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

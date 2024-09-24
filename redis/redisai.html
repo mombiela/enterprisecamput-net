@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RedisAI</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/redisai" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/redisai" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/redisai" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/redisai" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/redisai" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='redistimeseries'>&#x25C4;RedisTimeSeries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">RedisAI</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='redisgears'>RedisGears &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>RedisAI is a Redis module designed to execute deep learning models and manage the entire lifecycle of AI models within Redis. It allows you to run models from popular deep learning frameworks such as TensorFlow, PyTorch, and ONNX directly within Redis, enabling low-latency and high-throughput AI inference.</p>
+</div><h1>Introduction to RedisAI</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What is RedisAI?</strong></p>
+<ul>
+<li>RedisAI is a Redis module that allows you to execute and manage AI models within Redis.</li>
+<li>It supports multiple deep learning frameworks, including TensorFlow, PyTorch, and ONNX.</li>
+<li>RedisAI provides a seamless way to integrate AI capabilities into your Redis-based applications.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why use RedisAI?</strong></p>
+<ul>
+<li><strong>Low Latency:</strong> RedisAI leverages Redis's in-memory data structure to provide low-latency AI inference.</li>
+<li><strong>Scalability:</strong> RedisAI can scale horizontally with Redis, making it suitable for high-throughput applications.</li>
+<li><strong>Flexibility:</strong> Supports multiple AI frameworks, allowing you to choose the best tool for your needs.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up RedisAI</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>A working installation of Redis.</li>
+<li>Docker (optional but recommended for ease of setup).</li>
+</ul>
+</li>
+<li>
+<p><strong>Installation Steps:</strong></p>
+<ol>
+<li><strong>Using Docker:</strong>
+<pre><code class="language-bash">docker run -p 6379:6379 --name redisai redislabs/redisai
+</code></pre>
+</li>
+<li><strong>Building from Source:</strong>
+<ul>
+<li>Clone the RedisAI repository from GitHub.</li>
+<li>Follow the build instructions provided in the repository.</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>
+<p><strong>Loading the RedisAI Module:</strong></p>
+<pre><code class="language-bash">redis-server --loadmodule /path/to/redisai.so
+</code></pre>
+</li>
+</ul>
+</div><h1>Basic Operations with RedisAI</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Loading a Model:</strong></p>
+<ul>
+<li>RedisAI allows you to load models into Redis and execute them.</li>
+<li>Example: Loading a TensorFlow model.
+<pre><code class="language-python">import redis
+
+r = redis.Redis()
+
+with open('model.pb', 'rb') as f:
+    model = f.read()
+
+r.execute_command('AI.MODELSET', 'mymodel', 'TF', 'CPU', 'INPUTS', 'input', 'OUTPUTS', 'output', model)
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Running Inference:</strong></p>
+<ul>
+<li>Example: Running inference using the loaded model.
+<pre><code class="language-python">import numpy as np
+
+input_data = np.random.rand(1, 3, 224, 224).astype(np.float32).tobytes()
+r.execute_command('AI.TENSORSET', 'input_tensor', 'FLOAT', 1, 3, 224, 224, 'BLOB', input_data)
+r.execute_command('AI.MODELRUN', 'mymodel', 'INPUTS', 'input_tensor', 'OUTPUTS', 'output_tensor')
+output = r.execute_command('AI.TENSORGET', 'output_tensor', 'BLOB')
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Features of RedisAI</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Script Management:</strong></p>
+<ul>
+<li>RedisAI supports executing custom scripts using the TorchScript or ONNX runtime.</li>
+<li>Example: Loading and executing a TorchScript.
+<pre><code class="language-python">script = &quot;&quot;&quot;
+def forward(input):
+    return input + 1
+&quot;&quot;&quot;
+r.execute_command('AI.SCRIPTSET', 'myscript', 'CPU', script)
+r.execute_command('AI.SCRIPTRUN', 'myscript', 'forward', 'INPUTS', 'input_tensor', 'OUTPUTS', 'output_tensor')
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Model Versioning:</strong></p>
+<ul>
+<li>RedisAI supports versioning of models, allowing you to manage multiple versions of the same model.</li>
+<li>Example: Loading a new version of a model.
+<pre><code class="language-python">r.execute_command('AI.MODELSET', 'mymodel', 'TF', 'CPU', 'INPUTS', 'input', 'OUTPUTS', 'output', model, 'TAG', 'v2')
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Monitoring and Debugging:</strong></p>
+<ul>
+<li>RedisAI provides commands to monitor and debug model execution.</li>
+<li>Example: Checking model info.
+<pre><code class="language-bash">redis-cli AI.MODELGET mymodel META
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Use Cases and Best Practices</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Real-time recommendation systems.</li>
+<li>Fraud detection.</li>
+<li>Image and video processing.</li>
+<li>Natural language processing.</li>
+</ul>
+</li>
+<li>
+<p><strong>Best Practices:</strong></p>
+<ul>
+<li><strong>Optimize Models:</strong> Ensure models are optimized for inference to reduce latency.</li>
+<li><strong>Resource Management:</strong> Monitor and manage resources to avoid bottlenecks.</li>
+<li><strong>Version Control:</strong> Use model versioning to manage updates and rollbacks.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>RedisAI extends Redis's capabilities by integrating AI model execution directly within the database. This enables low-latency, high-throughput AI applications that can scale with Redis. By understanding the basics of RedisAI, setting it up, and leveraging its advanced features, you can build powerful AI-driven applications that benefit from Redis's performance and scalability.</p>
+<p>RedisAI is a powerful tool for developers looking to integrate AI into their Redis-based applications. With its support for multiple frameworks and advanced features, RedisAI provides a flexible and efficient way to deploy and manage AI models.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='redistimeseries'>&#x25C4;RedisTimeSeries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">RedisAI</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='redisgears'>RedisGears &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

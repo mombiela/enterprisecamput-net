@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Inventory in Ansible</title>
+
+    <link rel="alternate" href="https://campusempresa.com/ansible/dynamic-inventory" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/ansible/dynamic-inventory" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/ansible/dynamic-inventory" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/ansible/dynamic-inventory" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/ansible/dynamic-inventory" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ansible-vault'>&#x25C4;Ansible Vault</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Inventory in Ansible</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='ansible-plugins'>Ansible Plugins &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Dynamic Inventory is a powerful feature in Ansible that allows you to manage and configure hosts dynamically, rather than relying on static inventory files. This topic will guide you from the basics to advanced usage of dynamic inventory in Ansible.</p>
+</div><h1>Introduction to Dynamic Inventory</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Dynamic Inventory refers to the ability to pull inventory data from external sources, such as cloud providers, databases, or other APIs, rather than using static files.</li>
+<li><strong>Use Cases</strong>: Ideal for environments where the infrastructure is constantly changing, such as cloud environments (AWS, Azure, GCP), or for large-scale deployments where maintaining a static inventory is impractical.</li>
+</ul>
+</div><h1>Setting Up Dynamic Inventory</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Basic understanding of Ansible and static inventory.</li>
+<li>Ansible installed on your local machine.</li>
+<li>Access to an external source (e.g., AWS, Azure) if you plan to use it for dynamic inventory.</li>
+</ul>
+</div><h2>Basic Example: Using AWS EC2 as Dynamic Inventory</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Boto3 and Ansible EC2 Plugin</strong>:</p>
+<pre><code class="language-bash">pip install boto3
+ansible-galaxy collection install amazon.aws
+</code></pre>
+</li>
+<li>
+<p><strong>Configure AWS Credentials</strong>:
+Ensure you have your AWS credentials configured. This can be done using the AWS CLI:</p>
+<pre><code class="language-bash">aws configure
+</code></pre>
+</li>
+<li>
+<p><strong>Create an Inventory Configuration File</strong>:
+Create a file named <code>aws_ec2.yaml</code> with the following content:</p>
+<pre><code class="language-yaml">plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+</code></pre>
+</li>
+<li>
+<p><strong>Run Ansible with Dynamic Inventory</strong>:</p>
+<pre><code class="language-bash">ansible-inventory -i aws_ec2.yaml --graph
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>plugin</strong>: Specifies the plugin to use, in this case, <code>amazon.aws.aws_ec2</code>.</li>
+<li><strong>regions</strong>: List of AWS regions to query.</li>
+<li><strong>filters</strong>: Filters to apply when querying instances, such as <code>instance-state-name: running</code>.</li>
+<li><strong>keyed_groups</strong>: Groups instances based on their tags.</li>
+</ul>
+</div><h1>Advanced Dynamic Inventory</h1>
+<div class='content'></div><h2>Using Custom Scripts</h2>
+<div class='content'><ul>
+<li><strong>Custom Inventory Scripts</strong>: You can write your own scripts to generate dynamic inventory. These scripts should output JSON that Ansible can understand.</li>
+</ul>
+<h4>Example: Custom Inventory Script</h4>
+<ol>
+<li>
+<p><strong>Create a Script</strong>:</p>
+<pre><code class="language-python">#!/usr/bin/env python3
+import json
+
+def get_inventory():
+    inventory = {
+        &quot;all&quot;: {
+            &quot;hosts&quot;: [&quot;host1.example.com&quot;, &quot;host2.example.com&quot;],
+            &quot;vars&quot;: {
+                &quot;ansible_user&quot;: &quot;admin&quot;
+            }
+        },
+        &quot;_meta&quot;: {
+            &quot;hostvars&quot;: {
+                &quot;host1.example.com&quot;: {
+                    &quot;ansible_host&quot;: &quot;192.168.1.1&quot;
+                },
+                &quot;host2.example.com&quot;: {
+                    &quot;ansible_host&quot;: &quot;192.168.1.2&quot;
+                }
+            }
+        }
+    }
+    return inventory
+
+if __name__ == &quot;__main__&quot;:
+    print(json.dumps(get_inventory()))
+</code></pre>
+</li>
+<li>
+<p><strong>Make the Script Executable</strong>:</p>
+<pre><code class="language-bash">chmod +x custom_inventory.py
+</code></pre>
+</li>
+<li>
+<p><strong>Run Ansible with the Custom Script</strong>:</p>
+<pre><code class="language-bash">ansible-inventory -i custom_inventory.py --graph
+</code></pre>
+</li>
+</ol>
+</div><h2>Using Inventory Plugins</h2>
+<div class='content'><ul>
+<li><strong>Inventory Plugins</strong>: Ansible provides several built-in plugins for dynamic inventory, such as <code>azure_rm</code>, <code>gcp_compute</code>, and <code>openstack</code>.</li>
+</ul>
+<h4>Example: Using the Azure Inventory Plugin</h4>
+<ol>
+<li>
+<p><strong>Install Azure Collection</strong>:</p>
+<pre><code class="language-bash">ansible-galaxy collection install azure.azcollection
+</code></pre>
+</li>
+<li>
+<p><strong>Create an Inventory Configuration File</strong>:</p>
+<pre><code class="language-yaml">plugin: azure.azcollection.azure_rm
+auth_source: auto
+include_vm_resource_groups:
+  - myResourceGroup
+</code></pre>
+</li>
+<li>
+<p><strong>Run Ansible with Azure Inventory</strong>:</p>
+<pre><code class="language-bash">ansible-inventory -i azure_rm.yaml --graph
+</code></pre>
+</li>
+</ol>
+</div><h1>Best Practices</h1>
+<div class='content'><ul>
+<li><strong>Security</strong>: Ensure that your dynamic inventory scripts and configuration files do not expose sensitive information.</li>
+<li><strong>Performance</strong>: Optimize your inventory scripts to minimize API calls and reduce latency.</li>
+<li><strong>Testing</strong>: Regularly test your dynamic inventory setup to ensure it works as expected, especially after changes to your infrastructure.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Dynamic Inventory in Ansible provides a flexible and powerful way to manage hosts and environments that are constantly changing. By leveraging external sources and custom scripts, you can maintain an up-to-date inventory without manual intervention. Whether you are using cloud providers like AWS, Azure, or writing your own scripts, dynamic inventory can significantly streamline your Ansible workflows.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ansible-vault'>&#x25C4;Ansible Vault</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Inventory in Ansible</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='ansible-plugins'>Ansible Plugins &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

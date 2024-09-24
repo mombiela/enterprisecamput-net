@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threads in Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/threads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/threads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/threads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/rust/threads" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/rust/threads" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='generics'>&#x25C4;Generics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Threads in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='message-passing'>Message Passing &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Threads</h1>
+<div class='content'><p>Threads allow a program to perform multiple tasks concurrently, making efficient use of system resources. Rust provides robust support for threading, ensuring safety and performance.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Concurrency</strong>: Running multiple tasks at the same time.</li>
+<li><strong>Parallelism</strong>: Running multiple tasks simultaneously on multiple processors.</li>
+<li><strong>Thread Safety</strong>: Ensuring that data is accessed correctly when multiple threads are involved.</li>
+</ul>
+</div><h1>Creating Threads</h1>
+<div class='content'><p>Rust's standard library provides the <code>std::thread</code> module for thread creation and management.</p>
+</div><h2>Basic Thread Creation</h2>
+<div class='content'><p>To create a new thread, you use the <code>thread::spawn</code> function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6dGhyZWFkOwoKZm4gbWFpbigpIHsKICAgIGxldCBoYW5kbGUgPSB0aHJlYWQ6OnNwYXduKHx8IHsKICAgICAgICBmb3IgaSBpbiAxLi4xMCB7CiAgICAgICAgICAgIHByaW50bG4hKCJIZWxsbyBmcm9tIHRoZSBzcGF3bmVkIHRocmVhZDoge30iLCBpKTsKICAgICAgICB9CiAgICB9KTsKCiAgICBmb3IgaSBpbiAxLi41IHsKICAgICAgICBwcmludGxuISgiSGVsbG8gZnJvbSB0aGUgbWFpbiB0aHJlYWQ6IHt9IiwgaSk7CiAgICB9CgogICAgaGFuZGxlLmpvaW4oKS51bndyYXAoKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::thread;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!(&quot;Hello from the spawned thread: {}&quot;, i);
+        }
+    });
+
+    for i in 1..5 {
+        println!(&quot;Hello from the main thread: {}&quot;, i);
+    }
+
+    handle.join().unwrap();
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>thread::spawn</code> creates a new thread.</li>
+<li>The closure inside <code>spawn</code> is the code that runs in the new thread.</li>
+<li><code>handle.join()</code> ensures the main thread waits for the spawned thread to finish.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Thread Safety with `Mutex` and `Arc`</h1>
+<div class='content'><p>When multiple threads need to access shared data, Rust provides <code>Mutex</code> (Mutual Exclusion) and <code>Arc</code> (Atomic Reference Counting) to ensure thread safety.</p>
+</div><h2>Using `Mutex`</h2>
+<div class='content'><p>A <code>Mutex</code> allows only one thread to access the data at a time.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6e011dGV4LCBBcmN9Owp1c2Ugc3RkOjp0aHJlYWQ7CgpmbiBtYWluKCkgewogICAgbGV0IGNvdW50ZXIgPSBBcmM6Om5ldyhNdXRleDo6bmV3KDApKTsKICAgIGxldCBtdXQgaGFuZGxlcyA9IHZlYyFbXTsKCiAgICBmb3IgXyBpbiAwLi4xMCB7CiAgICAgICAgbGV0IGNvdW50ZXIgPSBBcmM6OmNsb25lKCZjb3VudGVyKTsKICAgICAgICBsZXQgaGFuZGxlID0gdGhyZWFkOjpzcGF3bihtb3ZlIHx8IHsKICAgICAgICAgICAgbGV0IG11dCBudW0gPSBjb3VudGVyLmxvY2soKS51bndyYXAoKTsKICAgICAgICAgICAgKm51bSArPSAxOwogICAgICAgIH0pOwogICAgICAgIGhhbmRsZXMucHVzaChoYW5kbGUpOwogICAgfQoKICAgIGZvciBoYW5kbGUgaW4gaGFuZGxlcyB7CiAgICAgICAgaGFuZGxlLmpvaW4oKS51bndyYXAoKTsKICAgIH0KCiAgICBwcmludGxuISgiUmVzdWx0OiB7fSIsICpjb3VudGVyLmxvY2soKS51bndyYXAoKSk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::{Mutex, Arc};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Result: {}&quot;, *counter.lock().unwrap());
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>Arc</code> allows multiple ownership of the <code>Mutex</code>.</li>
+<li><code>Mutex::lock</code> locks the data for the current thread.</li>
+<li><code>Arc::clone</code> creates a reference to the <code>Arc</code>-wrapped <code>Mutex</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Thread Management</h1>
+<div class='content'><p>Rust provides more advanced features for thread management, such as channels for communication between threads.</p>
+</div><h2>Using Channels</h2>
+<div class='content'><p>Channels allow threads to communicate by sending messages.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6bXBzYzsKdXNlIHN0ZDo6dGhyZWFkOwp1c2Ugc3RkOjp0aW1lOjpEdXJhdGlvbjsKCmZuIG1haW4oKSB7CiAgICBsZXQgKHR4LCByeCkgPSBtcHNjOjpjaGFubmVsKCk7CgogICAgdGhyZWFkOjpzcGF3bihtb3ZlIHx8IHsKICAgICAgICBsZXQgdmFsID0gU3RyaW5nOjpmcm9tKCJoZWxsbyIpOwogICAgICAgIHR4LnNlbmQodmFsKS51bndyYXAoKTsKICAgIH0pOwoKICAgIGxldCByZWNlaXZlZCA9IHJ4LnJlY3YoKS51bndyYXAoKTsKICAgIHByaW50bG4hKCJHb3Q6IHt9IiwgcmVjZWl2ZWQpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::mpsc;
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from(&quot;hello&quot;);
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!(&quot;Got: {}&quot;, received);
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>mpsc::channel</code> creates a transmitter (<code>tx</code>) and a receiver (<code>rx</code>).</li>
+<li><code>tx.send</code> sends data to the channel.</li>
+<li><code>rx.recv</code> receives data from the channel.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Threads in Rust provide powerful tools for concurrent programming while ensuring safety and performance. By using <code>thread::spawn</code>, <code>Mutex</code>, <code>Arc</code>, and channels, you can create efficient and safe multi-threaded applications. Understanding these concepts is crucial for developing robust Rust programs that leverage the full potential of modern multi-core processors.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='generics'>&#x25C4;Generics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Threads in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='message-passing'>Message Passing &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

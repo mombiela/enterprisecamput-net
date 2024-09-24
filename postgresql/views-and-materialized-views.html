@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Views and Materialized Views</title>
+
+    <link rel="alternate" href="https://campusempresa.com/postgresql/views-and-materialized-views" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/postgresql/views-and-materialized-views" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/postgresql/views-and-materialized-views" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/postgresql/views-and-materialized-views" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/postgresql/views-and-materialized-views" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transactions-and-concurrency'>&#x25C4;Transactions and Concurrency</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Views and Materialized Views</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='stored-procedures-and-triggers'>Stored Procedures and Triggers &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In PostgreSQL, views and materialized views are powerful tools that allow you to simplify complex queries, enhance security, and improve performance. This section will cover the basics of views and materialized views, their differences, and how to use them effectively.</p>
+</div><h1>Views</h1>
+<div class='content'></div><h2>What is a View?</h2>
+<div class='content'><ul>
+<li>A view is a virtual table based on the result-set of an SQL query.</li>
+<li>It does not store data physically; instead, it provides a way to look at data from one or more tables.</li>
+<li>Views can simplify complex queries by encapsulating them in a single object.</li>
+</ul>
+</div><h2>Creating a View</h2>
+<div class='content'><p>To create a view, use the <code>CREATE VIEW</code> statement followed by the view name and the query that defines the view.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFZJRVcgdmlld19uYW1lIEFTClNFTEVDVCBjb2x1bW4xLCBjb2x1bW4yLCAuLi4KRlJPTSB0YWJsZV9uYW1lCldIRVJFIGNvbmRpdGlvbjs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE VIEW view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFZJRVcgZW1wbG95ZWVfdmlldyBBUwpTRUxFQ1QgaWQsIGZpcnN0X25hbWUsIGxhc3RfbmFtZSwgZGVwYXJ0bWVudApGUk9NIGVtcGxveWVlcwpXSEVSRSBhY3RpdmUgPSB0cnVlOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE VIEW employee_view AS
+SELECT id, first_name, last_name, department
+FROM employees
+WHERE active = true;</pre></div><div class='content'><p>This view, <code>employee_view</code>, shows only active employees.</p>
+</div><h2>Using a View</h2>
+<div class='content'><p>You can query a view just like a regular table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsb3llZV92aWV3Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM employee_view;</pre></div><div class='content'></div><h2>Updating Data Through a View</h2>
+<div class='content'><ul>
+<li>Views can be updatable if they meet certain criteria (e.g., they reference a single base table).</li>
+<li>Use <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statements on views to modify the underlying table.</li>
+</ul>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxveWVlX3ZpZXcKU0VUIGRlcGFydG1lbnQgPSAnSFInCldIRVJFIGlkID0gMTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE employee_view
+SET department = 'HR'
+WHERE id = 1;</pre></div><div class='content'></div><h2>Advantages of Views</h2>
+<div class='content'><ul>
+<li>Simplify complex queries.</li>
+<li>Enhance security by restricting access to specific data.</li>
+<li>Provide a level of abstraction.</li>
+</ul>
+</div><h2>Limitations of Views</h2>
+<div class='content'><ul>
+<li>Performance can be an issue for complex views.</li>
+<li>Not all views are updatable.</li>
+</ul>
+</div><h1>Materialized Views</h1>
+<div class='content'></div><h2>What is a Materialized View?</h2>
+<div class='content'><ul>
+<li>A materialized view stores the result of a query physically.</li>
+<li>It can be refreshed to update the data.</li>
+<li>Useful for improving performance on complex queries.</li>
+</ul>
+</div><h2>Creating a Materialized View</h2>
+<div class='content'><p>To create a materialized view, use the <code>CREATE MATERIALIZED VIEW</code> statement.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE1BVEVSSUFMSVpFRCBWSUVXIG1hdF92aWV3X25hbWUgQVMKU0VMRUNUIGNvbHVtbjEsIGNvbHVtbjIsIC4uLgpGUk9NIHRhYmxlX25hbWUKV0hFUkUgY29uZGl0aW9uOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE MATERIALIZED VIEW mat_view_name AS
+SELECT column1, column2, ...
+FROM table_name
+WHERE condition;</pre></div><div class='content'><h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE1BVEVSSUFMSVpFRCBWSUVXIGFjdGl2ZV9lbXBsb3llZXMgQVMKU0VMRUNUIGlkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIGRlcGFydG1lbnQKRlJPTSBlbXBsb3llZXMKV0hFUkUgYWN0aXZlID0gdHJ1ZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE MATERIALIZED VIEW active_employees AS
+SELECT id, first_name, last_name, department
+FROM employees
+WHERE active = true;</pre></div><div class='content'><p>This materialized view, <code>active_employees</code>, stores the data of active employees.</p>
+</div><h2>Refreshing a Materialized View</h2>
+<div class='content'><ul>
+<li>Materialized views need to be refreshed to reflect changes in the underlying tables.</li>
+<li>Use the <code>REFRESH MATERIALIZED VIEW</code> statement.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UkVGUkVTSCBNQVRFUklBTElaRUQgVklFVyBhY3RpdmVfZW1wbG95ZWVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>REFRESH MATERIALIZED VIEW active_employees;</pre></div><div class='content'></div><h2>Using a Materialized View</h2>
+<div class='content'><p>Query a materialized view just like a regular table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBhY3RpdmVfZW1wbG95ZWVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM active_employees;</pre></div><div class='content'></div><h2>Advantages of Materialized Views</h2>
+<div class='content'><ul>
+<li>Improved performance for complex queries.</li>
+<li>Data is stored physically, reducing the need for repeated computation.</li>
+</ul>
+</div><h2>Limitations of Materialized Views</h2>
+<div class='content'><ul>
+<li>Requires storage space.</li>
+<li>Needs to be refreshed to stay up-to-date.</li>
+</ul>
+</div><h1>Comparison of Views and Materialized Views</h1>
+<div class='content'><p>| Feature                | View                           | Materialized View               |
+|------------------------|--------------------------------|---------------------------------|
+| Storage                | Virtual, no physical storage   | Physical storage of data        |
+| Performance            | May be slower for complex queries | Faster for complex queries      |
+| Data Freshness         | Always up-to-date              | Needs to be refreshed           |
+| Updatability           | Can be updatable               | Not updatable directly          |
+| Use Case               | Simplify queries, enhance security | Improve performance on complex queries |</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Views and materialized views are essential tools in PostgreSQL for managing and optimizing data access. Views provide a way to simplify complex queries and enhance security, while materialized views offer performance benefits for complex queries at the cost of storage and the need for refreshing. Understanding when and how to use each can significantly improve the efficiency and maintainability of your database applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transactions-and-concurrency'>&#x25C4;Transactions and Concurrency</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Views and Materialized Views</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='stored-procedures-and-triggers'>Stored Procedures and Triggers &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

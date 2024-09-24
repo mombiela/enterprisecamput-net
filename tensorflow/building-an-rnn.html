@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building an RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/tensorflow/building-an-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/tensorflow/building-an-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/tensorflow/building-an-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/tensorflow/building-an-rnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/tensorflow/building-an-rnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-rnns'>&#x25C4;Introduction to RNNs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building an RNN</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='long-short-term-memory'>Long Short-Term Memory (LSTM) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Recurrent Neural Networks (RNNs)</h1>
+<div class='content'><p>Recurrent Neural Networks (RNNs) are a class of neural networks that are particularly effective for sequential data. Unlike traditional feedforward neural networks, RNNs have connections that form directed cycles, allowing them to maintain a 'memory' of previous inputs.</p>
+<ul>
+<li><strong>Sequential Data</strong>: Data where the order of the data points matters, such as time series, text, and speech.</li>
+<li><strong>Memory</strong>: RNNs can remember previous inputs due to their internal state, which is updated at each time step.</li>
+</ul>
+</div><h1>Understanding RNNs</h1>
+<div class='content'><p>Before diving into building an RNN with TensorFlow, it's crucial to understand the basic structure and functioning of RNNs.</p>
+<ul>
+<li><strong>Hidden State</strong>: The hidden state is a vector that captures information from previous time steps.</li>
+<li><strong>Weights</strong>: RNNs use the same weights for each time step, which helps in capturing patterns over time.</li>
+<li><strong>Backpropagation Through Time (BPTT)</strong>: A variant of backpropagation used to train RNNs, which considers the temporal nature of the data.</li>
+</ul>
+</div><h1>Building an RNN with TensorFlow</h1>
+<div class='content'><p>In this section, we will build a simple RNN using TensorFlow. We will use TensorFlow's high-level API, Keras, to simplify the process.</p>
+</div><h2>Step 1: Importing Libraries</h2>
+<div class='content'><p>First, we need to import the necessary libraries.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBTaW1wbGVSTk4sIERlbnNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense</pre></div><div class='content'></div><h2>Step 2: Preparing the Data</h2>
+<div class='content'><p>For this example, let's create some synthetic sequential data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIEdlbmVyYXRlIHN5bnRoZXRpYyBzZXF1ZW50aWFsIGRhdGEKZGVmIGdlbmVyYXRlX2RhdGEoc2VxX2xlbmd0aCwgbnVtX3NhbXBsZXMpOgogICAgWCA9IG5wLnJhbmRvbS5yYW5kKG51bV9zYW1wbGVzLCBzZXFfbGVuZ3RoLCAxKQogICAgeSA9IG5wLnN1bShYLCBheGlzPTEpCiAgICByZXR1cm4gWCwgeQoKc2VxX2xlbmd0aCA9IDEwCm51bV9zYW1wbGVzID0gMTAwMApYLCB5ID0gZ2VuZXJhdGVfZGF0YShzZXFfbGVuZ3RoLCBudW1fc2FtcGxlcyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Generate synthetic sequential data
+def generate_data(seq_length, num_samples):
+    X = np.random.rand(num_samples, seq_length, 1)
+    y = np.sum(X, axis=1)
+    return X, y
+
+seq_length = 10
+num_samples = 1000
+X, y = generate_data(seq_length, num_samples)</pre></div><div class='content'></div><h2>Step 3: Building the RNN Model</h2>
+<div class='content'><p>We will now build a simple RNN model using Keras.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBTZXF1ZW50aWFsKCkKbW9kZWwuYWRkKFNpbXBsZVJOTig1MCwgYWN0aXZhdGlvbj0ncmVsdScsIGlucHV0X3NoYXBlPShzZXFfbGVuZ3RoLCAxKSkpCm1vZGVsLmFkZChEZW5zZSgxKSkKCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz0nbXNlJykKbW9kZWwuc3VtbWFyeSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = Sequential()
+model.add(SimpleRNN(50, activation='relu', input_shape=(seq_length, 1)))
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')
+model.summary()</pre></div><div class='content'></div><h2>Step 4: Training the Model</h2>
+<div class='content'><p>Next, we train the model on our synthetic data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZml0KFgsIHksIGVwb2Nocz0yMCwgYmF0Y2hfc2l6ZT0zMik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.fit(X, y, epochs=20, batch_size=32)</pre></div><div class='content'></div><h2>Step 5: Making Predictions</h2>
+<div class='content'><p>Finally, we can use the trained model to make predictions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmF0ZSBuZXcgZGF0YSBmb3IgcHJlZGljdGlvbgpYX25ldywgeV90cnVlID0gZ2VuZXJhdGVfZGF0YShzZXFfbGVuZ3RoLCAxMCkKeV9wcmVkID0gbW9kZWwucHJlZGljdChYX25ldykKCnByaW50KCJUcnVlIHZhbHVlczoiLCB5X3RydWUpCnByaW50KCJQcmVkaWN0ZWQgdmFsdWVzOiIsIHlfcHJlZCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generate new data for prediction
+X_new, y_true = generate_data(seq_length, 10)
+y_pred = model.predict(X_new)
+
+print(&quot;True values:&quot;, y_true)
+print(&quot;Predicted values:&quot;, y_pred)</pre></div><div class='content'></div><h1>Key Concepts Recap</h1>
+<div class='content'><ul>
+<li><strong>Sequential Data</strong>: Data where the order is important.</li>
+<li><strong>Hidden State</strong>: Captures information from previous time steps.</li>
+<li><strong>Weights Sharing</strong>: Same weights are used for each time step.</li>
+<li><strong>BPTT</strong>: Training method for RNNs considering temporal dependencies.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Recurrent Neural Networks and demonstrated how to build a simple RNN using TensorFlow's Keras API. We walked through the steps of importing libraries, preparing data, building the model, training it, and making predictions. Understanding these fundamentals will help you tackle more complex sequential data problems and build more advanced RNN architectures in the future.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-rnns'>&#x25C4;Introduction to RNNs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building an RNN</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='long-short-term-memory'>Long Short-Term Memory (LSTM) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

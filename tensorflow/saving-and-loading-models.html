@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saving and Loading Models</title>
+
+    <link rel="alternate" href="https://campusempresa.com/tensorflow/saving-and-loading-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/tensorflow/saving-and-loading-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/tensorflow/saving-and-loading-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/tensorflow/saving-and-loading-models" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/tensorflow/saving-and-loading-models" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='overfitting-and-underfitting'>&#x25C4;Overfitting and Underfitting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Saving and Loading Models</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-cnns'>Introduction to CNNs &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to save and load models in TensorFlow. This is a crucial skill for any machine learning practitioner, as it allows you to preserve your trained models and reuse them later without retraining.</p>
+</div><h1>Why Save and Load Models?</h1>
+<div class='content'><ul>
+<li><strong>Preservation</strong>: Save the model to avoid retraining.</li>
+<li><strong>Deployment</strong>: Load the model for deployment in production environments.</li>
+<li><strong>Sharing</strong>: Share the model with others.</li>
+<li><strong>Experimentation</strong>: Save intermediate models during training for experimentation.</li>
+</ul>
+</div><h1>Methods to Save and Load Models</h1>
+<div class='content'><p>TensorFlow provides several methods to save and load models:</p>
+<ol>
+<li><strong>Checkpointing</strong>: Save and load model weights.</li>
+<li><strong>SavedModel</strong>: Save and load the entire model architecture, weights, and optimizer state.</li>
+<li><strong>HDF5 Format</strong>: Save and load models using the HDF5 format.</li>
+</ol>
+</div><h2>Checkpointing</h2>
+<div class='content'><p>Checkpointing is useful for saving and loading only the weights of the model.</p>
+<h4>Saving Weights</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRGVmaW5lIGEgc2ltcGxlIG1vZGVsCm1vZGVsID0gdGYua2VyYXMuU2VxdWVudGlhbChbCiAgICB0Zi5rZXJhcy5sYXllcnMuRGVuc2UoMTAsIGFjdGl2YXRpb249J3JlbHUnKSwKICAgIHRmLmtlcmFzLmxheWVycy5EZW5zZSgxKQpdKQoKIyBDb21waWxlIHRoZSBtb2RlbAptb2RlbC5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J21lYW5fc3F1YXJlZF9lcnJvcicpCgojIFNhdmUgdGhlIHdlaWdodHMKbW9kZWwuc2F2ZV93ZWlnaHRzKCdtb2RlbF9jaGVja3BvaW50Jyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Define a simple model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation='relu'),
+    tf.keras.layers.Dense(1)
+])
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+# Save the weights
+model.save_weights('model_checkpoint')</pre></div><div class='content'><h4>Loading Weights</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSB3ZWlnaHRzCm1vZGVsLmxvYWRfd2VpZ2h0cygnbW9kZWxfY2hlY2twb2ludCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the weights
+model.load_weights('model_checkpoint')</pre></div><div class='content'></div><h2>SavedModel Format</h2>
+<div class='content'><p>The SavedModel format is TensorFlow's standard serialization format. It includes the architecture, weights, and optimizer state.</p>
+<h4>Saving the Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYXZlIHRoZSBlbnRpcmUgbW9kZWwKbW9kZWwuc2F2ZSgnc2F2ZWRfbW9kZWwvbXlfbW9kZWwnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Save the entire model
+model.save('saved_model/my_model')</pre></div><div class='content'><h4>Loading the Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSBlbnRpcmUgbW9kZWwKbG9hZGVkX21vZGVsID0gdGYua2VyYXMubW9kZWxzLmxvYWRfbW9kZWwoJ3NhdmVkX21vZGVsL215X21vZGVsJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the entire model
+loaded_model = tf.keras.models.load_model('saved_model/my_model')</pre></div><div class='content'></div><h2>HDF5 Format</h2>
+<div class='content'><p>The HDF5 format is another way to save the entire model, including the architecture, weights, and optimizer state.</p>
+<h4>Saving the Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYXZlIHRoZSBlbnRpcmUgbW9kZWwgaW4gSERGNSBmb3JtYXQKbW9kZWwuc2F2ZSgnbXlfbW9kZWwuaDUnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Save the entire model in HDF5 format
+model.save('my_model.h5')</pre></div><div class='content'><h4>Loading the Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSBlbnRpcmUgbW9kZWwgZnJvbSBIREY1IGZvcm1hdApsb2FkZWRfbW9kZWwgPSB0Zi5rZXJhcy5tb2RlbHMubG9hZF9tb2RlbCgnbXlfbW9kZWwuaDUnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the entire model from HDF5 format
+loaded_model = tf.keras.models.load_model('my_model.h5')</pre></div><div class='content'></div><h1>Comparison of Methods</h1>
+<div class='content'><p>| Method       | Saves Architecture | Saves Weights | Saves Optimizer State | Format       |
+|--------------|--------------------|---------------|-----------------------|--------------|
+| Checkpointing| No                 | Yes           | No                    | TensorFlow   |
+| SavedModel   | Yes                | Yes           | Yes                   | TensorFlow   |
+| HDF5         | Yes                | Yes           | Yes                   | HDF5         |</p>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's walk through a practical example of training a model, saving it, and then loading it for inference.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IG51bXB5IGFzIG5wCgojIEdlbmVyYXRlIGR1bW15IGRhdGEKeF90cmFpbiA9IG5wLnJhbmRvbS5yYW5kb20oKDEwMDAsIDMyKSkKeV90cmFpbiA9IG5wLnJhbmRvbS5yYW5kb20oKDEwMDAsIDEpKQoKIyBEZWZpbmUgYSBzaW1wbGUgbW9kZWwKbW9kZWwgPSB0Zi5rZXJhcy5TZXF1ZW50aWFsKFsKICAgIHRmLmtlcmFzLmxheWVycy5EZW5zZSg2NCwgYWN0aXZhdGlvbj0ncmVsdScsIGlucHV0X3NoYXBlPSgzMiwpKSwKICAgIHRmLmtlcmFzLmxheWVycy5EZW5zZSgxKQpdKQoKIyBDb21waWxlIHRoZSBtb2RlbAptb2RlbC5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J21lYW5fc3F1YXJlZF9lcnJvcicpCgojIFRyYWluIHRoZSBtb2RlbAptb2RlbC5maXQoeF90cmFpbiwgeV90cmFpbiwgZXBvY2hzPTEwKQoKIyBTYXZlIHRoZSBtb2RlbAptb2RlbC5zYXZlKCdteV9tb2RlbC5oNScpCgojIExvYWQgdGhlIG1vZGVsCmxvYWRlZF9tb2RlbCA9IHRmLmtlcmFzLm1vZGVscy5sb2FkX21vZGVsKCdteV9tb2RlbC5oNScpCgojIE1ha2UgcHJlZGljdGlvbnMgd2l0aCB0aGUgbG9hZGVkIG1vZGVsCnByZWRpY3Rpb25zID0gbG9hZGVkX21vZGVsLnByZWRpY3QoeF90cmFpbikKcHJpbnQocHJlZGljdGlvbnMp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import numpy as np
+
+# Generate dummy data
+x_train = np.random.random((1000, 32))
+y_train = np.random.random((1000, 1))
+
+# Define a simple model
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(32,)),
+    tf.keras.layers.Dense(1)
+])
+
+# Compile the model
+model.compile(optimizer='adam', loss='mean_squared_error')
+
+# Train the model
+model.fit(x_train, y_train, epochs=10)
+
+# Save the model
+model.save('my_model.h5')
+
+# Load the model
+loaded_model = tf.keras.models.load_model('my_model.h5')
+
+# Make predictions with the loaded model
+predictions = loaded_model.predict(x_train)
+print(predictions)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of saving and loading models in TensorFlow. We explored different methods, including checkpointing, the SavedModel format, and the HDF5 format. Each method has its own use cases and benefits. By mastering these techniques, you can ensure that your models are preserved, easily deployable, and shareable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='overfitting-and-underfitting'>&#x25C4;Overfitting and Underfitting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Saving and Loading Models</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-cnns'>Introduction to CNNs &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

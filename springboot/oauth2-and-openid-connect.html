@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth2 and OpenID Connect in Spring Boot</title>
+
+    <link rel="alternate" href="https://campusempresa.com/springboot/oauth2-and-openid-connect" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/springboot/oauth2-and-openid-connect" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/springboot/oauth2-and-openid-connect" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/springboot/oauth2-and-openid-connect" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/springboot/oauth2-and-openid-connect" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jwt-authentication'>&#x25C4;JWT (JSON Web Token) Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">OAuth2 and OpenID Connect in Spring Boot</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-testing-in-spring-boot'>Introduction to Testing in Spring Boot &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to OAuth2 and OpenID Connect</h1>
+<div class='content'><p>OAuth2 and OpenID Connect are protocols used for authorization and authentication, respectively. They are essential for securing modern web applications and APIs.</p>
+<ul>
+<li><strong>OAuth2</strong>: An authorization framework that allows third-party applications to obtain limited access to a user's resources without exposing credentials.</li>
+<li><strong>OpenID Connect</strong>: An identity layer on top of OAuth2 that verifies the identity of the end-user based on the authentication performed by an authorization server.</li>
+</ul>
+</div><h1>Setting Up Spring Boot for OAuth2</h1>
+<div class='content'><p>To start using OAuth2 in a Spring Boot application, you need to include the necessary dependencies and configure the application.</p>
+</div><h2>Adding Dependencies</h2>
+<div class='content'><p>Add the following dependencies to your <code>pom.xml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLW9hdXRoMi1jbGllbnQ8L2FydGlmYWN0SWQ+CjwvZGVwZW5kZW5jeT4KPGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXNlY3VyaXR5PC9hcnRpZmFjdElkPgo8L2RlcGVuZGVuY3k+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-oauth2-client&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Configuring OAuth2 Client</h2>
+<div class='content'><p>Create an <code>application.yml</code> file to configure your OAuth2 client:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3ByaW5nOgogIHNlY3VyaXR5OgogICAgb2F1dGgyOgogICAgICBjbGllbnQ6CiAgICAgICAgcmVnaXN0cmF0aW9uOgogICAgICAgICAgZ29vZ2xlOgogICAgICAgICAgICBjbGllbnQtaWQ6IFlPVVJfQ0xJRU5UX0lECiAgICAgICAgICAgIGNsaWVudC1zZWNyZXQ6IFlPVVJfQ0xJRU5UX1NFQ1JFVAogICAgICAgICAgICBzY29wZTogcHJvZmlsZSwgZW1haWwKICAgICAgICAgICAgcmVkaXJlY3QtdXJpOiAie2Jhc2VVcmx9L2xvZ2luL29hdXRoMi9jb2RlL3tyZWdpc3RyYXRpb25JZH0iCiAgICAgICAgcHJvdmlkZXI6CiAgICAgICAgICBnb29nbGU6CiAgICAgICAgICAgIGF1dGhvcml6YXRpb24tdXJpOiBodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20vby9vYXV0aDIvYXV0aAogICAgICAgICAgICB0b2tlbi11cmk6IGh0dHBzOi8vb2F1dGgyLmdvb2dsZWFwaXMuY29tL3Rva2VuCiAgICAgICAgICAgIHVzZXItaW5mby11cmk6IGh0dHBzOi8vd3d3Lmdvb2dsZWFwaXMuY29tL29hdXRoMi92My91c2VyaW5mbwogICAgICAgICAgICB1c2VyLW5hbWUtYXR0cmlidXRlOiBzdWI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: YOUR_CLIENT_ID
+            client-secret: YOUR_CLIENT_SECRET
+            scope: profile, email
+            redirect-uri: &quot;{baseUrl}/login/oauth2/code/{registrationId}&quot;
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub</pre></div><div class='content'></div><h1>Implementing OAuth2 Login</h1>
+<div class='content'><p>To implement OAuth2 login, you need to create a security configuration class.</p>
+</div><h2>Security Configuration</h2>
+<div class='content'><p>Create a <code>SecurityConfig</code> class:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuY29udGV4dC5hbm5vdGF0aW9uLkJlYW47CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLmNvbnRleHQuYW5ub3RhdGlvbi5Db25maWd1cmF0aW9uOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5jb25maWcuYW5ub3RhdGlvbi53ZWIuYnVpbGRlcnMuSHR0cFNlY3VyaXR5OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5jb25maWcuYW5ub3RhdGlvbi53ZWIuY29uZmlndXJhdGlvbi5FbmFibGVXZWJTZWN1cml0eTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29uZmlnLmFubm90YXRpb24ud2ViLmNvbmZpZ3VyYXRpb24uV2ViU2VjdXJpdHlDb25maWd1cmVyQWRhcHRlcjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC5vaWRjLnVzZXJpbmZvLk9pZGNVc2VyU2VydmljZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC5yZWdpc3RyYXRpb24uQ2xpZW50UmVnaXN0cmF0aW9uUmVwb3NpdG9yeTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC53ZWIuT0F1dGgyTG9naW5BdXRoZW50aWNhdGlvbkZpbHRlcjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC53ZWIuT0F1dGgyTG9naW5BdXRoZW50aWNhdGlvblByb3ZpZGVyOwoKQENvbmZpZ3VyYXRpb24KQEVuYWJsZVdlYlNlY3VyaXR5CnB1YmxpYyBjbGFzcyBTZWN1cml0eUNvbmZpZyBleHRlbmRzIFdlYlNlY3VyaXR5Q29uZmlndXJlckFkYXB0ZXIgewoKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgY29uZmlndXJlKEh0dHBTZWN1cml0eSBodHRwKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBodHRwCiAgICAgICAgICAgIC5hdXRob3JpemVSZXF1ZXN0cygpCiAgICAgICAgICAgICAgICAuYW50TWF0Y2hlcnMoIi8iLCAiL2xvZ2luKioiKS5wZXJtaXRBbGwoKQogICAgICAgICAgICAgICAgLmFueVJlcXVlc3QoKS5hdXRoZW50aWNhdGVkKCkKICAgICAgICAgICAgICAgIC5hbmQoKQogICAgICAgICAgICAub2F1dGgyTG9naW4oKQogICAgICAgICAgICAgICAgLnVzZXJJbmZvRW5kcG9pbnQoKQogICAgICAgICAgICAgICAgLm9pZGNVc2VyU2VydmljZShvaWRjVXNlclNlcnZpY2UoKSk7CiAgICB9CgogICAgQEJlYW4KICAgIHB1YmxpYyBPaWRjVXNlclNlcnZpY2Ugb2lkY1VzZXJTZXJ2aWNlKCkgewogICAgICAgIHJldHVybiBuZXcgT2lkY1VzZXJTZXJ2aWNlKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationProvider;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers(&quot;/&quot;, &quot;/login**&quot;).permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .oauth2Login()
+                .userInfoEndpoint()
+                .oidcUserService(oidcUserService());
+    }
+
+    @Bean
+    public OidcUserService oidcUserService() {
+        return new OidcUserService();
+    }
+}</pre></div><div class='content'></div><h1>Understanding OpenID Connect</h1>
+<div class='content'><p>OpenID Connect extends OAuth2 to provide authentication. It uses ID tokens to convey user identity information.</p>
+</div><h2>ID Token Structure</h2>
+<div class='content'><p>An ID token is a JSON Web Token (JWT) that contains user information. It has three parts:</p>
+<ol>
+<li><strong>Header</strong>: Contains metadata about the token.</li>
+<li><strong>Payload</strong>: Contains user information and claims.</li>
+<li><strong>Signature</strong>: Verifies the token's authenticity.</li>
+</ol>
+</div><h2>Example ID Token Payload</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJpc3MiOiAiaHR0cHM6Ly9hY2NvdW50cy5nb29nbGUuY29tIiwKICAic3ViIjogIjExMDE2OTQ4NDQ3NDM4NjI3NjMzNCIsCiAgImF1ZCI6ICJZT1VSX0NMSUVOVF9JRCIsCiAgImlhdCI6IDE1MTYyMzkwMjIsCiAgImV4cCI6IDE1MTYyNDI2MjIsCiAgImVtYWlsIjogInVzZXJAZXhhbXBsZS5jb20iLAogICJlbWFpbF92ZXJpZmllZCI6IHRydWUsCiAgIm5hbWUiOiAiSm9obiBEb2UiLAogICJwaWN0dXJlIjogImh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hLS9BT2gxNEdnIiwKICAiZ2l2ZW5fbmFtZSI6ICJKb2huIiwKICAiZmFtaWx5X25hbWUiOiAiRG9lIiwKICAibG9jYWxlIjogImVuIgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;iss&quot;: &quot;https://accounts.google.com&quot;,
+  &quot;sub&quot;: &quot;110169484474386276334&quot;,
+  &quot;aud&quot;: &quot;YOUR_CLIENT_ID&quot;,
+  &quot;iat&quot;: 1516239022,
+  &quot;exp&quot;: 1516242622,
+  &quot;email&quot;: &quot;user@example.com&quot;,
+  &quot;email_verified&quot;: true,
+  &quot;name&quot;: &quot;John Doe&quot;,
+  &quot;picture&quot;: &quot;https://lh3.googleusercontent.com/a-/AOh14Gg&quot;,
+  &quot;given_name&quot;: &quot;John&quot;,
+  &quot;family_name&quot;: &quot;Doe&quot;,
+  &quot;locale&quot;: &quot;en&quot;
+}</pre></div><div class='content'></div><h1>Advanced Configuration and Customization</h1>
+<div class='content'><p>For advanced use cases, you may need to customize the OAuth2 and OpenID Connect behavior.</p>
+</div><h2>Custom OAuth2 User Service</h2>
+<div class='content'><p>You can create a custom OAuth2 user service to process user information:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC51c2VyaW5mby5EZWZhdWx0T0F1dGgyVXNlclNlcnZpY2U7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5Lm9hdXRoMi5jb3JlLnVzZXIuT0F1dGgyVXNlcjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNvcmUudXNlci5PQXV0aDJVc2VyQXV0aG9yaXR5OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5vYXV0aDIuY29yZS5PQXV0aDJBdXRoZW50aWNhdGlvbkV4Y2VwdGlvbjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC51c2VyaW5mby5PQXV0aDJVc2VyUmVxdWVzdDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkub2F1dGgyLmNsaWVudC51c2VyaW5mby5PQXV0aDJVc2VyU2VydmljZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc3RlcmVvdHlwZS5TZXJ2aWNlOwoKaW1wb3J0IGphdmEudXRpbC5Db2xsZWN0aW9uczsKaW1wb3J0IGphdmEudXRpbC5NYXA7CgpAU2VydmljZQpwdWJsaWMgY2xhc3MgQ3VzdG9tT0F1dGgyVXNlclNlcnZpY2UgaW1wbGVtZW50cyBPQXV0aDJVc2VyU2VydmljZTxPQXV0aDJVc2VyUmVxdWVzdCwgT0F1dGgyVXNlcj4gewoKICAgIEBPdmVycmlkZQogICAgcHVibGljIE9BdXRoMlVzZXIgbG9hZFVzZXIoT0F1dGgyVXNlclJlcXVlc3QgdXNlclJlcXVlc3QpIHRocm93cyBPQXV0aDJBdXRoZW50aWNhdGlvbkV4Y2VwdGlvbiB7CiAgICAgICAgT0F1dGgyVXNlclNlcnZpY2U8T0F1dGgyVXNlclJlcXVlc3QsIE9BdXRoMlVzZXI+IGRlbGVnYXRlID0gbmV3IERlZmF1bHRPQXV0aDJVc2VyU2VydmljZSgpOwogICAgICAgIE9BdXRoMlVzZXIgb0F1dGgyVXNlciA9IGRlbGVnYXRlLmxvYWRVc2VyKHVzZXJSZXF1ZXN0KTsKCiAgICAgICAgTWFwPFN0cmluZywgT2JqZWN0PiBhdHRyaWJ1dGVzID0gb0F1dGgyVXNlci5nZXRBdHRyaWJ1dGVzKCk7CiAgICAgICAgcmV0dXJuIG5ldyBEZWZhdWx0T0F1dGgyVXNlcigKICAgICAgICAgICAgICAgIENvbGxlY3Rpb25zLnNpbmdsZXRvbihuZXcgT0F1dGgyVXNlckF1dGhvcml0eShhdHRyaWJ1dGVzKSksCiAgICAgICAgICAgICAgICBhdHRyaWJ1dGVzLAogICAgICAgICAgICAgICAgIm5hbWUiKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2UserAuthority;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.Map;
+
+@Service
+public class CustomOAuth2UserService implements OAuth2UserService&lt;OAuth2UserRequest, OAuth2User&gt; {
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2UserService&lt;OAuth2UserRequest, OAuth2User&gt; delegate = new DefaultOAuth2UserService();
+        OAuth2User oAuth2User = delegate.loadUser(userRequest);
+
+        Map&lt;String, Object&gt; attributes = oAuth2User.getAttributes();
+        return new DefaultOAuth2User(
+                Collections.singleton(new OAuth2UserAuthority(attributes)),
+                attributes,
+                &quot;name&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Custom Security Configuration</h2>
+<div class='content'><p>Update the <code>SecurityConfig</code> to use the custom user service:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnByb3RlY3RlZCB2b2lkIGNvbmZpZ3VyZShIdHRwU2VjdXJpdHkgaHR0cCkgdGhyb3dzIEV4Y2VwdGlvbiB7CiAgICBodHRwCiAgICAgICAgLmF1dGhvcml6ZVJlcXVlc3RzKCkKICAgICAgICAgICAgLmFudE1hdGNoZXJzKCIvIiwgIi9sb2dpbioqIikucGVybWl0QWxsKCkKICAgICAgICAgICAgLmFueVJlcXVlc3QoKS5hdXRoZW50aWNhdGVkKCkKICAgICAgICAgICAgLmFuZCgpCiAgICAgICAgLm9hdXRoMkxvZ2luKCkKICAgICAgICAgICAgLnVzZXJJbmZvRW5kcG9pbnQoKQogICAgICAgICAgICAudXNlclNlcnZpY2UoY3VzdG9tT0F1dGgyVXNlclNlcnZpY2UoKSk7Cn0KCkBCZWFuCnB1YmxpYyBDdXN0b21PQXV0aDJVc2VyU2VydmljZSBjdXN0b21PQXV0aDJVc2VyU2VydmljZSgpIHsKICAgIHJldHVybiBuZXcgQ3VzdG9tT0F1dGgyVXNlclNlcnZpY2UoKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+protected void configure(HttpSecurity http) throws Exception {
+    http
+        .authorizeRequests()
+            .antMatchers(&quot;/&quot;, &quot;/login**&quot;).permitAll()
+            .anyRequest().authenticated()
+            .and()
+        .oauth2Login()
+            .userInfoEndpoint()
+            .userService(customOAuth2UserService());
+}
+
+@Bean
+public CustomOAuth2UserService customOAuth2UserService() {
+    return new CustomOAuth2UserService();
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>OAuth2 and OpenID Connect are powerful protocols for securing applications. By integrating them with Spring Boot, you can easily implement secure authentication and authorization mechanisms. This topic covered the basics of setting up OAuth2 and OpenID Connect, implementing login, and customizing the behavior for advanced use cases. With this knowledge, you can build secure and robust applications using Spring Boot.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jwt-authentication'>&#x25C4;JWT (JSON Web Token) Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">OAuth2 and OpenID Connect in Spring Boot</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-testing-in-spring-boot'>Introduction to Testing in Spring Boot &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

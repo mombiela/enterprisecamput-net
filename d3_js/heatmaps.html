@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heatmaps in D3.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/d3_js/heatmaps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/d3_js/heatmaps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/d3_js/heatmaps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/d3_js/heatmaps" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/d3_js/heatmaps" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='choropleth-maps'>&#x25C4;Choropleth Maps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Heatmaps in D3.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='adding-interactivity'>Adding Interactivity &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Heatmaps are a powerful visualization tool used to represent data where individual values are represented as colors. In this section, we will explore how to create heatmaps using D3.js, from basic concepts to advanced techniques.</p>
+</div><h1>Introduction to Heatmaps</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A heatmap is a graphical representation of data where individual values are represented by colors.</li>
+<li><strong>Use Cases</strong>: Commonly used in data analysis for visualizing the magnitude of a phenomenon, such as website traffic, stock market data, or weather patterns.</li>
+</ul>
+</div><h1>Setting Up Your Environment</h1>
+<div class='content'><p>Before we dive into creating heatmaps, ensure you have the following:</p>
+<ul>
+<li><strong>D3.js Library</strong>: Include D3.js in your project by adding the following script tag in your HTML file:
+<pre><code class="language-html">&lt;script src=&quot;https://d3js.org/d3.v6.min.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+</li>
+<li><strong>Basic HTML Structure</strong>: Create a basic HTML structure to hold your heatmap.
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Heatmap with D3.js&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;heatmap&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;script.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ul>
+</div><h1>Creating a Basic Heatmap</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Prepare the Data</strong>: Heatmaps require data in a matrix format. Here's an example dataset:</p>
+<pre><code class="language-javascript">const data = [
+    [30, 20, 10],
+    [60, 50, 40],
+    [90, 80, 70]
+];
+</code></pre>
+</li>
+<li>
+<p><strong>Set Up the SVG Container</strong>: Create an SVG container to hold the heatmap.</p>
+<pre><code class="language-javascript">const width = 300;
+const height = 300;
+const svg = d3.select(&quot;#heatmap&quot;)
+              .append(&quot;svg&quot;)
+              .attr(&quot;width&quot;, width)
+              .attr(&quot;height&quot;, height);
+</code></pre>
+</li>
+<li>
+<p><strong>Define Color Scale</strong>: Use a color scale to map data values to colors.</p>
+<pre><code class="language-javascript">const colorScale = d3.scaleSequential(d3.interpolateBlues)
+                     .domain([0, 100]);
+</code></pre>
+</li>
+<li>
+<p><strong>Render the Heatmap</strong>: Use D3.js to render the heatmap.</p>
+<pre><code class="language-javascript">const cellSize = 100; // Size of each cell
+
+data.forEach((row, i) =&gt; {
+    row.forEach((value, j) =&gt; {
+        svg.append(&quot;rect&quot;)
+           .attr(&quot;x&quot;, j * cellSize)
+           .attr(&quot;y&quot;, i * cellSize)
+           .attr(&quot;width&quot;, cellSize)
+           .attr(&quot;height&quot;, cellSize)
+           .attr(&quot;fill&quot;, colorScale(value));
+    });
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Enhancing the Heatmap</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Adding Labels</strong>: Add labels to the heatmap cells for better readability.</p>
+<pre><code class="language-javascript">data.forEach((row, i) =&gt; {
+    row.forEach((value, j) =&gt; {
+        svg.append(&quot;text&quot;)
+           .attr(&quot;x&quot;, j * cellSize + cellSize / 2)
+           .attr(&quot;y&quot;, i * cellSize + cellSize / 2)
+           .attr(&quot;dy&quot;, &quot;.35em&quot;)
+           .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+           .text(value)
+           .attr(&quot;fill&quot;, &quot;black&quot;);
+    });
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Interactive Features</strong>: Add interactivity such as tooltips to display data values on hover.</p>
+<pre><code class="language-javascript">const tooltip = d3.select(&quot;body&quot;).append(&quot;div&quot;)
+                  .style(&quot;position&quot;, &quot;absolute&quot;)
+                  .style(&quot;background&quot;, &quot;#f9f9f9&quot;)
+                  .style(&quot;padding&quot;, &quot;5px&quot;)
+                  .style(&quot;border&quot;, &quot;1px solid #d3d3d3&quot;)
+                  .style(&quot;border-radius&quot;, &quot;5px&quot;)
+                  .style(&quot;visibility&quot;, &quot;hidden&quot;);
+
+svg.selectAll(&quot;rect&quot;)
+   .on(&quot;mouseover&quot;, function(event, d) {
+       tooltip.style(&quot;visibility&quot;, &quot;visible&quot;)
+              .text(d3.select(this).data());
+   })
+   .on(&quot;mousemove&quot;, function(event) {
+       tooltip.style(&quot;top&quot;, (event.pageY - 10) + &quot;px&quot;)
+              .style(&quot;left&quot;, (event.pageX + 10) + &quot;px&quot;);
+   })
+   .on(&quot;mouseout&quot;, function() {
+       tooltip.style(&quot;visibility&quot;, &quot;hidden&quot;);
+   });
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Techniques</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Dynamic Data Loading</strong>: Load data dynamically from external sources such as CSV or JSON files.</p>
+<pre><code class="language-javascript">d3.csv(&quot;data.csv&quot;).then(data =&gt; {
+    // Process and render the heatmap using the loaded data
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Custom Color Scales</strong>: Create custom color scales for more control over the heatmap appearance.</p>
+<pre><code class="language-javascript">const customColorScale = d3.scaleLinear()
+                           .domain([0, 50, 100])
+                           .range([&quot;green&quot;, &quot;yellow&quot;, &quot;red&quot;]);
+</code></pre>
+</li>
+<li>
+<p><strong>Responsive Heatmaps</strong>: Make the heatmap responsive to different screen sizes.</p>
+<pre><code class="language-javascript">const svg = d3.select(&quot;#heatmap&quot;)
+              .append(&quot;svg&quot;)
+              .attr(&quot;viewBox&quot;, `0 0 ${width} ${height}`)
+              .attr(&quot;preserveAspectRatio&quot;, &quot;xMidYMid meet&quot;);
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Heatmaps are a versatile and visually appealing way to represent data. By using D3.js, you can create dynamic and interactive heatmaps that provide valuable insights into your data. From setting up a basic heatmap to implementing advanced features, this guide has covered the essential steps to help you get started with heatmaps in D3.js. Experiment with different datasets and customization options to create heatmaps that best suit your needs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='choropleth-maps'>&#x25C4;Choropleth Maps</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Heatmaps in D3.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='adding-interactivity'>Adding Interactivity &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

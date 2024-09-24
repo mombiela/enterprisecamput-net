@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations in Firebase</title>
+
+    <link rel="alternate" href="https://campusempresa.com/firebase/crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/firebase/crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/firebase/crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/firebase/crud-operations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/firebase/crud-operations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-firestore'>&#x25C4;Setting Up Firestore</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">CRUD Operations in Firebase</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='firestore-security-rules'>Firestore Security Rules &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Firebase</h1>
+<div class='content'><p>Firebase is a platform developed by Google for creating mobile and web applications. It provides a variety of tools and services to help developers build high-quality apps, including a real-time NoSQL database, authentication, analytics, and more.</p>
+</div><h1>What are CRUD Operations?</h1>
+<div class='content'><p>CRUD stands for Create, Read, Update, and Delete. These are the four basic operations that can be performed on data in a database. Understanding how to perform these operations is fundamental to working with any database, including Firebase.</p>
+</div><h1>Setting Up Firebase</h1>
+<div class='content'><p>Before we dive into CRUD operations, let's set up Firebase for your project.</p>
+<ol>
+<li>
+<p><strong>Create a Firebase Project:</strong></p>
+<ul>
+<li>Go to the <a href="https://console.firebase.google.com/">Firebase Console</a>.</li>
+<li>Click on &quot;Add project&quot; and follow the instructions to create a new project.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add Firebase to Your App:</strong></p>
+<ul>
+<li>For web apps, add the Firebase SDK to your project.</li>
+<li>For Android/iOS apps, follow the specific instructions provided in the Firebase Console.</li>
+</ul>
+</li>
+<li>
+<p><strong>Initialize Firebase in Your App:</strong></p>
+<pre><code class="language-javascript">// Import the Firebase modules that you need in your app.
+import { initializeApp } from &quot;firebase/app&quot;;
+import { getFirestore } from &quot;firebase/firestore&quot;;
+
+// TODO: Replace the following with your app's Firebase project configuration
+const firebaseConfig = {
+  apiKey: &quot;YOUR_API_KEY&quot;,
+  authDomain: &quot;YOUR_AUTH_DOMAIN&quot;,
+  projectId: &quot;YOUR_PROJECT_ID&quot;,
+  storageBucket: &quot;YOUR_STORAGE_BUCKET&quot;,
+  messagingSenderId: &quot;YOUR_MESSAGING_SENDER_ID&quot;,
+  appId: &quot;YOUR_APP_ID&quot;
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+</code></pre>
+</li>
+</ol>
+</div><h1>Create Operation</h1>
+<div class='content'><p>Creating data in Firebase involves adding new documents to a collection.</p>
+</div><h2>Example: Adding a New Document</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY29sbGVjdGlvbiwgYWRkRG9jIH0gZnJvbSAiZmlyZWJhc2UvZmlyZXN0b3JlIjsgCgphc3luYyBmdW5jdGlvbiBhZGRVc2VyKCkgewogIHRyeSB7CiAgICBjb25zdCBkb2NSZWYgPSBhd2FpdCBhZGREb2MoY29sbGVjdGlvbihkYiwgInVzZXJzIiksIHsKICAgICAgZmlyc3Q6ICJBZGEiLAogICAgICBsYXN0OiAiTG92ZWxhY2UiLAogICAgICBib3JuOiAxODE1CiAgICB9KTsKICAgIGNvbnNvbGUubG9nKCJEb2N1bWVudCB3cml0dGVuIHdpdGggSUQ6ICIsIGRvY1JlZi5pZCk7CiAgfSBjYXRjaCAoZSkgewogICAgY29uc29sZS5lcnJvcigiRXJyb3IgYWRkaW5nIGRvY3VtZW50OiAiLCBlKTsKICB9Cn0KCmFkZFVzZXIoKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { collection, addDoc } from &quot;firebase/firestore&quot;; 
+
+async function addUser() {
+  try {
+    const docRef = await addDoc(collection(db, &quot;users&quot;), {
+      first: &quot;Ada&quot;,
+      last: &quot;Lovelace&quot;,
+      born: 1815
+    });
+    console.log(&quot;Document written with ID: &quot;, docRef.id);
+  } catch (e) {
+    console.error(&quot;Error adding document: &quot;, e);
+  }
+}
+
+addUser();</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>collection(db, &quot;users&quot;)</code>: Specifies the collection where the document will be added.</li>
+<li><code>addDoc</code>: Adds a new document with the specified data.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Read Operation</h1>
+<div class='content'><p>Reading data from Firebase involves retrieving documents from a collection.</p>
+</div><h2>Example: Getting All Documents in a Collection</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY29sbGVjdGlvbiwgZ2V0RG9jcyB9IGZyb20gImZpcmViYXNlL2ZpcmVzdG9yZSI7IAoKYXN5bmMgZnVuY3Rpb24gZ2V0VXNlcnMoKSB7CiAgY29uc3QgcXVlcnlTbmFwc2hvdCA9IGF3YWl0IGdldERvY3MoY29sbGVjdGlvbihkYiwgInVzZXJzIikpOwogIHF1ZXJ5U25hcHNob3QuZm9yRWFjaCgoZG9jKSA9PiB7CiAgICBjb25zb2xlLmxvZyhgJHtkb2MuaWR9ID0+ICR7ZG9jLmRhdGEoKX1gKTsKICB9KTsKfQoKZ2V0VXNlcnMoKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { collection, getDocs } from &quot;firebase/firestore&quot;; 
+
+async function getUsers() {
+  const querySnapshot = await getDocs(collection(db, &quot;users&quot;));
+  querySnapshot.forEach((doc) =&gt; {
+    console.log(`${doc.id} =&gt; ${doc.data()}`);
+  });
+}
+
+getUsers();</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>getDocs(collection(db, &quot;users&quot;))</code>: Retrieves all documents from the &quot;users&quot; collection.</li>
+<li><code>querySnapshot.forEach</code>: Iterates over each document in the collection.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Update Operation</h1>
+<div class='content'><p>Updating data in Firebase involves modifying an existing document.</p>
+</div><h2>Example: Updating a Document</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgZG9jLCB1cGRhdGVEb2MgfSBmcm9tICJmaXJlYmFzZS9maXJlc3RvcmUiOyAKCmFzeW5jIGZ1bmN0aW9uIHVwZGF0ZVVzZXIodXNlcklkKSB7CiAgY29uc3QgdXNlclJlZiA9IGRvYyhkYiwgInVzZXJzIiwgdXNlcklkKTsKCiAgLy8gU2V0IHRoZSAiY2FwaXRhbCIgZmllbGQgb2YgdGhlIGNpdHkgJ0RDJwogIGF3YWl0IHVwZGF0ZURvYyh1c2VyUmVmLCB7CiAgICBsYXN0OiAiQnlyb24iLAogICAgYm9ybjogMTgxMgogIH0pOwp9Cgp1cGRhdGVVc2VyKCJVU0VSX0RPQ1VNRU5UX0lEIik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { doc, updateDoc } from &quot;firebase/firestore&quot;; 
+
+async function updateUser(userId) {
+  const userRef = doc(db, &quot;users&quot;, userId);
+
+  // Set the &quot;capital&quot; field of the city 'DC'
+  await updateDoc(userRef, {
+    last: &quot;Byron&quot;,
+    born: 1812
+  });
+}
+
+updateUser(&quot;USER_DOCUMENT_ID&quot;);</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>doc(db, &quot;users&quot;, userId)</code>: Specifies the document to be updated.</li>
+<li><code>updateDoc</code>: Updates the specified fields of the document.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Delete Operation</h1>
+<div class='content'><p>Deleting data in Firebase involves removing a document from a collection.</p>
+</div><h2>Example: Deleting a Document</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgZG9jLCBkZWxldGVEb2MgfSBmcm9tICJmaXJlYmFzZS9maXJlc3RvcmUiOyAKCmFzeW5jIGZ1bmN0aW9uIGRlbGV0ZVVzZXIodXNlcklkKSB7CiAgYXdhaXQgZGVsZXRlRG9jKGRvYyhkYiwgInVzZXJzIiwgdXNlcklkKSk7Cn0KCmRlbGV0ZVVzZXIoIlVTRVJfRE9DVU1FTlRfSUQiKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { doc, deleteDoc } from &quot;firebase/firestore&quot;; 
+
+async function deleteUser(userId) {
+  await deleteDoc(doc(db, &quot;users&quot;, userId));
+}
+
+deleteUser(&quot;USER_DOCUMENT_ID&quot;);</pre></div><div class='content'><ul>
+<li><strong>Explanation:</strong>
+<ul>
+<li><code>doc(db, &quot;users&quot;, userId)</code>: Specifies the document to be deleted.</li>
+<li><code>deleteDoc</code>: Deletes the specified document.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>CRUD operations are fundamental to managing data in any database, including Firebase. By mastering these operations, you can effectively create, read, update, and delete data in your Firebase applications. Practice these operations to become proficient in handling Firebase Firestore, and explore more advanced features as you grow more comfortable with the basics.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-firestore'>&#x25C4;Setting Up Firestore</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">CRUD Operations in Firebase</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='firestore-security-rules'>Firestore Security Rules &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

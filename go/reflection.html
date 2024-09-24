@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflection in Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/reflection" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/reflection" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/reflection" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/go/reflection" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/go/reflection" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interfaces'>&#x25C4;Interfaces</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Reflection in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='testing-in-go'>Testing in Go &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Reflection is a powerful feature in Go that allows a program to inspect and manipulate its own structure and behavior at runtime. This topic will cover the basics of reflection, how to use it effectively, and some advanced techniques.</p>
+</div><h1>What is Reflection?</h1>
+<div class='content'><p>Reflection in Go is the ability to inspect the type and value of variables at runtime. It is part of the <code>reflect</code> package in the standard library.</p>
+<ul>
+<li><strong>Type Inspection</strong>: Determine the type of a variable.</li>
+<li><strong>Value Inspection</strong>: Access the value of a variable.</li>
+<li><strong>Manipulation</strong>: Modify the value of a variable.</li>
+</ul>
+</div><h1>Why Use Reflection?</h1>
+<div class='content'><p>Reflection can be useful in various scenarios, such as:</p>
+<ul>
+<li><strong>Dynamic Type Handling</strong>: Working with interfaces and unknown types.</li>
+<li><strong>Serialization/Deserialization</strong>: Converting data structures to and from formats like JSON or XML.</li>
+<li><strong>Testing</strong>: Creating generic test functions that can handle different types.</li>
+</ul>
+</div><h1>Basic Concepts</h1>
+<div class='content'></div><h2>The `reflect` Package</h2>
+<div class='content'><p>The <code>reflect</code> package provides the tools needed for reflection. The most important types and functions are:</p>
+<ul>
+<li><code>reflect.Type</code>: Represents the type of a variable.</li>
+<li><code>reflect.Value</code>: Represents the value of a variable.</li>
+<li><code>reflect.TypeOf()</code>: Returns the <code>reflect.Type</code> of a variable.</li>
+<li><code>reflect.ValueOf()</code>: Returns the <code>reflect.Value</code> of a variable.</li>
+</ul>
+</div><h2>Example: Inspecting Types and Values</h2>
+<div class='content'><p>Let's start with a simple example to inspect the type and value of a variable.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIG1haW4oKSB7CiAgICB2YXIgeCBmbG9hdDY0ID0gMy40CiAgICBmbXQuUHJpbnRsbigiVHlwZToiLCByZWZsZWN0LlR5cGVPZih4KSkKICAgIGZtdC5QcmludGxuKCJWYWx1ZToiLCByZWZsZWN0LlZhbHVlT2YoeCkpCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    fmt.Println(&quot;Type:&quot;, reflect.TypeOf(x))
+    fmt.Println(&quot;Value:&quot;, reflect.ValueOf(x))
+}</pre></div><div class='content'><p>Output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VHlwZTogZmxvYXQ2NApWYWx1ZTogMy40"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Type: float64
+Value: 3.4</pre></div><div class='content'><p>In this example, <code>reflect.TypeOf(x)</code> returns the type of <code>x</code>, and <code>reflect.ValueOf(x)</code> returns the value of <code>x</code>.</p>
+</div><h1>Working with Structs</h1>
+<div class='content'><p>Reflection is particularly useful when working with structs. You can inspect and manipulate the fields of a struct at runtime.</p>
+</div><h2>Example: Inspecting Struct Fields</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgp0eXBlIFBlcnNvbiBzdHJ1Y3QgewogICAgTmFtZSBzdHJpbmcKICAgIEFnZSAgaW50Cn0KCmZ1bmMgbWFpbigpIHsKICAgIHAgOj0gUGVyc29ueyJBbGljZSIsIDMwfQogICAgdCA6PSByZWZsZWN0LlR5cGVPZihwKQogICAgdiA6PSByZWZsZWN0LlZhbHVlT2YocCkKCiAgICBmb3IgaSA6PSAwOyBpIDwgdC5OdW1GaWVsZCgpOyBpKysgewogICAgICAgIGZpZWxkIDo9IHQuRmllbGQoaSkKICAgICAgICB2YWx1ZSA6PSB2LkZpZWxkKGkpCiAgICAgICAgZm10LlByaW50ZigiJXM6ICV2ID0gJXZcbiIsIGZpZWxkLk5hbWUsIGZpZWxkLlR5cGUsIHZhbHVlKQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func main() {
+    p := Person{&quot;Alice&quot;, 30}
+    t := reflect.TypeOf(p)
+    v := reflect.ValueOf(p)
+
+    for i := 0; i &lt; t.NumField(); i++ {
+        field := t.Field(i)
+        value := v.Field(i)
+        fmt.Printf(&quot;%s: %v = %v\n&quot;, field.Name, field.Type, value)
+    }
+}</pre></div><div class='content'><p>Output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmFtZTogc3RyaW5nID0gQWxpY2UKQWdlOiBpbnQgPSAzMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Name: string = Alice
+Age: int = 30</pre></div><div class='content'><p>In this example, we use <code>reflect.TypeOf(p)</code> to get the type of the struct and <code>reflect.ValueOf(p)</code> to get its value. We then iterate over the fields using <code>t.NumField()</code> and access each field's name, type, and value.</p>
+</div><h1>Modifying Values</h1>
+<div class='content'><p>Reflection also allows you to modify the values of variables. However, you need to use pointers to modify the original variable.</p>
+</div><h2>Example: Modifying Struct Fields</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgp0eXBlIFBlcnNvbiBzdHJ1Y3QgewogICAgTmFtZSBzdHJpbmcKICAgIEFnZSAgaW50Cn0KCmZ1bmMgbWFpbigpIHsKICAgIHAgOj0gUGVyc29ueyJBbGljZSIsIDMwfQogICAgdiA6PSByZWZsZWN0LlZhbHVlT2YoJnApLkVsZW0oKQoKICAgIG5hbWVGaWVsZCA6PSB2LkZpZWxkQnlOYW1lKCJOYW1lIikKICAgIGlmIG5hbWVGaWVsZC5DYW5TZXQoKSB7CiAgICAgICAgbmFtZUZpZWxkLlNldFN0cmluZygiQm9iIikKICAgIH0KCiAgICBmbXQuUHJpbnRsbihwKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func main() {
+    p := Person{&quot;Alice&quot;, 30}
+    v := reflect.ValueOf(&amp;p).Elem()
+
+    nameField := v.FieldByName(&quot;Name&quot;)
+    if nameField.CanSet() {
+        nameField.SetString(&quot;Bob&quot;)
+    }
+
+    fmt.Println(p)
+}</pre></div><div class='content'><p>Output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("e0JvYiAzMH0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{Bob 30}</pre></div><div class='content'><p>In this example, we use <code>reflect.ValueOf(&amp;p).Elem()</code> to get a <code>reflect.Value</code> that we can modify. We then use <code>FieldByName(&quot;Name&quot;)</code> to get the <code>Name</code> field and <code>SetString(&quot;Bob&quot;)</code> to change its value.</p>
+</div><h1>Advanced Techniques</h1>
+<div class='content'></div><h2>Type Assertions with Reflection</h2>
+<div class='content'><p>Reflection can be combined with type assertions to handle unknown types dynamically.</p>
+</div><h2>Example: Handling Unknown Types</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIFByaW50VHlwZUFuZFZhbHVlKGkgaW50ZXJmYWNle30pIHsKICAgIHYgOj0gcmVmbGVjdC5WYWx1ZU9mKGkpCiAgICBzd2l0Y2ggdi5LaW5kKCkgewogICAgY2FzZSByZWZsZWN0LkludDoKICAgICAgICBmbXQuUHJpbnRmKCJUeXBlOiBpbnQsIFZhbHVlOiAlZFxuIiwgdi5JbnQoKSkKICAgIGNhc2UgcmVmbGVjdC5TdHJpbmc6CiAgICAgICAgZm10LlByaW50ZigiVHlwZTogc3RyaW5nLCBWYWx1ZTogJXNcbiIsIHYuU3RyaW5nKCkpCiAgICBkZWZhdWx0OgogICAgICAgIGZtdC5QcmludGYoIlR5cGU6ICVzLCBWYWx1ZTogJXZcbiIsIHYuS2luZCgpLCB2KQogICAgfQp9CgpmdW5jIG1haW4oKSB7CiAgICBQcmludFR5cGVBbmRWYWx1ZSg0MikKICAgIFByaW50VHlwZUFuZFZhbHVlKCJoZWxsbyIpCiAgICBQcmludFR5cGVBbmRWYWx1ZSgzLjE0KQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func PrintTypeAndValue(i interface{}) {
+    v := reflect.ValueOf(i)
+    switch v.Kind() {
+    case reflect.Int:
+        fmt.Printf(&quot;Type: int, Value: %d\n&quot;, v.Int())
+    case reflect.String:
+        fmt.Printf(&quot;Type: string, Value: %s\n&quot;, v.String())
+    default:
+        fmt.Printf(&quot;Type: %s, Value: %v\n&quot;, v.Kind(), v)
+    }
+}
+
+func main() {
+    PrintTypeAndValue(42)
+    PrintTypeAndValue(&quot;hello&quot;)
+    PrintTypeAndValue(3.14)
+}</pre></div><div class='content'><p>Output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VHlwZTogaW50LCBWYWx1ZTogNDIKVHlwZTogc3RyaW5nLCBWYWx1ZTogaGVsbG8KVHlwZTogZmxvYXQ2NCwgVmFsdWU6IDMuMTQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Type: int, Value: 42
+Type: string, Value: hello
+Type: float64, Value: 3.14</pre></div><div class='content'><p>In this example, <code>PrintTypeAndValue</code> uses <code>reflect.ValueOf(i)</code> to get the value of the interface and a switch statement on <code>v.Kind()</code> to handle different types.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Reflection in Go is a powerful tool that allows you to inspect and manipulate types and values at runtime. It is particularly useful for dynamic type handling, serialization/deserialization, and testing. However, it should be used judiciously, as it can make the code more complex and harder to understand.</p>
+<p>By understanding the basics of the <code>reflect</code> package and practicing with examples, you can leverage reflection to solve complex problems in a flexible and dynamic way.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interfaces'>&#x25C4;Interfaces</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Reflection in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='testing-in-go'>Testing in Go &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Passport.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/passport-js" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/passport-js" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/passport-js" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nodejs/passport-js" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nodejs/passport-js" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='intro-to-authentication'>&#x25C4;Introduction to Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Passport.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='jwt'>JWT (JSON Web Tokens) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Passport.js</h1>
+<div class='content'><p>Passport.js is a popular authentication middleware for Node.js. It is designed to be simple and unobtrusive, making it easy to integrate into any Node.js application. Passport.js supports various authentication mechanisms, known as strategies, including local authentication, OAuth, and OpenID.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Middleware</strong>: Passport.js acts as middleware in a Node.js application, handling authentication requests.</li>
+<li><strong>Strategies</strong>: Passport.js uses strategies to authenticate requests. Strategies can be local (username and password) or external (OAuth providers like Google, Facebook).</li>
+<li><strong>Sessions</strong>: Passport.js can manage user sessions, allowing users to stay logged in across multiple requests.</li>
+</ul>
+</div><h1>Setting Up Passport.js</h1>
+<div class='content'><p>To get started with Passport.js, you need to install it along with the necessary strategies.</p>
+</div><h2>Installation</h2>
+<div class='content'><p>First, install Passport.js and the local strategy using npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgcGFzc3BvcnQgcGFzc3BvcnQtbG9jYWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install passport passport-local</pre></div><div class='content'></div><h2>Basic Configuration</h2>
+<div class='content'><p>Create a basic configuration for Passport.js in your Node.js application.</p>
+<ol>
+<li>
+<p><strong>Initialize Passport.js</strong>:</p>
+<pre><code class="language-javascript">const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+
+app.use(passport.initialize());
+app.use(passport.session());
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Local Strategy</strong>:</p>
+<pre><code class="language-javascript">passport.use(new LocalStrategy(
+  function(username, password, done) {
+    // Replace this with your user lookup logic
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
+      if (!user.verifyPassword(password)) { return done(null, false, { message: 'Incorrect password.' }); }
+      return done(null, user);
+    });
+  }
+));
+</code></pre>
+</li>
+<li>
+<p><strong>Serialize and Deserialize User</strong>:</p>
+<pre><code class="language-javascript">passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Using Passport.js in Routes</h1>
+<div class='content'><p>To protect routes and handle authentication, you can use Passport.js in your route definitions.</p>
+</div><h2>Login Route</h2>
+<div class='content'><p>Create a login route that uses Passport.js to authenticate users:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnBvc3QoJy9sb2dpbicsIHBhc3Nwb3J0LmF1dGhlbnRpY2F0ZSgnbG9jYWwnLCB7CiAgc3VjY2Vzc1JlZGlyZWN0OiAnL2Rhc2hib2FyZCcsCiAgZmFpbHVyZVJlZGlyZWN0OiAnL2xvZ2luJywKICBmYWlsdXJlRmxhc2g6IHRydWUKfSkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.post('/login', passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/login',
+  failureFlash: true
+}));</pre></div><div class='content'></div><h2>Protected Route</h2>
+<div class='content'><p>Protect routes by ensuring the user is authenticated:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZW5zdXJlQXV0aGVudGljYXRlZChyZXEsIHJlcywgbmV4dCkgewogIGlmIChyZXEuaXNBdXRoZW50aWNhdGVkKCkpIHsKICAgIHJldHVybiBuZXh0KCk7CiAgfQogIHJlcy5yZWRpcmVjdCgnL2xvZ2luJyk7Cn0KCmFwcC5nZXQoJy9kYXNoYm9hcmQnLCBlbnN1cmVBdXRoZW50aWNhdGVkLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnV2VsY29tZSB0byB5b3VyIGRhc2hib2FyZCEnKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
+app.get('/dashboard', ensureAuthenticated, (req, res) =&gt; {
+  res.send('Welcome to your dashboard!');
+});</pre></div><div class='content'></div><h1>Using OAuth Strategies</h1>
+<div class='content'><p>Passport.js supports various OAuth strategies, such as Google, Facebook, and GitHub. Here’s an example of setting up Google OAuth.</p>
+</div><h2>Installation</h2>
+<div class='content'><p>Install the Google OAuth strategy:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgcGFzc3BvcnQtZ29vZ2xlLW9hdXRoMjA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install passport-google-oauth20</pre></div><div class='content'></div><h2>Configuration</h2>
+<div class='content'><p>Configure the Google OAuth strategy:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgR29vZ2xlU3RyYXRlZ3kgPSByZXF1aXJlKCdwYXNzcG9ydC1nb29nbGUtb2F1dGgyMCcpLlN0cmF0ZWd5OwoKcGFzc3BvcnQudXNlKG5ldyBHb29nbGVTdHJhdGVneSh7CiAgICBjbGllbnRJRDogJ1lPVVJfR09PR0xFX0NMSUVOVF9JRCcsCiAgICBjbGllbnRTZWNyZXQ6ICdZT1VSX0dPT0dMRV9DTElFTlRfU0VDUkVUJywKICAgIGNhbGxiYWNrVVJMOiAnaHR0cDovL3d3dy5leGFtcGxlLmNvbS9hdXRoL2dvb2dsZS9jYWxsYmFjaycKICB9LAogIGZ1bmN0aW9uKHRva2VuLCB0b2tlblNlY3JldCwgcHJvZmlsZSwgZG9uZSkgewogICAgVXNlci5maW5kT3JDcmVhdGUoeyBnb29nbGVJZDogcHJvZmlsZS5pZCB9LCBmdW5jdGlvbiAoZXJyLCB1c2VyKSB7CiAgICAgIHJldHVybiBkb25lKGVyciwgdXNlcik7CiAgICB9KTsKICB9CikpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID: 'YOUR_GOOGLE_CLIENT_ID',
+    clientSecret: 'YOUR_GOOGLE_CLIENT_SECRET',
+    callbackURL: 'http://www.example.com/auth/google/callback'
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));</pre></div><div class='content'></div><h2>Routes for Google OAuth</h2>
+<div class='content'><p>Define routes to handle Google OAuth authentication:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL2F1dGgvZ29vZ2xlJywKICBwYXNzcG9ydC5hdXRoZW50aWNhdGUoJ2dvb2dsZScsIHsgc2NvcGU6IFsnaHR0cHM6Ly93d3cuZ29vZ2xlYXBpcy5jb20vYXV0aC9wbHVzLmxvZ2luJ10gfSkpOwoKYXBwLmdldCgnL2F1dGgvZ29vZ2xlL2NhbGxiYWNrJywgCiAgcGFzc3BvcnQuYXV0aGVudGljYXRlKCdnb29nbGUnLCB7IGZhaWx1cmVSZWRpcmVjdDogJy9sb2dpbicgfSksCiAgZnVuY3Rpb24ocmVxLCByZXMpIHsKICAgIC8vIFN1Y2Nlc3NmdWwgYXV0aGVudGljYXRpb24sIHJlZGlyZWN0IGhvbWUuCiAgICByZXMucmVkaXJlY3QoJy8nKTsKICB9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/auth/google',
+  passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }));
+
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Passport.js is a powerful and flexible authentication middleware for Node.js. By understanding its core concepts and learning how to configure and use various strategies, you can easily integrate authentication into your Node.js applications. Whether you need simple local authentication or complex OAuth integrations, Passport.js provides a robust solution to meet your needs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='intro-to-authentication'>&#x25C4;Introduction to Authentication</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Passport.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='jwt'>JWT (JSON Web Tokens) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

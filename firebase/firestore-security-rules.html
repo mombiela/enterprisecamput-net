@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firestore Security Rules</title>
+
+    <link rel="alternate" href="https://campusempresa.com/firebase/firestore-security-rules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/firebase/firestore-security-rules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/firebase/firestore-security-rules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/firebase/firestore-security-rules" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/firebase/firestore-security-rules" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='crud-operations'>&#x25C4;CRUD Operations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Firestore Security Rules</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-queries'>Advanced Queries &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Firestore Security Rules are essential for controlling access to your Firestore database. They allow you to define how your data should be structured, queried, and updated. This topic will guide you from the basics to advanced concepts of Firestore Security Rules.</p>
+</div><h1>Introduction to Firestore Security Rules</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What are Firestore Security Rules?</strong></p>
+<ul>
+<li>Firestore Security Rules are expressions that control access to documents and collections in your Firestore database.</li>
+<li>They are written in a language similar to JavaScript.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why are they important?</strong></p>
+<ul>
+<li>They help protect your data from unauthorized access and ensure that only authenticated users can read or write data according to your specifications.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Basic Concepts</h1>
+<div class='content'></div><h2>Structure of Firestore Security Rules</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Rules Structure:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    // Rules go here
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Basic Rule Example:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule denies all read and write operations.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Allowing Read and Write Operations</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Allowing Read Operations:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /public/{document=**} {
+      allow read: if true;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule allows read operations on all documents in the <code>public</code> collection.</li>
+</ul>
+</li>
+<li>
+<p><strong>Allowing Write Operations:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /public/{document=**} {
+      allow write: if request.auth != null;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule allows write operations only if the user is authenticated.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Intermediate Concepts</h1>
+<div class='content'></div><h2>Role-Based Access Control</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Defining Roles:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule allows users to read and write their own user document.</li>
+</ul>
+</li>
+<li>
+<p><strong>Role-Based Example:</strong></p>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /projects/{projectId} {
+      allow read: if resource.data.public == true;
+      allow write: if request.auth.uid == resource.data.ownerId;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule allows read access to public projects and write access to the project owner.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Advanced Conditions</h2>
+<div class='content'><ul>
+<li><strong>Complex Conditions:</strong>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /posts/{postId} {
+      allow read: if request.time &lt; timestamp.date(2023, 12, 31);
+      allow write: if request.auth.token.admin == true;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule allows read access to posts before a specific date and write access only to admin users.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Concepts</h1>
+<div class='content'></div><h2>Custom Functions</h2>
+<div class='content'><ul>
+<li><strong>Creating Custom Functions:</strong>
+<pre><code class="language-plaintext">service cloud.firestore {
+  function isOwner(userId) {
+    return request.auth.uid == userId;
+  }
+
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule uses a custom function to check if the user is the owner of the document.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Data Validation</h2>
+<div class='content'><ul>
+<li><strong>Validating Data:</strong>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      allow write: if request.resource.data.price &gt; 0;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule ensures that the price of a product is greater than zero before allowing a write operation.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Combining Multiple Conditions</h2>
+<div class='content'><ul>
+<li><strong>Combining Conditions:</strong>
+<pre><code class="language-plaintext">service cloud.firestore {
+  match /databases/{database}/documents {
+    match /orders/{orderId} {
+      allow read: if request.auth != null &amp;&amp; request.auth.token.email_verified == true;
+      allow write: if request.auth != null &amp;&amp; request.auth.token.email_verified == true &amp;&amp; request.resource.data.amount &gt; 0;
+    }
+  }
+}
+</code></pre>
+<ul>
+<li>This rule combines multiple conditions to ensure that the user is authenticated, their email is verified, and the order amount is greater than zero.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Firestore Security Rules are a powerful tool for securing your Firestore database. By understanding and implementing these rules, you can control access to your data and ensure that it is only accessible to authorized users. From basic read/write permissions to advanced role-based access control and data validation, mastering Firestore Security Rules is essential for any Firebase developer.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='crud-operations'>&#x25C4;CRUD Operations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Firestore Security Rules</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='advanced-queries'>Advanced Queries &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

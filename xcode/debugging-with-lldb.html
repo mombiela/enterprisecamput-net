@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging with LLDB</title>
+
+    <link rel="alternate" href="https://campusempresa.com/xcode/debugging-with-lldb" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/xcode/debugging-with-lldb" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/xcode/debugging-with-lldb" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/xcode/debugging-with-lldb" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/xcode/debugging-with-lldb" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-breakpoints'>&#x25C4;Using Breakpoints</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Debugging with LLDB</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='version-control-with-git-in-xcode'>Version Control with Git in Xcode &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to LLDB</h1>
+<div class='content'><p>LLDB (Low-Level Debugger) is a powerful debugger that comes integrated with Xcode. It allows developers to inspect and control the execution of their programs, making it easier to identify and fix bugs.</p>
+<ul>
+<li>
+<p><strong>What is LLDB?</strong></p>
+<ul>
+<li>LLDB is part of the LLVM project.</li>
+<li>It is used for debugging C, C++, Objective-C, and Swift programs.</li>
+<li>Integrated into Xcode, providing a seamless debugging experience.</li>
+</ul>
+</li>
+<li>
+<p><strong>Why use LLDB?</strong></p>
+<ul>
+<li>Provides detailed insights into program execution.</li>
+<li>Allows for breakpoints, watchpoints, and stepping through code.</li>
+<li>Supports complex data inspection and manipulation.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Basic LLDB Commands</h1>
+<div class='content'><p>Understanding basic LLDB commands is crucial for effective debugging.</p>
+<ul>
+<li>
+<p><strong>Starting LLDB</strong></p>
+<ul>
+<li>Automatically starts when you run your app in Xcode.</li>
+<li>Can also be started manually via the terminal using <code>lldb &lt;executable&gt;</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Commands</strong></p>
+<ul>
+<li><code>run</code> or <code>r</code>: Starts the program.</li>
+<li><code>breakpoint set</code> or <code>b</code>: Sets a breakpoint.</li>
+<li><code>continue</code> or <code>c</code>: Continues execution until the next breakpoint.</li>
+<li><code>step</code> or <code>s</code>: Steps into the next line of code.</li>
+<li><code>next</code> or <code>n</code>: Steps over the next line of code.</li>
+<li><code>print</code> or <code>p</code>: Prints the value of a variable.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Setting a Breakpoint</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuYyBncmVldChuYW1lOiBTdHJpbmcpIHsKICAgIHByaW50KCJIZWxsbywgXChuYW1lKSEiKQp9CgpncmVldChuYW1lOiAiV29ybGQiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>func greet(name: String) {
+    print(&quot;Hello, \(name)!&quot;)
+}
+
+greet(name: &quot;World&quot;)</pre></div><div class='content'><p>To set a breakpoint at the <code>print</code> statement:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("KGxsZGIpIGJyZWFrcG9pbnQgc2V0IC0tZmlsZSBtYWluLnN3aWZ0IC0tbGluZSAy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>(lldb) breakpoint set --file main.swift --line 2</pre></div><div class='content'></div><h1>Advanced LLDB Techniques</h1>
+<div class='content'><p>Once you are comfortable with the basics, you can explore more advanced features of LLDB.</p>
+<ul>
+<li>
+<p><strong>Conditional Breakpoints</strong></p>
+<ul>
+<li>Breakpoints that only trigger when a specific condition is met.</li>
+</ul>
+<pre><code class="language-sh">(lldb) breakpoint set --file main.swift --line 2 --condition 'name == &quot;World&quot;'
+</code></pre>
+</li>
+<li>
+<p><strong>Watchpoints</strong></p>
+<ul>
+<li>Monitor changes to a specific variable.</li>
+</ul>
+<pre><code class="language-sh">(lldb) watchpoint set variable name
+</code></pre>
+</li>
+<li>
+<p><strong>Examining Memory</strong></p>
+<ul>
+<li>Inspect memory addresses and contents.</li>
+</ul>
+<pre><code class="language-sh">(lldb) memory read &lt;address&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Custom LLDB Commands</strong></p>
+<ul>
+<li>Create custom commands to automate repetitive tasks.</li>
+</ul>
+<pre><code class="language-sh">(lldb) command alias myprint print (int)myVariable
+</code></pre>
+</li>
+</ul>
+</div><h1>Debugging Swift with LLDB</h1>
+<div class='content'><p>Swift has some unique features and syntax that require specific LLDB commands.</p>
+<ul>
+<li>
+<p><strong>Printing Swift Variables</strong></p>
+<ul>
+<li>Use <code>po</code> (print object) for better readability.</li>
+</ul>
+<pre><code class="language-sh">(lldb) po mySwiftVariable
+</code></pre>
+</li>
+<li>
+<p><strong>Inspecting Optionals</strong></p>
+<ul>
+<li>Use <code>frame variable</code> to inspect optional values.</li>
+</ul>
+<pre><code class="language-sh">(lldb) frame variable myOptional
+</code></pre>
+</li>
+<li>
+<p><strong>Handling Swift Errors</strong></p>
+<ul>
+<li>Use <code>catchpoint</code> to catch Swift errors.</li>
+</ul>
+<pre><code class="language-sh">(lldb) catchpoint throw
+</code></pre>
+</li>
+</ul>
+</div><h1>Tips and Best Practices</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Use Descriptive Breakpoints</strong></p>
+<ul>
+<li>Name your breakpoints for better organization.</li>
+</ul>
+<pre><code class="language-sh">(lldb) breakpoint set --name myBreakpoint
+</code></pre>
+</li>
+<li>
+<p><strong>Regularly Update Xcode and LLDB</strong></p>
+<ul>
+<li>Ensure you have the latest features and bug fixes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Practice Regularly</strong></p>
+<ul>
+<li>The more you use LLDB, the more proficient you will become.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Debugging with LLDB in Xcode is an essential skill for any developer. By mastering both basic and advanced LLDB commands, you can significantly improve your debugging efficiency and effectiveness. Remember to practice regularly and explore the extensive capabilities of LLDB to become a proficient debugger.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-breakpoints'>&#x25C4;Using Breakpoints</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Debugging with LLDB</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='version-control-with-git-in-xcode'>Version Control with Git in Xcode &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

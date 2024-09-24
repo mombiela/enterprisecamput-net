@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working with Maps</title>
+
+    <link rel="alternate" href="https://campusempresa.com/reactnative/working-with-maps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/reactnative/working-with-maps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/reactnative/working-with-maps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/reactnative/working-with-maps" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/reactnative/working-with-maps" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-animations'>&#x25C4;Using Animations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Working with Maps</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='accessing-device-features-expo'>Accessing Device Features with Expo &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Maps in React Native</h1>
+<div class='content'><p>Maps are a crucial part of many mobile applications, providing users with location-based services and navigation features. In this section, we will explore how to integrate and work with maps in React Native applications.</p>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before we start working with maps, we need to set up our development environment.</p>
+<ol>
+<li>
+<p><strong>Install React Native Maps</strong>:</p>
+<pre><code class="language-bash">npm install react-native-maps
+</code></pre>
+</li>
+<li>
+<p><strong>Link the Library</strong>:
+For React Native 0.60 and above, the library should be linked automatically. For older versions, you might need to link it manually:</p>
+<pre><code class="language-bash">react-native link react-native-maps
+</code></pre>
+</li>
+<li>
+<p><strong>Configure iOS</strong>:</p>
+<ul>
+<li>Open your project in Xcode.</li>
+<li>Add <code>AirGoogleMaps</code> and <code>AirMaps</code> to your project’s libraries.</li>
+<li>Ensure you have the necessary permissions in your <code>Info.plist</code>:
+<pre><code class="language-xml">&lt;key&gt;NSLocationWhenInUseUsageDescription&lt;/key&gt;
+&lt;string&gt;We need your location to show maps&lt;/string&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Android</strong>:</p>
+<ul>
+<li>Add the following permissions to your <code>AndroidManifest.xml</code>:
+<pre><code class="language-xml">&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot; /&gt;
+&lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot; /&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Basic Map Component</h1>
+<div class='content'><p>Let's start by rendering a basic map component.</p>
+</div><h2>Example Code</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgU3R5bGVTaGVldCwgVmlldyB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CmltcG9ydCBNYXBWaWV3IGZyb20gJ3JlYWN0LW5hdGl2ZS1tYXBzJzsKCmNvbnN0IEJhc2ljTWFwID0gKCkgPT4gewogIHJldHVybiAoCiAgICA8VmlldyBzdHlsZT17c3R5bGVzLmNvbnRhaW5lcn0+CiAgICAgIDxNYXBWaWV3CiAgICAgICAgc3R5bGU9e3N0eWxlcy5tYXB9CiAgICAgICAgaW5pdGlhbFJlZ2lvbj17ewogICAgICAgICAgbGF0aXR1ZGU6IDM3Ljc4ODI1LAogICAgICAgICAgbG9uZ2l0dWRlOiAtMTIyLjQzMjQsCiAgICAgICAgICBsYXRpdHVkZURlbHRhOiAwLjA5MjIsCiAgICAgICAgICBsb25naXR1ZGVEZWx0YTogMC4wNDIxLAogICAgICAgIH19CiAgICAgIC8+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmNvbnN0IHN0eWxlcyA9IFN0eWxlU2hlZXQuY3JlYXRlKHsKICBjb250YWluZXI6IHsKICAgIC4uLlN0eWxlU2hlZXQuYWJzb2x1dGVGaWxsT2JqZWN0LAogICAganVzdGlmeUNvbnRlbnQ6ICdmbGV4LWVuZCcsCiAgICBhbGlnbkl0ZW1zOiAnY2VudGVyJywKICB9LAogIG1hcDogewogICAgLi4uU3R5bGVTaGVldC5hYnNvbHV0ZUZpbGxPYmplY3QsCiAgfSwKfSk7CgpleHBvcnQgZGVmYXVsdCBCYXNpY01hcDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import MapView from 'react-native-maps';
+
+const BasicMap = () =&gt; {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+export default BasicMap;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>MapView</strong>: The main component to render the map.</li>
+<li><strong>initialRegion</strong>: Defines the initial region displayed by the map.
+<ul>
+<li><code>latitude</code> and <code>longitude</code>: Coordinates for the center of the map.</li>
+<li><code>latitudeDelta</code> and <code>longitudeDelta</code>: Control the zoom level of the map.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Adding Markers</h1>
+<div class='content'><p>Markers are used to indicate specific locations on the map.</p>
+</div><h2>Example Code</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgU3R5bGVTaGVldCwgVmlldyB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CmltcG9ydCBNYXBWaWV3LCB7IE1hcmtlciB9IGZyb20gJ3JlYWN0LW5hdGl2ZS1tYXBzJzsKCmNvbnN0IE1hcFdpdGhNYXJrZXIgPSAoKSA9PiB7CiAgcmV0dXJuICgKICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfT4KICAgICAgPE1hcFZpZXcKICAgICAgICBzdHlsZT17c3R5bGVzLm1hcH0KICAgICAgICBpbml0aWFsUmVnaW9uPXt7CiAgICAgICAgICBsYXRpdHVkZTogMzcuNzg4MjUsCiAgICAgICAgICBsb25naXR1ZGU6IC0xMjIuNDMyNCwKICAgICAgICAgIGxhdGl0dWRlRGVsdGE6IDAuMDkyMiwKICAgICAgICAgIGxvbmdpdHVkZURlbHRhOiAwLjA0MjEsCiAgICAgICAgfX0KICAgICAgPgogICAgICAgIDxNYXJrZXIKICAgICAgICAgIGNvb3JkaW5hdGU9e3sgbGF0aXR1ZGU6IDM3Ljc4ODI1LCBsb25naXR1ZGU6IC0xMjIuNDMyNCB9fQogICAgICAgICAgdGl0bGU9eyJNeSBNYXJrZXIifQogICAgICAgICAgZGVzY3JpcHRpb249eyJUaGlzIGlzIGEgZGVzY3JpcHRpb24gb2YgdGhlIG1hcmtlciJ9CiAgICAgICAgLz4KICAgICAgPC9NYXBWaWV3PgogICAgPC9WaWV3PgogICk7Cn07Cgpjb25zdCBzdHlsZXMgPSBTdHlsZVNoZWV0LmNyZWF0ZSh7CiAgY29udGFpbmVyOiB7CiAgICAuLi5TdHlsZVNoZWV0LmFic29sdXRlRmlsbE9iamVjdCwKICAgIGp1c3RpZnlDb250ZW50OiAnZmxleC1lbmQnLAogICAgYWxpZ25JdGVtczogJ2NlbnRlcicsCiAgfSwKICBtYXA6IHsKICAgIC4uLlN0eWxlU2hlZXQuYWJzb2x1dGVGaWxsT2JqZWN0LAogIH0sCn0pOwoKZXhwb3J0IGRlZmF1bHQgTWFwV2l0aE1hcmtlcjs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+
+const MapWithMarker = () =&gt; {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      &gt;
+        &lt;Marker
+          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+          title={&quot;My Marker&quot;}
+          description={&quot;This is a description of the marker&quot;}
+        /&gt;
+      &lt;/MapView&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+export default MapWithMarker;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Marker</strong>: Used to place a marker on the map.
+<ul>
+<li><code>coordinate</code>: Specifies the location of the marker.</li>
+<li><code>title</code> and <code>description</code>: Provide additional information about the marker.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Customizing Markers</h1>
+<div class='content'><p>You can customize markers with custom images or views.</p>
+</div><h2>Example Code</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgU3R5bGVTaGVldCwgVmlldywgSW1hZ2UgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwppbXBvcnQgTWFwVmlldywgeyBNYXJrZXIgfSBmcm9tICdyZWFjdC1uYXRpdmUtbWFwcyc7Cgpjb25zdCBDdXN0b21NYXJrZXIgPSAoKSA9PiB7CiAgcmV0dXJuICgKICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfT4KICAgICAgPE1hcFZpZXcKICAgICAgICBzdHlsZT17c3R5bGVzLm1hcH0KICAgICAgICBpbml0aWFsUmVnaW9uPXt7CiAgICAgICAgICBsYXRpdHVkZTogMzcuNzg4MjUsCiAgICAgICAgICBsb25naXR1ZGU6IC0xMjIuNDMyNCwKICAgICAgICAgIGxhdGl0dWRlRGVsdGE6IDAuMDkyMiwKICAgICAgICAgIGxvbmdpdHVkZURlbHRhOiAwLjA0MjEsCiAgICAgICAgfX0KICAgICAgPgogICAgICAgIDxNYXJrZXIKICAgICAgICAgIGNvb3JkaW5hdGU9e3sgbGF0aXR1ZGU6IDM3Ljc4ODI1LCBsb25naXR1ZGU6IC0xMjIuNDMyNCB9fQogICAgICAgID4KICAgICAgICAgIDxJbWFnZQogICAgICAgICAgICBzb3VyY2U9e3JlcXVpcmUoJy4vcGF0aC90by9jdXN0b20tbWFya2VyLnBuZycpfQogICAgICAgICAgICBzdHlsZT17eyBoZWlnaHQ6IDM1LCB3aWR0aDogMzUgfX0KICAgICAgICAgIC8+CiAgICAgICAgPC9NYXJrZXI+CiAgICAgIDwvTWFwVmlldz4KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgLi4uU3R5bGVTaGVldC5hYnNvbHV0ZUZpbGxPYmplY3QsCiAgICBqdXN0aWZ5Q29udGVudDogJ2ZsZXgtZW5kJywKICAgIGFsaWduSXRlbXM6ICdjZW50ZXInLAogIH0sCiAgbWFwOiB7CiAgICAuLi5TdHlsZVNoZWV0LmFic29sdXRlRmlsbE9iamVjdCwKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IEN1c3RvbU1hcmtlcjs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { StyleSheet, View, Image } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+
+const CustomMarker = () =&gt; {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      &gt;
+        &lt;Marker
+          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+        &gt;
+          &lt;Image
+            source={require('./path/to/custom-marker.png')}
+            style={{ height: 35, width: 35 }}
+          /&gt;
+        &lt;/Marker&gt;
+      &lt;/MapView&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+export default CustomMarker;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Custom Marker</strong>: You can use any React Native component inside the <code>Marker</code> component to customize its appearance.</li>
+</ul>
+</div><h1>Handling User Location</h1>
+<div class='content'><p>To show the user's current location on the map, you need to request location permissions and enable location tracking.</p>
+</div><h2>Example Code</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFN0eWxlU2hlZXQsIFZpZXcsIFBlcm1pc3Npb25zQW5kcm9pZCwgUGxhdGZvcm0gfSBmcm9tICdyZWFjdC1uYXRpdmUnOwppbXBvcnQgTWFwVmlldywgeyBNYXJrZXIgfSBmcm9tICdyZWFjdC1uYXRpdmUtbWFwcyc7CmltcG9ydCBHZW9sb2NhdGlvbiBmcm9tICdAcmVhY3QtbmF0aXZlLWNvbW11bml0eS9nZW9sb2NhdGlvbic7Cgpjb25zdCBVc2VyTG9jYXRpb25NYXAgPSAoKSA9PiB7CiAgY29uc3QgW2xvY2F0aW9uLCBzZXRMb2NhdGlvbl0gPSB1c2VTdGF0ZShudWxsKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGNvbnN0IHJlcXVlc3RMb2NhdGlvblBlcm1pc3Npb24gPSBhc3luYyAoKSA9PiB7CiAgICAgIGlmIChQbGF0Zm9ybS5PUyA9PT0gJ2FuZHJvaWQnKSB7CiAgICAgICAgY29uc3QgZ3JhbnRlZCA9IGF3YWl0IFBlcm1pc3Npb25zQW5kcm9pZC5yZXF1ZXN0KAogICAgICAgICAgUGVybWlzc2lvbnNBbmRyb2lkLlBFUk1JU1NJT05TLkFDQ0VTU19GSU5FX0xPQ0FUSU9OCiAgICAgICAgKTsKICAgICAgICBpZiAoZ3JhbnRlZCAhPT0gUGVybWlzc2lvbnNBbmRyb2lkLlJFU1VMVFMuR1JBTlRFRCkgewogICAgICAgICAgY29uc29sZS53YXJuKCdMb2NhdGlvbiBwZXJtaXNzaW9uIGRlbmllZCcpOwogICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KICAgICAgfQogICAgICBHZW9sb2NhdGlvbi5nZXRDdXJyZW50UG9zaXRpb24oCiAgICAgICAgKHBvc2l0aW9uKSA9PiB7CiAgICAgICAgICBzZXRMb2NhdGlvbih7CiAgICAgICAgICAgIGxhdGl0dWRlOiBwb3NpdGlvbi5jb29yZHMubGF0aXR1ZGUsCiAgICAgICAgICAgIGxvbmdpdHVkZTogcG9zaXRpb24uY29vcmRzLmxvbmdpdHVkZSwKICAgICAgICAgICAgbGF0aXR1ZGVEZWx0YTogMC4wOTIyLAogICAgICAgICAgICBsb25naXR1ZGVEZWx0YTogMC4wNDIxLAogICAgICAgICAgfSk7CiAgICAgICAgfSwKICAgICAgICAoZXJyb3IpID0+IGNvbnNvbGUuZXJyb3IoZXJyb3IpLAogICAgICAgIHsgZW5hYmxlSGlnaEFjY3VyYWN5OiB0cnVlLCB0aW1lb3V0OiAyMDAwMCwgbWF4aW11bUFnZTogMTAwMCB9CiAgICAgICk7CiAgICB9OwoKICAgIHJlcXVlc3RMb2NhdGlvblBlcm1pc3Npb24oKTsKICB9LCBbXSk7CgogIHJldHVybiAoCiAgICA8VmlldyBzdHlsZT17c3R5bGVzLmNvbnRhaW5lcn0+CiAgICAgIDxNYXBWaWV3CiAgICAgICAgc3R5bGU9e3N0eWxlcy5tYXB9CiAgICAgICAgcmVnaW9uPXtsb2NhdGlvbn0KICAgICAgICBzaG93c1VzZXJMb2NhdGlvbj17dHJ1ZX0KICAgICAgPgogICAgICAgIHtsb2NhdGlvbiAmJiAoCiAgICAgICAgICA8TWFya2VyCiAgICAgICAgICAgIGNvb3JkaW5hdGU9e2xvY2F0aW9ufQogICAgICAgICAgICB0aXRsZT17IllvdSBhcmUgaGVyZSJ9CiAgICAgICAgICAvPgogICAgICAgICl9CiAgICAgIDwvTWFwVmlldz4KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgLi4uU3R5bGVTaGVldC5hYnNvbHV0ZUZpbGxPYmplY3QsCiAgICBqdXN0aWZ5Q29udGVudDogJ2ZsZXgtZW5kJywKICAgIGFsaWduSXRlbXM6ICdjZW50ZXInLAogIH0sCiAgbWFwOiB7CiAgICAuLi5TdHlsZVNoZWV0LmFic29sdXRlRmlsbE9iamVjdCwKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IFVzZXJMb2NhdGlvbk1hcDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, PermissionsAndroid, Platform } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
+import Geolocation from '@react-native-community/geolocation';
+
+const UserLocationMap = () =&gt; {
+  const [location, setLocation] = useState(null);
+
+  useEffect(() =&gt; {
+    const requestLocationPermission = async () =&gt; {
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.warn('Location permission denied');
+          return;
+        }
+      }
+      Geolocation.getCurrentPosition(
+        (position) =&gt; {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        },
+        (error) =&gt; console.error(error),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      );
+    };
+
+    requestLocationPermission();
+  }, []);
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;MapView
+        style={styles.map}
+        region={location}
+        showsUserLocation={true}
+      &gt;
+        {location &amp;&amp; (
+          &lt;Marker
+            coordinate={location}
+            title={&quot;You are here&quot;}
+          /&gt;
+        )}
+      &lt;/MapView&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+});
+
+export default UserLocationMap;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>PermissionsAndroid</strong>: Used to request location permissions on Android.</li>
+<li><strong>Geolocation</strong>: Used to get the user's current location.</li>
+<li><strong>showsUserLocation</strong>: A prop on <code>MapView</code> that shows the user's current location on the map.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of integrating maps into a React Native application. We learned how to set up the environment, render a basic map, add markers, customize markers, and handle user location. With these foundational skills, you can start building more complex and interactive map features in your React Native applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-animations'>&#x25C4;Using Animations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Working with Maps</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='accessing-device-features-expo'>Accessing Device Features with Expo &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

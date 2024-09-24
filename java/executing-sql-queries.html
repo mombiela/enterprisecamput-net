@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executing SQL Queries</title>
+
+    <link rel="alternate" href="https://campusempresa.com/java/executing-sql-queries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/java/executing-sql-queries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/java/executing-sql-queries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/java/executing-sql-queries" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/java/executing-sql-queries" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='connecting-to-a-database'>&#x25C4;Connecting to a Database</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Executing SQL Queries</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='resultset-and-data-manipulation'>ResultSet and Data Manipulation &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Executing SQL queries in Java is a fundamental skill for any developer working with databases. This section will cover how to connect to a database, execute SQL queries, and handle the results. We will start with basic concepts and gradually move to more advanced topics.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before diving into executing SQL queries in Java, ensure you have:</p>
+<ul>
+<li>Basic understanding of Java programming.</li>
+<li>Basic knowledge of SQL.</li>
+<li>A database management system (DBMS) installed (e.g., MySQL, PostgreSQL).</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>To execute SQL queries in Java, you need to set up your development environment:</p>
+<ol>
+<li><strong>Install JDBC Driver</strong>: Download and add the JDBC driver for your database to your project.</li>
+<li><strong>Database Connection</strong>: Establish a connection to your database using JDBC.</li>
+</ol>
+</div><h2>Example: Setting Up a MySQL Connection</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuc3FsLkNvbm5lY3Rpb247CmltcG9ydCBqYXZhLnNxbC5Ecml2ZXJNYW5hZ2VyOwppbXBvcnQgamF2YS5zcWwuU1FMRXhjZXB0aW9uOwoKcHVibGljIGNsYXNzIERhdGFiYXNlQ29ubmVjdGlvbiB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU3RyaW5nIHVybCA9ICJqZGJjOm15c3FsOi8vbG9jYWxob3N0OjMzMDYvbXlkYXRhYmFzZSI7CiAgICAgICAgU3RyaW5nIHVzZXIgPSAicm9vdCI7CiAgICAgICAgU3RyaW5nIHBhc3N3b3JkID0gInBhc3N3b3JkIjsKCiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgQ29ubmVjdGlvbiBjb25uZWN0aW9uID0gRHJpdmVyTWFuYWdlci5nZXRDb25uZWN0aW9uKHVybCwgdXNlciwgcGFzc3dvcmQpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIkNvbm5lY3RlZCB0byB0aGUgZGF0YWJhc2Ugc3VjY2Vzc2Z1bGx5ISIpOwogICAgICAgIH0gY2F0Y2ggKFNRTEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DatabaseConnection {
+    public static void main(String[] args) {
+        String url = &quot;jdbc:mysql://localhost:3306/mydatabase&quot;;
+        String user = &quot;root&quot;;
+        String password = &quot;password&quot;;
+
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            System.out.println(&quot;Connected to the database successfully!&quot;);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>DriverManager.getConnection(url, user, password)</code>: Establishes a connection to the database.</li>
+<li><code>url</code>: The database URL.</li>
+<li><code>user</code>: The database username.</li>
+<li><code>password</code>: The database password.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Executing SQL Queries</h1>
+<div class='content'><p>Once the connection is established, you can execute SQL queries using the <code>Statement</code> or <code>PreparedStatement</code> classes.</p>
+</div><h2>Using `Statement`</h2>
+<div class='content'><p>The <code>Statement</code> class is used for executing static SQL statements.</p>
+<h4>Example: Executing a Simple Query</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuc3FsLkNvbm5lY3Rpb247CmltcG9ydCBqYXZhLnNxbC5Ecml2ZXJNYW5hZ2VyOwppbXBvcnQgamF2YS5zcWwuUmVzdWx0U2V0OwppbXBvcnQgamF2YS5zcWwuU1FMRXhjZXB0aW9uOwppbXBvcnQgamF2YS5zcWwuU3RhdGVtZW50OwoKcHVibGljIGNsYXNzIEV4ZWN1dGVRdWVyeSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU3RyaW5nIHVybCA9ICJqZGJjOm15c3FsOi8vbG9jYWxob3N0OjMzMDYvbXlkYXRhYmFzZSI7CiAgICAgICAgU3RyaW5nIHVzZXIgPSAicm9vdCI7CiAgICAgICAgU3RyaW5nIHBhc3N3b3JkID0gInBhc3N3b3JkIjsKCiAgICAgICAgdHJ5IChDb25uZWN0aW9uIGNvbm5lY3Rpb24gPSBEcml2ZXJNYW5hZ2VyLmdldENvbm5lY3Rpb24odXJsLCB1c2VyLCBwYXNzd29yZCk7CiAgICAgICAgICAgICBTdGF0ZW1lbnQgc3RhdGVtZW50ID0gY29ubmVjdGlvbi5jcmVhdGVTdGF0ZW1lbnQoKSkgewoKICAgICAgICAgICAgU3RyaW5nIHF1ZXJ5ID0gIlNFTEVDVCAqIEZST00gdXNlcnMiOwogICAgICAgICAgICBSZXN1bHRTZXQgcmVzdWx0U2V0ID0gc3RhdGVtZW50LmV4ZWN1dGVRdWVyeShxdWVyeSk7CgogICAgICAgICAgICB3aGlsZSAocmVzdWx0U2V0Lm5leHQoKSkgewogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJVc2VyIElEOiAiICsgcmVzdWx0U2V0LmdldEludCgiaWQiKSk7CiAgICAgICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIlVzZXJuYW1lOiAiICsgcmVzdWx0U2V0LmdldFN0cmluZygidXNlcm5hbWUiKSk7CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChTUUxFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class ExecuteQuery {
+    public static void main(String[] args) {
+        String url = &quot;jdbc:mysql://localhost:3306/mydatabase&quot;;
+        String user = &quot;root&quot;;
+        String password = &quot;password&quot;;
+
+        try (Connection connection = DriverManager.getConnection(url, user, password);
+             Statement statement = connection.createStatement()) {
+
+            String query = &quot;SELECT * FROM users&quot;;
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                System.out.println(&quot;User ID: &quot; + resultSet.getInt(&quot;id&quot;));
+                System.out.println(&quot;Username: &quot; + resultSet.getString(&quot;username&quot;));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>Statement statement = connection.createStatement()</code>: Creates a <code>Statement</code> object.</li>
+<li><code>ResultSet resultSet = statement.executeQuery(query)</code>: Executes the query and returns the result set.</li>
+<li><code>resultSet.next()</code>: Moves the cursor to the next row in the result set.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Using `PreparedStatement`</h2>
+<div class='content'><p>The <code>PreparedStatement</code> class is used for executing parameterized SQL statements, which helps prevent SQL injection.</p>
+<h4>Example: Executing a Parameterized Query</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuc3FsLkNvbm5lY3Rpb247CmltcG9ydCBqYXZhLnNxbC5Ecml2ZXJNYW5hZ2VyOwppbXBvcnQgamF2YS5zcWwuUHJlcGFyZWRTdGF0ZW1lbnQ7CmltcG9ydCBqYXZhLnNxbC5SZXN1bHRTZXQ7CmltcG9ydCBqYXZhLnNxbC5TUUxFeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgRXhlY3V0ZVByZXBhcmVkU3RhdGVtZW50IHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBTdHJpbmcgdXJsID0gImpkYmM6bXlzcWw6Ly9sb2NhbGhvc3Q6MzMwNi9teWRhdGFiYXNlIjsKICAgICAgICBTdHJpbmcgdXNlciA9ICJyb290IjsKICAgICAgICBTdHJpbmcgcGFzc3dvcmQgPSAicGFzc3dvcmQiOwoKICAgICAgICB0cnkgKENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IERyaXZlck1hbmFnZXIuZ2V0Q29ubmVjdGlvbih1cmwsIHVzZXIsIHBhc3N3b3JkKTsKICAgICAgICAgICAgIFByZXBhcmVkU3RhdGVtZW50IHByZXBhcmVkU3RhdGVtZW50ID0gY29ubmVjdGlvbi5wcmVwYXJlU3RhdGVtZW50KCJTRUxFQ1QgKiBGUk9NIHVzZXJzIFdIRVJFIGlkID0gPyIpKSB7CgogICAgICAgICAgICBwcmVwYXJlZFN0YXRlbWVudC5zZXRJbnQoMSwgMSk7IC8vIFNldCB0aGUgZmlyc3QgcGFyYW1ldGVyIHRvIDEKICAgICAgICAgICAgUmVzdWx0U2V0IHJlc3VsdFNldCA9IHByZXBhcmVkU3RhdGVtZW50LmV4ZWN1dGVRdWVyeSgpOwoKICAgICAgICAgICAgd2hpbGUgKHJlc3VsdFNldC5uZXh0KCkpIHsKICAgICAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiVXNlciBJRDogIiArIHJlc3VsdFNldC5nZXRJbnQoImlkIikpOwogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJVc2VybmFtZTogIiArIHJlc3VsdFNldC5nZXRTdHJpbmcoInVzZXJuYW1lIikpOwogICAgICAgICAgICB9CiAgICAgICAgfSBjYXRjaCAoU1FMRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class ExecutePreparedStatement {
+    public static void main(String[] args) {
+        String url = &quot;jdbc:mysql://localhost:3306/mydatabase&quot;;
+        String user = &quot;root&quot;;
+        String password = &quot;password&quot;;
+
+        try (Connection connection = DriverManager.getConnection(url, user, password);
+             PreparedStatement preparedStatement = connection.prepareStatement(&quot;SELECT * FROM users WHERE id = ?&quot;)) {
+
+            preparedStatement.setInt(1, 1); // Set the first parameter to 1
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                System.out.println(&quot;User ID: &quot; + resultSet.getInt(&quot;id&quot;));
+                System.out.println(&quot;Username: &quot; + resultSet.getString(&quot;username&quot;));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>PreparedStatement preparedStatement = connection.prepareStatement(query)</code>: Creates a <code>PreparedStatement</code> object.</li>
+<li><code>preparedStatement.setInt(1, 1)</code>: Sets the first parameter in the query to 1.</li>
+<li><code>ResultSet resultSet = preparedStatement.executeQuery()</code>: Executes the query and returns the result set.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Handling SQL Exceptions</h1>
+<div class='content'><p>Handling exceptions is crucial when working with databases to ensure your application can gracefully handle errors.</p>
+</div><h2>Example: Handling SQL Exceptions</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJ5IHsKICAgIC8vIERhdGFiYXNlIG9wZXJhdGlvbnMKfSBjYXRjaCAoU1FMRXhjZXB0aW9uIGUpIHsKICAgIFN5c3RlbS5lcnIucHJpbnRsbigiU1FMIGVycm9yOiAiICsgZS5nZXRNZXNzYWdlKCkpOwogICAgZS5wcmludFN0YWNrVHJhY2UoKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>try {
+    // Database operations
+} catch (SQLException e) {
+    System.err.println(&quot;SQL error: &quot; + e.getMessage());
+    e.printStackTrace();
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>SQLException e</code>: Catches SQL exceptions.</li>
+<li><code>e.getMessage()</code>: Retrieves the error message.</li>
+<li><code>e.printStackTrace()</code>: Prints the stack trace for debugging.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Executing SQL queries in Java involves setting up a database connection, using <code>Statement</code> or <code>PreparedStatement</code> to execute queries, and handling the results. Proper exception handling ensures your application can manage errors effectively. By mastering these skills, you can efficiently interact with databases in your Java applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='connecting-to-a-database'>&#x25C4;Connecting to a Database</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Executing SQL Queries</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='resultset-and-data-manipulation'>ResultSet and Data Manipulation &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

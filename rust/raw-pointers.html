@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raw Pointers in Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/raw-pointers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/raw-pointers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/raw-pointers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/rust/raw-pointers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/rust/raw-pointers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='when-to-use-unsafe'>&#x25C4;When to Use Unsafe</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Raw Pointers in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='unsafe-functions-and-traits'>Unsafe Functions and Traits &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Raw Pointers</h1>
+<div class='content'><p>Raw pointers in Rust are similar to pointers in C or C++. They are used to reference memory locations directly and are denoted by <code>*const T</code> for immutable pointers and <code>*mut T</code> for mutable pointers. Unlike Rust's safe references (<code>&amp;T</code> and <code>&amp;mut T</code>), raw pointers do not enforce borrowing rules or lifetimes, making them unsafe to use.</p>
+<ul>
+<li><strong>Key Characteristics of Raw Pointers:</strong>
+<ul>
+<li>Do not guarantee memory safety.</li>
+<li>Can be null or dangling.</li>
+<li>Do not automatically manage memory (no automatic deallocation).</li>
+<li>Require <code>unsafe</code> blocks to dereference.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creating Raw Pointers</h1>
+<div class='content'><p>You can create raw pointers from references using the <code>as</code> keyword.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB4OiBpMzIgPSA0MjsKICAgIGxldCByMTogKmNvbnN0IGkzMiA9ICZ4IGFzICpjb25zdCBpMzI7IC8vIEltbXV0YWJsZSByYXcgcG9pbnRlcgogICAgbGV0IHIyOiAqbXV0IGkzMiA9ICZ4IGFzICptdXQgaTMyOyAgICAgLy8gTXV0YWJsZSByYXcgcG9pbnRlcgoKICAgIHByaW50bG4hKCJyMSBwb2ludHMgdG86IHs6P30iLCByMSk7CiAgICBwcmludGxuISgicjIgcG9pbnRzIHRvOiB7Oj99IiwgcjIpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let x: i32 = 42;
+    let r1: *const i32 = &amp;x as *const i32; // Immutable raw pointer
+    let r2: *mut i32 = &amp;x as *mut i32;     // Mutable raw pointer
+
+    println!(&quot;r1 points to: {:?}&quot;, r1);
+    println!(&quot;r2 points to: {:?}&quot;, r2);
+}</pre></div><div class='content'></div><h1>Dereferencing Raw Pointers</h1>
+<div class='content'><p>Dereferencing raw pointers is unsafe and must be done within an <code>unsafe</code> block.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB4OiBpMzIgPSA0MjsKICAgIGxldCByOiAqY29uc3QgaTMyID0gJnggYXMgKmNvbnN0IGkzMjsKCiAgICB1bnNhZmUgewogICAgICAgIHByaW50bG4hKCJWYWx1ZSBhdCByOiB7fSIsICpyKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let x: i32 = 42;
+    let r: *const i32 = &amp;x as *const i32;
+
+    unsafe {
+        println!(&quot;Value at r: {}&quot;, *r);
+    }
+}</pre></div><div class='content'></div><h1>Use Cases for Raw Pointers</h1>
+<div class='content'><p>Raw pointers are typically used in scenarios where:</p>
+<ul>
+<li>Interfacing with C code or other languages.</li>
+<li>Implementing low-level data structures.</li>
+<li>Performance-critical code where you need fine-grained control over memory.</li>
+</ul>
+</div><h1>Comparison with Safe References</h1>
+<div class='content'><p>| Feature                | Safe References (<code>&amp;T</code>, <code>&amp;mut T</code>) | Raw Pointers (<code>*const T</code>, <code>*mut T</code>) |
+|------------------------|----------------------------------|-------------------------------------|
+| Memory Safety          | Enforced                         | Not guaranteed                      |
+| Nullability            | Not allowed                      | Can be null                         |
+| Borrowing Rules        | Enforced                         | Not enforced                        |
+| Lifetimes              | Enforced                         | Not enforced                        |
+| Dereferencing Safety   | Safe                             | Requires <code>unsafe</code> block             |</p>
+</div><h1>Example: Interfacing with C Code</h1>
+<div class='content'><p>Raw pointers are essential when working with FFI (Foreign Function Interface) to call C functions from Rust.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXh0ZXJuICJDIiB7CiAgICBmbiBhYnMoaW5wdXQ6IGkzMikgLT4gaTMyOwp9CgpmbiBtYWluKCkgewogICAgbGV0IHg6IGkzMiA9IC00MjsKICAgIHVuc2FmZSB7CiAgICAgICAgcHJpbnRsbiEoIkFic29sdXRlIHZhbHVlIG9mIHt9OiB7fSIsIHgsIGFicyh4KSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>extern &quot;C&quot; {
+    fn abs(input: i32) -&gt; i32;
+}
+
+fn main() {
+    let x: i32 = -42;
+    unsafe {
+        println!(&quot;Absolute value of {}: {}&quot;, x, abs(x));
+    }
+}</pre></div><div class='content'></div><h1>Example: Implementing a Low-Level Data Structure</h1>
+<div class='content'><p>Here is a simple example of a linked list using raw pointers.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IE5vZGUgewogICAgdmFsdWU6IGkzMiwKICAgIG5leHQ6ICptdXQgTm9kZSwKfQoKZm4gbWFpbigpIHsKICAgIGxldCBub2RlMSA9IEJveDo6aW50b19yYXcoQm94OjpuZXcoTm9kZSB7IHZhbHVlOiAxLCBuZXh0OiBzdGQ6OnB0cjo6bnVsbF9tdXQoKSB9KSk7CiAgICBsZXQgbm9kZTIgPSBCb3g6OmludG9fcmF3KEJveDo6bmV3KE5vZGUgeyB2YWx1ZTogMiwgbmV4dDogbm9kZTEgfSkpOwoKICAgIHVuc2FmZSB7CiAgICAgICAgcHJpbnRsbiEoIk5vZGUgMiB2YWx1ZToge30iLCAoKm5vZGUyKS52YWx1ZSk7CiAgICAgICAgcHJpbnRsbiEoIk5vZGUgMSB2YWx1ZToge30iLCAoKigqbm9kZTIpLm5leHQpLnZhbHVlKTsKICAgIH0KCiAgICAvLyBDbGVhbiB1cCBtZW1vcnkKICAgIHVuc2FmZSB7CiAgICAgICAgQm94Ojpmcm9tX3Jhdyhub2RlMSk7CiAgICAgICAgQm94Ojpmcm9tX3Jhdyhub2RlMik7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Node {
+    value: i32,
+    next: *mut Node,
+}
+
+fn main() {
+    let node1 = Box::into_raw(Box::new(Node { value: 1, next: std::ptr::null_mut() }));
+    let node2 = Box::into_raw(Box::new(Node { value: 2, next: node1 }));
+
+    unsafe {
+        println!(&quot;Node 2 value: {}&quot;, (*node2).value);
+        println!(&quot;Node 1 value: {}&quot;, (*(*node2).next).value);
+    }
+
+    // Clean up memory
+    unsafe {
+        Box::from_raw(node1);
+        Box::from_raw(node2);
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Raw pointers in Rust provide a way to work with memory directly, offering more control but at the cost of safety. They are useful in specific scenarios such as interfacing with other languages or implementing low-level data structures. However, due to their unsafe nature, they should be used sparingly and with caution. Understanding raw pointers is crucial for advanced Rust programming, especially when performance and interoperability are critical.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='when-to-use-unsafe'>&#x25C4;When to Use Unsafe</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Raw Pointers in Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='unsafe-functions-and-traits'>Unsafe Functions and Traits &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

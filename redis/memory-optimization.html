@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Optimization in Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/memory-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/memory-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/memory-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/memory-optimization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/memory-optimization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='security-best-practices'>&#x25C4;Security Best Practices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Memory Optimization in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='latency-and-throughput'>Latency and Throughput &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Memory Optimization</h1>
+<div class='content'><p>Memory optimization is crucial for maintaining the performance and efficiency of Redis. As an in-memory data structure store, Redis relies heavily on RAM, and optimizing memory usage can lead to significant improvements in speed and resource management.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Memory Usage</strong>: Understanding how Redis uses memory.</li>
+<li><strong>Data Types</strong>: Efficient use of Redis data types.</li>
+<li><strong>Compression</strong>: Techniques to compress data.</li>
+<li><strong>Eviction Policies</strong>: Managing memory with eviction policies.</li>
+<li><strong>Persistence</strong>: Balancing memory usage with persistence options.</li>
+<li><strong>Monitoring</strong>: Tools and commands to monitor memory usage.</li>
+</ul>
+</div><h1>Memory Usage</h1>
+<div class='content'><p>Redis stores all data in memory, which makes it extremely fast but also means that memory is a critical resource. Understanding how Redis allocates and uses memory is the first step in optimization.</p>
+</div><h2>Memory Allocation</h2>
+<div class='content'><p>Redis uses a memory allocator (jemalloc by default) to manage memory. This allocator is optimized for performance but understanding its behavior can help in tuning Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDaGVjayB0aGUgbWVtb3J5IGFsbG9jYXRvciB1c2VkIGJ5IFJlZGlzCnJlZGlzLXNlcnZlciAtLXZlcnNpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Check the memory allocator used by Redis
+redis-server --version</pre></div><div class='content'></div><h1>Efficient Use of Data Types</h1>
+<div class='content'><p>Different data types in Redis have different memory footprints. Choosing the right data type for your use case can save a significant amount of memory.</p>
+</div><h2>Strings</h2>
+<div class='content'><p>Strings are the most basic data type in Redis. They can store any kind of data, but their memory usage can be optimized by using shorter strings or compressing data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdG9yaW5nIGEgc3RyaW5nIGluIFJlZGlzClNFVCBteWtleSAiSGVsbG8sIFJlZGlzISI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Storing a string in Redis
+SET mykey &quot;Hello, Redis!&quot;</pre></div><div class='content'></div><h2>Lists, Sets, Hashes, and Sorted Sets</h2>
+<div class='content'><p>These data types can be more memory-efficient than strings for certain use cases.</p>
+<ul>
+<li><strong>Lists</strong>: Use lists for ordered collections of strings.</li>
+<li><strong>Sets</strong>: Use sets for collections of unique strings.</li>
+<li><strong>Hashes</strong>: Use hashes for storing objects with multiple fields.</li>
+<li><strong>Sorted Sets</strong>: Use sorted sets for ordered collections with scores.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeGFtcGxlIG9mIHVzaW5nIGEgaGFzaApIU0VUIHVzZXI6MTAwMCBuYW1lICJKb2huIERvZSIgYWdlIDMw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Example of using a hash
+HSET user:1000 name &quot;John Doe&quot; age 30</pre></div><div class='content'></div><h1>Compression Techniques</h1>
+<div class='content'><p>Compressing data before storing it in Redis can save memory, especially for large datasets.</p>
+</div><h2>Using Redis Modules</h2>
+<div class='content'><p>Modules like <code>redisearch</code> and <code>redisgraph</code> provide built-in compression mechanisms.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeGFtcGxlIHVzaW5nIHJlZGlzZWFyY2ggbW9kdWxlCkZULkNSRUFURSBteUluZGV4IE9OIEhBU0ggUFJFRklYIDEgdXNlcjogU0NIRU1BIG5hbWUgVEVYVCBhZ2UgTlVNRVJJQw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Example using redisearch module
+FT.CREATE myIndex ON HASH PREFIX 1 user: SCHEMA name TEXT age NUMERIC</pre></div><div class='content'></div><h2>Custom Compression</h2>
+<div class='content'><p>You can also manually compress data before storing it in Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHpsaWIKaW1wb3J0IHJlZGlzCgpyID0gcmVkaXMuUmVkaXMoKQoKIyBDb21wcmVzcyBkYXRhCmNvbXByZXNzZWRfZGF0YSA9IHpsaWIuY29tcHJlc3MoYiJTb21lIGxhcmdlIGRhdGEiKQpyLnNldCgiY29tcHJlc3NlZF9rZXkiLCBjb21wcmVzc2VkX2RhdGEp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import zlib
+import redis
+
+r = redis.Redis()
+
+# Compress data
+compressed_data = zlib.compress(b&quot;Some large data&quot;)
+r.set(&quot;compressed_key&quot;, compressed_data)</pre></div><div class='content'></div><h1>Eviction Policies</h1>
+<div class='content'><p>When Redis runs out of memory, it needs to evict some data to make room for new data. Redis provides several eviction policies to manage this.</p>
+</div><h2>Configuring Eviction Policies</h2>
+<div class='content'><p>You can configure eviction policies in the Redis configuration file (<code>redis.conf</code>) or at runtime.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgZXZpY3Rpb24gcG9saWN5IHRvIHZvbGF0aWxlLWxydQpDT05GSUcgU0VUIG1heG1lbW9yeS1wb2xpY3kgdm9sYXRpbGUtbHJ1"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set eviction policy to volatile-lru
+CONFIG SET maxmemory-policy volatile-lru</pre></div><div class='content'></div><h2>Common Eviction Policies</h2>
+<div class='content'><ul>
+<li><strong>noeviction</strong>: Returns errors when memory limit is reached.</li>
+<li><strong>allkeys-lru</strong>: Evicts the least recently used keys.</li>
+<li><strong>volatile-lru</strong>: Evicts the least recently used keys with an expiration set.</li>
+<li><strong>allkeys-random</strong>: Evicts random keys.</li>
+<li><strong>volatile-random</strong>: Evicts random keys with an expiration set.</li>
+</ul>
+</div><h1>Persistence and Memory Usage</h1>
+<div class='content'><p>Redis supports different persistence options that can affect memory usage.</p>
+</div><h2>RDB Snapshots</h2>
+<div class='content'><p>RDB snapshots create point-in-time snapshots of the dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBUcmlnZ2VyIGFuIFJEQiBzbmFwc2hvdApCR1NBVkU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Trigger an RDB snapshot
+BGSAVE</pre></div><div class='content'></div><h2>AOF (Append-Only File)</h2>
+<div class='content'><p>AOF logs every write operation received by the server.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbmFibGUgQU9GIHBlcnNpc3RlbmNlCkNPTkZJRyBTRVQgYXBwZW5kb25seSB5ZXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Enable AOF persistence
+CONFIG SET appendonly yes</pre></div><div class='content'></div><h2>Balancing Persistence and Memory</h2>
+<div class='content'><p>Choosing the right persistence option can help balance memory usage and data durability.</p>
+</div><h1>Monitoring Memory Usage</h1>
+<div class='content'><p>Monitoring memory usage is essential for identifying and addressing memory issues.</p>
+</div><h2>Redis Memory Commands</h2>
+<div class='content'><p>Redis provides several commands to monitor memory usage.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZXQgYW4gb3ZlcnZpZXcgb2YgbWVtb3J5IHVzYWdlCklORk8gbWVtb3J5CgojIEdldCBkZXRhaWxlZCBtZW1vcnkgdXNhZ2UgZm9yIGEgc3BlY2lmaWMga2V5Ck1FTU9SWSBVU0FHRSBteWtleQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Get an overview of memory usage
+INFO memory
+
+# Get detailed memory usage for a specific key
+MEMORY USAGE mykey</pre></div><div class='content'></div><h2>External Monitoring Tools</h2>
+<div class='content'><p>Tools like RedisInsight, Prometheus, and Grafana can provide more detailed monitoring and visualization.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Memory optimization in Redis involves understanding how Redis uses memory, choosing the right data types, compressing data, configuring eviction policies, balancing persistence options, and monitoring memory usage. By following these practices, you can ensure that your Redis instance runs efficiently and effectively, even under heavy load.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='security-best-practices'>&#x25C4;Security Best Practices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Memory Optimization in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='latency-and-throughput'>Latency and Throughput &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

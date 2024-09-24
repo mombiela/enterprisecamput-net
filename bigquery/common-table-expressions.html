@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Table Expressions (CTEs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/bigquery/common-table-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/bigquery/common-table-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/bigquery/common-table-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/bigquery/common-table-expressions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/bigquery/common-table-expressions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='subqueries-and-nested-queries'>&#x25C4;Subqueries and Nested Queries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Table Expressions (CTEs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='window-functions'>Window Functions &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to CTEs</h1>
+<div class='content'><p>Common Table Expressions (CTEs) are a powerful feature in SQL that allow you to create temporary result sets which can be referenced within a <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement. In BigQuery, CTEs can help simplify complex queries, improve readability, and make your SQL code more maintainable.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>CTE Definition</strong>: A CTE is defined using the <code>WITH</code> keyword followed by a query that defines the temporary result set.</li>
+<li><strong>Scope</strong>: The CTE is only available within the execution scope of the statement in which it is defined.</li>
+<li><strong>Multiple CTEs</strong>: You can define multiple CTEs in a single query, and they can reference each other.</li>
+</ul>
+</div><h1>Basic Syntax of CTEs</h1>
+<div class='content'><p>The basic syntax for a CTE in BigQuery is as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBjdGVfbmFtZSBBUyAoCiAgICBTRUxFQ1QgY29sdW1uMSwgY29sdW1uMiwgLi4uCiAgICBGUk9NIHRhYmxlX25hbWUKICAgIFdIRVJFIGNvbmRpdGlvbgopClNFTEVDVCBjb2x1bW4xLCBjb2x1bW4yLCAuLi4KRlJPTSBjdGVfbmFtZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH cte_name AS (
+    SELECT column1, column2, ...
+    FROM table_name
+    WHERE condition
+)
+SELECT column1, column2, ...
+FROM cte_name;</pre></div><div class='content'></div><h2>Example</h2>
+<div class='content'><p>Let's start with a simple example. Suppose we have a table named <code>sales</code> with the following columns: <code>sale_id</code>, <code>product_id</code>, <code>quantity</code>, and <code>sale_date</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCByZWNlbnRfc2FsZXMgQVMgKAogICAgU0VMRUNUIHNhbGVfaWQsIHByb2R1Y3RfaWQsIHF1YW50aXR5LCBzYWxlX2RhdGUKICAgIEZST00gc2FsZXMKICAgIFdIRVJFIHNhbGVfZGF0ZSA+ICcyMDIzLTAxLTAxJwopClNFTEVDVCAqCkZST00gcmVjZW50X3NhbGVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH recent_sales AS (
+    SELECT sale_id, product_id, quantity, sale_date
+    FROM sales
+    WHERE sale_date &gt; '2023-01-01'
+)
+SELECT *
+FROM recent_sales;</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>We define a CTE named <code>recent_sales</code> that selects all sales made after January 1, 2023.</li>
+<li>We then select all columns from the <code>recent_sales</code> CTE.</li>
+</ul>
+</div><h1>Advanced Usage of CTEs</h1>
+<h2>Recursive CTEs</h2>
+<div class='content'><p>Recursive CTEs are used to perform operations that require iterative processing, such as traversing hierarchical data structures.</p>
+<h4>Syntax</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBSRUNVUlNJVkUgY3RlX25hbWUgQVMgKAogICAgaW5pdGlhbF9xdWVyeQogICAgVU5JT04gQUxMCiAgICByZWN1cnNpdmVfcXVlcnkKKQpTRUxFQ1QgKgpGUk9NIGN0ZV9uYW1lOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH RECURSIVE cte_name AS (
+    initial_query
+    UNION ALL
+    recursive_query
+)
+SELECT *
+FROM cte_name;</pre></div><div class='content'><h4>Example</h4>
+<p>Consider a table <code>employees</code> with columns <code>employee_id</code>, <code>manager_id</code>, and <code>employee_name</code>. We want to list all employees and their managers in a hierarchical order.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBSRUNVUlNJVkUgZW1wbG95ZWVfaGllcmFyY2h5IEFTICgKICAgIFNFTEVDVCBlbXBsb3llZV9pZCwgbWFuYWdlcl9pZCwgZW1wbG95ZWVfbmFtZSwgMSBBUyBsZXZlbAogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIG1hbmFnZXJfaWQgSVMgTlVMTAogICAgVU5JT04gQUxMCiAgICBTRUxFQ1QgZS5lbXBsb3llZV9pZCwgZS5tYW5hZ2VyX2lkLCBlLmVtcGxveWVlX25hbWUsIGVoLmxldmVsICsgMQogICAgRlJPTSBlbXBsb3llZXMgZQogICAgSk9JTiBlbXBsb3llZV9oaWVyYXJjaHkgZWggT04gZS5tYW5hZ2VyX2lkID0gZWguZW1wbG95ZWVfaWQKKQpTRUxFQ1QgKgpGUk9NIGVtcGxveWVlX2hpZXJhcmNoeTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH RECURSIVE employee_hierarchy AS (
+    SELECT employee_id, manager_id, employee_name, 1 AS level
+    FROM employees
+    WHERE manager_id IS NULL
+    UNION ALL
+    SELECT e.employee_id, e.manager_id, e.employee_name, eh.level + 1
+    FROM employees e
+    JOIN employee_hierarchy eh ON e.manager_id = eh.employee_id
+)
+SELECT *
+FROM employee_hierarchy;</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The initial query selects all top-level managers (where <code>manager_id</code> is <code>NULL</code>).</li>
+<li>The recursive query joins the <code>employees</code> table with the <code>employee_hierarchy</code> CTE to find employees reporting to each manager.</li>
+</ul>
+</div><h1>Practical Applications of CTEs</h1>
+<h2>Simplifying Complex Queries</h2>
+<div class='content'><p>CTEs can break down complex queries into simpler, more manageable parts.</p>
+<h4>Example</h4>
+<p>Suppose we want to find the total sales for each product in the <code>sales</code> table and then filter products with total sales greater than 1000.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBwcm9kdWN0X3NhbGVzIEFTICgKICAgIFNFTEVDVCBwcm9kdWN0X2lkLCBTVU0ocXVhbnRpdHkpIEFTIHRvdGFsX3NhbGVzCiAgICBGUk9NIHNhbGVzCiAgICBHUk9VUCBCWSBwcm9kdWN0X2lkCikKU0VMRUNUIHByb2R1Y3RfaWQsIHRvdGFsX3NhbGVzCkZST00gcHJvZHVjdF9zYWxlcwpXSEVSRSB0b3RhbF9zYWxlcyA+IDEwMDA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH product_sales AS (
+    SELECT product_id, SUM(quantity) AS total_sales
+    FROM sales
+    GROUP BY product_id
+)
+SELECT product_id, total_sales
+FROM product_sales
+WHERE total_sales &gt; 1000;</pre></div><div class='content'></div><h2>Improving Readability</h2>
+<div class='content'><p>CTEs can make your SQL code more readable by giving meaningful names to intermediate result sets.</p>
+<h4>Example</h4>
+<p>Consider a query that calculates the average sales per product and then finds products with above-average sales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBhdmdfc2FsZXMgQVMgKAogICAgU0VMRUNUIEFWRyh0b3RhbF9zYWxlcykgQVMgYXZnX3RvdGFsX3NhbGVzCiAgICBGUk9NICgKICAgICAgICBTRUxFQ1QgcHJvZHVjdF9pZCwgU1VNKHF1YW50aXR5KSBBUyB0b3RhbF9zYWxlcwogICAgICAgIEZST00gc2FsZXMKICAgICAgICBHUk9VUCBCWSBwcm9kdWN0X2lkCiAgICApCiksCmFib3ZlX2F2Z19zYWxlcyBBUyAoCiAgICBTRUxFQ1QgcHJvZHVjdF9pZCwgU1VNKHF1YW50aXR5KSBBUyB0b3RhbF9zYWxlcwogICAgRlJPTSBzYWxlcwogICAgR1JPVVAgQlkgcHJvZHVjdF9pZAogICAgSEFWSU5HIFNVTShxdWFudGl0eSkgPiAoU0VMRUNUIGF2Z190b3RhbF9zYWxlcyBGUk9NIGF2Z19zYWxlcykKKQpTRUxFQ1QgKgpGUk9NIGFib3ZlX2F2Z19zYWxlczs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH avg_sales AS (
+    SELECT AVG(total_sales) AS avg_total_sales
+    FROM (
+        SELECT product_id, SUM(quantity) AS total_sales
+        FROM sales
+        GROUP BY product_id
+    )
+),
+above_avg_sales AS (
+    SELECT product_id, SUM(quantity) AS total_sales
+    FROM sales
+    GROUP BY product_id
+    HAVING SUM(quantity) &gt; (SELECT avg_total_sales FROM avg_sales)
+)
+SELECT *
+FROM above_avg_sales;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Common Table Expressions (CTEs) are a versatile tool in BigQuery that can help simplify complex queries, improve readability, and manage hierarchical data. By using CTEs, you can break down your SQL queries into more manageable parts, making your code easier to understand and maintain. Whether you're working with simple or recursive CTEs, mastering this feature will significantly enhance your SQL querying capabilities.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='subqueries-and-nested-queries'>&#x25C4;Subqueries and Nested Queries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Table Expressions (CTEs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='window-functions'>Window Functions &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

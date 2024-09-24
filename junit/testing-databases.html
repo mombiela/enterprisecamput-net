@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing Databases with JUnit</title>
+
+    <link rel="alternate" href="https://campusempresa.com/junit/testing-databases" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/junit/testing-databases" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/junit/testing-databases" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/junit/testing-databases" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/junit/testing-databases" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-rest-apis'>&#x25C4;Testing REST APIs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Testing Databases with JUnit</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='testing-legacy-code'>Testing Legacy Code &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Testing databases is a crucial part of ensuring the reliability and correctness of your applications. In this section, we will explore how to use JUnit to test database interactions effectively. We will cover the basics of setting up your environment, writing tests, and advanced techniques for more complex scenarios.</p>
+</div><h1>Setting Up Your Environment</h1>
+<div class='content'><p>Before you can start testing your database interactions, you need to set up your environment.</p>
+</div><h2>Dependencies</h2>
+<div class='content'><p>First, ensure you have the necessary dependencies in your <code>pom.xml</code> if you're using Maven:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY2llcz4KICAgIDwhLS0gSlVuaXQgNSBkZXBlbmRlbmN5IC0tPgogICAgPGRlcGVuZGVuY3k+CiAgICAgICAgPGdyb3VwSWQ+b3JnLmp1bml0Lmp1cGl0ZXI8L2dyb3VwSWQ+CiAgICAgICAgPGFydGlmYWN0SWQ+anVuaXQtanVwaXRlci1lbmdpbmU8L2FydGlmYWN0SWQ+CiAgICAgICAgPHZlcnNpb24+NS43LjA8L3ZlcnNpb24+CiAgICAgICAgPHNjb3BlPnRlc3Q8L3Njb3BlPgogICAgPC9kZXBlbmRlbmN5PgogICAgPCEtLSBIMiBEYXRhYmFzZSBkZXBlbmRlbmN5IGZvciBpbi1tZW1vcnkgdGVzdGluZyAtLT4KICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPmNvbS5oMmRhdGFiYXNlPC9ncm91cElkPgogICAgICAgIDxhcnRpZmFjdElkPmgyPC9hcnRpZmFjdElkPgogICAgICAgIDxzY29wZT50ZXN0PC9zY29wZT4KICAgIDwvZGVwZW5kZW5jeT4KICAgIDwhLS0gU3ByaW5nIEJvb3QgVGVzdCBkZXBlbmRlbmN5IGlmIHVzaW5nIFNwcmluZyBCb290IC0tPgogICAgPGRlcGVuZGVuY3k+CiAgICAgICAgPGdyb3VwSWQ+b3JnLnNwcmluZ2ZyYW1ld29yay5ib290PC9ncm91cElkPgogICAgICAgIDxhcnRpZmFjdElkPnNwcmluZy1ib290LXN0YXJ0ZXItdGVzdDwvYXJ0aWZhY3RJZD4KICAgICAgICA8c2NvcGU+dGVzdDwvc2NvcGU+CiAgICA8L2RlcGVuZGVuY3k+CjwvZGVwZW5kZW5jaWVzPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependencies&gt;
+    &lt;!-- JUnit 5 dependency --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.junit.jupiter&lt;/groupId&gt;
+        &lt;artifactId&gt;junit-jupiter-engine&lt;/artifactId&gt;
+        &lt;version&gt;5.7.0&lt;/version&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;!-- H2 Database dependency for in-memory testing --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+        &lt;artifactId&gt;h2&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;!-- Spring Boot Test dependency if using Spring Boot --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre></div><div class='content'></div><h2>Configuration</h2>
+<div class='content'><p>Configure your application to use an in-memory database for testing purposes. This can be done in your <code>application-test.properties</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3ByaW5nLmRhdGFzb3VyY2UudXJsPWpkYmM6aDI6bWVtOnRlc3RkYgpzcHJpbmcuZGF0YXNvdXJjZS5kcml2ZXJDbGFzc05hbWU9b3JnLmgyLkRyaXZlcgpzcHJpbmcuZGF0YXNvdXJjZS51c2VybmFtZT1zYQpzcHJpbmcuZGF0YXNvdXJjZS5wYXNzd29yZD1wYXNzd29yZApzcHJpbmcuanBhLmRhdGFiYXNlLXBsYXRmb3JtPW9yZy5oaWJlcm5hdGUuZGlhbGVjdC5IMkRpYWxlY3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=password
+spring.jpa.database-platform=org.hibernate.dialect.H2Dialect</pre></div><div class='content'></div><h1>Writing Basic Database Tests</h1>
+<div class='content'><p>Let's start with some basic tests to ensure that our database interactions are working as expected.</p>
+</div><h2>Example: Testing a Repository</h2>
+<div class='content'><p>Assume you have a simple <code>User</code> entity and a corresponding <code>UserRepository</code>. Here's how you can write a basic test:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5iZWFucy5mYWN0b3J5LmFubm90YXRpb24uQXV0b3dpcmVkOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5ib290LnRlc3QuYXV0b2NvbmZpZ3VyZS5vcm0uanBhLkRhdGFKcGFUZXN0OwppbXBvcnQgc3RhdGljIG9yZy5hc3NlcnRqLmNvcmUuYXBpLkFzc2VydGlvbnMuYXNzZXJ0VGhhdDsKCkBEYXRhSnBhVGVzdApwdWJsaWMgY2xhc3MgVXNlclJlcG9zaXRvcnlUZXN0IHsKCiAgICBAQXV0b3dpcmVkCiAgICBwcml2YXRlIFVzZXJSZXBvc2l0b3J5IHVzZXJSZXBvc2l0b3J5OwoKICAgIEBUZXN0CiAgICBwdWJsaWMgdm9pZCB0ZXN0U2F2ZVVzZXIoKSB7CiAgICAgICAgVXNlciB1c2VyID0gbmV3IFVzZXIoKTsKICAgICAgICB1c2VyLnNldE5hbWUoIkpvaG4gRG9lIik7CiAgICAgICAgdXNlci5zZXRFbWFpbCgiam9obi5kb2VAZXhhbXBsZS5jb20iKTsKCiAgICAgICAgdXNlclJlcG9zaXRvcnkuc2F2ZSh1c2VyKTsKCiAgICAgICAgVXNlciBmb3VuZFVzZXIgPSB1c2VyUmVwb3NpdG9yeS5maW5kQnlJZCh1c2VyLmdldElkKCkpLm9yRWxzZShudWxsKTsKICAgICAgICBhc3NlcnRUaGF0KGZvdW5kVXNlcikuaXNOb3ROdWxsKCk7CiAgICAgICAgYXNzZXJ0VGhhdChmb3VuZFVzZXIuZ2V0TmFtZSgpKS5pc0VxdWFsVG8oIkpvaG4gRG9lIik7CiAgICAgICAgYXNzZXJ0VGhhdChmb3VuZFVzZXIuZ2V0RW1haWwoKSkuaXNFcXVhbFRvKCJqb2huLmRvZUBleGFtcGxlLmNvbSIpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@DataJpaTest
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Test
+    public void testSaveUser() {
+        User user = new User();
+        user.setName(&quot;John Doe&quot;);
+        user.setEmail(&quot;john.doe@example.com&quot;);
+
+        userRepository.save(user);
+
+        User foundUser = userRepository.findById(user.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo(&quot;John Doe&quot;);
+        assertThat(foundUser.getEmail()).isEqualTo(&quot;john.doe@example.com&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>@DataJpaTest</strong>: This annotation is used to configure a test slice for JPA repositories.</li>
+<li><strong>@Autowired</strong>: Injects the <code>UserRepository</code> bean.</li>
+<li><strong>assertThat</strong>: From AssertJ, used for fluent assertions.</li>
+</ul>
+</div><h1>Advanced Database Testing Techniques</h1>
+<div class='content'><p>As you become more comfortable with basic tests, you can explore more advanced techniques.</p>
+</div><h2>Using Testcontainers</h2>
+<div class='content'><p>Testcontainers is a Java library that supports JUnit tests, providing lightweight, throwaway instances of common databases.</p>
+<h4>Example: Setting Up Testcontainers</h4>
+<p>Add the Testcontainers dependency to your <code>pom.xml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcudGVzdGNvbnRhaW5lcnM8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5qdW5pdC1qdXBpdGVyPC9hcnRpZmFjdElkPgogICAgPHZlcnNpb24+MS4xNS4zPC92ZXJzaW9uPgogICAgPHNjb3BlPnRlc3Q8L3Njb3BlPgo8L2RlcGVuZGVuY3k+CjxkZXBlbmRlbmN5PgogICAgPGdyb3VwSWQ+b3JnLnRlc3Rjb250YWluZXJzPC9ncm91cElkPgogICAgPGFydGlmYWN0SWQ+bXlzcWw8L2FydGlmYWN0SWQ+CiAgICA8dmVyc2lvbj4xLjE1LjM8L3ZlcnNpb24+CiAgICA8c2NvcGU+dGVzdDwvc2NvcGU+CjwvZGVwZW5kZW5jeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+    &lt;artifactId&gt;junit-jupiter&lt;/artifactId&gt;
+    &lt;version&gt;1.15.3&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.testcontainers&lt;/groupId&gt;
+    &lt;artifactId&gt;mysql&lt;/artifactId&gt;
+    &lt;version&gt;1.15.3&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'><h4>Example: Writing a Test with Testcontainers</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLmV4dGVuc2lvbi5FeHRlbmRXaXRoOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5iZWFucy5mYWN0b3J5LmFubm90YXRpb24uQXV0b3dpcmVkOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5ib290LnRlc3QuYXV0b2NvbmZpZ3VyZS5vcm0uanBhLkRhdGFKcGFUZXN0OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay50ZXN0LmNvbnRleHQuanVuaXQuanVwaXRlci5TcHJpbmdFeHRlbnNpb247CmltcG9ydCBvcmcudGVzdGNvbnRhaW5lcnMuY29udGFpbmVycy5NeVNRTENvbnRhaW5lcjsKCmltcG9ydCBzdGF0aWMgb3JnLmFzc2VydGouY29yZS5hcGkuQXNzZXJ0aW9ucy5hc3NlcnRUaGF0OwoKQEV4dGVuZFdpdGgoU3ByaW5nRXh0ZW5zaW9uLmNsYXNzKQpARGF0YUpwYVRlc3QKcHVibGljIGNsYXNzIFVzZXJSZXBvc2l0b3J5VGVzdCB7CgogICAgQEF1dG93aXJlZAogICAgcHJpdmF0ZSBVc2VyUmVwb3NpdG9yeSB1c2VyUmVwb3NpdG9yeTsKCiAgICBzdGF0aWMgTXlTUUxDb250YWluZXI8Pz4gbXlzcWwgPSBuZXcgTXlTUUxDb250YWluZXI8PigibXlzcWw6OC4wLjIyIikKICAgICAgICAgICAgLndpdGhEYXRhYmFzZU5hbWUoInRlc3RkYiIpCiAgICAgICAgICAgIC53aXRoVXNlcm5hbWUoInRlc3QiKQogICAgICAgICAgICAud2l0aFBhc3N3b3JkKCJ0ZXN0Iik7CgogICAgc3RhdGljIHsKICAgICAgICBteXNxbC5zdGFydCgpOwogICAgfQoKICAgIEBUZXN0CiAgICBwdWJsaWMgdm9pZCB0ZXN0U2F2ZVVzZXIoKSB7CiAgICAgICAgVXNlciB1c2VyID0gbmV3IFVzZXIoKTsKICAgICAgICB1c2VyLnNldE5hbWUoIkpvaG4gRG9lIik7CiAgICAgICAgdXNlci5zZXRFbWFpbCgiam9obi5kb2VAZXhhbXBsZS5jb20iKTsKCiAgICAgICAgdXNlclJlcG9zaXRvcnkuc2F2ZSh1c2VyKTsKCiAgICAgICAgVXNlciBmb3VuZFVzZXIgPSB1c2VyUmVwb3NpdG9yeS5maW5kQnlJZCh1c2VyLmdldElkKCkpLm9yRWxzZShudWxsKTsKICAgICAgICBhc3NlcnRUaGF0KGZvdW5kVXNlcikuaXNOb3ROdWxsKCk7CiAgICAgICAgYXNzZXJ0VGhhdChmb3VuZFVzZXIuZ2V0TmFtZSgpKS5pc0VxdWFsVG8oIkpvaG4gRG9lIik7CiAgICAgICAgYXNzZXJ0VGhhdChmb3VuZFVzZXIuZ2V0RW1haWwoKSkuaXNFcXVhbFRvKCJqb2huLmRvZUBleGFtcGxlLmNvbSIpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.MySQLContainer;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
+public class UserRepositoryTest {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    static MySQLContainer&lt;?&gt; mysql = new MySQLContainer&lt;&gt;(&quot;mysql:8.0.22&quot;)
+            .withDatabaseName(&quot;testdb&quot;)
+            .withUsername(&quot;test&quot;)
+            .withPassword(&quot;test&quot;);
+
+    static {
+        mysql.start();
+    }
+
+    @Test
+    public void testSaveUser() {
+        User user = new User();
+        user.setName(&quot;John Doe&quot;);
+        user.setEmail(&quot;john.doe@example.com&quot;);
+
+        userRepository.save(user);
+
+        User foundUser = userRepository.findById(user.getId()).orElse(null);
+        assertThat(foundUser).isNotNull();
+        assertThat(foundUser.getName()).isEqualTo(&quot;John Doe&quot;);
+        assertThat(foundUser.getEmail()).isEqualTo(&quot;john.doe@example.com&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>MySQLContainer</strong>: This class is used to create and manage a MySQL container.</li>
+<li><strong>@ExtendWith(SpringExtension.class)</strong>: Integrates the Spring TestContext Framework with JUnit 5.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Testing databases with JUnit is essential for ensuring the reliability of your application. Starting from basic tests using in-memory databases to more advanced techniques like Testcontainers, you can ensure your database interactions are thoroughly tested. Remember to:</p>
+<ul>
+<li>Set up your environment correctly.</li>
+<li>Write clear and concise tests.</li>
+<li>Use advanced tools and techniques as needed.</li>
+</ul>
+<p>By following these guidelines, you can create robust tests that will help maintain the integrity of your application over time.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-rest-apis'>&#x25C4;Testing REST APIs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Testing Databases with JUnit</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='testing-legacy-code'>Testing Legacy Code &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

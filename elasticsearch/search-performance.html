@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Performance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/elasticsearch/search-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/elasticsearch/search-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/elasticsearch/search-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/elasticsearch/search-performance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/search-performance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='indexing-performance'>&#x25C4;Indexing Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Search Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-elasticsearch'>Scaling Elasticsearch &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Search performance is a critical aspect of working with Elasticsearch, especially as your data grows. Understanding how to optimize search queries and manage resources effectively can significantly improve the speed and efficiency of your Elasticsearch cluster.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Search Latency</strong>: The time it takes to get a response after submitting a search query.</li>
+<li><strong>Throughput</strong>: The number of search queries that can be handled per second.</li>
+<li><strong>Resource Utilization</strong>: The amount of CPU, memory, and I/O resources consumed by search operations.</li>
+<li><strong>Indexing vs. Searching</strong>: Balancing the performance between indexing new data and searching existing data.</li>
+</ul>
+</div><h1>Factors Affecting Search Performance</h1>
+<div class='content'><ul>
+<li><strong>Cluster Configuration</strong>: Number of nodes, shards, and replicas.</li>
+<li><strong>Query Complexity</strong>: The complexity of the search queries being executed.</li>
+<li><strong>Data Volume</strong>: The amount of data stored in the indices.</li>
+<li><strong>Hardware Resources</strong>: CPU, memory, and disk I/O capabilities of the Elasticsearch nodes.</li>
+</ul>
+</div><h1>Optimizing Search Performance</h1>
+<div class='content'></div><h2>Cluster Configuration</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Sharding</strong>: Distribute data across multiple shards to parallelize search operations.</p>
+<pre><code class="language-yaml">PUT /my_index
+{
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3,
+    &quot;number_of_replicas&quot;: 1
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This configuration creates an index with 3 primary shards and 1 replica for each shard, allowing for better load distribution and fault tolerance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Node Types</strong>: Use dedicated master, data, and client nodes to optimize resource allocation.</p>
+<pre><code class="language-yaml">node.master: true
+node.data: false
+node.ingest: false
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This configuration sets up a node as a dedicated master node, which does not handle data or ingest operations, thus improving cluster stability.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Query Optimization</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Filter Context vs. Query Context</strong>: Use filters for conditions that do not affect scoring.</p>
+<pre><code class="language-json">GET /my_index/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: {
+        &quot;match&quot;: { &quot;field&quot;: &quot;value&quot; }
+      },
+      &quot;filter&quot;: {
+        &quot;term&quot;: { &quot;status&quot;: &quot;active&quot; }
+      }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: The <code>filter</code> clause is used for conditions that do not need scoring, which can be cached and improve performance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Avoid Wildcard Queries</strong>: Use more specific queries to reduce the search space.</p>
+<pre><code class="language-json">GET /my_index/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: { &quot;field&quot;: &quot;specific_value&quot; }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: Using <code>match</code> queries instead of wildcard queries (<code>*value*</code>) can significantly reduce the search time.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Data Management</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Index Lifecycle Management (ILM)</strong>: Automate index management to optimize performance.</p>
+<pre><code class="language-yaml">PUT _ilm/policy/my_policy
+{
+  &quot;policy&quot;: {
+    &quot;phases&quot;: {
+      &quot;hot&quot;: {
+        &quot;actions&quot;: {
+          &quot;rollover&quot;: {
+            &quot;max_size&quot;: &quot;50GB&quot;,
+            &quot;max_age&quot;: &quot;30d&quot;
+          }
+        }
+      },
+      &quot;delete&quot;: {
+        &quot;min_age&quot;: &quot;90d&quot;,
+        &quot;actions&quot;: {
+          &quot;delete&quot;: {}
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This ILM policy rolls over indices when they reach 50GB or 30 days old and deletes them after 90 days, ensuring that the cluster does not get overloaded with old data.</li>
+</ul>
+</li>
+<li>
+<p><strong>Index Templates</strong>: Use templates to apply settings and mappings to new indices automatically.</p>
+<pre><code class="language-yaml">PUT _template/my_template
+{
+  &quot;index_patterns&quot;: [&quot;log-*&quot;],
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;timestamp&quot;: { &quot;type&quot;: &quot;date&quot; }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This template applies to any index that matches the pattern <code>log-*</code>, ensuring consistent settings and mappings.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoring and Troubleshooting</h1>
+<div class='content'><ul>
+<li><strong>Elasticsearch Monitoring</strong>: Use tools like Kibana and Elasticsearch's built-in monitoring features to track performance metrics.</li>
+<li><strong>Slow Log</strong>: Enable slow logs to identify slow queries.
+<pre><code class="language-yaml">PUT /my_index/_settings
+{
+  &quot;index.search.slowlog.threshold.query.warn&quot;: &quot;10s&quot;,
+  &quot;index.search.slowlog.threshold.fetch.warn&quot;: &quot;1s&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This configuration logs queries that take longer than 10 seconds and fetch operations that take longer than 1 second, helping to identify performance bottlenecks.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Optimizing search performance in Elasticsearch involves a combination of proper cluster configuration, efficient query design, and effective data management. By understanding and applying these principles, you can ensure that your Elasticsearch cluster remains fast and responsive, even as your data grows. Regular monitoring and adjustments based on performance metrics are also crucial to maintaining optimal search performance.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='indexing-performance'>&#x25C4;Indexing Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Search Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-elasticsearch'>Scaling Elasticsearch &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

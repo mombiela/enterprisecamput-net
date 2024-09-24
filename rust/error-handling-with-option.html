@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling with Option</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/error-handling-with-option" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/error-handling-with-option" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/error-handling-with-option" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/rust/error-handling-with-option" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/rust/error-handling-with-option" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-with-result'>&#x25C4;Error Handling with Result</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling with Option</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-unwinding'>Panic and Unwinding &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Error handling is a crucial aspect of programming, and Rust provides powerful tools to manage errors effectively. One of these tools is the <code>Option</code> type, which is used to represent a value that can either be present (<code>Some</code>) or absent (<code>None</code>). This section will cover the basics of <code>Option</code>, how to use it for error handling, and provide practical examples and exercises.</p>
+</div><h1>Understanding `Option`</h1>
+<div class='content'><ul>
+<li><code>Option</code> is an enum provided by Rust's standard library.</li>
+<li>It has two variants:
+<ul>
+<li><code>Some(T)</code>: Contains a value of type <code>T</code>.</li>
+<li><code>None</code>: Represents the absence of a value.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZmluZF9lbGVtZW50KHZlYzogVmVjPGkzMj4sIHRhcmdldDogaTMyKSAtPiBPcHRpb248dXNpemU+IHsKICAgIGZvciAoaW5kZXgsICZlbGVtZW50KSBpbiB2ZWMuaXRlcigpLmVudW1lcmF0ZSgpIHsKICAgICAgICBpZiBlbGVtZW50ID09IHRhcmdldCB7CiAgICAgICAgICAgIHJldHVybiBTb21lKGluZGV4KTsKICAgICAgICB9CiAgICB9CiAgICBOb25lCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn find_element(vec: Vec&lt;i32&gt;, target: i32) -&gt; Option&lt;usize&gt; {
+    for (index, &amp;element) in vec.iter().enumerate() {
+        if element == target {
+            return Some(index);
+        }
+    }
+    None
+}</pre></div><div class='content'><p>In this example, the function <code>find_element</code> returns an <code>Option&lt;usize&gt;</code>. If the target element is found, it returns <code>Some(index)</code>, otherwise, it returns <code>None</code>.</p>
+</div><h1>Using `Option` for Error Handling</h1>
+<div class='content'><ul>
+<li><code>Option</code> is useful for functions that might not return a value.</li>
+<li>It helps avoid null pointer exceptions by explicitly handling the absence of a value.</li>
+</ul>
+</div><h2>Common Methods</h2>
+<div class='content'><ul>
+<li><code>is_some()</code>: Returns <code>true</code> if the <code>Option</code> is <code>Some</code>.</li>
+<li><code>is_none()</code>: Returns <code>true</code> if the <code>Option</code> is <code>None</code>.</li>
+<li><code>unwrap()</code>: Returns the value inside <code>Some</code>, panics if called on <code>None</code>.</li>
+<li><code>unwrap_or(default)</code>: Returns the value inside <code>Some</code>, or a default value if called on <code>None</code>.</li>
+<li><code>map()</code>: Applies a function to the contained value (if any) and returns a new <code>Option</code>.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlKG51bWVyYXRvcjogZjY0LCBkZW5vbWluYXRvcjogZjY0KSAtPiBPcHRpb248ZjY0PiB7CiAgICBpZiBkZW5vbWluYXRvciA9PSAwLjAgewogICAgICAgIE5vbmUKICAgIH0gZWxzZSB7CiAgICAgICAgU29tZShudW1lcmF0b3IgLyBkZW5vbWluYXRvcikKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBkaXZpZGUoMTAuMCwgMi4wKTsKICAgIG1hdGNoIHJlc3VsdCB7CiAgICAgICAgU29tZSh2YWx1ZSkgPT4gcHJpbnRsbiEoIlJlc3VsdDoge30iLCB2YWx1ZSksCiAgICAgICAgTm9uZSA9PiBwcmludGxuISgiQ2Fubm90IGRpdmlkZSBieSB6ZXJvIiksCiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide(numerator: f64, denominator: f64) -&gt; Option&lt;f64&gt; {
+    if denominator == 0.0 {
+        None
+    } else {
+        Some(numerator / denominator)
+    }
+}
+
+fn main() {
+    let result = divide(10.0, 2.0);
+    match result {
+        Some(value) =&gt; println!(&quot;Result: {}&quot;, value),
+        None =&gt; println!(&quot;Cannot divide by zero&quot;),
+    }
+}</pre></div><div class='content'><p>In this example, the <code>divide</code> function returns an <code>Option&lt;f64&gt;</code>. If the denominator is zero, it returns <code>None</code>, otherwise, it returns the result wrapped in <code>Some</code>.</p>
+</div><h1>Practical Examples</h1>
+<h2>Example 1: Using `unwrap_or`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZ2V0X3VzZXJfbmFtZSh1c2VyX2lkOiB1MzIpIC0+IE9wdGlvbjxTdHJpbmc+IHsKICAgIGlmIHVzZXJfaWQgPT0gMSB7CiAgICAgICAgU29tZSgiQWxpY2UiLnRvX3N0cmluZygpKQogICAgfSBlbHNlIHsKICAgICAgICBOb25lCiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgdXNlcl9uYW1lID0gZ2V0X3VzZXJfbmFtZSgyKS51bndyYXBfb3IoIkd1ZXN0Ii50b19zdHJpbmcoKSk7CiAgICBwcmludGxuISgiSGVsbG8sIHt9IiwgdXNlcl9uYW1lKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn get_user_name(user_id: u32) -&gt; Option&lt;String&gt; {
+    if user_id == 1 {
+        Some(&quot;Alice&quot;.to_string())
+    } else {
+        None
+    }
+}
+
+fn main() {
+    let user_name = get_user_name(2).unwrap_or(&quot;Guest&quot;.to_string());
+    println!(&quot;Hello, {}&quot;, user_name);
+}</pre></div><div class='content'><p>In this example, if the <code>get_user_name</code> function returns <code>None</code>, the <code>unwrap_or</code> method provides a default value of &quot;Guest&quot;.</p>
+</div><h2>Example 2: Using `map`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gc3F1YXJlX2V2ZW5fbnVtYmVyKG51bWJlcjogT3B0aW9uPGkzMj4pIC0+IE9wdGlvbjxpMzI+IHsKICAgIG51bWJlci5tYXAofG58IGlmIG4gJSAyID09IDAgeyBuICogbiB9IGVsc2UgeyBuIH0pCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbnVtYmVyID0gU29tZSg0KTsKICAgIGxldCBzcXVhcmVkID0gc3F1YXJlX2V2ZW5fbnVtYmVyKG51bWJlcik7CiAgICBwcmludGxuISgiU3F1YXJlZDogezo/fSIsIHNxdWFyZWQpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn square_even_number(number: Option&lt;i32&gt;) -&gt; Option&lt;i32&gt; {
+    number.map(|n| if n % 2 == 0 { n * n } else { n })
+}
+
+fn main() {
+    let number = Some(4);
+    let squared = square_even_number(number);
+    println!(&quot;Squared: {:?}&quot;, squared);
+}</pre></div><div class='content'><p>In this example, the <code>map</code> method is used to apply a function to the value inside <code>Some</code>, if it exists.</p>
+</div><h1>Exercises</h1>
+<div class='content'><ol>
+<li><strong>Basic Usage</strong>: Write a function <code>find_max</code> that takes a vector of integers and returns the maximum value as an <code>Option&lt;i32&gt;</code>. If the vector is empty, return <code>None</code>.</li>
+<li><strong>Using <code>unwrap_or</code></strong>: Modify the <code>find_max</code> function to return a default value of <code>0</code> if the vector is empty.</li>
+<li><strong>Using <code>map</code></strong>: Write a function <code>increment_if_some</code> that takes an <code>Option&lt;i32&gt;</code> and returns an <code>Option&lt;i32&gt;</code> with the value incremented by 1 if it exists.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>The <code>Option</code> type in Rust is a powerful tool for handling cases where a value might be absent. By using <code>Option</code>, you can write safer and more expressive code, avoiding common pitfalls like null pointer exceptions. Practice using <code>Option</code> with the provided exercises to solidify your understanding and improve your error handling skills in Rust.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-with-result'>&#x25C4;Error Handling with Result</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling with Option</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-unwinding'>Panic and Unwinding &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

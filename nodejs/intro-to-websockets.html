@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to WebSockets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/intro-to-websockets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/intro-to-websockets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/intro-to-websockets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nodejs/intro-to-websockets" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nodejs/intro-to-websockets" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='role-based-access-control'>&#x25C4;Role-Based Access Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introduction to WebSockets</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='socket-io'>Using Socket.io &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>WebSockets provide a full-duplex communication channel over a single, long-lived connection. This is particularly useful for real-time applications such as chat applications, live notifications, and online gaming. In this section, we will explore WebSockets in the context of Node.js, from the basics to more advanced concepts.</p>
+</div><h1>What are WebSockets?</h1>
+<div class='content'><p>WebSockets are a protocol that allows for two-way communication between a client and a server. Unlike HTTP, which is request-response based, WebSockets enable persistent connections, allowing data to be sent and received at any time.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Full-Duplex Communication</strong>: Both client and server can send and receive messages simultaneously.</li>
+<li><strong>Persistent Connection</strong>: The connection remains open, reducing the overhead of establishing multiple HTTP connections.</li>
+<li><strong>Low Latency</strong>: Ideal for real-time applications due to reduced latency.</li>
+</ul>
+</div><h1>Setting Up WebSockets in Node.js</h1>
+<div class='content'><p>To use WebSockets in Node.js, we will use the <code>ws</code> library, a popular WebSocket implementation.</p>
+</div><h2>Installing the `ws` Library</h2>
+<div class='content'><p>First, install the <code>ws</code> library using npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgd3M="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install ws</pre></div><div class='content'></div><h2>Creating a Basic WebSocket Server</h2>
+<div class='content'><p>Let's create a simple WebSocket server that listens for connections and echoes back any messages it receives.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgV2ViU29ja2V0ID0gcmVxdWlyZSgnd3MnKTsKCmNvbnN0IHNlcnZlciA9IG5ldyBXZWJTb2NrZXQuU2VydmVyKHsgcG9ydDogODA4MCB9KTsKCnNlcnZlci5vbignY29ubmVjdGlvbicsIChzb2NrZXQpID0+IHsKICBjb25zb2xlLmxvZygnQ2xpZW50IGNvbm5lY3RlZCcpOwoKICBzb2NrZXQub24oJ21lc3NhZ2UnLCAobWVzc2FnZSkgPT4gewogICAgY29uc29sZS5sb2coYFJlY2VpdmVkOiAke21lc3NhZ2V9YCk7CiAgICBzb2NrZXQuc2VuZChgRWNobzogJHttZXNzYWdlfWApOwogIH0pOwoKICBzb2NrZXQub24oJ2Nsb3NlJywgKCkgPT4gewogICAgY29uc29sZS5sb2coJ0NsaWVudCBkaXNjb25uZWN0ZWQnKTsKICB9KTsKfSk7Cgpjb25zb2xlLmxvZygnV2ViU29ja2V0IHNlcnZlciBpcyBydW5uaW5nIG9uIHdzOi8vbG9jYWxob3N0OjgwODAnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const WebSocket = require('ws');
+
+const server = new WebSocket.Server({ port: 8080 });
+
+server.on('connection', (socket) =&gt; {
+  console.log('Client connected');
+
+  socket.on('message', (message) =&gt; {
+    console.log(`Received: ${message}`);
+    socket.send(`Echo: ${message}`);
+  });
+
+  socket.on('close', () =&gt; {
+    console.log('Client disconnected');
+  });
+});
+
+console.log('WebSocket server is running on ws://localhost:8080');</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>WebSocket.Server</strong>: Creates a new WebSocket server listening on port 8080.</li>
+<li><strong>server.on('connection')</strong>: Event listener for new client connections.</li>
+<li><strong>socket.on('message')</strong>: Event listener for messages from the client.</li>
+<li><strong>socket.send()</strong>: Sends a message back to the client.</li>
+<li><strong>socket.on('close')</strong>: Event listener for when the client disconnects.</li>
+</ul>
+</div><h1>Creating a WebSocket Client</h1>
+<div class='content'><p>Now, let's create a simple WebSocket client that connects to our server and sends a message.</p>
+</div><h2>Client Code</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDx0aXRsZT5XZWJTb2NrZXQgQ2xpZW50PC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICA8c2NyaXB0PgogICAgY29uc3Qgc29ja2V0ID0gbmV3IFdlYlNvY2tldCgnd3M6Ly9sb2NhbGhvc3Q6ODA4MCcpOwoKICAgIHNvY2tldC5vbm9wZW4gPSAoKSA9PiB7CiAgICAgIGNvbnNvbGUubG9nKCdDb25uZWN0ZWQgdG8gc2VydmVyJyk7CiAgICAgIHNvY2tldC5zZW5kKCdIZWxsbyBTZXJ2ZXIhJyk7CiAgICB9OwoKICAgIHNvY2tldC5vbm1lc3NhZ2UgPSAoZXZlbnQpID0+IHsKICAgICAgY29uc29sZS5sb2coYFJlY2VpdmVkIGZyb20gc2VydmVyOiAke2V2ZW50LmRhdGF9YCk7CiAgICB9OwoKICAgIHNvY2tldC5vbmNsb3NlID0gKCkgPT4gewogICAgICBjb25zb2xlLmxvZygnRGlzY29ubmVjdGVkIGZyb20gc2VydmVyJyk7CiAgICB9OwogIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;WebSocket Client&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;script&gt;
+    const socket = new WebSocket('ws://localhost:8080');
+
+    socket.onopen = () =&gt; {
+      console.log('Connected to server');
+      socket.send('Hello Server!');
+    };
+
+    socket.onmessage = (event) =&gt; {
+      console.log(`Received from server: ${event.data}`);
+    };
+
+    socket.onclose = () =&gt; {
+      console.log('Disconnected from server');
+    };
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>new WebSocket('ws://localhost:8080')</strong>: Creates a new WebSocket connection to the server.</li>
+<li><strong>socket.onopen</strong>: Event listener for when the connection is established.</li>
+<li><strong>socket.send()</strong>: Sends a message to the server.</li>
+<li><strong>socket.onmessage</strong>: Event listener for messages from the server.</li>
+<li><strong>socket.onclose</strong>: Event listener for when the connection is closed.</li>
+</ul>
+</div><h1>Advanced WebSocket Features</h1>
+<div class='content'></div><h2>Broadcasting Messages</h2>
+<div class='content'><p>To broadcast a message to all connected clients, iterate over the clients and send the message.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyLm9uKCdjb25uZWN0aW9uJywgKHNvY2tldCkgPT4gewogIHNvY2tldC5vbignbWVzc2FnZScsIChtZXNzYWdlKSA9PiB7CiAgICBzZXJ2ZXIuY2xpZW50cy5mb3JFYWNoKChjbGllbnQpID0+IHsKICAgICAgaWYgKGNsaWVudC5yZWFkeVN0YXRlID09PSBXZWJTb2NrZXQuT1BFTikgewogICAgICAgIGNsaWVudC5zZW5kKGBCcm9hZGNhc3Q6ICR7bWVzc2FnZX1gKTsKICAgICAgfQogICAgfSk7CiAgfSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server.on('connection', (socket) =&gt; {
+  socket.on('message', (message) =&gt; {
+    server.clients.forEach((client) =&gt; {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(`Broadcast: ${message}`);
+      }
+    });
+  });
+});</pre></div><div class='content'></div><h2>Handling Binary Data</h2>
+<div class='content'><p>WebSockets can also handle binary data. Here's an example of sending and receiving binary data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2VydmVyLXNpZGUKc29ja2V0Lm9uKCdtZXNzYWdlJywgKGRhdGEpID0+IHsKICBpZiAoZGF0YSBpbnN0YW5jZW9mIEJ1ZmZlcikgewogICAgY29uc29sZS5sb2coJ1JlY2VpdmVkIGJpbmFyeSBkYXRhJyk7CiAgICAvLyBQcm9jZXNzIGJpbmFyeSBkYXRhCiAgfQp9KTsKCi8vIENsaWVudC1zaWRlCmNvbnN0IGJ1ZmZlciA9IG5ldyBBcnJheUJ1ZmZlcig4KTsKY29uc3QgdmlldyA9IG5ldyBEYXRhVmlldyhidWZmZXIpOwp2aWV3LnNldEludDMyKDAsIDEyMzQ1Njc4LCB0cnVlKTsKc29ja2V0LnNlbmQoYnVmZmVyKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Server-side
+socket.on('message', (data) =&gt; {
+  if (data instanceof Buffer) {
+    console.log('Received binary data');
+    // Process binary data
+  }
+});
+
+// Client-side
+const buffer = new ArrayBuffer(8);
+const view = new DataView(buffer);
+view.setInt32(0, 12345678, true);
+socket.send(buffer);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>WebSockets provide a powerful way to build real-time applications with Node.js. By understanding the basics and exploring advanced features, you can create efficient and responsive applications. Practice by building small projects and gradually incorporating more complex features to master WebSockets in Node.js.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='role-based-access-control'>&#x25C4;Role-Based Access Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introduction to WebSockets</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='socket-io'>Using Socket.io &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

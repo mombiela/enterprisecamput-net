@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization in REST API</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rest_api/optimizacion-de-rendimiento" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rest_api/optimizacion-de-rendimiento" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rest_api/optimizacion-de-rendimiento" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/rest_api/optimizacion-de-rendimiento" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/rest_api/optimizacion-de-rendimiento" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Performance optimization in REST API is crucial to ensure that applications are fast, efficient, and scalable. In this section, we will explore various techniques and best practices to improve the performance of your RESTful APIs.</p>
+</div><h1>Optimization Strategies</h1>
+<div class='content'></div><h2>1. Use of Cache</h2>
+<div class='content'><p>Caching can significantly reduce server load and improve response times.</p>
+<ul>
+<li><strong>HTTP Caching</strong>: Use HTTP headers like <code>Cache-Control</code>, <code>ETag</code>, and <code>Last-Modified</code> to control client-side and server-side caching.</li>
+<li><strong>Code Example</strong>:
+<pre><code class="language-http">GET /api/resource HTTP/1.1
+Host: example.com
+Cache-Control: max-age=3600
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Data Compression</h2>
+<div class='content'><p>Data compression reduces the size of HTTP responses, which can improve transfer times.</p>
+<ul>
+<li><strong>Gzip</strong>: Configure your server to compress responses using Gzip.</li>
+<li><strong>Code Example</strong> (configuration on a Node.js server with Express):
+<pre><code class="language-javascript">const express = require('express');
+const compression = require('compression');
+const app = express();
+
+app.use(compression());
+
+app.get('/api/resource', (req, res) =&gt; {
+    res.json({ message: 'Hello, world!' });
+});
+
+app.listen(3000, () =&gt; {
+    console.log('Server running on port 3000');
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Pagination and Filtering</h2>
+<div class='content'><p>To handle large volumes of data, implement pagination and filtering in your endpoints.</p>
+<ul>
+<li><strong>Pagination</strong>: Divide results into smaller pages.</li>
+<li><strong>Filtering</strong>: Allow users to request only the data they need.</li>
+<li><strong>Code Example</strong>:
+<pre><code class="language-javascript">app.get('/api/resources', (req, res) =&gt; {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+    results.results = data.slice(startIndex, endIndex);
+
+    res.json(results);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>4. Payload Reduction</h2>
+<div class='content'><p>Minimize the amount of data sent in each request and response.</p>
+<ul>
+<li><strong>Field Selection</strong>: Allow clients to specify which fields they need.</li>
+<li><strong>Code Example</strong>:
+<pre><code class="language-javascript">app.get('/api/resource', (req, res) =&gt; {
+    const fields = req.query.fields ? req.query.fields.split(',') : [];
+    let resource = { id: 1, name: 'Resource', description: 'A sample resource' };
+
+    if (fields.length &gt; 0) {
+        resource = fields.reduce((obj, field) =&gt; {
+            if (resource[field]) obj[field] = resource[field];
+            return obj;
+        }, {});
+    }
+
+    res.json(resource);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>5. Database Query Optimization</h2>
+<div class='content'><p>Database queries can be a significant bottleneck.</p>
+<ul>
+<li><strong>Indexes</strong>: Ensure that database tables have the appropriate indexes.</li>
+<li><strong>Efficient Queries</strong>: Optimize SQL queries to reduce execution time.</li>
+<li><strong>Code Example</strong> (optimized SQL query):
+<pre><code class="language-sql">SELECT id, name FROM resources WHERE status = 'active' ORDER BY created_at DESC LIMIT 10;
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Performance optimization in REST API is an ongoing process that requires attention to multiple aspects of development and infrastructure. By implementing techniques such as caching, data compression, pagination, payload reduction, and database query optimization, you can significantly improve the efficiency and speed of your APIs. Always remember to measure and monitor performance to identify areas for continuous improvement.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

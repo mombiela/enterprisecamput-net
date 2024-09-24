@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Table Expressions (CTEs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/postgresql/common-table-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/postgresql/common-table-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/postgresql/common-table-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/postgresql/common-table-expressions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/postgresql/common-table-expressions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='window-functions'>&#x25C4;Window Functions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Table Expressions (CTEs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='full-text-search'>Full-Text Search &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Common Table Expressions (CTEs)</h1>
+<div class='content'><p>Common Table Expressions (CTEs) are a powerful feature in PostgreSQL that allow you to create temporary result sets which can be referenced within a <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, or <code>DELETE</code> statement. CTEs can simplify complex queries, improve readability, and make recursive queries possible.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>CTE Definition</strong>: A CTE is defined using the <code>WITH</code> keyword followed by a query that generates a temporary result set.</li>
+<li><strong>Temporary Scope</strong>: The result set of a CTE is only available within the execution scope of the statement in which it is defined.</li>
+<li><strong>Recursive CTEs</strong>: These allow you to perform recursive queries, which are useful for hierarchical data structures like organizational charts or family trees.</li>
+</ul>
+</div><h1>Basic Syntax of CTEs</h1>
+<div class='content'><p>To define a CTE, you use the <code>WITH</code> clause followed by the CTE name and the query that generates the result set.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBjdGVfbmFtZSBBUyAoCiAgICBTRUxFQ1QgY29sdW1uMSwgY29sdW1uMgogICAgRlJPTSB0YWJsZV9uYW1lCiAgICBXSEVSRSBjb25kaXRpb24KKQpTRUxFQ1QgKgpGUk9NIGN0ZV9uYW1lOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH cte_name AS (
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition
+)
+SELECT *
+FROM cte_name;</pre></div><div class='content'></div><h2>Example: Simple CTE</h2>
+<div class='content'><p>Let's start with a simple example. Suppose we have a table <code>employees</code> with columns <code>id</code>, <code>name</code>, and <code>department</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBkZXB0X3NhbGVzIEFTICgKICAgIFNFTEVDVCBpZCwgbmFtZQogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnCikKU0VMRUNUICoKRlJPTSBkZXB0X3NhbGVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH dept_sales AS (
+    SELECT id, name
+    FROM employees
+    WHERE department = 'Sales'
+)
+SELECT *
+FROM dept_sales;</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>We define a CTE named <code>dept_sales</code>.</li>
+<li>The CTE selects <code>id</code> and <code>name</code> from the <code>employees</code> table where the <code>department</code> is 'Sales'.</li>
+<li>The main query selects all columns from the <code>dept_sales</code> CTE.</li>
+</ul>
+</div><h1>Using Multiple CTEs</h1>
+<div class='content'><p>You can define multiple CTEs in a single query by separating them with commas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBkZXB0X3NhbGVzIEFTICgKICAgIFNFTEVDVCBpZCwgbmFtZQogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnCiksCmRlcHRfbWFya2V0aW5nIEFTICgKICAgIFNFTEVDVCBpZCwgbmFtZQogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGRlcGFydG1lbnQgPSAnTWFya2V0aW5nJwopClNFTEVDVCAqCkZST00gZGVwdF9zYWxlcwpVTklPTiBBTEwKU0VMRUNUICoKRlJPTSBkZXB0X21hcmtldGluZzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH dept_sales AS (
+    SELECT id, name
+    FROM employees
+    WHERE department = 'Sales'
+),
+dept_marketing AS (
+    SELECT id, name
+    FROM employees
+    WHERE department = 'Marketing'
+)
+SELECT *
+FROM dept_sales
+UNION ALL
+SELECT *
+FROM dept_marketing;</pre></div><div class='content'></div><h2>Example: Combining Results from Multiple CTEs</h2>
+<div class='content'><p>In this example:</p>
+<ul>
+<li>We define two CTEs: <code>dept_sales</code> and <code>dept_marketing</code>.</li>
+<li>The main query combines the results from both CTEs using the <code>UNION ALL</code> operator.</li>
+</ul>
+</div><h1>Recursive CTEs</h1>
+<div class='content'><p>Recursive CTEs are useful for querying hierarchical data. They consist of two parts: an anchor member and a recursive member.</p>
+</div><h2>Syntax for Recursive CTEs</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBSRUNVUlNJVkUgY3RlX25hbWUgQVMgKAogICAgLS0gQW5jaG9yIG1lbWJlcgogICAgU0VMRUNUIGNvbHVtbjEsIGNvbHVtbjIKICAgIEZST00gdGFibGVfbmFtZQogICAgV0hFUkUgY29uZGl0aW9uCiAgICAKICAgIFVOSU9OIEFMTAogICAgCiAgICAtLSBSZWN1cnNpdmUgbWVtYmVyCiAgICBTRUxFQ1QgY29sdW1uMSwgY29sdW1uMgogICAgRlJPTSB0YWJsZV9uYW1lCiAgICBKT0lOIGN0ZV9uYW1lIE9OIHRhYmxlX25hbWUuY29sdW1uID0gY3RlX25hbWUuY29sdW1uCikKU0VMRUNUICoKRlJPTSBjdGVfbmFtZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH RECURSIVE cte_name AS (
+    -- Anchor member
+    SELECT column1, column2
+    FROM table_name
+    WHERE condition
+    
+    UNION ALL
+    
+    -- Recursive member
+    SELECT column1, column2
+    FROM table_name
+    JOIN cte_name ON table_name.column = cte_name.column
+)
+SELECT *
+FROM cte_name;</pre></div><div class='content'></div><h2>Example: Recursive CTE</h2>
+<div class='content'><p>Suppose we have a table <code>employees</code> with columns <code>id</code>, <code>name</code>, and <code>manager_id</code> to represent an organizational hierarchy.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBSRUNVUlNJVkUgZW1wbG95ZWVfaGllcmFyY2h5IEFTICgKICAgIC0tIEFuY2hvciBtZW1iZXI6IFNlbGVjdCB0aGUgdG9wLWxldmVsIG1hbmFnZXIKICAgIFNFTEVDVCBpZCwgbmFtZSwgbWFuYWdlcl9pZAogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIG1hbmFnZXJfaWQgSVMgTlVMTAogICAgCiAgICBVTklPTiBBTEwKICAgIAogICAgLS0gUmVjdXJzaXZlIG1lbWJlcjogU2VsZWN0IGVtcGxveWVlcyByZXBvcnRpbmcgdG8gdGhlIGN1cnJlbnQgbGV2ZWwKICAgIFNFTEVDVCBlLmlkLCBlLm5hbWUsIGUubWFuYWdlcl9pZAogICAgRlJPTSBlbXBsb3llZXMgZQogICAgSk9JTiBlbXBsb3llZV9oaWVyYXJjaHkgZWggT04gZS5tYW5hZ2VyX2lkID0gZWguaWQKKQpTRUxFQ1QgKgpGUk9NIGVtcGxveWVlX2hpZXJhcmNoeTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH RECURSIVE employee_hierarchy AS (
+    -- Anchor member: Select the top-level manager
+    SELECT id, name, manager_id
+    FROM employees
+    WHERE manager_id IS NULL
+    
+    UNION ALL
+    
+    -- Recursive member: Select employees reporting to the current level
+    SELECT e.id, e.name, e.manager_id
+    FROM employees e
+    JOIN employee_hierarchy eh ON e.manager_id = eh.id
+)
+SELECT *
+FROM employee_hierarchy;</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The anchor member selects the top-level manager (where <code>manager_id</code> is <code>NULL</code>).</li>
+<li>The recursive member selects employees who report to the current level of the hierarchy.</li>
+<li>The main query selects all columns from the <code>employee_hierarchy</code> CTE.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Common Table Expressions (CTEs) in PostgreSQL provide a powerful way to simplify complex queries and manage hierarchical data. By using the <code>WITH</code> clause, you can create temporary result sets that improve query readability and maintainability. Recursive CTEs extend this functionality to handle recursive data structures effectively.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li><strong>CTEs</strong>: Temporary result sets defined using the <code>WITH</code> clause.</li>
+<li><strong>Multiple CTEs</strong>: Can be defined in a single query and combined using operators like <code>UNION ALL</code>.</li>
+<li><strong>Recursive CTEs</strong>: Allow for querying hierarchical data through recursive queries.</li>
+</ul>
+<p>Practice using CTEs in your queries to see how they can simplify your SQL code and make it more readable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='window-functions'>&#x25C4;Window Functions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Common Table Expressions (CTEs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='full-text-search'>Full-Text Search &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

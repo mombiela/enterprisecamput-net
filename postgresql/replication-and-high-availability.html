@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replication and High Availability</title>
+
+    <link rel="alternate" href="https://campusempresa.com/postgresql/replication-and-high-availability" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/postgresql/replication-and-high-availability" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/postgresql/replication-and-high-availability" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/postgresql/replication-and-high-availability" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/postgresql/replication-and-high-availability" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='partitioning-tables'>&#x25C4;Partitioning Tables</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Replication and High Availability</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-management-and-roles'>User Management and Roles &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Replication and high availability are critical concepts in database management, ensuring that your PostgreSQL database remains accessible and resilient in the face of hardware failures, software bugs, or other disruptions. This section will guide you through the basics of replication, different replication methods, and strategies to achieve high availability in PostgreSQL.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Replication</strong>: The process of copying data from one database server (primary) to another (replica).</li>
+<li><strong>High Availability (HA)</strong>: Ensuring that the database system is continuously operational with minimal downtime.</li>
+<li><strong>Primary Server</strong>: The main server where all write operations occur.</li>
+<li><strong>Replica Server</strong>: A server that maintains a copy of the primary server's data, usually for read operations or failover purposes.</li>
+<li><strong>Failover</strong>: The process of switching to a replica server when the primary server fails.</li>
+</ul>
+</div><h1>Types of Replication</h1>
+<div class='content'><p>PostgreSQL supports several replication methods, each with its own use cases and configurations.</p>
+</div><h2>Streaming Replication</h2>
+<div class='content'><p>Streaming replication is a method where the primary server continuously sends changes to the replica server in real-time.</p>
+<ul>
+<li>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Real-time data replication.</li>
+<li>Low latency.</li>
+<li>Suitable for high availability setups.</li>
+</ul>
+</li>
+<li>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Requires a stable network connection.</li>
+<li>Replica can be slightly behind the primary server.</li>
+</ul>
+</li>
+</ul>
+<h4>Configuration Example</h4>
+<ol>
+<li>
+<p><strong>Primary Server Configuration</strong>:</p>
+<pre><code class="language-sql"># postgresql.conf
+wal_level = replica
+max_wal_senders = 3
+wal_keep_segments = 64
+hot_standby = on
+
+# pg_hba.conf
+host replication replicator 192.168.1.0/24 md5
+</code></pre>
+</li>
+<li>
+<p><strong>Replica Server Configuration</strong>:</p>
+<pre><code class="language-bash">pg_basebackup -h primary_ip -D /var/lib/postgresql/12/main -U replicator -P -v --wal-method=stream
+</code></pre>
+<pre><code class="language-sql"># recovery.conf
+standby_mode = 'on'
+primary_conninfo = 'host=primary_ip port=5432 user=replicator password=yourpassword'
+trigger_file = '/tmp/trigger'
+</code></pre>
+</li>
+</ol>
+</div><h2>Logical Replication</h2>
+<div class='content'><p>Logical replication allows more flexibility by replicating data changes based on logical changes rather than physical changes.</p>
+<ul>
+<li>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Allows selective replication of tables.</li>
+<li>Can replicate between different PostgreSQL versions.</li>
+<li>Suitable for data warehousing and ETL processes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>More complex setup.</li>
+<li>Potentially higher latency compared to streaming replication.</li>
+</ul>
+</li>
+</ul>
+<h4>Configuration Example</h4>
+<ol>
+<li>
+<p><strong>Primary Server Configuration</strong>:</p>
+<pre><code class="language-sql"># postgresql.conf
+wal_level = logical
+max_replication_slots = 4
+max_wal_senders = 4
+
+# pg_hba.conf
+host replication replicator 192.168.1.0/24 md5
+</code></pre>
+</li>
+<li>
+<p><strong>Creating a Publication</strong>:</p>
+<pre><code class="language-sql">CREATE PUBLICATION my_publication FOR TABLE my_table;
+</code></pre>
+</li>
+<li>
+<p><strong>Replica Server Configuration</strong>:</p>
+<pre><code class="language-sql">CREATE SUBSCRIPTION my_subscription CONNECTION 'host=primary_ip dbname=mydb user=replicator password=yourpassword' PUBLICATION my_publication;
+</code></pre>
+</li>
+</ol>
+</div><h1>High Availability Strategies</h1>
+<div class='content'><p>High availability in PostgreSQL involves more than just replication. It includes monitoring, automatic failover, and load balancing.</p>
+</div><h2>Monitoring</h2>
+<div class='content'><p>Monitoring tools help detect failures and performance issues. Common tools include:</p>
+<ul>
+<li><strong>pg_stat_replication</strong>: Provides information about the status of replication.</li>
+<li><strong>pg_stat_activity</strong>: Shows current database activity.</li>
+<li><strong>Third-party tools</strong>: Tools like Nagios, Zabbix, and Prometheus can be used for comprehensive monitoring.</li>
+</ul>
+</div><h2>Automatic Failover</h2>
+<div class='content'><p>Automatic failover ensures that a replica server takes over when the primary server fails.</p>
+<ul>
+<li><strong>Tools</strong>:
+<ul>
+<li><strong>Patroni</strong>: A high-availability solution for PostgreSQL.</li>
+<li><strong>repmgr</strong>: A suite of open-source tools to manage replication and failover.</li>
+</ul>
+</li>
+</ul>
+<h4>Example with Patroni</h4>
+<ol>
+<li>
+<p><strong>Install Patroni</strong>:</p>
+<pre><code class="language-bash">pip install patroni[etcd]
+</code></pre>
+</li>
+<li>
+<p><strong>Configuration File (patroni.yml)</strong>:</p>
+<pre><code class="language-yaml">scope: my_cluster
+namespace: /db/
+name: postgresql0
+
+etcd:
+  host: 127.0.0.1:2379
+
+postgresql:
+  listen: 127.0.0.1:5432
+  connect_address: 127.0.0.1:5432
+  data_dir: /var/lib/postgresql/12/main
+  config_dir: /etc/postgresql/12/main
+  bin_dir: /usr/lib/postgresql/12/bin
+  authentication:
+    replication:
+      username: replicator
+      password: yourpassword
+    superuser:
+      username: postgres
+      password: yourpassword
+</code></pre>
+</li>
+</ol>
+</div><h2>Load Balancing</h2>
+<div class='content'><p>Load balancing distributes read queries across multiple replica servers to improve performance.</p>
+<ul>
+<li><strong>pgpool-II</strong>: A middleware that provides connection pooling, load balancing, and replication management.</li>
+</ul>
+<h4>Example with pgpool-II</h4>
+<ol>
+<li>
+<p><strong>Install pgpool-II</strong>:</p>
+<pre><code class="language-bash">sudo apt-get install pgpool2
+</code></pre>
+</li>
+<li>
+<p><strong>Configuration File (pgpool.conf)</strong>:</p>
+<pre><code class="language-ini">listen_addresses = '*'
+port = 9999
+backend_hostname0 = 'primary_ip'
+backend_port0 = 5432
+backend_weight0 = 1
+backend_data_directory0 = '/var/lib/postgresql/12/main'
+backend_flag0 = 'ALLOW_TO_FAILOVER'
+
+backend_hostname1 = 'replica_ip'
+backend_port1 = 5432
+backend_weight1 = 1
+backend_data_directory1 = '/var/lib/postgresql/12/main'
+backend_flag1 = 'ALLOW_TO_FAILOVER'
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Replication and high availability are essential for maintaining a resilient and performant PostgreSQL database system. By understanding and implementing the different replication methods and high availability strategies, you can ensure that your database remains operational and can handle failures gracefully. Whether you choose streaming replication for real-time data consistency or logical replication for more flexibility, combining these with robust monitoring and failover mechanisms will help you achieve a highly available PostgreSQL environment.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='partitioning-tables'>&#x25C4;Partitioning Tables</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Replication and High Availability</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-management-and-roles'>User Management and Roles &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

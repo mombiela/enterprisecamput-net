@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Tools: SonarQube, OWASP ZAP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/devops_basico/tema-27" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/devops_basico/tema-27" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/devops_basico/tema-27" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/devops_basico/tema-27" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/devops_basico/tema-27" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In the context of DevOps, security is a fundamental priority. Two essential tools to ensure the security of code and applications are SonarQube and OWASP ZAP. This topic will address how these tools can be integrated into the DevOps workflow to identify and mitigate vulnerabilities.</p>
+</div><h1>SonarQube</h1>
+<div class='content'><p>SonarQube is an open-source platform that allows continuous inspection of code quality to detect errors, vulnerabilities, and bad practices.</p>
+</div><h2>Main Features of SonarQube</h2>
+<div class='content'><ul>
+<li><strong>Static Code Analysis</strong>: Reviews the source code without executing it to find potential issues.</li>
+<li><strong>Support for Multiple Languages</strong>: Compatible with more than 25 programming languages.</li>
+<li><strong>Integration with CI/CD</strong>: Easily integrates with continuous integration tools like Jenkins, GitLab CI, and Azure DevOps.</li>
+<li><strong>Detailed Reports</strong>: Provides reports on code quality, including test coverage metrics, code duplication, and complexity.</li>
+</ul>
+</div><h2>Example of SonarQube Configuration with Jenkins</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdDaGVja291dCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZ2l0ICdodHRwczovL2dpdGh1Yi5jb20veW91ci1yZXBvc2l0b3J5LmdpdCcKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnU29uYXJRdWJlIEFuYWx5c2lzJykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICB3aXRoU29uYXJRdWJlRW52KCdTb25hclF1YmUnKSB7CiAgICAgICAgICAgICAgICAgICAgc2ggJ212biBjbGVhbiB2ZXJpZnkgc29uYXI6c29uYXInCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICBwb3N0IHsKICAgICAgICBhbHdheXMgewogICAgICAgICAgICBqdW5pdCAnKiovdGFyZ2V0L3N1cmVmaXJlLXJlcG9ydHMvKi54bWwnCiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git 'https://github.com/your-repository.git'
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean verify sonar:sonar'
+                }
+            }
+        }
+    }
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
+}</pre></div><div class='content'><p>In this example, a Jenkins pipeline is configured to perform a SonarQube analysis on a Maven project.</p>
+</div><h1>OWASP ZAP</h1>
+<div class='content'><p>OWASP ZAP (Zed Attack Proxy) is an open-source tool designed to find vulnerabilities in web applications.</p>
+</div><h2>Main Features of OWASP ZAP</h2>
+<div class='content'><ul>
+<li><strong>Intercepting Proxy</strong>: Allows intercepting and modifying HTTP/HTTPS traffic between the browser and the web application.</li>
+<li><strong>Automated Scanning</strong>: Performs automated scans to detect common vulnerabilities.</li>
+<li><strong>Manual Tools</strong>: Includes tools for manual testing, such as a port scanner and a request editor.</li>
+<li><strong>Integration with CI/CD</strong>: Can be integrated into CI/CD pipelines to perform automated security tests.</li>
+</ul>
+</div><h2>Example of Using OWASP ZAP in a CI/CD Pipeline</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RhZ2VzOgogIC0gbmFtZTogU2NhbgogICAgc3RlcHM6CiAgICAgIC0gbmFtZTogT1dBU1AgWkFQIFNjYW4KICAgICAgICBpbWFnZTogb3dhc3AvemFwMmRvY2tlci1zdGFibGUKICAgICAgICBzY3JpcHQ6CiAgICAgICAgICAtIHphcC1iYXNlbGluZS5weSAtdCBodHRwOi8veW91ci13ZWItYXBwbGljYXRpb24uY29tIC1yIHJlcG9ydC5odG1sCiAgICAgICAgYXJ0aWZhY3RzOgogICAgICAgICAgcGF0aHM6CiAgICAgICAgICAgIC0gcmVwb3J0Lmh0bWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stages:
+  - name: Scan
+    steps:
+      - name: OWASP ZAP Scan
+        image: owasp/zap2docker-stable
+        script:
+          - zap-baseline.py -t http://your-web-application.com -r report.html
+        artifacts:
+          paths:
+            - report.html</pre></div><div class='content'><p>In this example, a CI/CD pipeline is configured to use OWASP ZAP to scan a web application and generate a vulnerability report.</p>
+</div><h1>Comparison between SonarQube and OWASP ZAP</h1>
+<div class='content'><p>| Feature                  | SonarQube                          | OWASP ZAP                        |
+|--------------------------|------------------------------------|----------------------------------|
+| Type of Analysis         | Static                             | Dynamic                          |
+| Main Objective           | Code Quality                       | Web Application Security         |
+| Integration with CI/CD   | Yes                                | Yes                              |
+| Detailed Reports         | Yes                                | Yes                              |
+| Support for Multiple Languages | Yes                         | No                               |</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>SonarQube and OWASP ZAP are powerful tools that, when integrated into a DevOps workflow, can significantly improve the security and quality of code. SonarQube focuses on static code analysis to detect errors and bad practices, while OWASP ZAP specializes in dynamic analysis of web applications to identify vulnerabilities. Using both tools together provides comprehensive security coverage in software development.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Git Hooks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/git/using-git-hooks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/git/using-git-hooks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/git/using-git-hooks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/git/using-git-hooks" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/git/using-git-hooks" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='tagging'>&#x25C4;Tagging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Git Hooks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='forking-a-repository'>Forking a Repository &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Git hooks are scripts that Git executes before or after events such as commit, push, and receive. They allow you to automate tasks and enforce policies in your development workflow.</p>
+</div><h1>What are Git Hooks?</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Git hooks are custom scripts that run automatically at specific points in the Git workflow.</li>
+<li><strong>Types</strong>: There are two types of Git hooks:
+<ul>
+<li><strong>Client-side hooks</strong>: These run on operations such as commit and merge.</li>
+<li><strong>Server-side hooks</strong>: These run on network operations such as receiving pushed commits.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up Git Hooks</h1>
+<div class='content'></div><h2>Locating the Hooks Directory</h2>
+<div class='content'><ul>
+<li>Git hooks are stored in the <code>.git/hooks</code> directory of your repository.</li>
+<li>By default, this directory contains sample scripts that are disabled (their filenames end in <code>.sample</code>).</li>
+</ul>
+</div><h2>Creating a Hook</h2>
+<div class='content'><ol>
+<li><strong>Navigate to the hooks directory</strong>:
+<pre><code class="language-sh">cd .git/hooks
+</code></pre>
+</li>
+<li><strong>Create a new hook script</strong>:
+<ul>
+<li>For example, to create a pre-commit hook:
+<pre><code class="language-sh">touch pre-commit
+</code></pre>
+</li>
+</ul>
+</li>
+<li><strong>Make the script executable</strong>:
+<pre><code class="language-sh">chmod +x pre-commit
+</code></pre>
+</li>
+</ol>
+</div><h2>Example: Pre-commit Hook</h2>
+<div class='content'><p>A pre-commit hook can be used to check for code style issues before allowing a commit.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL3NoCiMgRXhhbXBsZSBwcmUtY29tbWl0IGhvb2sgc2NyaXB0CgojIFJ1biBhIGxpbnRlciAoZS5nLiwgRVNMaW50IGZvciBKYXZhU2NyaXB0KQplc2xpbnQgLgoKaWYgWyAkPyAtbmUgMCBdOyB0aGVuCiAgZWNobyAiTGludGluZyBmYWlsZWQuIENvbW1pdCBhYm9ydGVkLiIKICBleGl0IDEKZmkKCmVjaG8gIkxpbnRpbmcgcGFzc2VkLiBDb21taXQgYWxsb3dlZC4iCmV4aXQgMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/sh
+# Example pre-commit hook script
+
+# Run a linter (e.g., ESLint for JavaScript)
+eslint .
+
+if [ $? -ne 0 ]; then
+  echo &quot;Linting failed. Commit aborted.&quot;
+  exit 1
+fi
+
+echo &quot;Linting passed. Commit allowed.&quot;
+exit 0</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>#!/bin/sh</code>: Specifies the script interpreter.</li>
+<li><code>eslint .</code>: Runs the ESLint linter on the current directory.</li>
+<li><code>if [ $? -ne 0 ]; then ... fi</code>: Checks the exit status of the linter. If it is non-zero (indicating an error), the commit is aborted.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Common Git Hooks</h1>
+<div class='content'><p>| Hook Name       | Trigger Event                          | Typical Use Case                              |
+|-----------------|----------------------------------------|-----------------------------------------------|
+| <code>pre-commit</code>    | Before a commit is made                | Code linting, running tests                   |
+| <code>commit-msg</code>    | After the commit message is entered    | Enforcing commit message format               |
+| <code>post-commit</code>   | After a commit is made                 | Notifications, logging                        |
+| <code>pre-push</code>      | Before a push to a remote repository   | Running tests, checking branch policies       |
+| <code>post-receive</code>  | After a push is received by a remote   | Deploying code, continuous integration tasks  |</p>
+</div><h1>Advanced Usage</h1>
+<div class='content'></div><h2>Sharing Hooks Across Projects</h2>
+<div class='content'><ul>
+<li><strong>Git does not natively support sharing hooks</strong> across repositories. However, you can:
+<ul>
+<li><strong>Use a version-controlled directory</strong> for hooks and symlink them to <code>.git/hooks</code>.</li>
+<li><strong>Use a tool</strong> like <code>husky</code> (for JavaScript projects) to manage hooks.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Using Husky</h2>
+<div class='content'><ol>
+<li><strong>Install Husky</strong>:
+<pre><code class="language-sh">npm install husky --save-dev
+</code></pre>
+</li>
+<li><strong>Add a hook</strong>:
+<pre><code class="language-sh">npx husky add .husky/pre-commit &quot;npm test&quot;
+</code></pre>
+</li>
+<li><strong>Make the Husky directory executable</strong>:
+<pre><code class="language-sh">chmod +x .husky/pre-commit
+</code></pre>
+</li>
+</ol>
+<ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li>Husky simplifies the process of adding and managing hooks in JavaScript projects.</li>
+<li>The <code>pre-commit</code> hook runs <code>npm test</code> before allowing a commit.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Git hooks are powerful tools that can help automate and enforce policies in your development workflow. By understanding how to set up and use Git hooks, you can improve code quality and streamline processes. Whether you're linting code, running tests, or enforcing commit message formats, Git hooks provide a flexible way to integrate these tasks into your Git workflow.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='tagging'>&#x25C4;Tagging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using Git Hooks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='forking-a-repository'>Forking a Repository &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

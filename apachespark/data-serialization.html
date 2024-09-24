@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Serialization in Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/apachespark/data-serialization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/apachespark/data-serialization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/apachespark/data-serialization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/apachespark/data-serialization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/apachespark/data-serialization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='memory-management'>&#x25C4;Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Serialization in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='partitioning-and-shuffling'>Partitioning and Shuffling &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Data serialization is a crucial aspect of distributed computing frameworks like Apache Spark. It involves converting data structures or objects into a format that can be easily stored or transmitted and then reconstructed later. In this topic, we will cover the basics of data serialization, its importance in Spark, and advanced techniques to optimize serialization for better performance.</p>
+</div><h1>Introduction to Data Serialization</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Data serialization is the process of converting an object into a stream of bytes to store the object or transmit it to memory, a database, or a file.</li>
+<li><strong>Deserialization</strong>: The reverse process of serialization, where the byte stream is converted back into a copy of the original object.</li>
+<li><strong>Importance in Spark</strong>: Efficient serialization is critical in Spark for performance, especially when data is shuffled between nodes in a cluster.</li>
+</ul>
+</div><h1>Serialization Formats</h1>
+<div class='content'></div><h2>Java Serialization</h2>
+<div class='content'><ul>
+<li><strong>Default in Spark</strong>: Java serialization is the default serialization mechanism in Spark.</li>
+<li><strong>Pros</strong>:
+<ul>
+<li>Easy to use with Java objects.</li>
+<li>No additional configuration required.</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:
+<ul>
+<li>Slow performance.</li>
+<li>Large serialized formats.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Kryo Serialization</h2>
+<div class='content'><ul>
+<li><strong>Alternative to Java Serialization</strong>: Kryo is a faster and more compact serialization framework.</li>
+<li><strong>Pros</strong>:
+<ul>
+<li>Faster than Java serialization.</li>
+<li>Produces smaller serialized formats.</li>
+</ul>
+</li>
+<li><strong>Cons</strong>:
+<ul>
+<li>Requires registration of custom classes.</li>
+<li>More complex to configure.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Switching to Kryo Serialization</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3BhcmsuU3BhcmtDb25mCmltcG9ydCBvcmcuYXBhY2hlLnNwYXJrLlNwYXJrQ29udGV4dAoKdmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKICAuc2V0QXBwTmFtZSgiS3J5b0V4YW1wbGUiKQogIC5zZXRNYXN0ZXIoImxvY2FsIikKICAuc2V0KCJzcGFyay5zZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUuc3Bhcmsuc2VyaWFsaXplci5LcnlvU2VyaWFsaXplciIpCiAgLnJlZ2lzdGVyS3J5b0NsYXNzZXMoQXJyYXkoY2xhc3NPZltZb3VyQ3VzdG9tQ2xhc3NdKSkKCnZhbCBzYyA9IG5ldyBTcGFya0NvbnRleHQoY29uZik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+
+val conf = new SparkConf()
+  .setAppName(&quot;KryoExample&quot;)
+  .setMaster(&quot;local&quot;)
+  .set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)
+  .registerKryoClasses(Array(classOf[YourCustomClass]))
+
+val sc = new SparkContext(conf)</pre></div><div class='content'></div><h2>Comparing Java and Kryo Serialization</h2>
+<div class='content'><p>| Feature                | Java Serialization       | Kryo Serialization       |
+|------------------------|--------------------------|--------------------------|
+| Speed                  | Slower                   | Faster                   |
+| Serialized Size        | Larger                   | Smaller                  |
+| Ease of Use            | Easier                   | Requires configuration   |
+| Custom Class Support   | Automatic                | Requires registration    |</p>
+</div><h1>Optimizing Serialization</h1>
+<div class='content'></div><h2>Best Practices</h2>
+<div class='content'><ul>
+<li><strong>Use Kryo Serialization</strong>: For better performance, switch to Kryo serialization.</li>
+<li><strong>Register Custom Classes</strong>: Register all custom classes with Kryo to avoid the overhead of class name serialization.</li>
+<li><strong>Avoid Large Objects</strong>: Try to avoid serializing very large objects. Instead, break them into smaller chunks if possible.</li>
+<li><strong>Use Broadcast Variables</strong>: For read-only data that needs to be shared across tasks, use Spark's broadcast variables to reduce serialization overhead.</li>
+</ul>
+</div><h2>Example: Registering Custom Classes with Kryo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3BhcmsuU3BhcmtDb25mCmltcG9ydCBvcmcuYXBhY2hlLnNwYXJrLlNwYXJrQ29udGV4dAoKdmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKICAuc2V0QXBwTmFtZSgiS3J5b0V4YW1wbGUiKQogIC5zZXRNYXN0ZXIoImxvY2FsIikKICAuc2V0KCJzcGFyay5zZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUuc3Bhcmsuc2VyaWFsaXplci5LcnlvU2VyaWFsaXplciIpCiAgLnJlZ2lzdGVyS3J5b0NsYXNzZXMoQXJyYXkoY2xhc3NPZltZb3VyQ3VzdG9tQ2xhc3NdLCBjbGFzc09mW0Fub3RoZXJDdXN0b21DbGFzc10pKQoKdmFsIHNjID0gbmV3IFNwYXJrQ29udGV4dChjb25mKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.SparkConf
+import org.apache.spark.SparkContext
+
+val conf = new SparkConf()
+  .setAppName(&quot;KryoExample&quot;)
+  .setMaster(&quot;local&quot;)
+  .set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)
+  .registerKryoClasses(Array(classOf[YourCustomClass], classOf[AnotherCustomClass]))
+
+val sc = new SparkContext(conf)</pre></div><div class='content'></div><h1>Advanced Serialization Techniques</h1>
+<div class='content'></div><h2>Custom Serialization</h2>
+<div class='content'><ul>
+<li><strong>Custom Serializers</strong>: Implement custom serializers for complex objects to optimize serialization.</li>
+<li><strong>Example</strong>: Implementing a custom serializer for a complex object.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNvbS5lc290ZXJpY3NvZnR3YXJlLmtyeW8uS3J5bwppbXBvcnQgY29tLmVzb3Rlcmljc29mdHdhcmUua3J5by5TZXJpYWxpemVyCmltcG9ydCBjb20uZXNvdGVyaWNzb2Z0d2FyZS5rcnlvLmlvLklucHV0CmltcG9ydCBjb20uZXNvdGVyaWNzb2Z0d2FyZS5rcnlvLmlvLk91dHB1dAoKY2xhc3MgQ3VzdG9tQ2xhc3ModmFsIGRhdGE6IFN0cmluZywgdmFsIG51bWJlcjogSW50KQoKY2xhc3MgQ3VzdG9tQ2xhc3NTZXJpYWxpemVyIGV4dGVuZHMgU2VyaWFsaXplcltDdXN0b21DbGFzc10gewogIG92ZXJyaWRlIGRlZiB3cml0ZShrcnlvOiBLcnlvLCBvdXRwdXQ6IE91dHB1dCwgb2JqOiBDdXN0b21DbGFzcyk6IFVuaXQgPSB7CiAgICBvdXRwdXQud3JpdGVTdHJpbmcob2JqLmRhdGEpCiAgICBvdXRwdXQud3JpdGVJbnQob2JqLm51bWJlcikKICB9CgogIG92ZXJyaWRlIGRlZiByZWFkKGtyeW86IEtyeW8sIGlucHV0OiBJbnB1dCwgYHR5cGVgOiBDbGFzc1tDdXN0b21DbGFzc10pOiBDdXN0b21DbGFzcyA9IHsKICAgIHZhbCBkYXRhID0gaW5wdXQucmVhZFN0cmluZygpCiAgICB2YWwgbnVtYmVyID0gaW5wdXQucmVhZEludCgpCiAgICBuZXcgQ3VzdG9tQ2xhc3MoZGF0YSwgbnVtYmVyKQogIH0KfQoKLy8gUmVnaXN0ZXJpbmcgdGhlIGN1c3RvbSBzZXJpYWxpemVyCnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpCiAgLnNldEFwcE5hbWUoIkN1c3RvbVNlcmlhbGl6ZXJFeGFtcGxlIikKICAuc2V0TWFzdGVyKCJsb2NhbCIpCiAgLnNldCgic3Bhcmsuc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLnNwYXJrLnNlcmlhbGl6ZXIuS3J5b1NlcmlhbGl6ZXIiKQogIC5yZWdpc3RlcktyeW9DbGFzc2VzKEFycmF5KGNsYXNzT2ZbQ3VzdG9tQ2xhc3NdKSkKICAucmVnaXN0ZXJLcnlvU2VyaWFsaXplcihjbGFzc09mW0N1c3RvbUNsYXNzXSwgY2xhc3NPZltDdXN0b21DbGFzc1NlcmlhbGl6ZXJdKQoKdmFsIHNjID0gbmV3IFNwYXJrQ29udGV4dChjb25mKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import com.esotericsoftware.kryo.Kryo
+import com.esotericsoftware.kryo.Serializer
+import com.esotericsoftware.kryo.io.Input
+import com.esotericsoftware.kryo.io.Output
+
+class CustomClass(val data: String, val number: Int)
+
+class CustomClassSerializer extends Serializer[CustomClass] {
+  override def write(kryo: Kryo, output: Output, obj: CustomClass): Unit = {
+    output.writeString(obj.data)
+    output.writeInt(obj.number)
+  }
+
+  override def read(kryo: Kryo, input: Input, `type`: Class[CustomClass]): CustomClass = {
+    val data = input.readString()
+    val number = input.readInt()
+    new CustomClass(data, number)
+  }
+}
+
+// Registering the custom serializer
+val conf = new SparkConf()
+  .setAppName(&quot;CustomSerializerExample&quot;)
+  .setMaster(&quot;local&quot;)
+  .set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)
+  .registerKryoClasses(Array(classOf[CustomClass]))
+  .registerKryoSerializer(classOf[CustomClass], classOf[CustomClassSerializer])
+
+val sc = new SparkContext(conf)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Data serialization is a fundamental concept in Apache Spark that significantly impacts performance. By understanding and optimizing serialization techniques, such as switching to Kryo and registering custom classes, you can improve the efficiency of your Spark applications. Always consider the trade-offs between ease of use and performance when choosing a serialization method.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='memory-management'>&#x25C4;Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Data Serialization in Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='partitioning-and-shuffling'>Partitioning and Shuffling &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

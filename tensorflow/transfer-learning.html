@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer Learning in TensorFlow</title>
+
+    <link rel="alternate" href="https://campusempresa.com/tensorflow/transfer-learning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/tensorflow/transfer-learning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/tensorflow/transfer-learning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/tensorflow/transfer-learning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/tensorflow/transfer-learning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='monitoring-and-maintenance'>&#x25C4;Monitoring and Maintenance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Transfer Learning in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='generative-adversarial-networks'>Generative Adversarial Networks (GANs) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Transfer Learning</h1>
+<div class='content'><p>Transfer learning is a machine learning technique where a model developed for a particular task is reused as the starting point for a model on a second task. This is especially useful when you have limited data for the second task but a large dataset for a related task.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Pre-trained Models</strong>: Models that have been previously trained on large datasets and can be used as a starting point for new tasks.</li>
+<li><strong>Fine-tuning</strong>: Adjusting the weights of a pre-trained model to better fit the new task.</li>
+<li><strong>Feature Extraction</strong>: Using the pre-trained model to extract features from new data without modifying the model's weights.</li>
+</ul>
+</div><h1>Why Use Transfer Learning?</h1>
+<div class='content'><ul>
+<li><strong>Efficiency</strong>: Reduces the time and computational resources required to train a model from scratch.</li>
+<li><strong>Performance</strong>: Often leads to better performance, especially when the new task has limited data.</li>
+<li><strong>Convenience</strong>: Many pre-trained models are readily available in TensorFlow, making it easy to implement transfer learning.</li>
+</ul>
+</div><h1>Implementing Transfer Learning in TensorFlow</h1>
+<div class='content'></div><h2>Step 1: Load a Pre-trained Model</h2>
+<div class='content'><p>TensorFlow provides several pre-trained models through the <code>tf.keras.applications</code> module. For example, you can load the MobileNetV2 model as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmFwcGxpY2F0aW9ucyBpbXBvcnQgTW9iaWxlTmV0VjIKCiMgTG9hZCB0aGUgcHJlLXRyYWluZWQgTW9iaWxlTmV0VjIgbW9kZWwKYmFzZV9tb2RlbCA9IE1vYmlsZU5ldFYyKGlucHV0X3NoYXBlPSgyMjQsIDIyNCwgMyksIGluY2x1ZGVfdG9wPUZhbHNlLCB3ZWlnaHRzPSdpbWFnZW5ldCcp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.applications import MobileNetV2
+
+# Load the pre-trained MobileNetV2 model
+base_model = MobileNetV2(input_shape=(224, 224, 3), include_top=False, weights='imagenet')</pre></div><div class='content'></div><h2>Step 2: Freeze the Base Model</h2>
+<div class='content'><p>Freezing the base model ensures that its weights are not updated during training. This is crucial for feature extraction.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGcmVlemUgdGhlIGJhc2UgbW9kZWwKYmFzZV9tb2RlbC50cmFpbmFibGUgPSBGYWxzZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Freeze the base model
+base_model.trainable = False</pre></div><div class='content'></div><h2>Step 3: Add Custom Layers</h2>
+<div class='content'><p>Add custom layers on top of the base model to adapt it to your specific task.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBZGQgY3VzdG9tIGxheWVycwptb2RlbCA9IHRmLmtlcmFzLlNlcXVlbnRpYWwoWwogICAgYmFzZV9tb2RlbCwKICAgIHRmLmtlcmFzLmxheWVycy5HbG9iYWxBdmVyYWdlUG9vbGluZzJEKCksCiAgICB0Zi5rZXJhcy5sYXllcnMuRGVuc2UoMSwgYWN0aXZhdGlvbj0nc2lnbW9pZCcpICAjIEV4YW1wbGUgZm9yIGJpbmFyeSBjbGFzc2lmaWNhdGlvbgpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Add custom layers
+model = tf.keras.Sequential([
+    base_model,
+    tf.keras.layers.GlobalAveragePooling2D(),
+    tf.keras.layers.Dense(1, activation='sigmoid')  # Example for binary classification
+])</pre></div><div class='content'></div><h2>Step 4: Compile the Model</h2>
+<div class='content'><p>Compile the model with an appropriate optimizer, loss function, and metrics.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb21waWxlIHRoZSBtb2RlbAptb2RlbC5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J2JpbmFyeV9jcm9zc2VudHJvcHknLCBtZXRyaWNzPVsnYWNjdXJhY3knXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Compile the model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])</pre></div><div class='content'></div><h2>Step 5: Train the Model</h2>
+<div class='content'><p>Train the model on your dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeGFtcGxlIGRhdGFzZXQKdHJhaW5fZGF0YXNldCA9IC4uLiAgIyBZb3VyIHRyYWluaW5nIGRhdGFzZXQKdmFsaWRhdGlvbl9kYXRhc2V0ID0gLi4uICAjIFlvdXIgdmFsaWRhdGlvbiBkYXRhc2V0CgojIFRyYWluIHRoZSBtb2RlbApoaXN0b3J5ID0gbW9kZWwuZml0KHRyYWluX2RhdGFzZXQsIHZhbGlkYXRpb25fZGF0YT12YWxpZGF0aW9uX2RhdGFzZXQsIGVwb2Nocz0xMCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Example dataset
+train_dataset = ...  # Your training dataset
+validation_dataset = ...  # Your validation dataset
+
+# Train the model
+history = model.fit(train_dataset, validation_data=validation_dataset, epochs=10)</pre></div><div class='content'></div><h2>Optional: Fine-tuning the Model</h2>
+<div class='content'><p>After training the custom layers, you can optionally unfreeze some layers of the base model and fine-tune them.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVbmZyZWV6ZSBzb21lIGxheWVycyBvZiB0aGUgYmFzZSBtb2RlbApiYXNlX21vZGVsLnRyYWluYWJsZSA9IFRydWUKCiMgUmVjb21waWxlIHRoZSBtb2RlbCB3aXRoIGEgbG93ZXIgbGVhcm5pbmcgcmF0ZQptb2RlbC5jb21waWxlKG9wdGltaXplcj10Zi5rZXJhcy5vcHRpbWl6ZXJzLkFkYW0oMWUtNSksIGxvc3M9J2JpbmFyeV9jcm9zc2VudHJvcHknLCBtZXRyaWNzPVsnYWNjdXJhY3knXSkKCiMgRmluZS10dW5lIHRoZSBtb2RlbApoaXN0b3J5X2ZpbmUgPSBtb2RlbC5maXQodHJhaW5fZGF0YXNldCwgdmFsaWRhdGlvbl9kYXRhPXZhbGlkYXRpb25fZGF0YXNldCwgZXBvY2hzPTEwKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Unfreeze some layers of the base model
+base_model.trainable = True
+
+# Recompile the model with a lower learning rate
+model.compile(optimizer=tf.keras.optimizers.Adam(1e-5), loss='binary_crossentropy', metrics=['accuracy'])
+
+# Fine-tune the model
+history_fine = model.fit(train_dataset, validation_data=validation_dataset, epochs=10)</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>Transfer learning is a powerful technique that leverages pre-trained models to improve the efficiency and performance of new tasks. By freezing the base model and adding custom layers, you can quickly adapt a pre-trained model to your specific needs. Fine-tuning allows for further optimization by adjusting the weights of the pre-trained model. TensorFlow makes it easy to implement transfer learning with its extensive library of pre-trained models and flexible API.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='monitoring-and-maintenance'>&#x25C4;Monitoring and Maintenance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Transfer Learning in TensorFlow</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='generative-adversarial-networks'>Generative Adversarial Networks (GANs) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

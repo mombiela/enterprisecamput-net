@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building and Running Multi-Container Applications</title>
+
+    <link rel="alternate" href="https://campusempresa.com/docker/building-running-multi-container-applications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/docker/building-running-multi-container-applications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/docker/building-running-multi-container-applications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/docker/building-running-multi-container-applications" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/docker/building-running-multi-container-applications" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='defining-services-docker-compose'>&#x25C4;Defining Services in Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building and Running Multi-Container Applications</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='networking-docker-compose'>Networking with Docker Compose &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore how to build and run multi-container applications using Docker. This is essential for creating scalable and maintainable applications that consist of multiple services working together.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Microservices Architecture</strong>: Breaking down applications into smaller, independent services.</li>
+<li><strong>Docker Compose</strong>: A tool for defining and running multi-container Docker applications.</li>
+<li><strong>Service Dependencies</strong>: Managing how services interact and depend on each other.</li>
+<li><strong>Networking</strong>: Ensuring containers can communicate with each other.</li>
+</ul>
+</div><h1>Docker Compose Basics</h1>
+<div class='content'><p>Docker Compose is a tool that allows you to define and manage multi-container Docker applications. It uses a YAML file to configure the application's services, networks, and volumes.</p>
+</div><h2>Installing Docker Compose</h2>
+<div class='content'><p>Docker Compose is included in Docker Desktop for Windows and Mac. For Linux, you can install it using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBjdXJsIC1MICJodHRwczovL2dpdGh1Yi5jb20vZG9ja2VyL2NvbXBvc2UvcmVsZWFzZXMvZG93bmxvYWQvMS4yOS4yL2RvY2tlci1jb21wb3NlLSQodW5hbWUgLXMpLSQodW5hbWUgLW0pIiAtbyAvdXNyL2xvY2FsL2Jpbi9kb2NrZXItY29tcG9zZQpzdWRvIGNobW9kICt4IC91c3IvbG9jYWwvYmluL2RvY2tlci1jb21wb3Nl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose</pre></div><div class='content'></div><h2>Creating a `docker-compose.yml` File</h2>
+<div class='content'><p>A <code>docker-compose.yml</code> file defines the services that make up your application. Here is an example for a simple web application with a frontend and a backend service:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIGZyb250ZW5kOgogICAgaW1hZ2U6IG5naW54OmxhdGVzdAogICAgcG9ydHM6CiAgICAgIC0gIjgwOjgwIgogICAgdm9sdW1lczoKICAgICAgLSAuL2Zyb250ZW5kOi91c3Ivc2hhcmUvbmdpbngvaHRtbAogIGJhY2tlbmQ6CiAgICBpbWFnZTogbm9kZToxNAogICAgd29ya2luZ19kaXI6IC9hcHAKICAgIHZvbHVtZXM6CiAgICAgIC0gLi9iYWNrZW5kOi9hcHAKICAgIGNvbW1hbmQ6IG5wbSBzdGFydA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  frontend:
+    image: nginx:latest
+    ports:
+      - &quot;80:80&quot;
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+  backend:
+    image: node:14
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: npm start</pre></div><div class='content'></div><h2>Running Docker Compose</h2>
+<div class='content'><p>To start the application, navigate to the directory containing your <code>docker-compose.yml</code> file and run:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up</pre></div><div class='content'><p>This command will start all the services defined in the <code>docker-compose.yml</code> file.</p>
+</div><h1>Service Dependencies</h1>
+<div class='content'><p>In a multi-container application, services often depend on each other. Docker Compose allows you to specify dependencies using the <code>depends_on</code> option.</p>
+</div><h2>Example with Dependencies</h2>
+<div class='content'><p>Here is an example where the backend service depends on a database service:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIGRiOgogICAgaW1hZ2U6IHBvc3RncmVzOmxhdGVzdAogICAgZW52aXJvbm1lbnQ6CiAgICAgIFBPU1RHUkVTX1VTRVI6IHVzZXIKICAgICAgUE9TVEdSRVNfUEFTU1dPUkQ6IHBhc3N3b3JkCiAgICAgIFBPU1RHUkVTX0RCOiBteWRiCiAgYmFja2VuZDoKICAgIGltYWdlOiBub2RlOjE0CiAgICB3b3JraW5nX2RpcjogL2FwcAogICAgdm9sdW1lczoKICAgICAgLSAuL2JhY2tlbmQ6L2FwcAogICAgY29tbWFuZDogbnBtIHN0YXJ0CiAgICBkZXBlbmRzX29uOgogICAgICAtIGRi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+  backend:
+    image: node:14
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: npm start
+    depends_on:
+      - db</pre></div><div class='content'></div><h1>Networking</h1>
+<div class='content'><p>Docker Compose automatically creates a network for your application, allowing services to communicate with each other by their service names.</p>
+</div><h2>Example with Networking</h2>
+<div class='content'><p>In the previous example, the backend service can connect to the database service using the service name <code>db</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBDbGllbnQgfSA9IHJlcXVpcmUoJ3BnJyk7CmNvbnN0IGNsaWVudCA9IG5ldyBDbGllbnQoewogIGhvc3Q6ICdkYicsCiAgdXNlcjogJ3VzZXInLAogIHBhc3N3b3JkOiAncGFzc3dvcmQnLAogIGRhdGFiYXNlOiAnbXlkYicKfSk7CmNsaWVudC5jb25uZWN0KCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { Client } = require('pg');
+const client = new Client({
+  host: 'db',
+  user: 'user',
+  password: 'password',
+  database: 'mydb'
+});
+client.connect();</pre></div><div class='content'></div><h1>Advanced Docker Compose Features</h1>
+<div class='content'><p>Docker Compose offers several advanced features to manage complex applications.</p>
+</div><h2>Environment Variables</h2>
+<div class='content'><p>You can use environment variables to configure your services dynamically.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIGJhY2tlbmQ6CiAgICBpbWFnZTogbm9kZToxNAogICAgd29ya2luZ19kaXI6IC9hcHAKICAgIHZvbHVtZXM6CiAgICAgIC0gLi9iYWNrZW5kOi9hcHAKICAgIGNvbW1hbmQ6IG5wbSBzdGFydAogICAgZW52aXJvbm1lbnQ6CiAgICAgIC0gTk9ERV9FTlY9cHJvZHVjdGlvbg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  backend:
+    image: node:14
+    working_dir: /app
+    volumes:
+      - ./backend:/app
+    command: npm start
+    environment:
+      - NODE_ENV=production</pre></div><div class='content'></div><h2>Volumes</h2>
+<div class='content'><p>Volumes allow you to persist data and share it between services.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIGRiOgogICAgaW1hZ2U6IHBvc3RncmVzOmxhdGVzdAogICAgdm9sdW1lczoKICAgICAgLSBkYi1kYXRhOi92YXIvbGliL3Bvc3RncmVzcWwvZGF0YQp2b2x1bWVzOgogIGRiLWRhdGE6"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  db:
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:</pre></div><div class='content'></div><h2>Scaling Services</h2>
+<div class='content'><p>You can scale services to handle more load by specifying the number of instances.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXAgLS1zY2FsZSBiYWNrZW5kPTM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up --scale backend=3</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Building and running multi-container applications with Docker Compose simplifies the management of complex applications. By breaking down applications into smaller services, you can achieve better scalability and maintainability. Docker Compose provides powerful features to manage service dependencies, networking, and scaling, making it an essential tool for modern application development.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='defining-services-docker-compose'>&#x25C4;Defining Services in Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building and Running Multi-Container Applications</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='networking-docker-compose'>Networking with Docker Compose &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

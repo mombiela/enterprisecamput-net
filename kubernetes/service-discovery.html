@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Discovery in Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/service-discovery" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/service-discovery" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/service-discovery" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/service-discovery" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/service-discovery" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cluster-networking'>&#x25C4;Cluster Networking</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Service Discovery in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='ingress-controllers'>Ingress Controllers &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Service discovery is a critical aspect of managing microservices in Kubernetes. It allows services to find and communicate with each other without hardcoding IP addresses. This topic will guide you from the basics to advanced concepts of service discovery in Kubernetes.</p>
+</div><h1>Introduction to Service Discovery</h1>
+<div class='content'><p>Service discovery in Kubernetes involves mechanisms that allow services to find each other dynamically. This is essential in a dynamic environment where services can scale up or down, and IP addresses can change frequently.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Service</strong>: An abstraction that defines a logical set of Pods and a policy by which to access them.</li>
+<li><strong>Endpoints</strong>: A collection of IP addresses and ports that represent the actual Pods backing a Service.</li>
+<li><strong>DNS</strong>: Kubernetes uses DNS to allow services to discover each other by name.</li>
+</ul>
+</div><h1>Basic Service Discovery</h1>
+<div class='content'><p>In Kubernetes, the most common way to achieve service discovery is through Services and DNS.</p>
+</div><h2>Creating a Service</h2>
+<div class='content'><p>A Service in Kubernetes can be created using a YAML file. Here’s a basic example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1zZXJ2aWNlCnNwZWM6CiAgc2VsZWN0b3I6CiAgICBhcHA6IE15QXBwCiAgcG9ydHM6CiAgICAtIHByb3RvY29sOiBUQ1AKICAgICAgcG9ydDogODAKICAgICAgdGFyZ2V0UG9ydDogOTM3Ng=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376</pre></div><div class='content'><ul>
+<li><strong>metadata.name</strong>: The name of the Service.</li>
+<li><strong>spec.selector</strong>: Selects the Pods that will be exposed by this Service.</li>
+<li><strong>spec.ports</strong>: Defines the port that will be exposed and the target port on the Pods.</li>
+</ul>
+</div><h2>Accessing the Service</h2>
+<div class='content'><p>Once the Service is created, it can be accessed by its name within the same namespace:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCBodHRwOi8vbXktc2VydmljZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl http://my-service</pre></div><div class='content'><p>Kubernetes automatically creates a DNS entry for the Service, making it accessible by name.</p>
+</div><h1>Advanced Service Discovery</h1>
+<div class='content'><p>For more complex scenarios, Kubernetes offers additional features and tools.</p>
+</div><h2>Headless Services</h2>
+<div class='content'><p>A headless Service does not have a cluster IP. Instead, it returns the IP addresses of the Pods directly.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBoZWFkbGVzcy1zZXJ2aWNlCnNwZWM6CiAgY2x1c3RlcklQOiBOb25lCiAgc2VsZWN0b3I6CiAgICBhcHA6IE15QXBwCiAgcG9ydHM6CiAgICAtIHByb3RvY29sOiBUQ1AKICAgICAgcG9ydDogODAKICAgICAgdGFyZ2V0UG9ydDogOTM3Ng=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: headless-service
+spec:
+  clusterIP: None
+  selector:
+    app: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376</pre></div><div class='content'></div><h2>Service Mesh</h2>
+<div class='content'><p>A service mesh like Istio can be used for advanced service discovery, traffic management, and security.</p>
+<ul>
+<li><strong>Istio</strong>: Provides a more sophisticated way to manage service-to-service communication.</li>
+<li><strong>Linkerd</strong>: Another popular service mesh that offers similar capabilities.</li>
+</ul>
+</div><h2>Example: Using Istio for Service Discovery</h2>
+<div class='content'><p>First, install Istio in your Kubernetes cluster. Then, define a ServiceEntry to allow external services to be discovered:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogbmV0d29ya2luZy5pc3Rpby5pby92MWFscGhhMwpraW5kOiBTZXJ2aWNlRW50cnkKbWV0YWRhdGE6CiAgbmFtZTogZXh0ZXJuYWwtc3ZjCnNwZWM6CiAgaG9zdHM6CiAgLSBleHRlcm5hbC1zZXJ2aWNlLmNvbQogIHBvcnRzOgogIC0gbnVtYmVyOiA4MAogICAgbmFtZTogaHR0cAogICAgcHJvdG9jb2w6IEhUVFAKICByZXNvbHV0aW9uOiBETlM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: external-svc
+spec:
+  hosts:
+  - external-service.com
+  ports:
+  - number: 80
+    name: http
+    protocol: HTTP
+  resolution: DNS</pre></div><div class='content'><p>This configuration allows your services to discover and communicate with <code>external-service.com</code> through Istio.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Service discovery is a fundamental aspect of Kubernetes that enables dynamic and scalable microservice architectures. Starting with basic Services and DNS, you can progress to more advanced techniques like headless Services and service meshes for complex scenarios. Understanding these concepts will help you build robust and scalable applications in Kubernetes.</p>
+<p>By mastering service discovery, you ensure that your microservices can efficiently find and communicate with each other, leading to a more resilient and manageable system.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='cluster-networking'>&#x25C4;Cluster Networking</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Service Discovery in Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='ingress-controllers'>Ingress Controllers &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

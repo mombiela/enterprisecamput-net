@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Errors in Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/custom-errors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/custom-errors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/custom-errors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/go/custom-errors" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/go/custom-errors" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-basics'>&#x25C4;Error Handling Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Errors in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-recover'>Panic and Recover &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Custom Errors</h1>
+<div class='content'><p>In Go, error handling is a crucial part of writing robust and maintainable code. While Go's built-in <code>error</code> type is often sufficient, there are scenarios where custom errors can provide more context and improve debugging. This section will cover how to create and use custom errors in Go.</p>
+</div><h1>Creating Custom Errors</h1>
+<div class='content'><p>To create a custom error in Go, you typically define a new type that implements the <code>error</code> interface. The <code>error</code> interface in Go is simple and consists of a single method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBlcnJvciBpbnRlcmZhY2UgewogICAgRXJyb3IoKSBzdHJpbmcKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type error interface {
+    Error() string
+}</pre></div><div class='content'></div><h2>Defining a Custom Error Type</h2>
+<div class='content'><p>Here's how you can define a custom error type:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIGEgY3VzdG9tIGVycm9yIHR5cGUKdHlwZSBNeUN1c3RvbUVycm9yIHN0cnVjdCB7CiAgICBDb2RlICAgIGludAogICAgTWVzc2FnZSBzdHJpbmcKfQoKLy8gSW1wbGVtZW50IHRoZSBFcnJvcigpIG1ldGhvZCBmb3IgdGhlIGN1c3RvbSBlcnJvciB0eXBlCmZ1bmMgKGUgKk15Q3VzdG9tRXJyb3IpIEVycm9yKCkgc3RyaW5nIHsKICAgIHJldHVybiBmbXQuU3ByaW50ZigiRXJyb3IgJWQ6ICVzIiwgZS5Db2RlLCBlLk1lc3NhZ2UpCn0KCmZ1bmMgbWFpbigpIHsKICAgIC8vIENyZWF0ZSBhbiBpbnN0YW5jZSBvZiB0aGUgY3VzdG9tIGVycm9yCiAgICBlcnIgOj0gJk15Q3VzdG9tRXJyb3J7CiAgICAgICAgQ29kZTogICAgNDA0LAogICAgICAgIE1lc3NhZ2U6ICJSZXNvdXJjZSBub3QgZm91bmQiLAogICAgfQoKICAgIC8vIFByaW50IHRoZSBlcnJvcgogICAgZm10LlByaW50bG4oZXJyKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+// Implement the Error() method for the custom error type
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+func main() {
+    // Create an instance of the custom error
+    err := &amp;MyCustomError{
+        Code:    404,
+        Message: &quot;Resource not found&quot;,
+    }
+
+    // Print the error
+    fmt.Println(err)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Struct Definition</strong>: <code>MyCustomError</code> is a struct with fields <code>Code</code> and <code>Message</code>.</li>
+<li><strong>Error Method</strong>: The <code>Error()</code> method formats the error message, making <code>MyCustomError</code> satisfy the <code>error</code> interface.</li>
+<li><strong>Usage</strong>: An instance of <code>MyCustomError</code> is created and printed, demonstrating how the custom error can be used.</li>
+</ul>
+</div><h1>Using Custom Errors</h1>
+<div class='content'><p>Custom errors can be used just like any other error in Go. They can be returned from functions and checked using type assertions or type switches.</p>
+</div><h2>Returning Custom Errors from Functions</h2>
+<div class='content'><p>Here's an example of a function that returns a custom error:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIGEgY3VzdG9tIGVycm9yIHR5cGUKdHlwZSBNeUN1c3RvbUVycm9yIHN0cnVjdCB7CiAgICBDb2RlICAgIGludAogICAgTWVzc2FnZSBzdHJpbmcKfQoKZnVuYyAoZSAqTXlDdXN0b21FcnJvcikgRXJyb3IoKSBzdHJpbmcgewogICAgcmV0dXJuIGZtdC5TcHJpbnRmKCJFcnJvciAlZDogJXMiLCBlLkNvZGUsIGUuTWVzc2FnZSkKfQoKLy8gRnVuY3Rpb24gdGhhdCByZXR1cm5zIGEgY3VzdG9tIGVycm9yCmZ1bmMgZG9Tb21ldGhpbmcoKSBlcnJvciB7CiAgICByZXR1cm4gJk15Q3VzdG9tRXJyb3J7CiAgICAgICAgQ29kZTogICAgNTAwLAogICAgICAgIE1lc3NhZ2U6ICJJbnRlcm5hbCBTZXJ2ZXIgRXJyb3IiLAogICAgfQp9CgpmdW5jIG1haW4oKSB7CiAgICBlcnIgOj0gZG9Tb21ldGhpbmcoKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgZm10LlByaW50bG4oZXJyKQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+// Function that returns a custom error
+func doSomething() error {
+    return &amp;MyCustomError{
+        Code:    500,
+        Message: &quot;Internal Server Error&quot;,
+    }
+}
+
+func main() {
+    err := doSomething()
+    if err != nil {
+        fmt.Println(err)
+    }
+}</pre></div><div class='content'></div><h2>Checking for Specific Custom Errors</h2>
+<div class='content'><p>You can use type assertions or type switches to check for specific custom errors:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIGEgY3VzdG9tIGVycm9yIHR5cGUKdHlwZSBNeUN1c3RvbUVycm9yIHN0cnVjdCB7CiAgICBDb2RlICAgIGludAogICAgTWVzc2FnZSBzdHJpbmcKfQoKZnVuYyAoZSAqTXlDdXN0b21FcnJvcikgRXJyb3IoKSBzdHJpbmcgewogICAgcmV0dXJuIGZtdC5TcHJpbnRmKCJFcnJvciAlZDogJXMiLCBlLkNvZGUsIGUuTWVzc2FnZSkKfQoKZnVuYyBkb1NvbWV0aGluZygpIGVycm9yIHsKICAgIHJldHVybiAmTXlDdXN0b21FcnJvcnsKICAgICAgICBDb2RlOiAgICA1MDAsCiAgICAgICAgTWVzc2FnZTogIkludGVybmFsIFNlcnZlciBFcnJvciIsCiAgICB9Cn0KCmZ1bmMgbWFpbigpIHsKICAgIGVyciA6PSBkb1NvbWV0aGluZygpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICAvLyBUeXBlIGFzc2VydGlvbgogICAgICAgIGlmIGN1c3RvbUVyciwgb2sgOj0gZXJyLigqTXlDdXN0b21FcnJvcik7IG9rIHsKICAgICAgICAgICAgZm10LlByaW50ZigiQ3VzdG9tIGVycm9yIG9jY3VycmVkOiBDb2RlPSVkLCBNZXNzYWdlPSVzXG4iLCBjdXN0b21FcnIuQ29kZSwgY3VzdG9tRXJyLk1lc3NhZ2UpCiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgZm10LlByaW50bG4oIkFuIGVycm9yIG9jY3VycmVkOiIsIGVycikKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+func doSomething() error {
+    return &amp;MyCustomError{
+        Code:    500,
+        Message: &quot;Internal Server Error&quot;,
+    }
+}
+
+func main() {
+    err := doSomething()
+    if err != nil {
+        // Type assertion
+        if customErr, ok := err.(*MyCustomError); ok {
+            fmt.Printf(&quot;Custom error occurred: Code=%d, Message=%s\n&quot;, customErr.Code, customErr.Message)
+        } else {
+            fmt.Println(&quot;An error occurred:&quot;, err)
+        }
+    }
+}</pre></div><div class='content'></div><h1>Best Practices for Custom Errors</h1>
+<div class='content'><ul>
+<li><strong>Use Custom Errors Sparingly</strong>: Only use custom errors when additional context is necessary.</li>
+<li><strong>Consistent Error Messages</strong>: Ensure that error messages are consistent and informative.</li>
+<li><strong>Error Wrapping</strong>: Consider using Go 1.13+ error wrapping features (<code>fmt.Errorf</code> with <code>%w</code>) for more complex error handling scenarios.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Custom errors in Go provide a powerful way to add context to error handling. By defining custom error types and implementing the <code>error</code> interface, you can create more informative and maintainable error messages. Remember to use custom errors judiciously and follow best practices to ensure your code remains clean and understandable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-basics'>&#x25C4;Error Handling Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Errors in Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-recover'>Panic and Recover &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Resource Definitions (CRDs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/custom-resource-definitions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/custom-resource-definitions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/custom-resource-definitions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/custom-resource-definitions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/custom-resource-definitions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pod-security-policies'>&#x25C4;Pod Security Policies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Resource Definitions (CRDs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='operators'>Operators &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Custom Resource Definitions (CRDs)</h1>
+<div class='content'><p>Custom Resource Definitions (CRDs) are a powerful feature in Kubernetes that allow you to extend the Kubernetes API with your own custom resources. This enables you to create and manage resources that are not part of the default Kubernetes API.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Custom Resources (CRs):</strong> These are extensions of the Kubernetes API that allow you to store and retrieve structured data.</li>
+<li><strong>Custom Resource Definitions (CRDs):</strong> These define the schema for your custom resources, allowing Kubernetes to understand and manage them.</li>
+<li><strong>Controller:</strong> A control loop that watches the state of your custom resources and makes changes to move the current state towards the desired state.</li>
+</ul>
+</div><h1>Creating a Custom Resource Definition</h1>
+<div class='content'><p>To create a CRD, you need to define it in a YAML file and apply it to your Kubernetes cluster.</p>
+</div><h2>Example CRD YAML</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBpZXh0ZW5zaW9ucy5rOHMuaW8vdjEKa2luZDogQ3VzdG9tUmVzb3VyY2VEZWZpbml0aW9uCm1ldGFkYXRhOgogIG5hbWU6IGNyb250YWJzLmV4YW1wbGUuY29tCnNwZWM6CiAgZ3JvdXA6IGV4YW1wbGUuY29tCiAgdmVyc2lvbnM6CiAgICAtIG5hbWU6IHYxCiAgICAgIHNlcnZlZDogdHJ1ZQogICAgICBzdG9yYWdlOiB0cnVlCiAgICAgIHNjaGVtYToKICAgICAgICBvcGVuQVBJVjNTY2hlbWE6CiAgICAgICAgICB0eXBlOiBvYmplY3QKICAgICAgICAgIHByb3BlcnRpZXM6CiAgICAgICAgICAgIHNwZWM6CiAgICAgICAgICAgICAgdHlwZTogb2JqZWN0CiAgICAgICAgICAgICAgcHJvcGVydGllczoKICAgICAgICAgICAgICAgIGNyb25TcGVjOgogICAgICAgICAgICAgICAgICB0eXBlOiBzdHJpbmcKICAgICAgICAgICAgICAgIGltYWdlOgogICAgICAgICAgICAgICAgICB0eXBlOiBzdHJpbmcKICAgICAgICAgICAgICAgIHJlcGxpY2FzOgogICAgICAgICAgICAgICAgICB0eXBlOiBpbnRlZ2VyCiAgc2NvcGU6IE5hbWVzcGFjZWQKICBuYW1lczoKICAgIHBsdXJhbDogY3JvbnRhYnMKICAgIHNpbmd1bGFyOiBjcm9udGFiCiAgICBraW5kOiBDcm9uVGFiCiAgICBzaG9ydE5hbWVzOgogICAgLSBjdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: crontabs.example.com
+spec:
+  group: example.com
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                cronSpec:
+                  type: string
+                image:
+                  type: string
+                replicas:
+                  type: integer
+  scope: Namespaced
+  names:
+    plural: crontabs
+    singular: crontab
+    kind: CronTab
+    shortNames:
+    - ct</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion:</strong> Specifies the API version.</li>
+<li><strong>kind:</strong> Specifies the type of resource, which is <code>CustomResourceDefinition</code>.</li>
+<li><strong>metadata:</strong> Contains the name of the CRD.</li>
+<li><strong>spec:</strong> Defines the group, versions, scope, and names for the custom resource.
+<ul>
+<li><strong>group:</strong> A logical grouping for your custom resources.</li>
+<li><strong>versions:</strong> Lists the versions of the custom resource.</li>
+<li><strong>scope:</strong> Can be <code>Namespaced</code> or <code>Cluster</code>.</li>
+<li><strong>names:</strong> Defines the names for the custom resource.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creating Custom Resources</h1>
+<div class='content'><p>Once the CRD is applied, you can create instances of your custom resource.</p>
+</div><h2>Example Custom Resource YAML</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogZXhhbXBsZS5jb20vdjEKa2luZDogQ3JvblRhYgptZXRhZGF0YToKICBuYW1lOiBteS1jcm9udGFiCnNwZWM6CiAgY3JvblNwZWM6ICIqICogKiAqICovNSIKICBpbWFnZTogbXktY3Jvbi1pbWFnZQogIHJlcGxpY2FzOiAz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: example.com/v1
+kind: CronTab
+metadata:
+  name: my-crontab
+spec:
+  cronSpec: &quot;* * * * */5&quot;
+  image: my-cron-image
+  replicas: 3</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion:</strong> Specifies the API version and group.</li>
+<li><strong>kind:</strong> Specifies the kind of custom resource.</li>
+<li><strong>metadata:</strong> Contains the name of the custom resource.</li>
+<li><strong>spec:</strong> Defines the desired state of the custom resource.</li>
+</ul>
+</div><h1>Managing Custom Resources</h1>
+<div class='content'><p>You can manage your custom resources using standard <code>kubectl</code> commands.</p>
+</div><h2>Example Commands</h2>
+<div class='content'><ul>
+<li><strong>Create a Custom Resource:</strong>
+<pre><code class="language-sh">kubectl apply -f my-crontab.yaml
+</code></pre>
+</li>
+<li><strong>Get Custom Resources:</strong>
+<pre><code class="language-sh">kubectl get crontabs
+</code></pre>
+</li>
+<li><strong>Describe a Custom Resource:</strong>
+<pre><code class="language-sh">kubectl describe crontab my-crontab
+</code></pre>
+</li>
+<li><strong>Delete a Custom Resource:</strong>
+<pre><code class="language-sh">kubectl delete crontab my-crontab
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<h2>Validation and Defaulting</h2>
+<div class='content'><p>You can add validation and defaulting to your CRDs to ensure data integrity and provide default values.</p>
+</div><h2>Example Validation Schema</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2NoZW1hOgogIG9wZW5BUElWM1NjaGVtYToKICAgIHR5cGU6IG9iamVjdAogICAgcHJvcGVydGllczoKICAgICAgc3BlYzoKICAgICAgICB0eXBlOiBvYmplY3QKICAgICAgICBwcm9wZXJ0aWVzOgogICAgICAgICAgY3JvblNwZWM6CiAgICAgICAgICAgIHR5cGU6IHN0cmluZwogICAgICAgICAgICBwYXR0ZXJuOiAnXlswLTkqLywtXSsgWzAtOSovLC1dKyBbMC05Ki8sLV0rIFswLTkqLywtXSsgWzAtOSovLC1dKyQnCiAgICAgICAgICBpbWFnZToKICAgICAgICAgICAgdHlwZTogc3RyaW5nCiAgICAgICAgICByZXBsaWNhczoKICAgICAgICAgICAgdHlwZTogaW50ZWdlcgogICAgICAgICAgICBtaW5pbXVtOiAxCiAgICAgICAgICAgIG1heGltdW06IDEw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>schema:
+  openAPIV3Schema:
+    type: object
+    properties:
+      spec:
+        type: object
+        properties:
+          cronSpec:
+            type: string
+            pattern: '^[0-9*/,-]+ [0-9*/,-]+ [0-9*/,-]+ [0-9*/,-]+ [0-9*/,-]+$'
+          image:
+            type: string
+          replicas:
+            type: integer
+            minimum: 1
+            maximum: 10</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>pattern:</strong> Ensures the <code>cronSpec</code> follows a valid cron format.</li>
+<li><strong>minimum and maximum:</strong> Ensure the <code>replicas</code> value is between 1 and 10.</li>
+</ul>
+</div><h2>Custom Controllers</h2>
+<div class='content'><p>To manage the lifecycle of your custom resources, you can write custom controllers using frameworks like Kubebuilder or Operator SDK.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Custom Resource Definitions (CRDs) provide a flexible way to extend the Kubernetes API with your own custom resources. By defining CRDs, you can create, manage, and validate custom resources, enabling you to tailor Kubernetes to your specific needs. Advanced features like validation, defaulting, and custom controllers further enhance the capabilities of CRDs, making them a powerful tool for Kubernetes developers.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pod-security-policies'>&#x25C4;Pod Security Policies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Resource Definitions (CRDs)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='operators'>Operators &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

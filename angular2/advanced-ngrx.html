@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced NgRx</title>
+
+    <link rel="alternate" href="https://campusempresa.com/angular2/advanced-ngrx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/angular2/advanced-ngrx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/angular2/advanced-ngrx" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/angular2/advanced-ngrx" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/angular2/advanced-ngrx" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ngrx-basics'>&#x25C4;NgRx Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced NgRx</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='unit-testing'>Unit Testing &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>NgRx is a powerful state management library for Angular applications, providing a way to manage state using the Redux pattern. This section will delve into advanced concepts and techniques to help you master NgRx in your Angular projects.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Selectors</strong>: Efficiently query and derive state.</li>
+<li><strong>Effects</strong>: Handle side effects like HTTP requests.</li>
+<li><strong>Entity State</strong>: Manage collections of entities.</li>
+<li><strong>Router State</strong>: Integrate NgRx with Angular Router.</li>
+<li><strong>Testing NgRx</strong>: Best practices for testing state management.</li>
+</ul>
+</div><h1>Selectors</h1>
+<div class='content'><p>Selectors are pure functions used to obtain slices of state. They help in optimizing performance by memoizing the state.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY3JlYXRlU2VsZWN0b3IsIGNyZWF0ZUZlYXR1cmVTZWxlY3RvciB9IGZyb20gJ0BuZ3J4L3N0b3JlJzsKaW1wb3J0IHsgQXBwU3RhdGUgfSBmcm9tICcuLi9zdGF0ZS9hcHAuc3RhdGUnOwppbXBvcnQgeyBVc2VyU3RhdGUgfSBmcm9tICcuLi9zdGF0ZS91c2VyLnN0YXRlJzsKCmNvbnN0IHNlbGVjdFVzZXJTdGF0ZSA9IGNyZWF0ZUZlYXR1cmVTZWxlY3RvcjxBcHBTdGF0ZSwgVXNlclN0YXRlPigndXNlcicpOwoKZXhwb3J0IGNvbnN0IHNlbGVjdFVzZXIgPSBjcmVhdGVTZWxlY3RvcigKICBzZWxlY3RVc2VyU3RhdGUsCiAgKHN0YXRlOiBVc2VyU3RhdGUpID0+IHN0YXRlLnVzZXIKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { createSelector, createFeatureSelector } from '@ngrx/store';
+import { AppState } from '../state/app.state';
+import { UserState } from '../state/user.state';
+
+const selectUserState = createFeatureSelector&lt;AppState, UserState&gt;('user');
+
+export const selectUser = createSelector(
+  selectUserState,
+  (state: UserState) =&gt; state.user
+);</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>createFeatureSelector</code> selects the <code>user</code> slice of the state.</li>
+<li><code>createSelector</code> derives the <code>user</code> data from the <code>UserState</code>.</li>
+</ul>
+</div><h1>Effects</h1>
+<div class='content'><p>Effects handle side effects, such as asynchronous operations. They listen for actions and perform tasks like HTTP requests.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBBY3Rpb25zLCBjcmVhdGVFZmZlY3QsIG9mVHlwZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBvZiB9IGZyb20gJ3J4anMnOwppbXBvcnQgeyBjYXRjaEVycm9yLCBtYXAsIG1lcmdlTWFwIH0gZnJvbSAncnhqcy9vcGVyYXRvcnMnOwppbXBvcnQgeyBVc2VyU2VydmljZSB9IGZyb20gJy4uL3NlcnZpY2VzL3VzZXIuc2VydmljZSc7CmltcG9ydCAqIGFzIFVzZXJBY3Rpb25zIGZyb20gJy4uL2FjdGlvbnMvdXNlci5hY3Rpb25zJzsKCkBJbmplY3RhYmxlKCkKZXhwb3J0IGNsYXNzIFVzZXJFZmZlY3RzIHsKICBsb2FkVXNlcnMkID0gY3JlYXRlRWZmZWN0KCgpID0+CiAgICB0aGlzLmFjdGlvbnMkLnBpcGUoCiAgICAgIG9mVHlwZShVc2VyQWN0aW9ucy5sb2FkVXNlcnMpLAogICAgICBtZXJnZU1hcCgoKSA9PgogICAgICAgIHRoaXMudXNlclNlcnZpY2UuZ2V0QWxsKCkucGlwZSgKICAgICAgICAgIG1hcCh1c2VycyA9PiBVc2VyQWN0aW9ucy5sb2FkVXNlcnNTdWNjZXNzKHsgdXNlcnMgfSkpLAogICAgICAgICAgY2F0Y2hFcnJvcihlcnJvciA9PiBvZihVc2VyQWN0aW9ucy5sb2FkVXNlcnNGYWlsdXJlKHsgZXJyb3IgfSkpKQogICAgICAgICkKICAgICAgKQogICAgKQogICk7CgogIGNvbnN0cnVjdG9yKAogICAgcHJpdmF0ZSBhY3Rpb25zJDogQWN0aW9ucywKICAgIHByaXZhdGUgdXNlclNlcnZpY2U6IFVzZXJTZXJ2aWNlCiAgKSB7fQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { of } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { UserService } from '../services/user.service';
+import * as UserActions from '../actions/user.actions';
+
+@Injectable()
+export class UserEffects {
+  loadUsers$ = createEffect(() =&gt;
+    this.actions$.pipe(
+      ofType(UserActions.loadUsers),
+      mergeMap(() =&gt;
+        this.userService.getAll().pipe(
+          map(users =&gt; UserActions.loadUsersSuccess({ users })),
+          catchError(error =&gt; of(UserActions.loadUsersFailure({ error })))
+        )
+      )
+    )
+  );
+
+  constructor(
+    private actions$: Actions,
+    private userService: UserService
+  ) {}
+}</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>ofType</code> filters actions of type <code>loadUsers</code>.</li>
+<li><code>mergeMap</code> performs the HTTP request.</li>
+<li><code>map</code> dispatches <code>loadUsersSuccess</code> on success.</li>
+<li><code>catchError</code> dispatches <code>loadUsersFailure</code> on error.</li>
+</ul>
+</div><h1>Entity State</h1>
+<div class='content'><p>NgRx Entity provides a way to manage collections of entities, reducing boilerplate code.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgRW50aXR5U3RhdGUsIEVudGl0eUFkYXB0ZXIsIGNyZWF0ZUVudGl0eUFkYXB0ZXIgfSBmcm9tICdAbmdyeC9lbnRpdHknOwppbXBvcnQgeyBVc2VyIH0gZnJvbSAnLi4vbW9kZWxzL3VzZXIubW9kZWwnOwoKZXhwb3J0IGludGVyZmFjZSBVc2VyU3RhdGUgZXh0ZW5kcyBFbnRpdHlTdGF0ZTxVc2VyPiB7CiAgc2VsZWN0ZWRVc2VySWQ6IG51bWJlciB8IG51bGw7Cn0KCmV4cG9ydCBjb25zdCBhZGFwdGVyOiBFbnRpdHlBZGFwdGVyPFVzZXI+ID0gY3JlYXRlRW50aXR5QWRhcHRlcjxVc2VyPigpOwoKZXhwb3J0IGNvbnN0IGluaXRpYWxTdGF0ZTogVXNlclN0YXRlID0gYWRhcHRlci5nZXRJbml0aWFsU3RhdGUoewogIHNlbGVjdGVkVXNlcklkOiBudWxsLAp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { EntityState, EntityAdapter, createEntityAdapter } from '@ngrx/entity';
+import { User } from '../models/user.model';
+
+export interface UserState extends EntityState&lt;User&gt; {
+  selectedUserId: number | null;
+}
+
+export const adapter: EntityAdapter&lt;User&gt; = createEntityAdapter&lt;User&gt;();
+
+export const initialState: UserState = adapter.getInitialState({
+  selectedUserId: null,
+});</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>EntityState</code> and <code>EntityAdapter</code> are used to manage a collection of <code>User</code> entities.</li>
+<li><code>createEntityAdapter</code> creates an adapter for <code>User</code>.</li>
+<li><code>getInitialState</code> initializes the state with an empty collection and a <code>selectedUserId</code>.</li>
+</ul>
+</div><h1>Router State</h1>
+<div class='content'><p>Integrating NgRx with Angular Router allows you to manage route state within the store.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgcm91dGVyUmVkdWNlciwgUm91dGVyUmVkdWNlclN0YXRlIH0gZnJvbSAnQG5ncngvcm91dGVyLXN0b3JlJzsKCmV4cG9ydCBpbnRlcmZhY2UgQXBwU3RhdGUgewogIHJvdXRlcjogUm91dGVyUmVkdWNlclN0YXRlOwp9CgpleHBvcnQgY29uc3QgcmVkdWNlcnMgPSB7CiAgcm91dGVyOiByb3V0ZXJSZWR1Y2VyLAp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { routerReducer, RouterReducerState } from '@ngrx/router-store';
+
+export interface AppState {
+  router: RouterReducerState;
+}
+
+export const reducers = {
+  router: routerReducer,
+};</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>routerReducer</code> is added to the root state.</li>
+<li><code>RouterReducerState</code> keeps track of the router state.</li>
+</ul>
+</div><h1>Testing NgRx</h1>
+<div class='content'><p>Testing NgRx involves testing reducers, selectors, and effects to ensure they work as expected.</p>
+</div><h2>Example</h2>
+<div class='content'><h4>Testing a Reducer</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgdXNlclJlZHVjZXIsIGluaXRpYWxTdGF0ZSB9IGZyb20gJy4uL3JlZHVjZXJzL3VzZXIucmVkdWNlcic7CmltcG9ydCAqIGFzIFVzZXJBY3Rpb25zIGZyb20gJy4uL2FjdGlvbnMvdXNlci5hY3Rpb25zJzsKCmRlc2NyaWJlKCdVc2VyUmVkdWNlcicsICgpID0+IHsKICBpdCgnc2hvdWxkIHJldHVybiB0aGUgaW5pdGlhbCBzdGF0ZScsICgpID0+IHsKICAgIGNvbnN0IGFjdGlvbiA9IHt9IGFzIGFueTsKICAgIGNvbnN0IHN0YXRlID0gdXNlclJlZHVjZXIodW5kZWZpbmVkLCBhY3Rpb24pOwoKICAgIGV4cGVjdChzdGF0ZSkudG9CZShpbml0aWFsU3RhdGUpOwogIH0pOwoKICBpdCgnc2hvdWxkIGxvYWQgdXNlcnMnLCAoKSA9PiB7CiAgICBjb25zdCB1c2VycyA9IFt7IGlkOiAxLCBuYW1lOiAnSm9obicgfV07CiAgICBjb25zdCBhY3Rpb24gPSBVc2VyQWN0aW9ucy5sb2FkVXNlcnNTdWNjZXNzKHsgdXNlcnMgfSk7CiAgICBjb25zdCBzdGF0ZSA9IHVzZXJSZWR1Y2VyKGluaXRpYWxTdGF0ZSwgYWN0aW9uKTsKCiAgICBleHBlY3Qoc3RhdGUuZW50aXRpZXNbMV0pLnRvRXF1YWwodXNlcnNbMF0pOwogIH0pOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { userReducer, initialState } from '../reducers/user.reducer';
+import * as UserActions from '../actions/user.actions';
+
+describe('UserReducer', () =&gt; {
+  it('should return the initial state', () =&gt; {
+    const action = {} as any;
+    const state = userReducer(undefined, action);
+
+    expect(state).toBe(initialState);
+  });
+
+  it('should load users', () =&gt; {
+    const users = [{ id: 1, name: 'John' }];
+    const action = UserActions.loadUsersSuccess({ users });
+    const state = userReducer(initialState, action);
+
+    expect(state.entities[1]).toEqual(users[0]);
+  });
+});</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The initial state is tested.</li>
+<li>The <code>loadUsersSuccess</code> action is tested to ensure it updates the state correctly.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Mastering advanced NgRx concepts like selectors, effects, entity state, router state, and testing will significantly enhance your ability to manage state in Angular applications. By understanding and applying these techniques, you can create more efficient, scalable, and maintainable applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ngrx-basics'>&#x25C4;NgRx Basics</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Advanced NgRx</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='unit-testing'>Unit Testing &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

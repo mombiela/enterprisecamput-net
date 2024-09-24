@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mocking and Stubbing in Vue.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/vuejs/mocking-stubbing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/vuejs/mocking-stubbing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/vuejs/mocking-stubbing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/vuejs/mocking-stubbing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/vuejs/mocking-stubbing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='e2e-testing-cypress'>&#x25C4;End-to-End Testing with Cypress</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mocking and Stubbing in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-vuejs-applications'>Optimizing Vue.js Applications &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Mocking and stubbing are essential techniques in unit testing that help isolate the component or function being tested by replacing dependencies with controlled substitutes. This ensures that tests are reliable and focused on the specific functionality under test.</p>
+</div><h1>What is Mocking?</h1>
+<div class='content'><p>Mocking involves creating objects that simulate the behavior of real objects. These mock objects can be programmed to return specific values or perform certain actions when called during a test.</p>
+</div><h2>Key Concepts of Mocking</h2>
+<div class='content'><ul>
+<li><strong>Mock Objects</strong>: Simulated objects that mimic the behavior of real objects.</li>
+<li><strong>Behavior Verification</strong>: Ensuring that the mock objects are used as expected.</li>
+<li><strong>Isolation</strong>: Testing components in isolation by replacing dependencies with mocks.</li>
+</ul>
+</div><h1>What is Stubbing?</h1>
+<div class='content'><p>Stubbing is a technique used to replace a function or method with a &quot;stub&quot; that returns predefined results. This is particularly useful when you want to control the output of a function during a test.</p>
+</div><h2>Key Concepts of Stubbing</h2>
+<div class='content'><ul>
+<li><strong>Stub Functions</strong>: Functions that return predefined values.</li>
+<li><strong>Controlled Environment</strong>: Creating a predictable environment for tests.</li>
+<li><strong>Simplification</strong>: Simplifying complex dependencies by using stubs.</li>
+</ul>
+</div><h1>Mocking and Stubbing in Vue.js</h1>
+<div class='content'><p>In Vue.js, mocking and stubbing are commonly used in unit tests to isolate components and ensure that tests are focused and reliable. The <code>vue-test-utils</code> library, along with testing frameworks like Jest, provides tools to easily mock and stub dependencies.</p>
+</div><h2>Mocking with `vue-test-utils` and Jest</h2>
+<div class='content'><h4>Example: Mocking a Service</h4>
+<p>Suppose we have a service that fetches user data:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gdXNlclNlcnZpY2UuanMKZXhwb3J0IGNvbnN0IGdldFVzZXIgPSBhc3luYyAoaWQpID0+IHsKICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKGAvYXBpL3VzZXJzLyR7aWR9YCk7CiAgcmV0dXJuIHJlc3BvbnNlLmpzb24oKTsKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// userService.js
+export const getUser = async (id) =&gt; {
+  const response = await fetch(`/api/users/${id}`);
+  return response.json();
+};</pre></div><div class='content'><p>We can mock this service in our tests:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVXNlckNvbXBvbmVudC52dWUKPHRlbXBsYXRlPgogIDxkaXY+e3sgdXNlci5uYW1lIH19PC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgppbXBvcnQgeyBnZXRVc2VyIH0gZnJvbSAnLi91c2VyU2VydmljZSc7CgpleHBvcnQgZGVmYXVsdCB7CiAgZGF0YSgpIHsKICAgIHJldHVybiB7CiAgICAgIHVzZXI6IHt9LAogICAgfTsKICB9LAogIGFzeW5jIGNyZWF0ZWQoKSB7CiAgICB0aGlzLnVzZXIgPSBhd2FpdCBnZXRVc2VyKDEpOwogIH0sCn07Cjwvc2NyaXB0Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// UserComponent.vue
+&lt;template&gt;
+  &lt;div&gt;{{ user.name }}&lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import { getUser } from './userService';
+
+export default {
+  data() {
+    return {
+      user: {},
+    };
+  },
+  async created() {
+    this.user = await getUser(1);
+  },
+};
+&lt;/script&gt;</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVXNlckNvbXBvbmVudC50ZXN0LmpzCmltcG9ydCB7IHNoYWxsb3dNb3VudCB9IGZyb20gJ0B2dWUvdGVzdC11dGlscyc7CmltcG9ydCBVc2VyQ29tcG9uZW50IGZyb20gJy4vVXNlckNvbXBvbmVudCc7CmltcG9ydCAqIGFzIHVzZXJTZXJ2aWNlIGZyb20gJy4vdXNlclNlcnZpY2UnOwoKamVzdC5tb2NrKCcuL3VzZXJTZXJ2aWNlJyk7CgpkZXNjcmliZSgnVXNlckNvbXBvbmVudCcsICgpID0+IHsKICBpdCgnZmV0Y2hlcyBhbmQgZGlzcGxheXMgdXNlciBkYXRhJywgYXN5bmMgKCkgPT4gewogICAgdXNlclNlcnZpY2UuZ2V0VXNlci5tb2NrUmVzb2x2ZWRWYWx1ZSh7IG5hbWU6ICdKb2huIERvZScgfSk7CgogICAgY29uc3Qgd3JhcHBlciA9IHNoYWxsb3dNb3VudChVc2VyQ29tcG9uZW50KTsKICAgIGF3YWl0IHdyYXBwZXIudm0uJG5leHRUaWNrKCk7CgogICAgZXhwZWN0KHdyYXBwZXIudGV4dCgpKS50b0NvbnRhaW4oJ0pvaG4gRG9lJyk7CiAgfSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// UserComponent.test.js
+import { shallowMount } from '@vue/test-utils';
+import UserComponent from './UserComponent';
+import * as userService from './userService';
+
+jest.mock('./userService');
+
+describe('UserComponent', () =&gt; {
+  it('fetches and displays user data', async () =&gt; {
+    userService.getUser.mockResolvedValue({ name: 'John Doe' });
+
+    const wrapper = shallowMount(UserComponent);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.text()).toContain('John Doe');
+  });
+});</pre></div><div class='content'></div><h2>Stubbing with `vue-test-utils`</h2>
+<div class='content'><h4>Example: Stubbing a Child Component</h4>
+<p>Suppose we have a parent component that uses a child component:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ2hpbGRDb21wb25lbnQudnVlCjx0ZW1wbGF0ZT4KICA8ZGl2PkNoaWxkIENvbXBvbmVudDwvZGl2Pgo8L3RlbXBsYXRlPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ChildComponent.vue
+&lt;template&gt;
+  &lt;div&gt;Child Component&lt;/div&gt;
+&lt;/template&gt;</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUGFyZW50Q29tcG9uZW50LnZ1ZQo8dGVtcGxhdGU+CiAgPGRpdj4KICAgIDxDaGlsZENvbXBvbmVudCAvPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KaW1wb3J0IENoaWxkQ29tcG9uZW50IGZyb20gJy4vQ2hpbGRDb21wb25lbnQnOwoKZXhwb3J0IGRlZmF1bHQgewogIGNvbXBvbmVudHM6IHsKICAgIENoaWxkQ29tcG9uZW50LAogIH0sCn07Cjwvc2NyaXB0Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ParentComponent.vue
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;ChildComponent /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import ChildComponent from './ChildComponent';
+
+export default {
+  components: {
+    ChildComponent,
+  },
+};
+&lt;/script&gt;</pre></div><div class='content'><p>We can stub the child component in our tests:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUGFyZW50Q29tcG9uZW50LnRlc3QuanMKaW1wb3J0IHsgc2hhbGxvd01vdW50IH0gZnJvbSAnQHZ1ZS90ZXN0LXV0aWxzJzsKaW1wb3J0IFBhcmVudENvbXBvbmVudCBmcm9tICcuL1BhcmVudENvbXBvbmVudCc7CgpkZXNjcmliZSgnUGFyZW50Q29tcG9uZW50JywgKCkgPT4gewogIGl0KCdyZW5kZXJzIHRoZSBjaGlsZCBjb21wb25lbnQnLCAoKSA9PiB7CiAgICBjb25zdCB3cmFwcGVyID0gc2hhbGxvd01vdW50KFBhcmVudENvbXBvbmVudCwgewogICAgICBzdHViczogewogICAgICAgIENoaWxkQ29tcG9uZW50OiB0cnVlLAogICAgICB9LAogICAgfSk7CgogICAgZXhwZWN0KHdyYXBwZXIuaHRtbCgpKS50b0NvbnRhaW4oJzxjaGlsZGNvbXBvbmVudC1zdHViPjwvY2hpbGRjb21wb25lbnQtc3R1Yj4nKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ParentComponent.test.js
+import { shallowMount } from '@vue/test-utils';
+import ParentComponent from './ParentComponent';
+
+describe('ParentComponent', () =&gt; {
+  it('renders the child component', () =&gt; {
+    const wrapper = shallowMount(ParentComponent, {
+      stubs: {
+        ChildComponent: true,
+      },
+    });
+
+    expect(wrapper.html()).toContain('&lt;childcomponent-stub&gt;&lt;/childcomponent-stub&gt;');
+  });
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Mocking and stubbing are powerful techniques in Vue.js testing that allow developers to isolate components and control dependencies. By using tools like <code>vue-test-utils</code> and Jest, you can create reliable and focused unit tests that ensure your components work as expected. Understanding and applying these techniques will help you write better tests and maintain a high level of code quality in your Vue.js applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='e2e-testing-cypress'>&#x25C4;End-to-End Testing with Cypress</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mocking and Stubbing in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-vuejs-applications'>Optimizing Vue.js Applications &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

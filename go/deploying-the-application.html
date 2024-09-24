@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploying the Application</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/deploying-the-application" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/deploying-the-application" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/deploying-the-application" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/go/deploying-the-application" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/go/deploying-the-application" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-and-debugging'>&#x25C4;Testing and Debugging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Deploying the Application</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+<div class='content'><p>Deploying a Go application involves several steps, from building the executable to configuring the environment where the application will run. This section will guide you through the process of deploying a Go application, covering both basic and advanced deployment strategies.</p>
+</div><h1>Building the Go Application</h1>
+<div class='content'><p>Before deploying, you need to build your Go application into an executable binary.</p>
+<ul>
+<li>
+<p><strong>Building for the current system:</strong></p>
+<pre><code class="language-bash">go build -o myapp
+</code></pre>
+<p>This command compiles the Go source code and produces an executable named <code>myapp</code> for the current operating system and architecture.</p>
+</li>
+<li>
+<p><strong>Cross-compiling for different systems:</strong></p>
+<pre><code class="language-bash">GOOS=linux GOARCH=amd64 go build -o myapp-linux
+</code></pre>
+<p>This command sets the target operating system to Linux and the architecture to AMD64, producing an executable named <code>myapp-linux</code>.</p>
+</li>
+</ul>
+</div><h1>Preparing the Environment</h1>
+<div class='content'><p>Ensure the target environment is ready to run your Go application.</p>
+<ul>
+<li>
+<p><strong>Setting up the server:</strong></p>
+<ul>
+<li>Choose a server (e.g., AWS, DigitalOcean, Google Cloud).</li>
+<li>Install necessary dependencies (e.g., Docker, database systems).</li>
+</ul>
+</li>
+<li>
+<p><strong>Environment variables:</strong></p>
+<ul>
+<li>Store sensitive information like API keys and database credentials in environment variables.</li>
+<li>Example in a <code>.env</code> file:
+<pre><code>DB_HOST=localhost
+DB_USER=root
+DB_PASS=password
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Deploying with Docker</h1>
+<div class='content'><p>Docker simplifies deployment by packaging your application and its dependencies into a container.</p>
+<ul>
+<li>
+<p><strong>Creating a Dockerfile:</strong></p>
+<pre><code class="language-dockerfile"># Use the official Golang image as the base image
+FROM golang:1.19-alpine
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN go build -o myapp
+
+# Command to run the executable
+CMD [&quot;./myapp&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Building and running the Docker container:</strong></p>
+<pre><code class="language-bash">docker build -t myapp .
+docker run -p 8080:8080 myapp
+</code></pre>
+</li>
+</ul>
+</div><h1>Deploying to a Cloud Service</h1>
+<div class='content'></div><h2>Deploying to AWS Elastic Beanstalk</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Create an Elastic Beanstalk application:</strong></p>
+<ul>
+<li>Use the AWS Management Console to create a new Elastic Beanstalk application.</li>
+<li>Choose a platform (e.g., Docker if using a Docker container).</li>
+</ul>
+</li>
+<li>
+<p><strong>Deploy the application:</strong></p>
+<ul>
+<li>Package your application code and configuration files.</li>
+<li>Use the Elastic Beanstalk CLI to deploy:
+<pre><code class="language-bash">eb init -p docker myapp
+eb create myapp-env
+eb deploy
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Deploying to Google Cloud Run</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Containerize the application:</strong></p>
+<ul>
+<li>Ensure you have a Dockerfile as shown previously.</li>
+</ul>
+</li>
+<li>
+<p><strong>Deploy using the gcloud CLI:</strong></p>
+<pre><code class="language-bash">gcloud builds submit --tag gcr.io/PROJECT-ID/myapp
+gcloud run deploy --image gcr.io/PROJECT-ID/myapp --platform managed
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Deploying a Go application involves building the executable, preparing the environment, and choosing a deployment strategy. Whether you use Docker, AWS Elastic Beanstalk, or Google Cloud Run, the key is to ensure your application is packaged correctly and the target environment is configured properly. By following these steps, you can deploy your Go applications efficiently and reliably.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-and-debugging'>&#x25C4;Testing and Debugging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Deploying the Application</a>
+	</div>
+	<div class='col-4 text-end'>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

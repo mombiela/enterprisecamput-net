@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling and Retries</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kafka/error-handling-and-retries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kafka/error-handling-and-retries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kafka/error-handling-and-retries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kafka/error-handling-and-retries" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kafka/error-handling-and-retries" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='producer-configuration'>&#x25C4;Producer Configuration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling and Retries</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='consumer-api-overview'>Consumer API Overview &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Error handling and retries are crucial aspects of working with Apache Kafka, ensuring that your applications can gracefully handle failures and maintain data integrity. This section will cover the basics of error handling, common strategies for retries, and advanced techniques for managing errors in Kafka.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Error Handling</strong>: The process of managing errors that occur during the execution of a program.</li>
+<li><strong>Retries</strong>: The act of attempting an operation again after it has failed.</li>
+<li><strong>Idempotence</strong>: Ensuring that an operation can be performed multiple times without changing the result beyond the initial application.</li>
+<li><strong>Backoff Strategy</strong>: A method to delay retries to avoid overwhelming the system.</li>
+</ul>
+</div><h1>Error Handling in Kafka</h1>
+<div class='content'><p>Kafka provides several mechanisms to handle errors that occur during message production and consumption.</p>
+</div><h2>Producer Error Handling</h2>
+<div class='content'><p>When producing messages to Kafka, errors can occur due to network issues, broker failures, or configuration problems. Kafka's producer API provides callbacks and exceptions to handle these errors.</p>
+<h4>Example: Handling Producer Errors</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUua2Fma2EuY2xpZW50cy5wcm9kdWNlci4qOwoKaW1wb3J0IGphdmEudXRpbC5Qcm9wZXJ0aWVzOwoKcHVibGljIGNsYXNzIEthZmthUHJvZHVjZXJFeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBQcm9wZXJ0aWVzIHByb3BzID0gbmV3IFByb3BlcnRpZXMoKTsKICAgICAgICBwcm9wcy5wdXQoImJvb3RzdHJhcC5zZXJ2ZXJzIiwgImxvY2FsaG9zdDo5MDkyIik7CiAgICAgICAgcHJvcHMucHV0KCJrZXkuc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLmthZmthLmNvbW1vbi5zZXJpYWxpemF0aW9uLlN0cmluZ1NlcmlhbGl6ZXIiKTsKICAgICAgICBwcm9wcy5wdXQoInZhbHVlLnNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VyaWFsaXphdGlvbi5TdHJpbmdTZXJpYWxpemVyIik7CgogICAgICAgIFByb2R1Y2VyPFN0cmluZywgU3RyaW5nPiBwcm9kdWNlciA9IG5ldyBLYWZrYVByb2R1Y2VyPD4ocHJvcHMpOwoKICAgICAgICBQcm9kdWNlclJlY29yZDxTdHJpbmcsIFN0cmluZz4gcmVjb3JkID0gbmV3IFByb2R1Y2VyUmVjb3JkPD4oIm15LXRvcGljIiwgImtleSIsICJ2YWx1ZSIpOwoKICAgICAgICBwcm9kdWNlci5zZW5kKHJlY29yZCwgbmV3IENhbGxiYWNrKCkgewogICAgICAgICAgICBAT3ZlcnJpZGUKICAgICAgICAgICAgcHVibGljIHZvaWQgb25Db21wbGV0aW9uKFJlY29yZE1ldGFkYXRhIG1ldGFkYXRhLCBFeGNlcHRpb24gZXhjZXB0aW9uKSB7CiAgICAgICAgICAgICAgICBpZiAoZXhjZXB0aW9uICE9IG51bGwpIHsKICAgICAgICAgICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50bG4oIkVycm9yIHByb2R1Y2luZyB0byB0b3BpYyAiICsgbWV0YWRhdGEudG9waWMoKSk7CiAgICAgICAgICAgICAgICAgICAgZXhjZXB0aW9uLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIlByb2R1Y2VkIHJlY29yZCB0byB0b3BpYyAiICsgbWV0YWRhdGEudG9waWMoKSArICIgcGFydGl0aW9uICIgKyBtZXRhZGF0YS5wYXJ0aXRpb24oKSArICIgQCBvZmZzZXQgIiArIG1ldGFkYXRhLm9mZnNldCgpKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0pOwoKICAgICAgICBwcm9kdWNlci5jbG9zZSgpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.kafka.clients.producer.*;
+
+import java.util.Properties;
+
+public class KafkaProducerExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+        props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+
+        Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+
+        ProducerRecord&lt;String, String&gt; record = new ProducerRecord&lt;&gt;(&quot;my-topic&quot;, &quot;key&quot;, &quot;value&quot;);
+
+        producer.send(record, new Callback() {
+            @Override
+            public void onCompletion(RecordMetadata metadata, Exception exception) {
+                if (exception != null) {
+                    System.err.println(&quot;Error producing to topic &quot; + metadata.topic());
+                    exception.printStackTrace();
+                } else {
+                    System.out.println(&quot;Produced record to topic &quot; + metadata.topic() + &quot; partition &quot; + metadata.partition() + &quot; @ offset &quot; + metadata.offset());
+                }
+            }
+        });
+
+        producer.close();
+    }
+}</pre></div><div class='content'></div><h2>Consumer Error Handling</h2>
+<div class='content'><p>Consumers can encounter errors while fetching messages from Kafka, such as deserialization errors or network issues. Kafka's consumer API provides mechanisms to handle these errors gracefully.</p>
+<h4>Example: Handling Consumer Errors</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUua2Fma2EuY2xpZW50cy5jb25zdW1lci4qOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5jb21tb24uZXJyb3JzLldha2V1cEV4Y2VwdGlvbjsKCmltcG9ydCBqYXZhLnRpbWUuRHVyYXRpb247CmltcG9ydCBqYXZhLnV0aWwuQ29sbGVjdGlvbnM7CmltcG9ydCBqYXZhLnV0aWwuUHJvcGVydGllczsKCnB1YmxpYyBjbGFzcyBLYWZrYUNvbnN1bWVyRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgUHJvcGVydGllcyBwcm9wcyA9IG5ldyBQcm9wZXJ0aWVzKCk7CiAgICAgICAgcHJvcHMucHV0KCJib290c3RyYXAuc2VydmVycyIsICJsb2NhbGhvc3Q6OTA5MiIpOwogICAgICAgIHByb3BzLnB1dCgiZ3JvdXAuaWQiLCAibXktZ3JvdXAiKTsKICAgICAgICBwcm9wcy5wdXQoImtleS5kZXNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VyaWFsaXphdGlvbi5TdHJpbmdEZXNlcmlhbGl6ZXIiKTsKICAgICAgICBwcm9wcy5wdXQoInZhbHVlLmRlc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLmthZmthLmNvbW1vbi5zZXJpYWxpemF0aW9uLlN0cmluZ0Rlc2VyaWFsaXplciIpOwoKICAgICAgICBDb25zdW1lcjxTdHJpbmcsIFN0cmluZz4gY29uc3VtZXIgPSBuZXcgS2Fma2FDb25zdW1lcjw+KHByb3BzKTsKICAgICAgICBjb25zdW1lci5zdWJzY3JpYmUoQ29sbGVjdGlvbnMuc2luZ2xldG9uTGlzdCgibXktdG9waWMiKSk7CgogICAgICAgIHRyeSB7CiAgICAgICAgICAgIHdoaWxlICh0cnVlKSB7CiAgICAgICAgICAgICAgICBDb25zdW1lclJlY29yZHM8U3RyaW5nLCBTdHJpbmc+IHJlY29yZHMgPSBjb25zdW1lci5wb2xsKER1cmF0aW9uLm9mTWlsbGlzKDEwMCkpOwogICAgICAgICAgICAgICAgZm9yIChDb25zdW1lclJlY29yZDxTdHJpbmcsIFN0cmluZz4gcmVjb3JkIDogcmVjb3JkcykgewogICAgICAgICAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRmKCJDb25zdW1lZCByZWNvcmQgd2l0aCBrZXkgJXMgYW5kIHZhbHVlICVzJW4iLCByZWNvcmQua2V5KCksIHJlY29yZC52YWx1ZSgpKTsKICAgICAgICAgICAgICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICAgICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50ZigiRXJyb3IgcHJvY2Vzc2luZyByZWNvcmQgd2l0aCBrZXkgJXMgYW5kIHZhbHVlICVzJW4iLCByZWNvcmQua2V5KCksIHJlY29yZC52YWx1ZSgpKTsKICAgICAgICAgICAgICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChXYWtldXBFeGNlcHRpb24gZSkgewogICAgICAgICAgICAvLyBJZ25vcmUgZXhjZXB0aW9uIGlmIGNsb3NpbmcKICAgICAgICB9IGZpbmFsbHkgewogICAgICAgICAgICBjb25zdW1lci5jbG9zZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.kafka.clients.consumer.*;
+import org.apache.kafka.common.errors.WakeupException;
+
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Properties;
+
+public class KafkaConsumerExample {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;group.id&quot;, &quot;my-group&quot;);
+        props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+        Consumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+        consumer.subscribe(Collections.singletonList(&quot;my-topic&quot;));
+
+        try {
+            while (true) {
+                ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord&lt;String, String&gt; record : records) {
+                    try {
+                        System.out.printf(&quot;Consumed record with key %s and value %s%n&quot;, record.key(), record.value());
+                    } catch (Exception e) {
+                        System.err.printf(&quot;Error processing record with key %s and value %s%n&quot;, record.key(), record.value());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (WakeupException e) {
+            // Ignore exception if closing
+        } finally {
+            consumer.close();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Retry Strategies</h1>
+<div class='content'><p>Retries are essential for ensuring that transient errors do not cause permanent failures. Kafka provides several configurations to manage retries.</p>
+</div><h2>Producer Retries</h2>
+<div class='content'><p>Kafka producers can be configured to retry sending messages in case of transient errors.</p>
+<h4>Example: Configuring Producer Retries</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UHJvcGVydGllcyBwcm9wcyA9IG5ldyBQcm9wZXJ0aWVzKCk7CnByb3BzLnB1dCgiYm9vdHN0cmFwLnNlcnZlcnMiLCAibG9jYWxob3N0OjkwOTIiKTsKcHJvcHMucHV0KCJrZXkuc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLmthZmthLmNvbW1vbi5zZXJpYWxpemF0aW9uLlN0cmluZ1NlcmlhbGl6ZXIiKTsKcHJvcHMucHV0KCJ2YWx1ZS5zZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUua2Fma2EuY29tbW9uLnNlcmlhbGl6YXRpb24uU3RyaW5nU2VyaWFsaXplciIpOwpwcm9wcy5wdXQoInJldHJpZXMiLCAzKTsgLy8gTnVtYmVyIG9mIHJldHJpZXMKcHJvcHMucHV0KCJyZXRyeS5iYWNrb2ZmLm1zIiwgMTAwKTsgLy8gQmFja29mZiB0aW1lIGJldHdlZW4gcmV0cmllcwoKUHJvZHVjZXI8U3RyaW5nLCBTdHJpbmc+IHByb2R1Y2VyID0gbmV3IEthZmthUHJvZHVjZXI8Pihwcm9wcyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;retries&quot;, 3); // Number of retries
+props.put(&quot;retry.backoff.ms&quot;, 100); // Backoff time between retries
+
+Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);</pre></div><div class='content'></div><h2>Consumer Retries</h2>
+<div class='content'><p>Consumers can implement custom retry logic to handle transient errors during message processing.</p>
+<h4>Example: Implementing Consumer Retries</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEthZmthQ29uc3VtZXJXaXRoUmV0cmllcyB7CiAgICBwcml2YXRlIHN0YXRpYyBmaW5hbCBpbnQgTUFYX1JFVFJJRVMgPSAzOwoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBQcm9wZXJ0aWVzIHByb3BzID0gbmV3IFByb3BlcnRpZXMoKTsKICAgICAgICBwcm9wcy5wdXQoImJvb3RzdHJhcC5zZXJ2ZXJzIiwgImxvY2FsaG9zdDo5MDkyIik7CiAgICAgICAgcHJvcHMucHV0KCJncm91cC5pZCIsICJteS1ncm91cCIpOwogICAgICAgIHByb3BzLnB1dCgia2V5LmRlc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLmthZmthLmNvbW1vbi5zZXJpYWxpemF0aW9uLlN0cmluZ0Rlc2VyaWFsaXplciIpOwogICAgICAgIHByb3BzLnB1dCgidmFsdWUuZGVzZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUua2Fma2EuY29tbW9uLnNlcmlhbGl6YXRpb24uU3RyaW5nRGVzZXJpYWxpemVyIik7CgogICAgICAgIENvbnN1bWVyPFN0cmluZywgU3RyaW5nPiBjb25zdW1lciA9IG5ldyBLYWZrYUNvbnN1bWVyPD4ocHJvcHMpOwogICAgICAgIGNvbnN1bWVyLnN1YnNjcmliZShDb2xsZWN0aW9ucy5zaW5nbGV0b25MaXN0KCJteS10b3BpYyIpKTsKCiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgd2hpbGUgKHRydWUpIHsKICAgICAgICAgICAgICAgIENvbnN1bWVyUmVjb3JkczxTdHJpbmcsIFN0cmluZz4gcmVjb3JkcyA9IGNvbnN1bWVyLnBvbGwoRHVyYXRpb24ub2ZNaWxsaXMoMTAwKSk7CiAgICAgICAgICAgICAgICBmb3IgKENvbnN1bWVyUmVjb3JkPFN0cmluZywgU3RyaW5nPiByZWNvcmQgOiByZWNvcmRzKSB7CiAgICAgICAgICAgICAgICAgICAgYm9vbGVhbiBzdWNjZXNzID0gZmFsc2U7CiAgICAgICAgICAgICAgICAgICAgaW50IGF0dGVtcHQgPSAwOwogICAgICAgICAgICAgICAgICAgIHdoaWxlICghc3VjY2VzcyAmJiBhdHRlbXB0IDwgTUFYX1JFVFJJRVMpIHsKICAgICAgICAgICAgICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRmKCJDb25zdW1lZCByZWNvcmQgd2l0aCBrZXkgJXMgYW5kIHZhbHVlICVzJW4iLCByZWNvcmQua2V5KCksIHJlY29yZC52YWx1ZSgpKTsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN1Y2Nlc3MgPSB0cnVlOwogICAgICAgICAgICAgICAgICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgYXR0ZW1wdCsrOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgU3lzdGVtLmVyci5wcmludGYoIkVycm9yIHByb2Nlc3NpbmcgcmVjb3JkIHdpdGgga2V5ICVzIGFuZCB2YWx1ZSAlcywgYXR0ZW1wdCAlZCVuIiwgcmVjb3JkLmtleSgpLCByZWNvcmQudmFsdWUoKSwgYXR0ZW1wdCk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgdHJ5IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaHJlYWQuc2xlZXAoMTAwKTsgLy8gQmFja29mZiBiZWZvcmUgcmV0cnlpbmcKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0gY2F0Y2ggKEludGVycnVwdGVkRXhjZXB0aW9uIGllKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5pbnRlcnJ1cHQoKTsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICBpZiAoIXN1Y2Nlc3MpIHsKICAgICAgICAgICAgICAgICAgICAgICAgU3lzdGVtLmVyci5wcmludGYoIkZhaWxlZCB0byBwcm9jZXNzIHJlY29yZCB3aXRoIGtleSAlcyBhbmQgdmFsdWUgJXMgYWZ0ZXIgJWQgYXR0ZW1wdHMlbiIsIHJlY29yZC5rZXkoKSwgcmVjb3JkLnZhbHVlKCksIE1BWF9SRVRSSUVTKTsKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChXYWtldXBFeGNlcHRpb24gZSkgewogICAgICAgICAgICAvLyBJZ25vcmUgZXhjZXB0aW9uIGlmIGNsb3NpbmcKICAgICAgICB9IGZpbmFsbHkgewogICAgICAgICAgICBjb25zdW1lci5jbG9zZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class KafkaConsumerWithRetries {
+    private static final int MAX_RETRIES = 3;
+
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;group.id&quot;, &quot;my-group&quot;);
+        props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+        Consumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+        consumer.subscribe(Collections.singletonList(&quot;my-topic&quot;));
+
+        try {
+            while (true) {
+                ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord&lt;String, String&gt; record : records) {
+                    boolean success = false;
+                    int attempt = 0;
+                    while (!success &amp;&amp; attempt &lt; MAX_RETRIES) {
+                        try {
+                            System.out.printf(&quot;Consumed record with key %s and value %s%n&quot;, record.key(), record.value());
+                            success = true;
+                        } catch (Exception e) {
+                            attempt++;
+                            System.err.printf(&quot;Error processing record with key %s and value %s, attempt %d%n&quot;, record.key(), record.value(), attempt);
+                            e.printStackTrace();
+                            try {
+                                Thread.sleep(100); // Backoff before retrying
+                            } catch (InterruptedException ie) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
+                    if (!success) {
+                        System.err.printf(&quot;Failed to process record with key %s and value %s after %d attempts%n&quot;, record.key(), record.value(), MAX_RETRIES);
+                    }
+                }
+            }
+        } catch (WakeupException e) {
+            // Ignore exception if closing
+        } finally {
+            consumer.close();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Advanced Techniques</h1>
+<div class='content'><p>Advanced error handling and retry techniques can further enhance the robustness of your Kafka applications.</p>
+</div><h2>Idempotent Producer</h2>
+<div class='content'><p>An idempotent producer ensures that messages are not duplicated, even if retries occur.</p>
+<h4>Example: Configuring Idempotent Producer</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UHJvcGVydGllcyBwcm9wcyA9IG5ldyBQcm9wZXJ0aWVzKCk7CnByb3BzLnB1dCgiYm9vdHN0cmFwLnNlcnZlcnMiLCAibG9jYWxob3N0OjkwOTIiKTsKcHJvcHMucHV0KCJrZXkuc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLmthZmthLmNvbW1vbi5zZXJpYWxpemF0aW9uLlN0cmluZ1NlcmlhbGl6ZXIiKTsKcHJvcHMucHV0KCJ2YWx1ZS5zZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUua2Fma2EuY29tbW9uLnNlcmlhbGl6YXRpb24uU3RyaW5nU2VyaWFsaXplciIpOwpwcm9wcy5wdXQoImVuYWJsZS5pZGVtcG90ZW5jZSIsICJ0cnVlIik7IC8vIEVuYWJsZSBpZGVtcG90ZW5jZQoKUHJvZHVjZXI8U3RyaW5nLCBTdHJpbmc+IHByb2R1Y2VyID0gbmV3IEthZmthUHJvZHVjZXI8Pihwcm9wcyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;enable.idempotence&quot;, &quot;true&quot;); // Enable idempotence
+
+Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);</pre></div><div class='content'></div><h2>Dead Letter Queue (DLQ)</h2>
+<div class='content'><p>A Dead Letter Queue is a special Kafka topic where messages that cannot be processed after a certain number of retries are sent for further analysis.</p>
+<h4>Example: Sending to DLQ</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEthZmthQ29uc3VtZXJXaXRoRExRIHsKICAgIHByaXZhdGUgc3RhdGljIGZpbmFsIGludCBNQVhfUkVUUklFUyA9IDM7CgogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIFByb3BlcnRpZXMgcHJvcHMgPSBuZXcgUHJvcGVydGllcygpOwogICAgICAgIHByb3BzLnB1dCgiYm9vdHN0cmFwLnNlcnZlcnMiLCAibG9jYWxob3N0OjkwOTIiKTsKICAgICAgICBwcm9wcy5wdXQoImdyb3VwLmlkIiwgIm15LWdyb3VwIik7CiAgICAgICAgcHJvcHMucHV0KCJrZXkuZGVzZXJpYWxpemVyIiwgIm9yZy5hcGFjaGUua2Fma2EuY29tbW9uLnNlcmlhbGl6YXRpb24uU3RyaW5nRGVzZXJpYWxpemVyIik7CiAgICAgICAgcHJvcHMucHV0KCJ2YWx1ZS5kZXNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VyaWFsaXphdGlvbi5TdHJpbmdEZXNlcmlhbGl6ZXIiKTsKCiAgICAgICAgQ29uc3VtZXI8U3RyaW5nLCBTdHJpbmc+IGNvbnN1bWVyID0gbmV3IEthZmthQ29uc3VtZXI8Pihwcm9wcyk7CiAgICAgICAgUHJvZHVjZXI8U3RyaW5nLCBTdHJpbmc+IHByb2R1Y2VyID0gbmV3IEthZmthUHJvZHVjZXI8Pihwcm9wcyk7CiAgICAgICAgY29uc3VtZXIuc3Vic2NyaWJlKENvbGxlY3Rpb25zLnNpbmdsZXRvbkxpc3QoIm15LXRvcGljIikpOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB3aGlsZSAodHJ1ZSkgewogICAgICAgICAgICAgICAgQ29uc3VtZXJSZWNvcmRzPFN0cmluZywgU3RyaW5nPiByZWNvcmRzID0gY29uc3VtZXIucG9sbChEdXJhdGlvbi5vZk1pbGxpcygxMDApKTsKICAgICAgICAgICAgICAgIGZvciAoQ29uc3VtZXJSZWNvcmQ8U3RyaW5nLCBTdHJpbmc+IHJlY29yZCA6IHJlY29yZHMpIHsKICAgICAgICAgICAgICAgICAgICBib29sZWFuIHN1Y2Nlc3MgPSBmYWxzZTsKICAgICAgICAgICAgICAgICAgICBpbnQgYXR0ZW1wdCA9IDA7CiAgICAgICAgICAgICAgICAgICAgd2hpbGUgKCFzdWNjZXNzICYmIGF0dGVtcHQgPCBNQVhfUkVUUklFUykgewogICAgICAgICAgICAgICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGYoIkNvbnN1bWVkIHJlY29yZCB3aXRoIGtleSAlcyBhbmQgdmFsdWUgJXMlbiIsIHJlY29yZC5rZXkoKSwgcmVjb3JkLnZhbHVlKCkpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgc3VjY2VzcyA9IHRydWU7CiAgICAgICAgICAgICAgICAgICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBhdHRlbXB0Kys7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50ZigiRXJyb3IgcHJvY2Vzc2luZyByZWNvcmQgd2l0aCBrZXkgJXMgYW5kIHZhbHVlICVzLCBhdHRlbXB0ICVkJW4iLCByZWNvcmQua2V5KCksIHJlY29yZC52YWx1ZSgpLCBhdHRlbXB0KTsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFRocmVhZC5zbGVlcCgxMDApOyAvLyBCYWNrb2ZmIGJlZm9yZSByZXRyeWluZwogICAgICAgICAgICAgICAgICAgICAgICAgICAgfSBjYXRjaCAoSW50ZXJydXB0ZWRFeGNlcHRpb24gaWUpIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBUaHJlYWQuY3VycmVudFRocmVhZCgpLmludGVycnVwdCgpOwogICAgICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIGlmICghc3VjY2VzcykgewogICAgICAgICAgICAgICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50ZigiRmFpbGVkIHRvIHByb2Nlc3MgcmVjb3JkIHdpdGgga2V5ICVzIGFuZCB2YWx1ZSAlcyBhZnRlciAlZCBhdHRlbXB0cy4gU2VuZGluZyB0byBETFEuJW4iLCByZWNvcmQua2V5KCksIHJlY29yZC52YWx1ZSgpLCBNQVhfUkVUUklFUyk7CiAgICAgICAgICAgICAgICAgICAgICAgIFByb2R1Y2VyUmVjb3JkPFN0cmluZywgU3RyaW5nPiBkbHFSZWNvcmQgPSBuZXcgUHJvZHVjZXJSZWNvcmQ8PigiZGxxLXRvcGljIiwgcmVjb3JkLmtleSgpLCByZWNvcmQudmFsdWUoKSk7CiAgICAgICAgICAgICAgICAgICAgICAgIHByb2R1Y2VyLnNlbmQoZGxxUmVjb3JkKTsKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChXYWtldXBFeGNlcHRpb24gZSkgewogICAgICAgICAgICAvLyBJZ25vcmUgZXhjZXB0aW9uIGlmIGNsb3NpbmcKICAgICAgICB9IGZpbmFsbHkgewogICAgICAgICAgICBjb25zdW1lci5jbG9zZSgpOwogICAgICAgICAgICBwcm9kdWNlci5jbG9zZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class KafkaConsumerWithDLQ {
+    private static final int MAX_RETRIES = 3;
+
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;group.id&quot;, &quot;my-group&quot;);
+        props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+        Consumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+        Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+        consumer.subscribe(Collections.singletonList(&quot;my-topic&quot;));
+
+        try {
+            while (true) {
+                ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(100));
+                for (ConsumerRecord&lt;String, String&gt; record : records) {
+                    boolean success = false;
+                    int attempt = 0;
+                    while (!success &amp;&amp; attempt &lt; MAX_RETRIES) {
+                        try {
+                            System.out.printf(&quot;Consumed record with key %s and value %s%n&quot;, record.key(), record.value());
+                            success = true;
+                        } catch (Exception e) {
+                            attempt++;
+                            System.err.printf(&quot;Error processing record with key %s and value %s, attempt %d%n&quot;, record.key(), record.value(), attempt);
+                            e.printStackTrace();
+                            try {
+                                Thread.sleep(100); // Backoff before retrying
+                            } catch (InterruptedException ie) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+                    }
+                    if (!success) {
+                        System.err.printf(&quot;Failed to process record with key %s and value %s after %d attempts. Sending to DLQ.%n&quot;, record.key(), record.value(), MAX_RETRIES);
+                        ProducerRecord&lt;String, String&gt; dlqRecord = new ProducerRecord&lt;&gt;(&quot;dlq-topic&quot;, record.key(), record.value());
+                        producer.send(dlqRecord);
+                    }
+                }
+            }
+        } catch (WakeupException e) {
+            // Ignore exception if closing
+        } finally {
+            consumer.close();
+            producer.close();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Error handling and retries are essential components of building robust Kafka applications. By understanding and implementing the strategies discussed in this section, you can ensure that your applications can handle transient errors gracefully and maintain data integrity. Whether you are a beginner or an advanced user, mastering these techniques will significantly enhance the reliability of your Kafka-based systems.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='producer-configuration'>&#x25C4;Producer Configuration</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Error Handling and Retries</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='consumer-api-overview'>Consumer API Overview &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

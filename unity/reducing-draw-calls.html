@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reducing Draw Calls in Unity</title>
+
+    <link rel="alternate" href="https://campusempresa.com/unity/reducing-draw-calls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/unity/reducing-draw-calls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/unity/reducing-draw-calls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/unity/reducing-draw-calls" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/unity/reducing-draw-calls" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='memory-management'>&#x25C4;Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Reducing Draw Calls in Unity</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-scripts'>Optimizing Scripts &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Reducing draw calls is a crucial optimization technique in Unity to improve the performance of your game. This topic will guide you from the basics to advanced strategies for minimizing draw calls.</p>
+</div><h1>What are Draw Calls?</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A draw call is a command sent to the GPU to draw a set of vertices. Each draw call involves CPU overhead.</li>
+<li><strong>Impact on Performance</strong>: High numbers of draw calls can significantly reduce the frame rate of your game, especially on mobile devices.</li>
+</ul>
+</div><h1>Basic Strategies to Reduce Draw Calls</h1>
+<div class='content'></div><h2>Combining Meshes</h2>
+<div class='content'><ul>
+<li><strong>Static Batching</strong>: Combines static (non-moving) objects into a single mesh at build time.
+<pre><code class="language-csharp">// Example: Marking a GameObject as static for batching
+gameObject.isStatic = true;
+</code></pre>
+</li>
+<li><strong>Dynamic Batching</strong>: Combines small dynamic (moving) objects into a single mesh at runtime.
+<pre><code class="language-csharp">// Ensure objects are small enough to be batched dynamically
+// Unity handles this automatically if the conditions are met
+</code></pre>
+</li>
+</ul>
+</div><h2>Using Efficient Materials</h2>
+<div class='content'><ul>
+<li><strong>Material Instancing</strong>: Use the same material for multiple objects to reduce draw calls.
+<pre><code class="language-csharp">// Example: Assigning the same material to multiple objects
+Renderer renderer1 = object1.GetComponent&lt;Renderer&gt;();
+Renderer renderer2 = object2.GetComponent&lt;Renderer&gt;();
+renderer2.material = renderer1.material;
+</code></pre>
+</li>
+<li><strong>Texture Atlases</strong>: Combine multiple textures into a single texture to reduce material switches.
+<pre><code class="language-csharp">// Example: Using a texture atlas
+// Create a texture atlas in an image editing software and apply it to your materials
+</code></pre>
+</li>
+</ul>
+</div><h1>Intermediate Strategies to Reduce Draw Calls</h1>
+<div class='content'></div><h2>Level of Detail (LOD)</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Use different models with varying levels of detail based on the camera distance.
+<pre><code class="language-csharp">// Example: Setting up LOD in Unity
+LODGroup lodGroup = gameObject.AddComponent&lt;LODGroup&gt;();
+LOD[] lods = new LOD[3];
+lods[0] = new LOD(0.6f, new Renderer[] { highDetailRenderer });
+lods[1] = new LOD(0.3f, new Renderer[] { mediumDetailRenderer });
+lods[2] = new LOD(0.1f, new Renderer[] { lowDetailRenderer });
+lodGroup.SetLODs(lods);
+lodGroup.RecalculateBounds();
+</code></pre>
+</li>
+</ul>
+</div><h2>Occlusion Culling</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Prevents rendering objects that are not visible to the camera.
+<pre><code class="language-csharp">// Example: Setting up occlusion culling in Unity
+// Enable occlusion culling in the Camera component settings
+Camera.main.useOcclusionCulling = true;
+</code></pre>
+</li>
+</ul>
+</div><h1>Advanced Strategies to Reduce Draw Calls</h1>
+<div class='content'></div><h2>GPU Instancing</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Draws many instances of the same mesh with a single draw call.
+<pre><code class="language-csharp">// Example: Enabling GPU instancing on a material
+material.enableInstancing = true;
+</code></pre>
+</li>
+<li><strong>Custom Shaders</strong>: Write shaders that support instancing.
+<pre><code class="language-glsl">// Example: Basic instancing shader
+Shader &quot;Custom/InstancingShader&quot; {
+    Properties {
+        _Color (&quot;Color&quot;, Color) = (1,1,1,1)
+    }
+    SubShader {
+        Pass {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include &quot;UnityCG.cginc&quot;
+
+            struct appdata {
+                float4 vertex : POSITION;
+                UNITY_INSTANCE_ID
+            };
+
+            struct v2f {
+                float4 pos : SV_POSITION;
+            };
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_INSTANCING_BUFFER_END(Props)
+
+            v2f vert (appdata v) {
+                v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                o.pos = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target {
+                return fixed4(1,1,1,1);
+            }
+            ENDCG
+        }
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Command Buffers</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Allows you to control the rendering pipeline more directly.
+<pre><code class="language-csharp">// Example: Using command buffers
+CommandBuffer commandBuffer = new CommandBuffer();
+commandBuffer.DrawRenderer(renderer, material);
+Camera.main.AddCommandBuffer(CameraEvent.AfterForwardOpaque, commandBuffer);
+</code></pre>
+</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>Reducing draw calls is essential for optimizing the performance of your Unity game. By combining meshes, using efficient materials, implementing LOD, and leveraging advanced techniques like GPU instancing and command buffers, you can significantly reduce the number of draw calls and improve your game's frame rate. Always profile your game to identify bottlenecks and apply these strategies where they will have the most impact.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='memory-management'>&#x25C4;Memory Management</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Reducing Draw Calls in Unity</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-scripts'>Optimizing Scripts &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

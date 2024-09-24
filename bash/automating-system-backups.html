@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating System Backups</title>
+
+    <link rel="alternate" href="https://campusempresa.com/bash/automating-system-backups" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/bash/automating-system-backups" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/bash/automating-system-backups" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/bash/automating-system-backups" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/bash/automating-system-backups" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='security-considerations'>&#x25C4;Security Considerations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Automating System Backups</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='log-file-analysis'>Log File Analysis &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Automating system backups is a crucial task for ensuring data integrity and availability. In this section, we will explore how to use Bash scripts to automate the process of backing up files and directories. This will include creating simple backup scripts, scheduling backups using cron jobs, and managing backup files.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Backup</strong>: A copy of data stored separately from the original to prevent data loss.</li>
+<li><strong>Automation</strong>: Using scripts and scheduled tasks to perform backups without manual intervention.</li>
+<li><strong>Cron Jobs</strong>: Scheduled tasks in Unix-like operating systems that run scripts at specified times.</li>
+</ul>
+</div><h1>Creating a Simple Backup Script</h1>
+<div class='content'><p>To start, let's create a basic Bash script that copies files from one directory to another.</p>
+</div><h2>Example Script</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRGVmaW5lIHNvdXJjZSBhbmQgZGVzdGluYXRpb24gZGlyZWN0b3JpZXMKU09VUkNFX0RJUj0iL3BhdGgvdG8vc291cmNlIgpERVNUX0RJUj0iL3BhdGgvdG8vZGVzdGluYXRpb24iCgojIENyZWF0ZSBhIHRpbWVzdGFtcApUSU1FU1RBTVA9JChkYXRlICsiJVklbSVkJUglTSVTIikKCiMgQ3JlYXRlIGEgYmFja3VwIGRpcmVjdG9yeSB3aXRoIHRoZSB0aW1lc3RhbXAKQkFDS1VQX0RJUj0iJHtERVNUX0RJUn0vYmFja3VwXyR7VElNRVNUQU1QfSIKbWtkaXIgLXAgIiRCQUNLVVBfRElSIgoKIyBDb3B5IGZpbGVzIGZyb20gc291cmNlIHRvIGJhY2t1cCBkaXJlY3RvcnkKY3AgLXIgIiRTT1VSQ0VfRElSIi8qICIkQkFDS1VQX0RJUiIKCiMgUHJpbnQgYSBtZXNzYWdlIGluZGljYXRpbmcgdGhlIGJhY2t1cCBpcyBjb21wbGV0ZQplY2hvICJCYWNrdXAgY29tcGxldGVkIHN1Y2Nlc3NmdWxseSBhdCAkVElNRVNUQU1QIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Define source and destination directories
+SOURCE_DIR=&quot;/path/to/source&quot;
+DEST_DIR=&quot;/path/to/destination&quot;
+
+# Create a timestamp
+TIMESTAMP=$(date +&quot;%Y%m%d%H%M%S&quot;)
+
+# Create a backup directory with the timestamp
+BACKUP_DIR=&quot;${DEST_DIR}/backup_${TIMESTAMP}&quot;
+mkdir -p &quot;$BACKUP_DIR&quot;
+
+# Copy files from source to backup directory
+cp -r &quot;$SOURCE_DIR&quot;/* &quot;$BACKUP_DIR&quot;
+
+# Print a message indicating the backup is complete
+echo &quot;Backup completed successfully at $TIMESTAMP&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>#!/bin/bash</code>: Shebang line to specify the script interpreter.</li>
+<li><code>SOURCE_DIR</code> and <code>DEST_DIR</code>: Variables to store the paths of the source and destination directories.</li>
+<li><code>TIMESTAMP</code>: Generates a unique timestamp for each backup.</li>
+<li><code>BACKUP_DIR</code>: Combines the destination directory with the timestamp to create a unique backup directory.</li>
+<li><code>mkdir -p &quot;$BACKUP_DIR&quot;</code>: Creates the backup directory.</li>
+<li><code>cp -r &quot;$SOURCE_DIR&quot;/* &quot;$BACKUP_DIR&quot;</code>: Copies all files from the source directory to the backup directory.</li>
+<li><code>echo &quot;Backup completed successfully at $TIMESTAMP&quot;</code>: Prints a confirmation message.</li>
+</ul>
+</div><h1>Scheduling Backups with Cron Jobs</h1>
+<div class='content'><p>To automate the execution of our backup script, we can use cron jobs.</p>
+</div><h2>Setting Up a Cron Job</h2>
+<div class='content'><ol>
+<li>Open the crontab editor:
+<pre><code class="language-bash">crontab -e
+</code></pre>
+</li>
+<li>Add a new cron job to run the backup script daily at 2 AM:
+<pre><code class="language-bash">0 2 * * * /path/to/backup_script.sh
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>0 2 * * *</code>: Cron expression to run the script at 2 AM every day.</li>
+<li><code>/path/to/backup_script.sh</code>: Path to the backup script.</li>
+</ul>
+</div><h1>Managing Backup Files</h1>
+<div class='content'><p>Over time, backup files can accumulate and consume significant disk space. It's important to manage these files by deleting old backups.</p>
+</div><h2>Example Script with Cleanup</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRGVmaW5lIHNvdXJjZSBhbmQgZGVzdGluYXRpb24gZGlyZWN0b3JpZXMKU09VUkNFX0RJUj0iL3BhdGgvdG8vc291cmNlIgpERVNUX0RJUj0iL3BhdGgvdG8vZGVzdGluYXRpb24iCgojIENyZWF0ZSBhIHRpbWVzdGFtcApUSU1FU1RBTVA9JChkYXRlICsiJVklbSVkJUglTSVTIikKCiMgQ3JlYXRlIGEgYmFja3VwIGRpcmVjdG9yeSB3aXRoIHRoZSB0aW1lc3RhbXAKQkFDS1VQX0RJUj0iJHtERVNUX0RJUn0vYmFja3VwXyR7VElNRVNUQU1QfSIKbWtkaXIgLXAgIiRCQUNLVVBfRElSIgoKIyBDb3B5IGZpbGVzIGZyb20gc291cmNlIHRvIGJhY2t1cCBkaXJlY3RvcnkKY3AgLXIgIiRTT1VSQ0VfRElSIi8qICIkQkFDS1VQX0RJUiIKCiMgRmluZCBhbmQgZGVsZXRlIGJhY2t1cHMgb2xkZXIgdGhhbiA3IGRheXMKZmluZCAiJERFU1RfRElSIiAtdHlwZSBkIC1uYW1lICJiYWNrdXBfKiIgLW10aW1lICs3IC1leGVjIHJtIC1yZiB7fSBcOwoKIyBQcmludCBhIG1lc3NhZ2UgaW5kaWNhdGluZyB0aGUgYmFja3VwIGlzIGNvbXBsZXRlCmVjaG8gIkJhY2t1cCBjb21wbGV0ZWQgc3VjY2Vzc2Z1bGx5IGF0ICRUSU1FU1RBTVAi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Define source and destination directories
+SOURCE_DIR=&quot;/path/to/source&quot;
+DEST_DIR=&quot;/path/to/destination&quot;
+
+# Create a timestamp
+TIMESTAMP=$(date +&quot;%Y%m%d%H%M%S&quot;)
+
+# Create a backup directory with the timestamp
+BACKUP_DIR=&quot;${DEST_DIR}/backup_${TIMESTAMP}&quot;
+mkdir -p &quot;$BACKUP_DIR&quot;
+
+# Copy files from source to backup directory
+cp -r &quot;$SOURCE_DIR&quot;/* &quot;$BACKUP_DIR&quot;
+
+# Find and delete backups older than 7 days
+find &quot;$DEST_DIR&quot; -type d -name &quot;backup_*&quot; -mtime +7 -exec rm -rf {} \;
+
+# Print a message indicating the backup is complete
+echo &quot;Backup completed successfully at $TIMESTAMP&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>find &quot;$DEST_DIR&quot; -type d -name &quot;backup_*&quot; -mtime +7 -exec rm -rf {} \;</code>: Finds and deletes directories in the destination directory that are older than 7 days.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Automating system backups using Bash scripts and cron jobs ensures that your data is regularly backed up without manual intervention. By creating simple scripts, scheduling them with cron, and managing old backups, you can maintain a reliable backup system. This not only saves time but also provides peace of mind knowing that your data is safe.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='security-considerations'>&#x25C4;Security Considerations</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Automating System Backups</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='log-file-analysis'>Log File Analysis &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

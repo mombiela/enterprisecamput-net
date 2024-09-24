@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine Learning Pipeline on Google Cloud Platform (GCP)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/gcp/machine-learning-pipeline" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/gcp/machine-learning-pipeline" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/gcp/machine-learning-pipeline" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/gcp/machine-learning-pipeline" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/gcp/machine-learning-pipeline" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-warehousing-bigquery'>&#x25C4;Data Warehousing with BigQuery</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Machine Learning Pipeline on Google Cloud Platform (GCP)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='disaster-recovery-backup'>Disaster Recovery and Backup &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Machine Learning Pipelines</h1>
+<div class='content'><ul>
+<li>Definition: A machine learning pipeline is a sequence of data processing steps, model training, and evaluation stages that automate the workflow of building and deploying machine learning models.</li>
+<li>Importance: Pipelines ensure reproducibility, scalability, and efficiency in machine learning projects.</li>
+</ul>
+</div><h1>Setting Up Your GCP Environment</h1>
+<div class='content'><ul>
+<li><strong>Creating a GCP Account</strong>: Sign up for a Google Cloud account and set up billing.</li>
+<li><strong>Enabling APIs</strong>: Enable necessary APIs such as Compute Engine, Cloud Storage, and AI Platform.</li>
+<li><strong>Installing Google Cloud SDK</strong>: Install and configure the Google Cloud SDK on your local machine.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbnN0YWxsIHRoZSBHb29nbGUgQ2xvdWQgU0RLCmN1cmwgaHR0cHM6Ly9zZGsuY2xvdWQuZ29vZ2xlLmNvbSB8IGJhc2gKCiMgSW5pdGlhbGl6ZSB0aGUgU0RLCmdjbG91ZCBpbml0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Install the Google Cloud SDK
+curl https://sdk.cloud.google.com | bash
+
+# Initialize the SDK
+gcloud init</pre></div><div class='content'></div><h1>Data Ingestion and Preprocessing</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Data Storage Options</strong>:</p>
+<ul>
+<li>Cloud Storage: For storing large datasets.</li>
+<li>BigQuery: For handling structured data and running SQL queries.</li>
+</ul>
+</li>
+<li>
+<p><strong>Loading Data</strong>:</p>
+<ul>
+<li>Example of loading data from Cloud Storage:
+<pre><code class="language-python">from google.cloud import storage
+
+def download_blob(bucket_name, source_blob_name, destination_file_name):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(source_blob_name)
+    blob.download_to_filename(destination_file_name)
+    print(f&quot;Downloaded {source_blob_name} to {destination_file_name}.&quot;)
+
+download_blob('my-bucket', 'data.csv', 'local-data.csv')
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Preprocessing</strong>:</p>
+<ul>
+<li>Using Pandas for data cleaning and transformation:
+<pre><code class="language-python">import pandas as pd
+
+# Load data
+df = pd.read_csv('local-data.csv')
+
+# Data cleaning
+df.dropna(inplace=True)
+
+# Feature engineering
+df['new_feature'] = df['existing_feature'] * 2
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Model Training</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Choosing a Machine Learning Framework</strong>:</p>
+<ul>
+<li>TensorFlow</li>
+<li>Scikit-learn</li>
+</ul>
+</li>
+<li>
+<p><strong>Training on AI Platform</strong>:</p>
+<ul>
+<li>Example of submitting a training job using TensorFlow:
+<pre><code class="language-bash">gcloud ai-platform jobs submit training my_job <br>        --region=us-central1 <br>        --module-name=trainer.task <br>        --package-path=trainer/ <br>        --job-dir=gs://my-bucket/job-dir <br>        --runtime-version=2.3 <br>        --python-version=3.7
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Distributed Training</strong>: Leveraging multiple GPUs or TPUs for faster training.</p>
+</li>
+</ul>
+</div><h1>Model Evaluation</h1>
+<div class='content'><ul>
+<li><strong>Evaluation Metrics</strong>: Accuracy, Precision, Recall, F1 Score.</li>
+<li><strong>Using AI Platform for Evaluation</strong>:
+<ul>
+<li>Example of evaluating a model:
+<pre><code class="language-python">from google.cloud import aiplatform
+
+model = aiplatform.Model('projects/my-project/models/my-model')
+evaluation = model.evaluate(
+    test_data='gs://my-bucket/test-data.csv',
+    metrics=['accuracy', 'precision', 'recall']
+)
+print(evaluation)
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Model Deployment</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Deploying on AI Platform</strong>:</p>
+<ul>
+<li>Example of deploying a trained model:
+<pre><code class="language-bash">gcloud ai-platform models create my_model <br>        --regions=us-central1
+
+gcloud ai-platform versions create v1 <br>        --model=my_model <br>        --origin=gs://my-bucket/model-dir <br>        --runtime-version=2.3 <br>        --python-version=3.7
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Serving Predictions</strong>:</p>
+<ul>
+<li>Example of making predictions using the deployed model:
+<pre><code class="language-python">from google.cloud import aiplatform
+
+model = aiplatform.Model('projects/my-project/models/my_model/versions/v1')
+predictions = model.predict(instances=[[5.1, 3.5, 1.4, 0.2]])
+print(predictions)
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoring and Maintenance</h1>
+<div class='content'><ul>
+<li><strong>Monitoring Model Performance</strong>: Using AI Platform's monitoring tools to track model performance over time.</li>
+<li><strong>Updating Models</strong>: Retraining and redeploying models as new data becomes available.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this topic, we covered the essential steps to create a machine learning pipeline on Google Cloud Platform, from setting up the environment to deploying and monitoring models. By following these steps, you can ensure that your machine learning workflows are efficient, scalable, and reproducible.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-warehousing-bigquery'>&#x25C4;Data Warehousing with BigQuery</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Machine Learning Pipeline on Google Cloud Platform (GCP)</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='disaster-recovery-backup'>Disaster Recovery and Backup &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

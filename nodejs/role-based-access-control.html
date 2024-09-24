@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Access Control in Node.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/role-based-access-control" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/role-based-access-control" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/role-based-access-control" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nodejs/role-based-access-control" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nodejs/role-based-access-control" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jwt'>&#x25C4;JWT (JSON Web Tokens)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control in Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-websockets'>Introduction to WebSockets &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Role-Based Access Control (RBAC) is a method of regulating access to resources based on the roles of individual users within an organization. This topic will guide you through implementing RBAC in a Node.js application, from basic concepts to advanced techniques.</p>
+</div><h1>Introduction to Role-Based Access Control</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: RBAC is a policy-neutral access control mechanism defined around roles and privileges.</li>
+<li><strong>Purpose</strong>: To simplify the management of permissions by assigning roles to users and associating permissions with these roles.</li>
+<li><strong>Benefits</strong>:
+<ul>
+<li>Simplifies the management of user permissions.</li>
+<li>Enhances security by ensuring users have only the permissions they need.</li>
+<li>Scales well with the growth of the application.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up a Node.js Project</h1>
+<div class='content'><p>Before diving into RBAC, let's set up a basic Node.js project.</p>
+<ol>
+<li>
+<p><strong>Initialize a new Node.js project</strong>:</p>
+<pre><code class="language-bash">mkdir rbac-example
+cd rbac-example
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Install necessary packages</strong>:</p>
+<pre><code class="language-bash">npm install express jsonwebtoken bcryptjs
+</code></pre>
+</li>
+<li>
+<p><strong>Create the project structure</strong>:</p>
+<pre><code class="language-bash">mkdir src
+touch src/app.js src/routes.js src/controllers.js src/middleware.js
+</code></pre>
+</li>
+</ol>
+</div><h1>Basic Concepts of RBAC</h1>
+<div class='content'></div><h2>Roles and Permissions</h2>
+<div class='content'><ul>
+<li><strong>Roles</strong>: A role is a collection of permissions. Examples include <code>admin</code>, <code>editor</code>, and <code>viewer</code>.</li>
+<li><strong>Permissions</strong>: Permissions are specific access rights to resources, such as <code>read</code>, <code>write</code>, and <code>delete</code>.</li>
+</ul>
+</div><h2>Example Role-Permission Mapping</h2>
+<div class='content'><p>| Role   | Permissions         |
+|--------|----------------------|
+| Admin  | read, write, delete  |
+| Editor | read, write          |
+| Viewer | read                 |</p>
+</div><h1>Implementing RBAC in Node.js</h1>
+<div class='content'></div><h2>Step 1: Define Roles and Permissions</h2>
+<div class='content'><p>Create a file <code>src/roles.js</code> to define roles and their associated permissions.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm9sZXMgPSB7CiAgICBhZG1pbjogWydyZWFkJywgJ3dyaXRlJywgJ2RlbGV0ZSddLAogICAgZWRpdG9yOiBbJ3JlYWQnLCAnd3JpdGUnXSwKICAgIHZpZXdlcjogWydyZWFkJ10KfTsKCm1vZHVsZS5leHBvcnRzID0gcm9sZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const roles = {
+    admin: ['read', 'write', 'delete'],
+    editor: ['read', 'write'],
+    viewer: ['read']
+};
+
+module.exports = roles;</pre></div><div class='content'></div><h2>Step 2: Middleware for Role Verification</h2>
+<div class='content'><p>Create middleware to verify if a user has the required role to access a resource.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21pZGRsZXdhcmUuanMKY29uc3Qgcm9sZXMgPSByZXF1aXJlKCcuL3JvbGVzJyk7CgpmdW5jdGlvbiBhdXRob3JpemUocmVxdWlyZWRSb2xlKSB7CiAgICByZXR1cm4gKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgICAgICAgY29uc3QgdXNlclJvbGUgPSByZXEudXNlci5yb2xlOyAvLyBBc3N1bWluZyByZXEudXNlciBpcyBwb3B1bGF0ZWQgYnkgYXV0aGVudGljYXRpb24gbWlkZGxld2FyZQogICAgICAgIGlmIChyb2xlc1t1c2VyUm9sZV0gJiYgcm9sZXNbdXNlclJvbGVdLmluY2x1ZGVzKHJlcXVpcmVkUm9sZSkpIHsKICAgICAgICAgICAgbmV4dCgpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHJlcy5zdGF0dXMoNDAzKS5qc29uKHsgbWVzc2FnZTogJ0ZvcmJpZGRlbicgfSk7CiAgICAgICAgfQogICAgfTsKfQoKbW9kdWxlLmV4cG9ydHMgPSB7IGF1dGhvcml6ZSB9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/middleware.js
+const roles = require('./roles');
+
+function authorize(requiredRole) {
+    return (req, res, next) =&gt; {
+        const userRole = req.user.role; // Assuming req.user is populated by authentication middleware
+        if (roles[userRole] &amp;&amp; roles[userRole].includes(requiredRole)) {
+            next();
+        } else {
+            res.status(403).json({ message: 'Forbidden' });
+        }
+    };
+}
+
+module.exports = { authorize };</pre></div><div class='content'></div><h2>Step 3: Applying Middleware to Routes</h2>
+<div class='content'><p>Use the middleware in your routes to protect endpoints based on roles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL3JvdXRlcy5qcwpjb25zdCBleHByZXNzID0gcmVxdWlyZSgnZXhwcmVzcycpOwpjb25zdCB7IGF1dGhvcml6ZSB9ID0gcmVxdWlyZSgnLi9taWRkbGV3YXJlJyk7CmNvbnN0IHJvdXRlciA9IGV4cHJlc3MuUm91dGVyKCk7Cgpyb3V0ZXIuZ2V0KCcvYWRtaW4nLCBhdXRob3JpemUoJ2FkbWluJyksIChyZXEsIHJlcykgPT4gewogICAgcmVzLnNlbmQoJ0FkbWluIGNvbnRlbnQnKTsKfSk7Cgpyb3V0ZXIuZ2V0KCcvZWRpdG9yJywgYXV0aG9yaXplKCdlZGl0b3InKSwgKHJlcSwgcmVzKSA9PiB7CiAgICByZXMuc2VuZCgnRWRpdG9yIGNvbnRlbnQnKTsKfSk7Cgpyb3V0ZXIuZ2V0KCcvdmlld2VyJywgYXV0aG9yaXplKCd2aWV3ZXInKSwgKHJlcSwgcmVzKSA9PiB7CiAgICByZXMuc2VuZCgnVmlld2VyIGNvbnRlbnQnKTsKfSk7Cgptb2R1bGUuZXhwb3J0cyA9IHJvdXRlcjs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/routes.js
+const express = require('express');
+const { authorize } = require('./middleware');
+const router = express.Router();
+
+router.get('/admin', authorize('admin'), (req, res) =&gt; {
+    res.send('Admin content');
+});
+
+router.get('/editor', authorize('editor'), (req, res) =&gt; {
+    res.send('Editor content');
+});
+
+router.get('/viewer', authorize('viewer'), (req, res) =&gt; {
+    res.send('Viewer content');
+});
+
+module.exports = router;</pre></div><div class='content'></div><h2>Step 4: Integrate Routes into the Application</h2>
+<div class='content'><p>Integrate the routes into your main application file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC5qcwpjb25zdCBleHByZXNzID0gcmVxdWlyZSgnZXhwcmVzcycpOwpjb25zdCBhcHAgPSBleHByZXNzKCk7CmNvbnN0IHJvdXRlcyA9IHJlcXVpcmUoJy4vcm91dGVzJyk7CgovLyBNaWRkbGV3YXJlIHRvIHNpbXVsYXRlIHVzZXIgYXV0aGVudGljYXRpb24KYXBwLnVzZSgocmVxLCByZXMsIG5leHQpID0+IHsKICAgIHJlcS51c2VyID0geyByb2xlOiAnYWRtaW4nIH07IC8vIFNpbXVsYXRlIGFuIGF1dGhlbnRpY2F0ZWQgdXNlciB3aXRoICdhZG1pbicgcm9sZQogICAgbmV4dCgpOwp9KTsKCmFwcC51c2UoJy9hcGknLCByb3V0ZXMpOwoKY29uc3QgUE9SVCA9IHByb2Nlc3MuZW52LlBPUlQgfHwgMzAwMDsKYXBwLmxpc3RlbihQT1JULCAoKSA9PiB7CiAgICBjb25zb2xlLmxvZyhgU2VydmVyIGlzIHJ1bm5pbmcgb24gcG9ydCAke1BPUlR9YCk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app.js
+const express = require('express');
+const app = express();
+const routes = require('./routes');
+
+// Middleware to simulate user authentication
+app.use((req, res, next) =&gt; {
+    req.user = { role: 'admin' }; // Simulate an authenticated user with 'admin' role
+    next();
+});
+
+app.use('/api', routes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+    console.log(`Server is running on port ${PORT}`);
+});</pre></div><div class='content'></div><h1>Advanced RBAC Techniques</h1>
+<div class='content'></div><h2>Dynamic Role Assignment</h2>
+<div class='content'><p>Roles can be dynamically assigned based on user data from a database.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21pZGRsZXdhcmUuanMKY29uc3Qgcm9sZXMgPSByZXF1aXJlKCcuL3JvbGVzJyk7CmNvbnN0IFVzZXIgPSByZXF1aXJlKCcuL21vZGVscy9Vc2VyJyk7IC8vIEFzc3VtaW5nIHlvdSBoYXZlIGEgVXNlciBtb2RlbAoKYXN5bmMgZnVuY3Rpb24gYXV0aG9yaXplKHJlcXVpcmVkUm9sZSkgewogICAgcmV0dXJuIGFzeW5jIChyZXEsIHJlcywgbmV4dCkgPT4gewogICAgICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBVc2VyLmZpbmRCeUlkKHJlcS51c2VyLmlkKTsgLy8gRmV0Y2ggdXNlciBmcm9tIGRhdGFiYXNlCiAgICAgICAgY29uc3QgdXNlclJvbGUgPSB1c2VyLnJvbGU7CiAgICAgICAgaWYgKHJvbGVzW3VzZXJSb2xlXSAmJiByb2xlc1t1c2VyUm9sZV0uaW5jbHVkZXMocmVxdWlyZWRSb2xlKSkgewogICAgICAgICAgICBuZXh0KCk7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgcmVzLnN0YXR1cyg0MDMpLmpzb24oeyBtZXNzYWdlOiAnRm9yYmlkZGVuJyB9KTsKICAgICAgICB9CiAgICB9Owp9Cgptb2R1bGUuZXhwb3J0cyA9IHsgYXV0aG9yaXplIH07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/middleware.js
+const roles = require('./roles');
+const User = require('./models/User'); // Assuming you have a User model
+
+async function authorize(requiredRole) {
+    return async (req, res, next) =&gt; {
+        const user = await User.findById(req.user.id); // Fetch user from database
+        const userRole = user.role;
+        if (roles[userRole] &amp;&amp; roles[userRole].includes(requiredRole)) {
+            next();
+        } else {
+            res.status(403).json({ message: 'Forbidden' });
+        }
+    };
+}
+
+module.exports = { authorize };</pre></div><div class='content'></div><h2>Role Hierarchies</h2>
+<div class='content'><p>Implement role hierarchies where higher roles inherit permissions from lower roles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm9sZXMgPSB7CiAgICBhZG1pbjogWydyZWFkJywgJ3dyaXRlJywgJ2RlbGV0ZSddLAogICAgZWRpdG9yOiBbJ3JlYWQnLCAnd3JpdGUnXSwKICAgIHZpZXdlcjogWydyZWFkJ10KfTsKCmZ1bmN0aW9uIGdldFBlcm1pc3Npb25zKHJvbGUpIHsKICAgIGNvbnN0IHJvbGVIaWVyYXJjaHkgPSB7CiAgICAgICAgYWRtaW46IFsnZWRpdG9yJywgJ3ZpZXdlciddLAogICAgICAgIGVkaXRvcjogWyd2aWV3ZXInXSwKICAgICAgICB2aWV3ZXI6IFtdCiAgICB9OwoKICAgIGxldCBwZXJtaXNzaW9ucyA9IG5ldyBTZXQocm9sZXNbcm9sZV0pOwogICAgKHJvbGVIaWVyYXJjaHlbcm9sZV0gfHwgW10pLmZvckVhY2goc3ViUm9sZSA9PiB7CiAgICAgICAgcm9sZXNbc3ViUm9sZV0uZm9yRWFjaChwZXJtaXNzaW9uID0+IHBlcm1pc3Npb25zLmFkZChwZXJtaXNzaW9uKSk7CiAgICB9KTsKCiAgICByZXR1cm4gQXJyYXkuZnJvbShwZXJtaXNzaW9ucyk7Cn0KCm1vZHVsZS5leHBvcnRzID0geyBnZXRQZXJtaXNzaW9ucyB9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const roles = {
+    admin: ['read', 'write', 'delete'],
+    editor: ['read', 'write'],
+    viewer: ['read']
+};
+
+function getPermissions(role) {
+    const roleHierarchy = {
+        admin: ['editor', 'viewer'],
+        editor: ['viewer'],
+        viewer: []
+    };
+
+    let permissions = new Set(roles[role]);
+    (roleHierarchy[role] || []).forEach(subRole =&gt; {
+        roles[subRole].forEach(permission =&gt; permissions.add(permission));
+    });
+
+    return Array.from(permissions);
+}
+
+module.exports = { getPermissions };</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Role-Based Access Control is a powerful method for managing user permissions in a Node.js application. By defining roles and permissions, creating middleware for authorization, and applying these concepts to your routes, you can build a secure and scalable access control system. Advanced techniques like dynamic role assignment and role hierarchies further enhance the flexibility and robustness of your RBAC implementation.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='jwt'>&#x25C4;JWT (JSON Web Tokens)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Role-Based Access Control in Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-websockets'>Introduction to WebSockets &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

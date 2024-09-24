@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Routing in Vue.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/vuejs/dynamic-routing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/vuejs/dynamic-routing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/vuejs/dynamic-routing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/vuejs/dynamic-routing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/vuejs/dynamic-routing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-vue-router'>&#x25C4;Setting Up Vue Router</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Routing in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nested-routes'>Nested Routes &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Dynamic routing is a powerful feature in Vue.js that allows you to create routes that can change based on user input or other dynamic data. This is essential for building applications that need to handle a variety of paths and parameters.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Dynamic Segments</strong>: Parts of the URL that can change, often represented with a colon (<code>:</code>) in the route path.</li>
+<li><strong>Route Parameters</strong>: Variables that are passed through the URL and can be accessed within the component.</li>
+<li><strong>Nested Routes</strong>: Routes that are nested within other routes, allowing for more complex and hierarchical navigation structures.</li>
+<li><strong>Programmatic Navigation</strong>: Using Vue Router's API to navigate to different routes programmatically.</li>
+</ul>
+</div><h1>Setting Up Vue Router</h1>
+<div class='content'><p>First, ensure you have Vue Router installed in your Vue.js project. If not, you can install it using npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgdnVlLXJvdXRlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install vue-router</pre></div><div class='content'><p>Then, set up your router in <code>src/router/index.js</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFZ1ZSBmcm9tICd2dWUnOwppbXBvcnQgVnVlUm91dGVyIGZyb20gJ3Z1ZS1yb3V0ZXInOwppbXBvcnQgSG9tZSBmcm9tICcuLi92aWV3cy9Ib21lLnZ1ZSc7CmltcG9ydCBVc2VyIGZyb20gJy4uL3ZpZXdzL1VzZXIudnVlJzsKClZ1ZS51c2UoVnVlUm91dGVyKTsKCmNvbnN0IHJvdXRlcyA9IFsKICB7CiAgICBwYXRoOiAnLycsCiAgICBuYW1lOiAnSG9tZScsCiAgICBjb21wb25lbnQ6IEhvbWUKICB9LAogIHsKICAgIHBhdGg6ICcvdXNlci86aWQnLAogICAgbmFtZTogJ1VzZXInLAogICAgY29tcG9uZW50OiBVc2VyCiAgfQpdOwoKY29uc3Qgcm91dGVyID0gbmV3IFZ1ZVJvdXRlcih7CiAgbW9kZTogJ2hpc3RvcnknLAogIGJhc2U6IHByb2Nlc3MuZW52LkJBU0VfVVJMLAogIHJvdXRlcwp9KTsKCmV4cG9ydCBkZWZhdWx0IHJvdXRlcjs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
+import User from '../views/User.vue';
+
+Vue.use(VueRouter);
+
+const routes = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
+  {
+    path: '/user/:id',
+    name: 'User',
+    component: User
+  }
+];
+
+const router = new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes
+});
+
+export default router;</pre></div><div class='content'></div><h1>Dynamic Segments and Route Parameters</h1>
+<div class='content'><p>Dynamic segments in routes are defined using a colon (<code>:</code>) followed by the parameter name. For example, <code>/user/:id</code> defines a route with a dynamic segment <code>id</code>.</p>
+</div><h2>Example</h2>
+<div class='content'><p>In the <code>User.vue</code> component, you can access the route parameter <code>id</code> using <code>this.$route.params.id</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDE+VXNlciBQcm9maWxlPC9oMT4KICAgIDxwPlVzZXIgSUQ6IHt7IHVzZXJJZCB9fTwvcD4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBkYXRhKCkgewogICAgcmV0dXJuIHsKICAgICAgdXNlcklkOiB0aGlzLiRyb3V0ZS5wYXJhbXMuaWQKICAgIH07CiAgfSwKICB3YXRjaDogewogICAgJyRyb3V0ZS5wYXJhbXMuaWQnKG5ld0lkKSB7CiAgICAgIHRoaXMudXNlcklkID0gbmV3SWQ7CiAgICB9CiAgfQp9Owo8L3NjcmlwdD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;User Profile&lt;/h1&gt;
+    &lt;p&gt;User ID: {{ userId }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      userId: this.$route.params.id
+    };
+  },
+  watch: {
+    '$route.params.id'(newId) {
+      this.userId = newId;
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Nested Routes</h1>
+<div class='content'><p>Nested routes allow you to create more complex route structures. For example, you might have a user profile route with nested routes for different sections of the profile.</p>
+</div><h2>Example</h2>
+<div class='content'><p>Define nested routes in <code>src/router/index.js</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm91dGVzID0gWwogIHsKICAgIHBhdGg6ICcvdXNlci86aWQnLAogICAgY29tcG9uZW50OiBVc2VyLAogICAgY2hpbGRyZW46IFsKICAgICAgewogICAgICAgIHBhdGg6ICdwcm9maWxlJywKICAgICAgICBjb21wb25lbnQ6IFVzZXJQcm9maWxlCiAgICAgIH0sCiAgICAgIHsKICAgICAgICBwYXRoOiAncG9zdHMnLAogICAgICAgIGNvbXBvbmVudDogVXNlclBvc3RzCiAgICAgIH0KICAgIF0KICB9Cl07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const routes = [
+  {
+    path: '/user/:id',
+    component: User,
+    children: [
+      {
+        path: 'profile',
+        component: UserProfile
+      },
+      {
+        path: 'posts',
+        component: UserPosts
+      }
+    ]
+  }
+];</pre></div><div class='content'><p>In the <code>User.vue</code> component, use <code>&lt;router-view&gt;</code> to display the nested routes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDE+VXNlciBQcm9maWxlPC9oMT4KICAgIDxyb3V0ZXItbGluayA6dG89InsgbmFtZTogJ1VzZXJQcm9maWxlJywgcGFyYW1zOiB7IGlkOiB1c2VySWQgfSB9Ij5Qcm9maWxlPC9yb3V0ZXItbGluaz4KICAgIDxyb3V0ZXItbGluayA6dG89InsgbmFtZTogJ1VzZXJQb3N0cycsIHBhcmFtczogeyBpZDogdXNlcklkIH0gfSI+UG9zdHM8L3JvdXRlci1saW5rPgogICAgPHJvdXRlci12aWV3Pjwvcm91dGVyLXZpZXc+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgZGF0YSgpIHsKICAgIHJldHVybiB7CiAgICAgIHVzZXJJZDogdGhpcy4kcm91dGUucGFyYW1zLmlkCiAgICB9OwogIH0KfTsKPC9zY3JpcHQ+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;User Profile&lt;/h1&gt;
+    &lt;router-link :to=&quot;{ name: 'UserProfile', params: { id: userId } }&quot;&gt;Profile&lt;/router-link&gt;
+    &lt;router-link :to=&quot;{ name: 'UserPosts', params: { id: userId } }&quot;&gt;Posts&lt;/router-link&gt;
+    &lt;router-view&gt;&lt;/router-view&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      userId: this.$route.params.id
+    };
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Programmatic Navigation</h1>
+<div class='content'><p>You can navigate to different routes programmatically using the Vue Router API. This is useful for navigation based on user actions or other dynamic conditions.</p>
+</div><h2>Example</h2>
+<div class='content'><p>In a method within your component, use <code>this.$router.push</code> to navigate to a different route:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8YnV0dG9uIEBjbGljaz0iZ29Ub1VzZXJQcm9maWxlIj5HbyB0byBVc2VyIFByb2ZpbGU8L2J1dHRvbj4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBtZXRob2RzOiB7CiAgICBnb1RvVXNlclByb2ZpbGUoKSB7CiAgICAgIHRoaXMuJHJvdXRlci5wdXNoKHsgbmFtZTogJ1VzZXInLCBwYXJhbXM6IHsgaWQ6IDEyMyB9IH0pOwogICAgfQogIH0KfTsKPC9zY3JpcHQ+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;button @click=&quot;goToUserProfile&quot;&gt;Go to User Profile&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  methods: {
+    goToUserProfile() {
+      this.$router.push({ name: 'User', params: { id: 123 } });
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Dynamic routing in Vue.js allows you to create flexible and powerful navigation structures in your applications. By understanding dynamic segments, route parameters, nested routes, and programmatic navigation, you can build complex and user-friendly interfaces. Practice these concepts with different scenarios to become proficient in dynamic routing with Vue.js.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-vue-router'>&#x25C4;Setting Up Vue Router</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Dynamic Routing in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nested-routes'>Nested Routes &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

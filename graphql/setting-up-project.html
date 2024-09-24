@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting Up the Project</title>
+
+    <link rel="alternate" href="https://campusempresa.com/graphql/setting-up-project" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/graphql/setting-up-project" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/graphql/setting-up-project" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/graphql/setting-up-project" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/graphql/setting-up-project" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='project-overview'>&#x25C4;Project Overview</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Setting Up the Project</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='implementing-backend'>Implementing the Backend &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to set up a GraphQL project from scratch. This includes installing necessary tools, initializing the project, and setting up the basic structure. By the end of this section, you will have a working GraphQL server that you can build upon in subsequent lessons.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before we start, ensure you have the following installed on your machine:</p>
+<ul>
+<li>Node.js (version 12.x or later)</li>
+<li>npm (Node Package Manager) or yarn</li>
+</ul>
+<p>You can check if Node.js and npm are installed by running the following commands in your terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSAtdgpucG0gLXY="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node -v
+npm -v</pre></div><div class='content'></div><h1>Initializing the Project</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new directory for your project:</strong></p>
+<pre><code class="language-bash">mkdir graphql-project
+cd graphql-project
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize a new Node.js project:</strong></p>
+<pre><code class="language-bash">npm init -y
+</code></pre>
+<p>This command will create a <code>package.json</code> file with default settings.</p>
+</li>
+</ol>
+</div><h1>Installing Dependencies</h1>
+<div class='content'><p>We will need several packages to set up our GraphQL server. The primary packages are <code>express</code> for our server, <code>graphql</code> for GraphQL functionality, and <code>express-graphql</code> to integrate GraphQL with Express.</p>
+<ol>
+<li><strong>Install the necessary packages:</strong>
+<pre><code class="language-bash">npm install express graphql express-graphql
+</code></pre>
+</li>
+</ol>
+</div><h1>Setting Up the Server</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new file named <code>server.js</code> in the root directory:</strong></p>
+<pre><code class="language-bash">touch server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Open <code>server.js</code> and add the following code:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+// Construct a schema, using GraphQL schema language
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// The root provides a resolver function for each API endpoint
+const root = {
+  hello: () =&gt; {
+    return 'Hello world!';
+  },
+};
+
+const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Now browse to localhost:4000/graphql'));
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation of the Code</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Importing Modules:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+</code></pre>
+<p>We import the necessary modules to set up our server and GraphQL integration.</p>
+</li>
+<li>
+<p><strong>Defining the Schema:</strong></p>
+<pre><code class="language-javascript">const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+</code></pre>
+<p>We define a simple schema with a single query <code>hello</code> that returns a <code>String</code>.</p>
+</li>
+<li>
+<p><strong>Creating the Root Resolver:</strong></p>
+<pre><code class="language-javascript">const root = {
+  hello: () =&gt; {
+    return 'Hello world!';
+  },
+};
+</code></pre>
+<p>The resolver function for the <code>hello</code> query returns the string &quot;Hello world!&quot;.</p>
+</li>
+<li>
+<p><strong>Setting Up the Express Server:</strong></p>
+<pre><code class="language-javascript">const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Now browse to localhost:4000/graphql'));
+</code></pre>
+<p>We set up an Express server and configure the <code>/graphql</code> endpoint to use <code>express-graphql</code> with our schema and root resolver. We also enable the GraphiQL interface for testing our GraphQL queries.</p>
+</li>
+</ul>
+</div><h1>Running the Server</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Start the server by running:</strong></p>
+<pre><code class="language-bash">node server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Open your browser and navigate to:</strong></p>
+<pre><code>http://localhost:4000/graphql
+</code></pre>
+<p>You should see the GraphiQL interface where you can test your GraphQL queries.</p>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have successfully set up a basic GraphQL server using Node.js, Express, and the <code>express-graphql</code> middleware. We created a simple schema and resolver, and we configured our server to use GraphiQL for testing. This foundational setup will allow us to build more complex GraphQL APIs in the following sections.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='project-overview'>&#x25C4;Project Overview</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Setting Up the Project</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='implementing-backend'>Implementing the Backend &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful APIs with Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/flask/restful-apis" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/flask/restful-apis" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/flask/restful-apis" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/flask/restful-apis" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/flask/restful-apis" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='flask-extensions'>&#x25C4;Flask Extensions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">RESTful APIs with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='websockets-flask-socketio'>Websockets with Flask-SocketIO &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to RESTful APIs</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: REST (Representational State Transfer) is an architectural style for designing networked applications.</li>
+<li><strong>Key Concepts</strong>:
+<ul>
+<li><strong>Resources</strong>: Objects or representations of data that can be accessed via a URL.</li>
+<li><strong>HTTP Methods</strong>: GET, POST, PUT, DELETE, etc., used to perform CRUD operations.</li>
+<li><strong>Statelessness</strong>: Each request from a client to server must contain all the information the server needs to fulfill that request.</li>
+<li><strong>JSON</strong>: Common format for sending and receiving data in RESTful APIs.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up Flask for RESTful APIs</h1>
+<div class='content'><ul>
+<li><strong>Installation</strong>:
+<pre><code class="language-bash">pip install Flask
+pip install Flask-RESTful
+</code></pre>
+</li>
+<li><strong>Basic Flask Application</strong>:
+<pre><code class="language-python">from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return &quot;Hello, Flask!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+</ul>
+</div><h1>Creating a Simple RESTful API</h1>
+<div class='content'><ul>
+<li><strong>Creating Endpoints</strong>:
+<pre><code class="language-python">from flask import Flask, jsonify, request
+app = Flask(__name__)
+
+@app.route('/api/v1/resource', methods=['GET'])
+def get_resource():
+    data = {&quot;message&quot;: &quot;Hello, this is your resource&quot;}
+    return jsonify(data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>@app.route('/api/v1/resource', methods=['GET'])</code>: Defines the endpoint and the HTTP method.</li>
+<li><code>jsonify(data)</code>: Converts the Python dictionary to a JSON response.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Handling CRUD Operations</h1>
+<div class='content'><ul>
+<li><strong>Example with In-Memory Data</strong>:
+<pre><code class="language-python">from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+resources = []
+
+@app.route('/api/v1/resources', methods=['GET'])
+def get_resources():
+    return jsonify(resources)
+
+@app.route('/api/v1/resources', methods=['POST'])
+def add_resource():
+    new_resource = request.get_json()
+    resources.append(new_resource)
+    return jsonify(new_resource), 201
+
+@app.route('/api/v1/resources/&lt;int:id&gt;', methods=['PUT'])
+def update_resource(id):
+    updated_resource = request.get_json()
+    resources[id] = updated_resource
+    return jsonify(updated_resource)
+
+@app.route('/api/v1/resources/&lt;int:id&gt;', methods=['DELETE'])
+def delete_resource(id):
+    resources.pop(id)
+    return '', 204
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>request.get_json()</code>: Parses the incoming JSON request data.</li>
+<li><code>resources.append(new_resource)</code>: Adds a new resource to the list.</li>
+<li><code>resources[id] = updated_resource</code>: Updates an existing resource.</li>
+<li><code>resources.pop(id)</code>: Deletes a resource.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Error Handling and Validation</h1>
+<div class='content'><ul>
+<li><strong>Custom Error Messages</strong>:
+<pre><code class="language-python">from flask import Flask, jsonify, request, abort
+
+app = Flask(__name__)
+
+resources = []
+
+@app.route('/api/v1/resources/&lt;int:id&gt;', methods=['GET'])
+def get_resource(id):
+    if id &gt;= len(resources) or id &lt; 0:
+        abort(404, description=&quot;Resource not found&quot;)
+    return jsonify(resources[id])
+
+@app.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>abort(404, description=&quot;Resource not found&quot;)</code>: Aborts the request with a 404 status code and a custom message.</li>
+<li><code>@app.errorhandler(404)</code>: Custom error handler for 404 errors.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<div class='content'><ul>
+<li><strong>Authentication and Authorization</strong>:
+<ul>
+<li><strong>JWT (JSON Web Tokens)</strong>:
+<pre><code class="language-python">from flask import Flask, jsonify, request
+import jwt
+import datetime
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+
+@app.route('/login', methods=['POST'])
+def login():
+    auth_data = request.get_json()
+    if auth_data['username'] == 'user' and auth_data['password'] == 'pass':
+        token = jwt.encode({'user': auth_data['username'], 'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])
+        return jsonify({'token': token})
+    return jsonify({'message': 'Invalid credentials'}), 401
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>jwt.encode()</code>: Encodes a payload into a JWT token.</li>
+<li><code>app.config['SECRET_KEY']</code>: Secret key for encoding and decoding JWT tokens.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><ul>
+<li><strong>Summary</strong>:
+<ul>
+<li>RESTful APIs are a powerful way to design networked applications.</li>
+<li>Flask provides a simple and flexible framework for building RESTful APIs.</li>
+<li>Key concepts include resources, HTTP methods, and statelessness.</li>
+<li>Handling CRUD operations, error handling, and authentication are essential for building robust APIs.</li>
+</ul>
+</li>
+<li><strong>Next Steps</strong>:
+<ul>
+<li>Explore more advanced topics such as database integration, API versioning, and deploying Flask applications.</li>
+<li>Practice by building your own RESTful API projects to reinforce the concepts learned.</li>
+</ul>
+</li>
+</ul>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='flask-extensions'>&#x25C4;Flask Extensions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">RESTful APIs with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='websockets-flask-socketio'>Websockets with Flask-SocketIO &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

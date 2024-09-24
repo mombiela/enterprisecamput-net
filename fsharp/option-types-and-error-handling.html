@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option Types and Error Handling in F#</title>
+
+    <link rel="alternate" href="https://campusempresa.com/fsharp/option-types-and-error-handling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/fsharp/option-types-and-error-handling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/fsharp/option-types-and-error-handling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/fsharp/option-types-and-error-handling" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/fsharp/option-types-and-error-handling" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='discriminated-unions'>&#x25C4;Discriminated Unions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Option Types and Error Handling in F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='async-programming'>Async Programming &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In F#, handling optional values and errors gracefully is crucial for writing robust and maintainable code. This section will cover the basics of option types and error handling, progressing from beginner to advanced concepts.</p>
+</div><h1>Option Types</h1>
+<div class='content'></div><h2>What are Option Types?</h2>
+<div class='content'><p>Option types in F# are used to represent values that may or may not be present. They are particularly useful for avoiding null references and making your code safer and more expressive.</p>
+<ul>
+<li><code>Some(value)</code>: Represents a value that is present.</li>
+<li><code>None</code>: Represents the absence of a value.</li>
+</ul>
+</div><h2>Basic Usage</h2>
+<div class='content'><p>Here's a simple example to illustrate the use of option types:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGRpdmlkZSB4IHkgPQogICAgaWYgeSA9IDAgdGhlbiBOb25lCiAgICBlbHNlIFNvbWUgKHggLyB5KQoKbGV0IHJlc3VsdCA9IGRpdmlkZSAxMCAyCm1hdGNoIHJlc3VsdCB3aXRoCnwgU29tZSB2YWx1ZSAtPiBwcmludGZuICJSZXN1bHQgaXMgJWQiIHZhbHVlCnwgTm9uZSAtPiBwcmludGZuICJDYW5ub3QgZGl2aWRlIGJ5IHplcm8i"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let divide x y =
+    if y = 0 then None
+    else Some (x / y)
+
+let result = divide 10 2
+match result with
+| Some value -&gt; printfn &quot;Result is %d&quot; value
+| None -&gt; printfn &quot;Cannot divide by zero&quot;</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>divide</code> function returns <code>None</code> if the divisor is zero.</li>
+<li>Otherwise, it returns <code>Some</code> with the result of the division.</li>
+<li>The <code>match</code> expression is used to handle both cases.</li>
+</ul>
+</div><h2>Working with Option Types</h2>
+<div class='content'><p>You can use various functions to work with option types, such as <code>Option.map</code>, <code>Option.bind</code>, and <code>Option.defaultValue</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGFkZE9uZSBvcHQgPQogICAgT3B0aW9uLm1hcCAoZnVuIHggLT4geCArIDEpIG9wdAoKbGV0IHJlc3VsdCA9IGFkZE9uZSAoU29tZSA1KQpwcmludGZuICIlQSIgcmVzdWx0ICAvLyBPdXRwdXQ6IFNvbWUgNgoKbGV0IHJlc3VsdE5vbmUgPSBhZGRPbmUgTm9uZQpwcmludGZuICIlQSIgcmVzdWx0Tm9uZSAgLy8gT3V0cHV0OiBOb25l"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let addOne opt =
+    Option.map (fun x -&gt; x + 1) opt
+
+let result = addOne (Some 5)
+printfn &quot;%A&quot; result  // Output: Some 6
+
+let resultNone = addOne None
+printfn &quot;%A&quot; resultNone  // Output: None</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>Option.map</code> applies a function to the value inside <code>Some</code>, if it exists.</li>
+<li>If the option is <code>None</code>, it simply returns <code>None</code>.</li>
+</ul>
+</div><h1>Error Handling</h1>
+<div class='content'></div><h2>Basic Error Handling with Exceptions</h2>
+<div class='content'><p>F# supports traditional error handling using exceptions. Here's a basic example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGRpdmlkZSB4IHkgPQogICAgaWYgeSA9IDAgdGhlbiByYWlzZSAoU3lzdGVtLkRpdmlkZUJ5WmVyb0V4Y2VwdGlvbigiQ2Fubm90IGRpdmlkZSBieSB6ZXJvIikpCiAgICBlbHNlIHggLyB5Cgp0cnkKICAgIGxldCByZXN1bHQgPSBkaXZpZGUgMTAgMAogICAgcHJpbnRmbiAiUmVzdWx0IGlzICVkIiByZXN1bHQKd2l0aAp8IDo/IFN5c3RlbS5EaXZpZGVCeVplcm9FeGNlcHRpb24gYXMgZXggLT4gcHJpbnRmbiAiRXJyb3I6ICVzIiBleC5NZXNzYWdl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let divide x y =
+    if y = 0 then raise (System.DivideByZeroException(&quot;Cannot divide by zero&quot;))
+    else x / y
+
+try
+    let result = divide 10 0
+    printfn &quot;Result is %d&quot; result
+with
+| :? System.DivideByZeroException as ex -&gt; printfn &quot;Error: %s&quot; ex.Message</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>divide</code> function raises an exception if the divisor is zero.</li>
+<li>The <code>try...with</code> block catches the exception and handles it.</li>
+</ul>
+</div><h2>Advanced Error Handling with Result Types</h2>
+<div class='content'><p>F# also provides a more functional approach to error handling using <code>Result</code> types. A <code>Result</code> type can be either <code>Ok</code> or <code>Error</code>.</p>
+<ul>
+<li><code>Ok(value)</code>: Represents a successful computation.</li>
+<li><code>Error(error)</code>: Represents a failed computation.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBEaXZpc2lvbkVycm9yID0KICAgIHwgRGl2aWRlQnlaZXJvCiAgICB8IE5lZ2F0aXZlTnVtYmVyCgpsZXQgZGl2aWRlIHggeSA9CiAgICBpZiB5ID0gMCB0aGVuIEVycm9yIERpdmlkZUJ5WmVybwogICAgZWxpZiB4IDwgMCB8fCB5IDwgMCB0aGVuIEVycm9yIE5lZ2F0aXZlTnVtYmVyCiAgICBlbHNlIE9rICh4IC8geSkKCmxldCBoYW5kbGVSZXN1bHQgcmVzdWx0ID0KICAgIG1hdGNoIHJlc3VsdCB3aXRoCiAgICB8IE9rIHZhbHVlIC0+IHByaW50Zm4gIlJlc3VsdCBpcyAlZCIgdmFsdWUKICAgIHwgRXJyb3IgRGl2aWRlQnlaZXJvIC0+IHByaW50Zm4gIkNhbm5vdCBkaXZpZGUgYnkgemVybyIKICAgIHwgRXJyb3IgTmVnYXRpdmVOdW1iZXIgLT4gcHJpbnRmbiAiTmVnYXRpdmUgbnVtYmVycyBhcmUgbm90IGFsbG93ZWQiCgpsZXQgcmVzdWx0ID0gZGl2aWRlIDEwIDAKaGFuZGxlUmVzdWx0IHJlc3VsdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type DivisionError =
+    | DivideByZero
+    | NegativeNumber
+
+let divide x y =
+    if y = 0 then Error DivideByZero
+    elif x &lt; 0 || y &lt; 0 then Error NegativeNumber
+    else Ok (x / y)
+
+let handleResult result =
+    match result with
+    | Ok value -&gt; printfn &quot;Result is %d&quot; value
+    | Error DivideByZero -&gt; printfn &quot;Cannot divide by zero&quot;
+    | Error NegativeNumber -&gt; printfn &quot;Negative numbers are not allowed&quot;
+
+let result = divide 10 0
+handleResult result</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li>The <code>divide</code> function returns a <code>Result</code> type.</li>
+<li>The <code>handleResult</code> function uses pattern matching to handle different cases.</li>
+</ul>
+</div><h2>Combining Option and Result Types</h2>
+<div class='content'><p>You can combine option and result types to handle more complex scenarios.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHNhZmVEaXZpZGUgeCB5ID0KICAgIGlmIHkgPSAwIHRoZW4gTm9uZQogICAgZWxzZSBTb21lICh4IC8geSkKCmxldCBwcm9jZXNzRGl2aXNpb24geCB5ID0KICAgIG1hdGNoIHNhZmVEaXZpZGUgeCB5IHdpdGgKICAgIHwgU29tZSB2YWx1ZSAtPiBPayB2YWx1ZQogICAgfCBOb25lIC0+IEVycm9yICJEaXZpc2lvbiBieSB6ZXJvIgoKbGV0IHJlc3VsdCA9IHByb2Nlc3NEaXZpc2lvbiAxMCAwCm1hdGNoIHJlc3VsdCB3aXRoCnwgT2sgdmFsdWUgLT4gcHJpbnRmbiAiUmVzdWx0IGlzICVkIiB2YWx1ZQp8IEVycm9yIG1zZyAtPiBwcmludGZuICJFcnJvcjogJXMiIG1zZw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let safeDivide x y =
+    if y = 0 then None
+    else Some (x / y)
+
+let processDivision x y =
+    match safeDivide x y with
+    | Some value -&gt; Ok value
+    | None -&gt; Error &quot;Division by zero&quot;
+
+let result = processDivision 10 0
+match result with
+| Ok value -&gt; printfn &quot;Result is %d&quot; value
+| Error msg -&gt; printfn &quot;Error: %s&quot; msg</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>safeDivide</code> returns an option type.</li>
+<li><code>processDivision</code> converts the option type to a result type for more detailed error handling.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding and effectively using option types and error handling mechanisms in F# is essential for writing robust and maintainable code. By leveraging these features, you can avoid common pitfalls such as null references and unhandled exceptions, leading to more reliable and expressive programs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='discriminated-unions'>&#x25C4;Discriminated Unions</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Option Types and Error Handling in F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='async-programming'>Async Programming &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

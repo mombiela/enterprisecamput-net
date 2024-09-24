@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study 2: Scaling Applications</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/case-study-2" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/case-study-2" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/case-study-2" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/case-study-2" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/case-study-2" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-1'>&#x25C4;Case Study 1: Migrating to Kubernetes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Study 2: Scaling Applications</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-3'>Case Study 3: Implementing CI/CD &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this case study, we will explore how to scale applications using Kubernetes. Scaling is a critical aspect of managing applications in production, ensuring that your application can handle varying loads efficiently. We will cover both horizontal and vertical scaling, and provide practical examples to help you understand the concepts.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Horizontal Scaling</strong>: Adding more instances of your application to handle increased load.</li>
+<li><strong>Vertical Scaling</strong>: Increasing the resources (CPU, memory) of existing instances to handle increased load.</li>
+<li><strong>Kubernetes Horizontal Pod Autoscaler (HPA)</strong>: Automatically scales the number of pods in a deployment based on observed CPU utilization or other select metrics.</li>
+<li><strong>Resource Requests and Limits</strong>: Define the minimum and maximum resources a container can use.</li>
+</ul>
+</div><h1>Horizontal Scaling</h1>
+<div class='content'></div><h2>Understanding Horizontal Scaling</h2>
+<div class='content'><p>Horizontal scaling involves adding more instances (pods) of your application to distribute the load. This is often more cost-effective and provides better fault tolerance compared to vertical scaling.</p>
+</div><h2>Example: Configuring Horizontal Pod Autoscaler (HPA)</h2>
+<div class='content'><p>Let's create a deployment and configure HPA to scale it based on CPU usage.</p>
+<ol>
+<li>
+<p><strong>Create a Deployment</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app-image
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+          limits:
+            cpu: &quot;500m&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the Deployment</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Create an HPA</strong>:</p>
+<pre><code class="language-yaml">apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-app
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the HPA</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f hpa.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Deployment</strong>: Defines a single replica of <code>my-app</code> with CPU requests and limits.</li>
+<li><strong>HPA</strong>: Monitors the CPU utilization of the <code>my-app</code> deployment and scales the number of pods between 1 and 10 to maintain an average CPU utilization of 50%.</li>
+</ul>
+</div><h1>Vertical Scaling</h1>
+<div class='content'></div><h2>Understanding Vertical Scaling</h2>
+<div class='content'><p>Vertical scaling involves increasing the resource limits of existing pods. This can be useful when your application needs more resources to handle increased load.</p>
+</div><h2>Example: Adjusting Resource Limits</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Update the Deployment</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app-image
+        resources:
+          requests:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+          limits:
+            cpu: &quot;1&quot;
+            memory: &quot;512Mi&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the Updated Deployment</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f deployment.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Resource Requests</strong>: The minimum resources guaranteed to the container.</li>
+<li><strong>Resource Limits</strong>: The maximum resources the container can use.</li>
+</ul>
+</div><h1>Comparison of Horizontal and Vertical Scaling</h1>
+<div class='content'><p>| Aspect                | Horizontal Scaling                       | Vertical Scaling                          |
+|-----------------------|------------------------------------------|-------------------------------------------|
+| Approach              | Add more instances (pods)                | Increase resources of existing instances  |
+| Cost                  | Generally more cost-effective            | Can be expensive                          |
+| Fault Tolerance       | Higher                                    | Lower                                     |
+| Complexity            | Requires load balancing                  | Simpler                                   |
+| Use Case              | Handling increased traffic               | Handling resource-intensive tasks         |</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Scaling applications in Kubernetes is essential for maintaining performance and reliability under varying loads. Horizontal scaling, achieved through tools like the Horizontal Pod Autoscaler, is generally more cost-effective and provides better fault tolerance. Vertical scaling, on the other hand, is useful for resource-intensive applications but can be more expensive. Understanding when and how to use these scaling strategies will help you manage your applications more effectively in a Kubernetes environment.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-1'>&#x25C4;Case Study 1: Migrating to Kubernetes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Case Study 2: Scaling Applications</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-3'>Case Study 3: Implementing CI/CD &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

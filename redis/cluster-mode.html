@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cluster Mode</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/cluster-mode" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/cluster-mode" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/cluster-mode" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/cluster-mode" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/cluster-mode" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sentinel'>&#x25C4;Sentinel</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cluster Mode</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-redis'>Scaling Redis &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Redis Cluster Mode</h1>
+<div class='content'><p>Redis Cluster Mode is a way to run a Redis installation where data is automatically sharded across multiple Redis nodes. This allows Redis to scale horizontally and handle larger datasets and higher throughput.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Sharding</strong>: Splitting data across multiple nodes.</li>
+<li><strong>Master Node</strong>: A node that holds the actual data and handles read/write operations.</li>
+<li><strong>Replica Node</strong>: A node that holds a copy of the data from a master node for redundancy and failover.</li>
+<li><strong>Slots</strong>: Redis Cluster uses 16,384 hash slots to distribute keys across the cluster.</li>
+</ul>
+</div><h1>Setting Up a Redis Cluster</h1>
+<div class='content'><p>Setting up a Redis Cluster involves configuring multiple Redis nodes to work together. Here’s a step-by-step guide:</p>
+</div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Redis installed on multiple servers or instances.</li>
+<li>Basic understanding of Redis commands and configuration.</li>
+</ul>
+</div><h2>Configuration Files</h2>
+<div class='content'><p>Each Redis node needs a configuration file. Here’s an example configuration for a Redis node:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cG9ydCA3MDAwCmNsdXN0ZXItZW5hYmxlZCB5ZXMKY2x1c3Rlci1jb25maWctZmlsZSBub2Rlcy5jb25mCmNsdXN0ZXItbm9kZS10aW1lb3V0IDUwMDAKYXBwZW5kb25seSB5ZXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes</pre></div><div class='content'></div><h2>Starting Redis Nodes</h2>
+<div class='content'><p>Start each Redis instance with its configuration file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtc2VydmVyIC9wYXRoL3RvL3JlZGlzLTcwMDAuY29uZgpyZWRpcy1zZXJ2ZXIgL3BhdGgvdG8vcmVkaXMtNzAwMS5jb25mCnJlZGlzLXNlcnZlciAvcGF0aC90by9yZWRpcy03MDAyLmNvbmY="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-server /path/to/redis-7000.conf
+redis-server /path/to/redis-7001.conf
+redis-server /path/to/redis-7002.conf</pre></div><div class='content'></div><h2>Creating the Cluster</h2>
+<div class='content'><p>Use the <code>redis-cli</code> to create the cluster. You need at least three master nodes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIC0tY2x1c3RlciBjcmVhdGUgMTI3LjAuMC4xOjcwMDAgMTI3LjAuMC4xOjcwMDEgMTI3LjAuMC4xOjcwMDIgLS1jbHVzdGVyLXJlcGxpY2FzIDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 1</pre></div><div class='content'><p>This command will create a cluster with three master nodes and one replica for each master.</p>
+</div><h1>Managing a Redis Cluster</h1>
+<div class='content'><p>Once the cluster is set up, you need to manage it. This includes adding/removing nodes, handling failovers, and monitoring the cluster.</p>
+</div><h2>Adding a Node</h2>
+<div class='content'><p>To add a new node to the cluster:</p>
+<ol>
+<li>Start the new Redis instance.</li>
+<li>Add the node to the cluster using <code>redis-cli</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIC0tY2x1c3RlciBhZGQtbm9kZSAxMjcuMC4wLjE6NzAwMyAxMjcuMC4wLjE6NzAwMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli --cluster add-node 127.0.0.1:7003 127.0.0.1:7000</pre></div><div class='content'></div><h2>Removing a Node</h2>
+<div class='content'><p>To remove a node from the cluster:</p>
+<ol>
+<li>Ensure the node is empty or migrate its data.</li>
+<li>Use <code>redis-cli</code> to remove the node:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIC0tY2x1c3RlciBkZWwtbm9kZSAxMjcuMC4wLjE6NzAwMCA8bm9kZS1pZD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli --cluster del-node 127.0.0.1:7000 &lt;node-id&gt;</pre></div><div class='content'></div><h2>Handling Failover</h2>
+<div class='content'><p>Redis Cluster handles failover automatically. If a master node fails, one of its replicas is promoted to master. You can also manually trigger a failover:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIC1jIC1wIDcwMDEgY2x1c3RlciBmYWlsb3Zlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli -c -p 7001 cluster failover</pre></div><div class='content'></div><h1>Code Examples</h1>
+<div class='content'><p>Here are some examples of how to interact with a Redis Cluster using Python and the <code>redis-py</code> library:</p>
+</div><h2>Connecting to a Redis Cluster</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzY2x1c3RlcgoKc3RhcnR1cF9ub2RlcyA9IFt7Imhvc3QiOiAiMTI3LjAuMC4xIiwgInBvcnQiOiAiNzAwMCJ9XQpyYyA9IHJlZGlzY2x1c3Rlci5SZWRpc0NsdXN0ZXIoc3RhcnR1cF9ub2Rlcz1zdGFydHVwX25vZGVzLCBkZWNvZGVfcmVzcG9uc2VzPVRydWUpCgojIFNldCBhIGtleQpyYy5zZXQoImZvbyIsICJiYXIiKQoKIyBHZXQgYSBrZXkKdmFsdWUgPSByYy5nZXQoImZvbyIpCnByaW50KHZhbHVlKSAgIyBPdXRwdXQ6IGJhcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import rediscluster
+
+startup_nodes = [{&quot;host&quot;: &quot;127.0.0.1&quot;, &quot;port&quot;: &quot;7000&quot;}]
+rc = rediscluster.RedisCluster(startup_nodes=startup_nodes, decode_responses=True)
+
+# Set a key
+rc.set(&quot;foo&quot;, &quot;bar&quot;)
+
+# Get a key
+value = rc.get(&quot;foo&quot;)
+print(value)  # Output: bar</pre></div><div class='content'></div><h2>Handling Failover in Code</h2>
+<div class='content'><p>The <code>redis-py</code> library handles failover automatically. If a master node goes down, the library will redirect the request to the new master.</p>
+</div><h1>Summary</h1>
+<div class='content'><p>Redis Cluster Mode allows Redis to scale horizontally by distributing data across multiple nodes. Setting up a Redis Cluster involves configuring multiple Redis instances, creating the cluster, and managing it through adding/removing nodes and handling failovers. Using libraries like <code>redis-py</code>, you can easily interact with a Redis Cluster in your applications.</p>
+<p>By understanding and implementing Redis Cluster Mode, you can ensure high availability, fault tolerance, and scalability for your Redis-based applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sentinel'>&#x25C4;Sentinel</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cluster Mode</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-redis'>Scaling Redis &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

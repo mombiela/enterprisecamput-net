@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling Elasticsearch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/elasticsearch/scaling-elasticsearch" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/elasticsearch/scaling-elasticsearch" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/elasticsearch/scaling-elasticsearch" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/elasticsearch/scaling-elasticsearch" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/scaling-elasticsearch" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='search-performance'>&#x25C4;Search Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scaling Elasticsearch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='monitoring-and-maintenance'>Monitoring and Maintenance &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Scaling Elasticsearch is a critical topic for ensuring that your search and analytics engine can handle increasing amounts of data and queries efficiently. This section will guide you through the concepts, strategies, and best practices for scaling Elasticsearch from a beginner to an advanced level.</p>
+</div><h1>Introduction to Scaling</h1>
+<div class='content'><ul>
+<li>
+<p><strong>What is Scaling?</strong></p>
+<ul>
+<li>Scaling refers to the process of increasing the capacity of your Elasticsearch cluster to handle more data and higher query loads.</li>
+<li>Two types of scaling: Vertical Scaling (Scaling Up) and Horizontal Scaling (Scaling Out).</li>
+</ul>
+</li>
+<li>
+<p><strong>Why Scale Elasticsearch?</strong></p>
+<ul>
+<li>To improve performance.</li>
+<li>To handle larger datasets.</li>
+<li>To ensure high availability and fault tolerance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Vertical Scaling</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Definition:</strong></p>
+<ul>
+<li>Vertical scaling involves adding more resources (CPU, RAM, Disk) to existing nodes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Simplicity: Easier to implement as it involves upgrading existing hardware.</li>
+<li>No need to manage additional nodes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>Limited by the maximum capacity of a single machine.</li>
+<li>Can become expensive.</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre><code class="language-yaml"># Example of increasing heap size in elasticsearch.yml
+# Path: /etc/elasticsearch/elasticsearch.yml
+#
+# Set the heap size to 4GB
+ES_HEAP_SIZE=4g
+</code></pre>
+</li>
+</ul>
+</div><h1>Horizontal Scaling</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Definition:</strong></p>
+<ul>
+<li>Horizontal scaling involves adding more nodes to the cluster.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pros:</strong></p>
+<ul>
+<li>Better fault tolerance: If one node fails, others can take over.</li>
+<li>Can handle larger datasets and higher query loads.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cons:</strong></p>
+<ul>
+<li>More complex to manage.</li>
+<li>Requires proper configuration and monitoring.</li>
+</ul>
+</li>
+<li>
+<p><strong>Key Concepts:</strong></p>
+<ul>
+<li><strong>Sharding:</strong>
+<ul>
+<li>Elasticsearch divides indices into smaller pieces called shards.</li>
+<li>Each shard is a self-contained index that can be hosted on any node in the cluster.</li>
+</ul>
+</li>
+<li><strong>Replication:</strong>
+<ul>
+<li>Each shard can have one or more replicas.</li>
+<li>Replicas provide high availability and fault tolerance.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre><code class="language-json">// Example of creating an index with 3 primary shards and 2 replicas
+PUT /my_index
+{
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3,
+    &quot;number_of_replicas&quot;: 2
+  }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Best Practices for Scaling</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Monitor Cluster Health:</strong></p>
+<ul>
+<li>Use tools like Kibana, Cerebro, or Elasticsearch's own APIs to monitor cluster health.</li>
+<li>Key metrics to monitor: CPU usage, memory usage, disk I/O, and network I/O.</li>
+</ul>
+</li>
+<li>
+<p><strong>Optimize Indexing:</strong></p>
+<ul>
+<li>Use bulk requests for indexing large amounts of data.</li>
+<li>Disable refresh and replication during bulk indexing to improve performance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Shard Management:</strong></p>
+<ul>
+<li>Avoid too many small shards; aim for shard sizes between 10GB and 50GB.</li>
+<li>Reindex data if necessary to adjust the number of shards.</li>
+</ul>
+</li>
+<li>
+<p><strong>Node Configuration:</strong></p>
+<ul>
+<li>Ensure nodes have sufficient heap size (50% of available RAM, but not more than 32GB).</li>
+<li>Use SSDs for better disk I/O performance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Scaling Techniques</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Cross-Cluster Search:</strong></p>
+<ul>
+<li>Allows querying across multiple clusters.</li>
+<li>Useful for geographically distributed clusters.</li>
+</ul>
+</li>
+<li>
+<p><strong>Index Lifecycle Management (ILM):</strong></p>
+<ul>
+<li>Automates index management tasks such as rollover, shrink, and delete.</li>
+<li>Helps manage large datasets efficiently.</li>
+</ul>
+</li>
+<li>
+<p><strong>Snapshot and Restore:</strong></p>
+<ul>
+<li>Regularly take snapshots of your indices for backup.</li>
+<li>Use snapshots to restore data in case of failures.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cluster Allocation Awareness:</strong></p>
+<ul>
+<li>Configure Elasticsearch to be aware of the physical location of nodes.</li>
+<li>Helps in distributing shards across different racks or availability zones.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Scaling Elasticsearch is essential for maintaining performance and reliability as your data and query loads grow. By understanding and implementing both vertical and horizontal scaling strategies, monitoring cluster health, and following best practices, you can ensure that your Elasticsearch cluster remains robust and efficient. Advanced techniques like cross-cluster search and index lifecycle management further enhance your ability to manage large-scale deployments effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='search-performance'>&#x25C4;Search Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Scaling Elasticsearch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='monitoring-and-maintenance'>Monitoring and Maintenance &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

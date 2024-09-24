@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobScheduler in Android Studio</title>
+
+    <link rel="alternate" href="https://campusempresa.com/androidstudio/jobscheduler" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/androidstudio/jobscheduler" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/androidstudio/jobscheduler" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/androidstudio/jobscheduler" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/androidstudio/jobscheduler" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='workmanager'>&#x25C4;WorkManager</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">JobScheduler in Android Studio</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='debugging-in-android-studio'>Debugging in Android Studio &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to JobScheduler</h1>
+<div class='content'><p>JobScheduler is a powerful API introduced in Android 5.0 (Lollipop) that allows you to schedule tasks to run at specific times or under certain conditions. It is particularly useful for background tasks that need to be executed periodically or when certain conditions are met, such as network availability or device charging.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>JobService</strong>: A component that runs the scheduled job.</li>
+<li><strong>JobInfo</strong>: Contains the criteria for triggering the job.</li>
+<li><strong>JobScheduler</strong>: The system service that schedules and manages jobs.</li>
+</ul>
+</div><h1>Setting Up JobScheduler</h1>
+<div class='content'></div><h2>Adding Permissions</h2>
+<div class='content'><p>To use JobScheduler, you need to add the appropriate permissions to your AndroidManifest.xml file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHVzZXMtcGVybWlzc2lvbiBhbmRyb2lkOm5hbWU9ImFuZHJvaWQucGVybWlzc2lvbi5SRUNFSVZFX0JPT1RfQ09NUExFVEVEIi8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;uses-permission android:name=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot;/&gt;</pre></div><div class='content'></div><h2>Creating a JobService</h2>
+<div class='content'><p>A <code>JobService</code> is a service that runs in the background when the job is triggered. Here is an example of a simple <code>JobService</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFuZHJvaWQuYXBwLmpvYi5Kb2JQYXJhbWV0ZXJzOwppbXBvcnQgYW5kcm9pZC5hcHAuam9iLkpvYlNlcnZpY2U7CmltcG9ydCBhbmRyb2lkLnV0aWwuTG9nOwoKcHVibGljIGNsYXNzIE15Sm9iU2VydmljZSBleHRlbmRzIEpvYlNlcnZpY2UgewogICAgcHJpdmF0ZSBzdGF0aWMgZmluYWwgU3RyaW5nIFRBRyA9ICJNeUpvYlNlcnZpY2UiOwoKICAgIEBPdmVycmlkZQogICAgcHVibGljIGJvb2xlYW4gb25TdGFydEpvYihKb2JQYXJhbWV0ZXJzIHBhcmFtcykgewogICAgICAgIExvZy5kKFRBRywgIkpvYiBzdGFydGVkIik7CiAgICAgICAgLy8gUGVyZm9ybSB5b3VyIGJhY2tncm91bmQgdGFzayBoZXJlCiAgICAgICAgam9iRmluaXNoZWQocGFyYW1zLCBmYWxzZSk7CiAgICAgICAgcmV0dXJuIHRydWU7IC8vIFJldHVybiB0cnVlIGlmIHRoZSBqb2IgbmVlZHMgdG8gY29udGludWUgcnVubmluZwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIGJvb2xlYW4gb25TdG9wSm9iKEpvYlBhcmFtZXRlcnMgcGFyYW1zKSB7CiAgICAgICAgTG9nLmQoVEFHLCAiSm9iIHN0b3BwZWQiKTsKICAgICAgICByZXR1cm4gZmFsc2U7IC8vIFJldHVybiB0cnVlIHRvIHJlc2NoZWR1bGUgdGhlIGpvYgogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import android.app.job.JobParameters;
+import android.app.job.JobService;
+import android.util.Log;
+
+public class MyJobService extends JobService {
+    private static final String TAG = &quot;MyJobService&quot;;
+
+    @Override
+    public boolean onStartJob(JobParameters params) {
+        Log.d(TAG, &quot;Job started&quot;);
+        // Perform your background task here
+        jobFinished(params, false);
+        return true; // Return true if the job needs to continue running
+    }
+
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        Log.d(TAG, &quot;Job stopped&quot;);
+        return false; // Return true to reschedule the job
+    }
+}</pre></div><div class='content'></div><h2>Scheduling a Job</h2>
+<div class='content'><p>To schedule a job, you need to create an instance of <code>JobInfo</code> and pass it to the <code>JobScheduler</code>. Here is an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFuZHJvaWQuYXBwLmpvYi5Kb2JJbmZvOwppbXBvcnQgYW5kcm9pZC5hcHAuam9iLkpvYlNjaGVkdWxlcjsKaW1wb3J0IGFuZHJvaWQuY29udGVudC5Db21wb25lbnROYW1lOwppbXBvcnQgYW5kcm9pZC5jb250ZW50LkNvbnRleHQ7CmltcG9ydCBhbmRyb2lkLm9zLkJ1aWxkOwoKcHVibGljIGNsYXNzIEpvYlNjaGVkdWxlclV0aWwgewogICAgcHVibGljIHN0YXRpYyB2b2lkIHNjaGVkdWxlSm9iKENvbnRleHQgY29udGV4dCkgewogICAgICAgIENvbXBvbmVudE5hbWUgY29tcG9uZW50TmFtZSA9IG5ldyBDb21wb25lbnROYW1lKGNvbnRleHQsIE15Sm9iU2VydmljZS5jbGFzcyk7CiAgICAgICAgSm9iSW5mby5CdWlsZGVyIGJ1aWxkZXIgPSBuZXcgSm9iSW5mby5CdWlsZGVyKDEsIGNvbXBvbmVudE5hbWUpCiAgICAgICAgICAgICAgICAuc2V0UmVxdWlyZWROZXR3b3JrVHlwZShKb2JJbmZvLk5FVFdPUktfVFlQRV9BTlkpCiAgICAgICAgICAgICAgICAuc2V0UGVyc2lzdGVkKHRydWUpCiAgICAgICAgICAgICAgICAuc2V0UGVyaW9kaWMoMTUgKiA2MCAqIDEwMDApOyAvLyAxNSBtaW51dGVzCgogICAgICAgIGlmIChCdWlsZC5WRVJTSU9OLlNES19JTlQgPj0gQnVpbGQuVkVSU0lPTl9DT0RFUy5PKSB7CiAgICAgICAgICAgIGJ1aWxkZXIuc2V0UmVxdWlyZXNCYXR0ZXJ5Tm90TG93KHRydWUpOwogICAgICAgIH0KCiAgICAgICAgSm9iU2NoZWR1bGVyIGpvYlNjaGVkdWxlciA9IChKb2JTY2hlZHVsZXIpIGNvbnRleHQuZ2V0U3lzdGVtU2VydmljZShDb250ZXh0LkpPQl9TQ0hFRFVMRVJfU0VSVklDRSk7CiAgICAgICAgam9iU2NoZWR1bGVyLnNjaGVkdWxlKGJ1aWxkZXIuYnVpbGQoKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
+import android.content.Context;
+import android.os.Build;
+
+public class JobSchedulerUtil {
+    public static void scheduleJob(Context context) {
+        ComponentName componentName = new ComponentName(context, MyJobService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(1, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 1000); // 15 minutes
+
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+            builder.setRequiresBatteryNotLow(true);
+        }
+
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+    }
+}</pre></div><div class='content'></div><h2>Cancelling a Job</h2>
+<div class='content'><p>To cancel a job, you can use the <code>cancel</code> method of <code>JobScheduler</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEpvYlNjaGVkdWxlclV0aWwgewogICAgcHVibGljIHN0YXRpYyB2b2lkIGNhbmNlbEpvYihDb250ZXh0IGNvbnRleHQsIGludCBqb2JJZCkgewogICAgICAgIEpvYlNjaGVkdWxlciBqb2JTY2hlZHVsZXIgPSAoSm9iU2NoZWR1bGVyKSBjb250ZXh0LmdldFN5c3RlbVNlcnZpY2UoQ29udGV4dC5KT0JfU0NIRURVTEVSX1NFUlZJQ0UpOwogICAgICAgIGpvYlNjaGVkdWxlci5jYW5jZWwoam9iSWQpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class JobSchedulerUtil {
+    public static void cancelJob(Context context, int jobId) {
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancel(jobId);
+    }
+}</pre></div><div class='content'></div><h1>Advanced JobScheduler Features</h1>
+<div class='content'></div><h2>Job Constraints</h2>
+<div class='content'><p>JobScheduler allows you to set various constraints for your jobs:</p>
+<ul>
+<li><strong>Network Type</strong>: Require any network or an unmetered network.</li>
+<li><strong>Device Charging</strong>: Require the device to be charging.</li>
+<li><strong>Device Idle</strong>: Require the device to be idle.</li>
+<li><strong>Battery Not Low</strong>: Require the battery to not be low.</li>
+</ul>
+</div><h2>Backoff Criteria</h2>
+<div class='content'><p>You can specify backoff criteria to control how the job should be retried if it fails:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YnVpbGRlci5zZXRCYWNrb2ZmQ3JpdGVyaWEoMzAwMCwgSm9iSW5mby5CQUNLT0ZGX1BPTElDWV9MSU5FQVIpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>builder.setBackoffCriteria(3000, JobInfo.BACKOFF_POLICY_LINEAR);</pre></div><div class='content'></div><h2>Persisted Jobs</h2>
+<div class='content'><p>Persisted jobs remain scheduled even after the device reboots:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YnVpbGRlci5zZXRQZXJzaXN0ZWQodHJ1ZSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>builder.setPersisted(true);</pre></div><div class='content'></div><h1>Example: Periodic Data Sync</h1>
+<div class='content'><p>Here is a complete example of a periodic data sync job that runs every 15 minutes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFuZHJvaWQuYXBwLmpvYi5Kb2JJbmZvOwppbXBvcnQgYW5kcm9pZC5hcHAuam9iLkpvYlBhcmFtZXRlcnM7CmltcG9ydCBhbmRyb2lkLmFwcC5qb2IuSm9iU2NoZWR1bGVyOwppbXBvcnQgYW5kcm9pZC5hcHAuam9iLkpvYlNlcnZpY2U7CmltcG9ydCBhbmRyb2lkLmNvbnRlbnQuQ29tcG9uZW50TmFtZTsKaW1wb3J0IGFuZHJvaWQuY29udGVudC5Db250ZXh0OwppbXBvcnQgYW5kcm9pZC5vcy5CdWlsZDsKaW1wb3J0IGFuZHJvaWQudXRpbC5Mb2c7CgpwdWJsaWMgY2xhc3MgRGF0YVN5bmNKb2JTZXJ2aWNlIGV4dGVuZHMgSm9iU2VydmljZSB7CiAgICBwcml2YXRlIHN0YXRpYyBmaW5hbCBTdHJpbmcgVEFHID0gIkRhdGFTeW5jSm9iU2VydmljZSI7CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgYm9vbGVhbiBvblN0YXJ0Sm9iKEpvYlBhcmFtZXRlcnMgcGFyYW1zKSB7CiAgICAgICAgTG9nLmQoVEFHLCAiRGF0YSBzeW5jIGpvYiBzdGFydGVkIik7CiAgICAgICAgLy8gUGVyZm9ybSBkYXRhIHN5bmMgaGVyZQogICAgICAgIGpvYkZpbmlzaGVkKHBhcmFtcywgZmFsc2UpOwogICAgICAgIHJldHVybiB0cnVlOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIGJvb2xlYW4gb25TdG9wSm9iKEpvYlBhcmFtZXRlcnMgcGFyYW1zKSB7CiAgICAgICAgTG9nLmQoVEFHLCAiRGF0YSBzeW5jIGpvYiBzdG9wcGVkIik7CiAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBzY2hlZHVsZUpvYihDb250ZXh0IGNvbnRleHQpIHsKICAgICAgICBDb21wb25lbnROYW1lIGNvbXBvbmVudE5hbWUgPSBuZXcgQ29tcG9uZW50TmFtZShjb250ZXh0LCBEYXRhU3luY0pvYlNlcnZpY2UuY2xhc3MpOwogICAgICAgIEpvYkluZm8uQnVpbGRlciBidWlsZGVyID0gbmV3IEpvYkluZm8uQnVpbGRlcigxLCBjb21wb25lbnROYW1lKQogICAgICAgICAgICAgICAgLnNldFJlcXVpcmVkTmV0d29ya1R5cGUoSm9iSW5mby5ORVRXT1JLX1RZUEVfQU5ZKQogICAgICAgICAgICAgICAgLnNldFBlcnNpc3RlZCh0cnVlKQogICAgICAgICAgICAgICAgLnNldFBlcmlvZGljKDE1ICogNjAgKiAxMDAwKTsKCiAgICAgICAgaWYgKEJ1aWxkLlZFUlNJT04uU0RLX0lOVCA+PSBCdWlsZC5WRVJTSU9OX0NPREVTLk8pIHsKICAgICAgICAgICAgYnVpbGRlci5zZXRSZXF1aXJlc0JhdHRlcnlOb3RMb3codHJ1ZSk7CiAgICAgICAgfQoKICAgICAgICBKb2JTY2hlZHVsZXIgam9iU2NoZWR1bGVyID0gKEpvYlNjaGVkdWxlcikgY29udGV4dC5nZXRTeXN0ZW1TZXJ2aWNlKENvbnRleHQuSk9CX1NDSEVEVUxFUl9TRVJWSUNFKTsKICAgICAgICBqb2JTY2hlZHVsZXIuc2NoZWR1bGUoYnVpbGRlci5idWlsZCgpKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
+import android.content.ComponentName;
+import android.content.Context;
+import android.os.Build;
+import android.util.Log;
+
+public class DataSyncJobService extends JobService {
+    private static final String TAG = &quot;DataSyncJobService&quot;;
+
+    @Override
+    public boolean onStartJob(JobParameters params) {
+        Log.d(TAG, &quot;Data sync job started&quot;);
+        // Perform data sync here
+        jobFinished(params, false);
+        return true;
+    }
+
+    @Override
+    public boolean onStopJob(JobParameters params) {
+        Log.d(TAG, &quot;Data sync job stopped&quot;);
+        return false;
+    }
+
+    public static void scheduleJob(Context context) {
+        ComponentName componentName = new ComponentName(context, DataSyncJobService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(1, componentName)
+                .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                .setPersisted(true)
+                .setPeriodic(15 * 60 * 1000);
+
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+            builder.setRequiresBatteryNotLow(true);
+        }
+
+        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>JobScheduler is a robust API for scheduling background tasks in Android. By understanding how to create and manage jobs, you can ensure that your app performs necessary background operations efficiently and effectively. Remember to consider the constraints and backoff criteria to optimize the performance and reliability of your scheduled tasks.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='workmanager'>&#x25C4;WorkManager</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">JobScheduler in Android Studio</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='debugging-in-android-studio'>Debugging in Android Studio &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

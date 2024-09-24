@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Template Filters</title>
+
+    <link rel="alternate" href="https://campusempresa.com/django/custom-template-filters" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/django/custom-template-filters" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/django/custom-template-filters" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/django/custom-template-filters" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/django/custom-template-filters" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='context-and-template-tags'>&#x25C4;Context and Template Tags</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Template Filters</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-authentication-basics'>User Authentication Basics &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to create custom template filters in Django. Template filters are a powerful feature that allows you to modify the display of variables in your templates. By the end of this section, you will be able to create and use your own custom filters to enhance your Django applications.</p>
+</div><h1>What are Template Filters?</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Template filters are used to transform the value of a variable before it is rendered in a template.</li>
+<li><strong>Usage</strong>: They are applied using the pipe (<code>|</code>) character in Django templates.</li>
+</ul>
+</div><h2>Built-in Filters</h2>
+<div class='content'><p>Django comes with a variety of built-in filters such as <code>date</code>, <code>length</code>, <code>lower</code>, and <code>upper</code>. Here is an example of using a built-in filter:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("e3sgbXlfZGF0ZXxkYXRlOiJZLW0tZCIgfX0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{{ my_date|date:&quot;Y-m-d&quot; }}</pre></div><div class='content'><p>In this example, the <code>date</code> filter formats the <code>my_date</code> variable to the &quot;Year-Month-Day&quot; format.</p>
+</div><h1>Creating Custom Template Filters</h1>
+<div class='content'><p>To create a custom template filter, follow these steps:</p>
+<ol>
+<li><strong>Create a <code>templatetags</code> Directory</strong>: Inside your Django app, create a directory named <code>templatetags</code>.</li>
+<li><strong>Create a Python Module</strong>: Inside the <code>templatetags</code> directory, create a Python file (e.g., <code>custom_filters.py</code>).</li>
+<li><strong>Register the Filter</strong>: Use Django's <code>@register.filter</code> decorator to register your custom filter.</li>
+</ol>
+</div><h2>Example: Creating a Custom Filter</h2>
+<div class='content'><p>Let's create a custom filter that capitalizes the first letter of each word in a string.</p>
+<ol>
+<li>
+<p><strong>Create the <code>templatetags</code> Directory and Module</strong>:</p>
+<pre><code>myapp/
+    templatetags/
+        __init__.py
+        custom_filters.py
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Custom Filter</strong>:</p>
+<pre><code class="language-python"># myapp/templatetags/custom_filters.py
+from django import template
+
+register = template.Library()
+
+@register.filter(name='capitalize_words')
+def capitalize_words(value):
+    &quot;&quot;&quot;Capitalizes the first letter of each word in the string.&quot;&quot;&quot;
+    return ' '.join(word.capitalize() for word in value.split())
+</code></pre>
+</li>
+<li>
+<p><strong>Load and Use the Custom Filter in a Template</strong>:</p>
+<pre><code class="language-html">{% load custom_filters %}
+
+&lt;p&gt;{{ &quot;hello world&quot;|capitalize_words }}&lt;/p&gt;
+</code></pre>
+<p>This will render as:</p>
+<pre><code class="language-html">&lt;p&gt;Hello World&lt;/p&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Advanced Custom Filters</h1>
+<div class='content'><p>Custom filters can also accept arguments. Let's create a filter that truncates a string to a specified number of characters.</p>
+</div><h2>Example: Truncate Filter with Arguments</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define the Truncate Filter</strong>:</p>
+<pre><code class="language-python"># myapp/templatetags/custom_filters.py
+from django import template
+
+register = template.Library()
+
+@register.filter(name='truncate_chars')
+def truncate_chars(value, num_chars):
+    &quot;&quot;&quot;Truncates the string to the specified number of characters.&quot;&quot;&quot;
+    if len(value) &gt; num_chars:
+        return value[:num_chars] + '...'
+    return value
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Truncate Filter in a Template</strong>:</p>
+<pre><code class="language-html">{% load custom_filters %}
+
+&lt;p&gt;{{ &quot;This is a long sentence that needs to be truncated.&quot;|truncate_chars:20 }}&lt;/p&gt;
+</code></pre>
+<p>This will render as:</p>
+<pre><code class="language-html">&lt;p&gt;This is a long sent...&lt;/p&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><ul>
+<li><strong>Template Filters</strong>: Modify the display of variables in Django templates.</li>
+<li><strong>Built-in Filters</strong>: Django provides many built-in filters for common tasks.</li>
+<li><strong>Custom Filters</strong>: You can create custom filters by defining a function and registering it with Django's template system.</li>
+<li><strong>Advanced Filters</strong>: Custom filters can also accept arguments to provide more functionality.</li>
+</ul>
+<p>By creating custom template filters, you can tailor the presentation of your data to meet the specific needs of your application, making your templates more powerful and flexible.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='context-and-template-tags'>&#x25C4;Context and Template Tags</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Template Filters</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-authentication-basics'>User Authentication Basics &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Simple Web Server in Haskell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/haskell/building-simple-web-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/haskell/building-simple-web-server" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/haskell/building-simple-web-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/haskell/building-simple-web-server" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/haskell/building-simple-web-server" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='metaprogramming'>&#x25C4;Metaprogramming</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a Simple Web Server in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-access'>Database Access &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this topic, we will explore how to build a simple web server using Haskell. This will cover the basics of setting up a Haskell environment, understanding HTTP, and using the <code>wai</code> and <code>warp</code> libraries to create a functional web server.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting, ensure you have:</p>
+<ul>
+<li>Basic understanding of Haskell syntax and functions.</li>
+<li>Haskell installed on your machine (GHC and Cabal or Stack).</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>To begin, we need to set up our Haskell environment and install necessary libraries.</p>
+</div><h2>Installing Haskell</h2>
+<div class='content'><ol>
+<li><strong>GHC (Glasgow Haskell Compiler)</strong>: The main compiler for Haskell.</li>
+<li><strong>Cabal or Stack</strong>: Build tools for managing Haskell projects.</li>
+</ol>
+</div><h2>Installing Libraries</h2>
+<div class='content'><p>We will use the <code>wai</code> (Web Application Interface) and <code>warp</code> (a fast HTTP server library) libraries.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2FiYWwgdXBkYXRlCmNhYmFsIGluc3RhbGwgd2FpIHdhcnA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cabal update
+cabal install wai warp</pre></div><div class='content'><p>Or, if using Stack:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RhY2sgdXBkYXRlCnN0YWNrIGluc3RhbGwgd2FpIHdhcnA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stack update
+stack install wai warp</pre></div><div class='content'></div><h1>Understanding HTTP Basics</h1>
+<div class='content'><p>Before diving into code, let's briefly understand HTTP, the protocol used by web servers to communicate with clients (browsers).</p>
+<ul>
+<li><strong>Request</strong>: Sent by the client to the server, includes methods like GET, POST, etc.</li>
+<li><strong>Response</strong>: Sent by the server to the client, includes status codes (200, 404, etc.) and data.</li>
+</ul>
+</div><h1>Building the Web Server</h1>
+<div class='content'></div><h2>Creating a Basic Server</h2>
+<div class='content'><p>Let's start by creating a simple web server that responds with &quot;Hello, World!&quot; to any request.</p>
+<ol>
+<li>
+<p><strong>Create a new Haskell file</strong>:</p>
+<pre><code class="language-bash">touch Main.hs
+</code></pre>
+</li>
+<li>
+<p><strong>Write the following code in <code>Main.hs</code></strong>:</p>
+<pre><code class="language-haskell">{-# LANGUAGE OverloadedStrings #-}
+import Network.Wai (responseLBS, Application)
+import Network.Wai.Handler.Warp (run)
+import Network.HTTP.Types (status200)
+
+main :: IO ()
+main = do
+    putStrLn &quot;Starting server on port 8080...&quot;
+    run 8080 app
+
+app :: Application
+app _ respond = respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] &quot;Hello, World!&quot;
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Imports</strong>: We import necessary modules from <code>wai</code>, <code>warp</code>, and <code>http-types</code>.</li>
+<li><strong>Main Function</strong>: Starts the server on port 8080 and uses the <code>app</code> function to handle requests.</li>
+<li><strong>App Function</strong>: Defines the application logic, which responds with a status 200 and &quot;Hello, World!&quot; message.</li>
+</ul>
+</div><h2>Running the Server</h2>
+<div class='content'><p>To run the server, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cnVuaGFza2VsbCBNYWluLmhz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>runhaskell Main.hs</pre></div><div class='content'><p>Open your browser and navigate to <code>http://localhost:8080</code> to see &quot;Hello, World!&quot;.</p>
+</div><h1>Adding Routes</h1>
+<div class='content'><p>Next, let's add some routes to handle different paths.</p>
+</div><h2>Code Example</h2>
+<div class='content'><p>Update <code>Main.hs</code> to include routing:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ey0jIExBTkdVQUdFIE92ZXJsb2FkZWRTdHJpbmdzICMtfQppbXBvcnQgTmV0d29yay5XYWkgKHJlc3BvbnNlTEJTLCBBcHBsaWNhdGlvbiwgcGF0aEluZm8pCmltcG9ydCBOZXR3b3JrLldhaS5IYW5kbGVyLldhcnAgKHJ1bikKaW1wb3J0IE5ldHdvcmsuSFRUUC5UeXBlcyAoc3RhdHVzMjAwLCBzdGF0dXM0MDQpCgptYWluIDo6IElPICgpCm1haW4gPSBkbwogICAgcHV0U3RyTG4gIlN0YXJ0aW5nIHNlcnZlciBvbiBwb3J0IDgwODAuLi4iCiAgICBydW4gODA4MCBhcHAKCmFwcCA6OiBBcHBsaWNhdGlvbgphcHAgcmVxIHJlc3BvbmQgPSBjYXNlIHBhdGhJbmZvIHJlcSBvZgogICAgWyJoZWxsbyJdIC0+IHJlc3BvbmQgJCByZXNwb25zZUxCUyBzdGF0dXMyMDAgWygiQ29udGVudC1UeXBlIiwgInRleHQvcGxhaW4iKV0gIkhlbGxvLCBXb3JsZCEiCiAgICBbImdvb2RieWUiXSAtPiByZXNwb25kICQgcmVzcG9uc2VMQlMgc3RhdHVzMjAwIFsoIkNvbnRlbnQtVHlwZSIsICJ0ZXh0L3BsYWluIildICJHb29kYnllLCBXb3JsZCEiCiAgICBfIC0+IHJlc3BvbmQgJCByZXNwb25zZUxCUyBzdGF0dXM0MDQgWygiQ29udGVudC1UeXBlIiwgInRleHQvcGxhaW4iKV0gIjQwNCAtIE5vdCBGb3VuZCI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{-# LANGUAGE OverloadedStrings #-}
+import Network.Wai (responseLBS, Application, pathInfo)
+import Network.Wai.Handler.Warp (run)
+import Network.HTTP.Types (status200, status404)
+
+main :: IO ()
+main = do
+    putStrLn &quot;Starting server on port 8080...&quot;
+    run 8080 app
+
+app :: Application
+app req respond = case pathInfo req of
+    [&quot;hello&quot;] -&gt; respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] &quot;Hello, World!&quot;
+    [&quot;goodbye&quot;] -&gt; respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] &quot;Goodbye, World!&quot;
+    _ -&gt; respond $ responseLBS status404 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] &quot;404 - Not Found&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>pathInfo</strong>: Extracts the path from the request.</li>
+<li><strong>Case Matching</strong>: Matches the path to predefined routes and responds accordingly.</li>
+</ul>
+</div><h2>Running the Server</h2>
+<div class='content'><p>Run the server again and navigate to:</p>
+<ul>
+<li><code>http://localhost:8080/hello</code> to see &quot;Hello, World!&quot;</li>
+<li><code>http://localhost:8080/goodbye</code> to see &quot;Goodbye, World!&quot;</li>
+<li>Any other path will return &quot;404 - Not Found&quot;.</li>
+</ul>
+</div><h1>Handling Query Parameters</h1>
+<div class='content'><p>Let's handle query parameters to make our server more dynamic.</p>
+</div><h2>Code Example</h2>
+<div class='content'><p>Update <code>Main.hs</code> to handle query parameters:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ey0jIExBTkdVQUdFIE92ZXJsb2FkZWRTdHJpbmdzICMtfQppbXBvcnQgTmV0d29yay5XYWkgKHJlc3BvbnNlTEJTLCBBcHBsaWNhdGlvbiwgcXVlcnlTdHJpbmcpCmltcG9ydCBOZXR3b3JrLldhaS5IYW5kbGVyLldhcnAgKHJ1bikKaW1wb3J0IE5ldHdvcmsuSFRUUC5UeXBlcyAoc3RhdHVzMjAwLCBzdGF0dXM0MDApCmltcG9ydCBEYXRhLk1heWJlIChmcm9tTWF5YmUpCmltcG9ydCBEYXRhLkJ5dGVTdHJpbmcuTGF6eS5DaGFyOCAocGFjaykKCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBwdXRTdHJMbiAiU3RhcnRpbmcgc2VydmVyIG9uIHBvcnQgODA4MC4uLiIKICAgIHJ1biA4MDgwIGFwcAoKYXBwIDo6IEFwcGxpY2F0aW9uCmFwcCByZXEgcmVzcG9uZCA9IGNhc2UgcGF0aEluZm8gcmVxIG9mCiAgICBbImdyZWV0Il0gLT4gZG8KICAgICAgICBsZXQgbmFtZSA9IGZyb21NYXliZSAiV29ybGQiICQgbG9va3VwICJuYW1lIiAkIHF1ZXJ5U3RyaW5nIHJlcQogICAgICAgIHJlc3BvbmQgJCByZXNwb25zZUxCUyBzdGF0dXMyMDAgWygiQ29udGVudC1UeXBlIiwgInRleHQvcGxhaW4iKV0gKHBhY2sgJCAiSGVsbG8sICIgKysgc2hvdyBuYW1lICsrICIhIikKICAgIF8gLT4gcmVzcG9uZCAkIHJlc3BvbnNlTEJTIHN0YXR1czQwMCBbKCJDb250ZW50LVR5cGUiLCAidGV4dC9wbGFpbiIpXSAiNDAwIC0gQmFkIFJlcXVlc3Qi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{-# LANGUAGE OverloadedStrings #-}
+import Network.Wai (responseLBS, Application, queryString)
+import Network.Wai.Handler.Warp (run)
+import Network.HTTP.Types (status200, status400)
+import Data.Maybe (fromMaybe)
+import Data.ByteString.Lazy.Char8 (pack)
+
+main :: IO ()
+main = do
+    putStrLn &quot;Starting server on port 8080...&quot;
+    run 8080 app
+
+app :: Application
+app req respond = case pathInfo req of
+    [&quot;greet&quot;] -&gt; do
+        let name = fromMaybe &quot;World&quot; $ lookup &quot;name&quot; $ queryString req
+        respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] (pack $ &quot;Hello, &quot; ++ show name ++ &quot;!&quot;)
+    _ -&gt; respond $ responseLBS status400 [(&quot;Content-Type&quot;, &quot;text/plain&quot;)] &quot;400 - Bad Request&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>queryString</strong>: Extracts query parameters from the request.</li>
+<li><strong>fromMaybe</strong>: Provides a default value if the parameter is not found.</li>
+<li><strong>pack</strong>: Converts a string to a ByteString.</li>
+</ul>
+</div><h2>Running the Server</h2>
+<div class='content'><p>Run the server and navigate to:</p>
+<ul>
+<li><code>http://localhost:8080/greet?name=Haskell</code> to see &quot;Hello, Haskell!&quot;</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this topic, we covered the basics of building a simple web server in Haskell using the <code>wai</code> and <code>warp</code> libraries. We started with a basic server, added routing, and handled query parameters. This foundation allows you to build more complex web applications in Haskell.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li>Set up the Haskell environment and installed necessary libraries.</li>
+<li>Built a basic web server responding with &quot;Hello, World!&quot;.</li>
+<li>Added routing to handle different paths.</li>
+<li>Handled query parameters to make the server dynamic.</li>
+</ul>
+<p>With these skills, you can now explore more advanced topics such as middleware, database integration, and more complex routing.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='metaprogramming'>&#x25C4;Metaprogramming</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a Simple Web Server in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-access'>Database Access &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

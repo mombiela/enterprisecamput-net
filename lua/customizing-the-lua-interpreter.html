@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizing the Lua Interpreter</title>
+
+    <link rel="alternate" href="https://campusempresa.com/lua/customizing-the-lua-interpreter" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/lua/customizing-the-lua-interpreter" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/lua/customizing-the-lua-interpreter" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/lua/customizing-the-lua-interpreter" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/lua/customizing-the-lua-interpreter" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='luajit'>&#x25C4;LuaJIT</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Customizing the Lua Interpreter</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lua-documentation'>Lua Documentation &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Customizing the Lua interpreter allows you to tailor the Lua environment to better fit your specific needs. This can range from adding new functions to modifying the behavior of existing ones. This section will guide you through the basics of customizing the Lua interpreter, providing clear explanations, examples, and exercises.</p>
+</div><h1>Why Customize the Lua Interpreter?</h1>
+<div class='content'><ul>
+<li><strong>Extend Functionality</strong>: Add new functions or libraries that are not available in the standard Lua distribution.</li>
+<li><strong>Optimize Performance</strong>: Modify the interpreter to better suit performance-critical applications.</li>
+<li><strong>Security</strong>: Restrict or modify certain functionalities to create a safer execution environment.</li>
+<li><strong>Integration</strong>: Seamlessly integrate Lua with other systems or applications.</li>
+</ul>
+</div><h1>Basic Customization Techniques</h1>
+<div class='content'></div><h2>Adding New Functions</h2>
+<div class='content'><p>To add new functions to the Lua interpreter, you need to write them in C and register them with Lua.</p>
+<h4>Example: Adding a Simple Function</h4>
+<p>Let's add a simple function that returns the square of a number.</p>
+<ol>
+<li>
+<p><strong>Write the C function</strong>:</p>
+<pre><code class="language-c">#include &lt;lua.h&gt;
+#include &lt;lauxlib.h&gt;
+#include &lt;lualib.h&gt;
+
+static int l_square(lua_State *L) {
+    double d = luaL_checknumber(L, 1);
+    lua_pushnumber(L, d * d);
+    return 1;
+}
+
+int luaopen_mylib(lua_State *L) {
+    lua_register(L, &quot;square&quot;, l_square);
+    return 0;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Compile the C code</strong>:</p>
+<pre><code class="language-sh">gcc -shared -o mylib.so -I/usr/include/lua5.3 -llua5.3 mylib.c
+</code></pre>
+</li>
+<li>
+<p><strong>Load the library in Lua</strong>:</p>
+<pre><code class="language-lua">local mylib = require(&quot;mylib&quot;)
+print(mylib.square(5))  -- Output: 25
+</code></pre>
+</li>
+</ol>
+</div><h2>Modifying Existing Functions</h2>
+<div class='content'><p>You can also modify existing functions by overriding them in Lua.</p>
+<h4>Example: Overriding the <code>print</code> Function</h4>
+<ol>
+<li><strong>Override the <code>print</code> function</strong>:
+<pre><code class="language-lua">local old_print = print
+function print(...)
+    old_print(&quot;Custom Print: &quot;, ...)
+end
+
+print(&quot;Hello, World!&quot;)  -- Output: Custom Print:  Hello, World!
+</code></pre>
+</li>
+</ol>
+</div><h1>Advanced Customization Techniques</h1>
+<div class='content'></div><h2>Embedding Lua in C Programs</h2>
+<div class='content'><p>Embedding Lua in a C program allows you to run Lua scripts from within a C application.</p>
+<h4>Example: Embedding Lua</h4>
+<ol>
+<li>
+<p><strong>Write the C code</strong>:</p>
+<pre><code class="language-c">#include &lt;lua.h&gt;
+#include &lt;lauxlib.h&gt;
+#include &lt;lualib.h&gt;
+
+int main(void) {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    if (luaL_dofile(L, &quot;script.lua&quot;)) {
+        fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+        return 1;
+    }
+
+    lua_close(L);
+    return 0;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Compile the C code</strong>:</p>
+<pre><code class="language-sh">gcc -o myprogram -I/usr/include/lua5.3 -llua5.3 myprogram.c
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Lua script (script.lua)</strong>:</p>
+<pre><code class="language-lua">print(&quot;Hello from Lua!&quot;)
+</code></pre>
+</li>
+<li>
+<p><strong>Run the program</strong>:</p>
+<pre><code class="language-sh">./myprogram  -- Output: Hello from Lua!
+</code></pre>
+</li>
+</ol>
+</div><h2>Creating Custom Lua Distributions</h2>
+<div class='content'><p>Creating a custom Lua distribution involves modifying the Lua source code and recompiling it.</p>
+<h4>Example: Customizing the Lua Source Code</h4>
+<ol>
+<li>
+<p><strong>Download and extract the Lua source code</strong>:</p>
+<pre><code class="language-sh">wget http://www.lua.org/ftp/lua-5.3.5.tar.gz
+tar -xzvf lua-5.3.5.tar.gz
+cd lua-5.3.5
+</code></pre>
+</li>
+<li>
+<p><strong>Modify the source code</strong>:</p>
+<ul>
+<li>Open <code>src/lua.c</code> and add your custom code.</li>
+<li>For example, add a custom startup message:
+<pre><code class="language-c">printf(&quot;Welcome to my custom Lua interpreter!\n&quot;);
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Compile the modified source code</strong>:</p>
+<pre><code class="language-sh">make linux
+</code></pre>
+</li>
+<li>
+<p><strong>Run the custom Lua interpreter</strong>:</p>
+<pre><code class="language-sh">./src/lua  -- Output: Welcome to my custom Lua interpreter!
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Customizing the Lua interpreter can significantly enhance its functionality, performance, and security. Whether you are adding new functions, modifying existing ones, embedding Lua in C programs, or creating custom Lua distributions, understanding these techniques will empower you to tailor Lua to your specific needs. Practice these examples and explore further customization to fully leverage the power of Lua in your projects.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='luajit'>&#x25C4;LuaJIT</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Customizing the Lua Interpreter</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lua-documentation'>Lua Documentation &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

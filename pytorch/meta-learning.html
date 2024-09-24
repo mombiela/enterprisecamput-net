@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta-Learning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/pytorch/meta-learning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/pytorch/meta-learning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/pytorch/meta-learning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/pytorch/meta-learning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/pytorch/meta-learning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='graph-neural-networks'>&#x25C4;Graph Neural Networks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Meta-Learning</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='url-docs'>Official PyTorch Documentation &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Meta-learning, or &quot;learning to learn,&quot; is a subfield of machine learning where the goal is to develop models that can learn new tasks quickly with minimal data. This is particularly useful in scenarios where data is scarce or expensive to obtain. In this section, we will explore meta-learning using PyTorch, from basic concepts to advanced implementations.</p>
+</div><h1>Introduction to Meta-Learning</h1>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Meta-learning aims to create models that can adapt to new tasks using only a few training examples.</li>
+<li><strong>Applications</strong>: Few-shot learning, reinforcement learning, hyperparameter optimization, and more.</li>
+<li><strong>Key Concepts</strong>:
+<ul>
+<li><strong>Task Distribution</strong>: A set of tasks from which training and testing tasks are sampled.</li>
+<li><strong>Meta-Training and Meta-Testing</strong>: Phases where the model learns to adapt to new tasks.</li>
+<li><strong>Inner Loop and Outer Loop</strong>: Inner loop refers to task-specific learning, while the outer loop refers to learning across tasks.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before diving into meta-learning, ensure you have PyTorch installed. You can install it using:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgdG9yY2ggdG9yY2h2aXNpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install torch torchvision</pre></div><div class='content'></div><h1>Basic Concepts in Meta-Learning</h1>
+<div class='content'></div><h2>Task Distribution</h2>
+<div class='content'><p>In meta-learning, we work with a distribution of tasks rather than a single task. Each task has its own dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmZyb20gdG9yY2gudXRpbHMuZGF0YSBpbXBvcnQgRGF0YUxvYWRlciwgRGF0YXNldAoKY2xhc3MgVGFza0RhdGFzZXQoRGF0YXNldCk6CiAgICBkZWYgX19pbml0X18oc2VsZiwgZGF0YSwgbGFiZWxzKToKICAgICAgICBzZWxmLmRhdGEgPSBkYXRhCiAgICAgICAgc2VsZi5sYWJlbHMgPSBsYWJlbHMKCiAgICBkZWYgX19sZW5fXyhzZWxmKToKICAgICAgICByZXR1cm4gbGVuKHNlbGYuZGF0YSkKCiAgICBkZWYgX19nZXRpdGVtX18oc2VsZiwgaWR4KToKICAgICAgICByZXR1cm4gc2VsZi5kYXRhW2lkeF0sIHNlbGYubGFiZWxzW2lkeF0KCiMgRXhhbXBsZSB1c2FnZQpkYXRhID0gdG9yY2gucmFuZG4oMTAwLCAzLCAzMiwgMzIpICAjIDEwMCBpbWFnZXMsIDMgY2hhbm5lbHMsIDMyeDMyIHBpeGVscwpsYWJlbHMgPSB0b3JjaC5yYW5kaW50KDAsIDEwLCAoMTAwLCkpICAjIDEwMCBsYWJlbHMgZm9yIDEwIGNsYXNzZXMKdGFza19kYXRhc2V0ID0gVGFza0RhdGFzZXQoZGF0YSwgbGFiZWxzKQp0YXNrX2xvYWRlciA9IERhdGFMb2FkZXIodGFza19kYXRhc2V0LCBiYXRjaF9zaXplPTEwLCBzaHVmZmxlPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+from torch.utils.data import DataLoader, Dataset
+
+class TaskDataset(Dataset):
+    def __init__(self, data, labels):
+        self.data = data
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return self.data[idx], self.labels[idx]
+
+# Example usage
+data = torch.randn(100, 3, 32, 32)  # 100 images, 3 channels, 32x32 pixels
+labels = torch.randint(0, 10, (100,))  # 100 labels for 10 classes
+task_dataset = TaskDataset(data, labels)
+task_loader = DataLoader(task_dataset, batch_size=10, shuffle=True)</pre></div><div class='content'></div><h2>Meta-Training and Meta-Testing</h2>
+<div class='content'><ul>
+<li><strong>Meta-Training</strong>: The model is trained on a variety of tasks to learn a good initialization.</li>
+<li><strong>Meta-Testing</strong>: The model is tested on new tasks to evaluate its ability to adapt quickly.</li>
+</ul>
+</div><h1>Model-Agnostic Meta-Learning (MAML)</h1>
+<div class='content'><p>MAML is a popular meta-learning algorithm that aims to find a good initialization for model parameters, which can be quickly adapted to new tasks.</p>
+</div><h2>MAML Algorithm</h2>
+<div class='content'><ol>
+<li><strong>Initialize</strong> model parameters.</li>
+<li><strong>Meta-Training</strong>:
+<ul>
+<li>Sample a batch of tasks.</li>
+<li>For each task:
+<ul>
+<li>Perform a few gradient descent steps (inner loop).</li>
+<li>Compute the loss on the task's validation set.</li>
+</ul>
+</li>
+<li>Update the model parameters using the aggregated loss (outer loop).</li>
+</ul>
+</li>
+<li><strong>Meta-Testing</strong>: Evaluate the model on new tasks.</li>
+</ol>
+</div><h2>MAML Implementation in PyTorch</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCmNsYXNzIFNpbXBsZU1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoU2ltcGxlTW9kZWwsIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjID0gbm4uTGluZWFyKDMyKjMyKjMsIDEwKQoKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHggPSB4LnZpZXcoeC5zaXplKDApLCAtMSkKICAgICAgICByZXR1cm4gc2VsZi5mYyh4KQoKZGVmIG1hbWxfc3RlcChtb2RlbCwgdGFza19kYXRhLCB0YXNrX2xhYmVscywgaW5uZXJfbHIsIG91dGVyX29wdGltaXplcik6CiAgICAjIENsb25lIG1vZGVsIGZvciBpbm5lciBsb29wCiAgICB0ZW1wX21vZGVsID0gU2ltcGxlTW9kZWwoKQogICAgdGVtcF9tb2RlbC5sb2FkX3N0YXRlX2RpY3QobW9kZWwuc3RhdGVfZGljdCgpKQogICAgaW5uZXJfb3B0aW1pemVyID0gb3B0aW0uU0dEKHRlbXBfbW9kZWwucGFyYW1ldGVycygpLCBscj1pbm5lcl9scikKCiAgICAjIElubmVyIGxvb3AKICAgIGZvciBfIGluIHJhbmdlKGlubmVyX3N0ZXBzKToKICAgICAgICBpbm5lcl9vcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBvdXRwdXRzID0gdGVtcF9tb2RlbCh0YXNrX2RhdGEpCiAgICAgICAgbG9zcyA9IG5uLkNyb3NzRW50cm9weUxvc3MoKShvdXRwdXRzLCB0YXNrX2xhYmVscykKICAgICAgICBsb3NzLmJhY2t3YXJkKCkKICAgICAgICBpbm5lcl9vcHRpbWl6ZXIuc3RlcCgpCgogICAgIyBPdXRlciBsb29wCiAgICBvdXRlcl9vcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dHMgPSB0ZW1wX21vZGVsKHRhc2tfZGF0YSkKICAgIGxvc3MgPSBubi5Dcm9zc0VudHJvcHlMb3NzKCkob3V0cHV0cywgdGFza19sYWJlbHMpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG91dGVyX29wdGltaXplci5zdGVwKCkKCiMgRXhhbXBsZSB1c2FnZQptb2RlbCA9IFNpbXBsZU1vZGVsKCkKb3V0ZXJfb3B0aW1pemVyID0gb3B0aW0uQWRhbShtb2RlbC5wYXJhbWV0ZXJzKCksIGxyPTAuMDAxKQp0YXNrX2RhdGEsIHRhc2tfbGFiZWxzID0gbmV4dChpdGVyKHRhc2tfbG9hZGVyKSkKbWFtbF9zdGVwKG1vZGVsLCB0YXNrX2RhdGEsIHRhc2tfbGFiZWxzLCBpbm5lcl9scj0wLjAxLCBvdXRlcl9vcHRpbWl6ZXI9b3V0ZXJfb3B0aW1pemVyKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(32*32*3, 10)
+
+    def forward(self, x):
+        x = x.view(x.size(0), -1)
+        return self.fc(x)
+
+def maml_step(model, task_data, task_labels, inner_lr, outer_optimizer):
+    # Clone model for inner loop
+    temp_model = SimpleModel()
+    temp_model.load_state_dict(model.state_dict())
+    inner_optimizer = optim.SGD(temp_model.parameters(), lr=inner_lr)
+
+    # Inner loop
+    for _ in range(inner_steps):
+        inner_optimizer.zero_grad()
+        outputs = temp_model(task_data)
+        loss = nn.CrossEntropyLoss()(outputs, task_labels)
+        loss.backward()
+        inner_optimizer.step()
+
+    # Outer loop
+    outer_optimizer.zero_grad()
+    outputs = temp_model(task_data)
+    loss = nn.CrossEntropyLoss()(outputs, task_labels)
+    loss.backward()
+    outer_optimizer.step()
+
+# Example usage
+model = SimpleModel()
+outer_optimizer = optim.Adam(model.parameters(), lr=0.001)
+task_data, task_labels = next(iter(task_loader))
+maml_step(model, task_data, task_labels, inner_lr=0.01, outer_optimizer=outer_optimizer)</pre></div><div class='content'></div><h1>Advanced Topics in Meta-Learning</h1>
+<div class='content'></div><h2>Few-Shot Learning</h2>
+<div class='content'><p>Few-shot learning focuses on training models that can generalize well from a few examples. MAML is one approach, but there are others like Prototypical Networks and Relation Networks.</p>
+</div><h2>Reinforcement Learning</h2>
+<div class='content'><p>Meta-learning can be applied to reinforcement learning, where the goal is to quickly adapt to new environments or tasks.</p>
+</div><h2>Hyperparameter Optimization</h2>
+<div class='content'><p>Meta-learning can also be used to optimize hyperparameters across different tasks, leading to more robust models.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Meta-learning is a powerful paradigm that enables models to learn new tasks quickly with minimal data. By leveraging PyTorch, we can implement and experiment with various meta-learning algorithms like MAML. As you progress, consider exploring other meta-learning techniques and their applications to broaden your understanding and skill set.</p>
+<p>In summary:</p>
+<ul>
+<li>Meta-learning focuses on learning to adapt quickly to new tasks.</li>
+<li>MAML is a foundational algorithm in meta-learning.</li>
+<li>PyTorch provides the tools necessary to implement and experiment with meta-learning models.</li>
+</ul>
+<p>Happy learning!</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='graph-neural-networks'>&#x25C4;Graph Neural Networks</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Meta-Learning</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='url-docs'>Official PyTorch Documentation &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

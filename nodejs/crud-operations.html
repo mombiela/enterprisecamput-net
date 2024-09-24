@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performing CRUD Operations</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nodejs/crud-operations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nodejs/crud-operations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='mysql-sequelize'>&#x25C4;Using MySQL with Sequelize</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performing CRUD Operations</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-express'>Introduction to Express.js &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>CRUD operations (Create, Read, Update, Delete) are fundamental to interacting with databases in any application. This section will guide you through performing CRUD operations using Node.js, from beginner to advanced levels.</p>
+</div><h1>Introduction to CRUD Operations</h1>
+<div class='content'><ul>
+<li><strong>Create</strong>: Adding new data to the database.</li>
+<li><strong>Read</strong>: Retrieving data from the database.</li>
+<li><strong>Update</strong>: Modifying existing data in the database.</li>
+<li><strong>Delete</strong>: Removing data from the database.</li>
+</ul>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before we dive into CRUD operations, ensure you have the following installed:</p>
+<ul>
+<li>Node.js</li>
+<li>npm (Node Package Manager)</li>
+<li>MongoDB (for database operations)</li>
+</ul>
+</div><h2>Installing Required Packages</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluaXQgLXkKbnBtIGluc3RhbGwgZXhwcmVzcyBtb25nb29zZSBib2R5LXBhcnNlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm init -y
+npm install express mongoose body-parser</pre></div><div class='content'><ul>
+<li><strong>express</strong>: A web framework for Node.js.</li>
+<li><strong>mongoose</strong>: An ODM (Object Data Modeling) library for MongoDB and Node.js.</li>
+<li><strong>body-parser</strong>: Middleware to parse incoming request bodies.</li>
+</ul>
+</div><h1>Connecting to MongoDB</h1>
+<div class='content'><p>Create a file named <code>app.js</code> and set up the connection to MongoDB.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwpjb25zdCBib2R5UGFyc2VyID0gcmVxdWlyZSgnYm9keS1wYXJzZXInKTsKCmNvbnN0IGFwcCA9IGV4cHJlc3MoKTsKYXBwLnVzZShib2R5UGFyc2VyLmpzb24oKSk7Cgptb25nb29zZS5jb25uZWN0KCdtb25nb2RiOi8vbG9jYWxob3N0OjI3MDE3L2NydWREQicsIHsgdXNlTmV3VXJsUGFyc2VyOiB0cnVlLCB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUgfSkKICAudGhlbigoKSA9PiBjb25zb2xlLmxvZygnTW9uZ29EQiBjb25uZWN0ZWQnKSkKICAuY2F0Y2goZXJyID0+IGNvbnNvbGUubG9nKGVycikpOwoKY29uc3QgcG9ydCA9IDMwMDA7CmFwcC5saXN0ZW4ocG9ydCwgKCkgPT4gewogIGNvbnNvbGUubG9nKGBTZXJ2ZXIgcnVubmluZyBvbiBwb3J0ICR7cG9ydH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+
+mongoose.connect('mongodb://localhost:27017/crudDB', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() =&gt; console.log('MongoDB connected'))
+  .catch(err =&gt; console.log(err));
+
+const port = 3000;
+app.listen(port, () =&gt; {
+  console.log(`Server running on port ${port}`);
+});</pre></div><div class='content'></div><h1>Defining a Mongoose Schema and Model</h1>
+<div class='content'><p>Create a <code>models</code> directory and inside it, create a file named <code>Item.js</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKY29uc3QgaXRlbVNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogIG5hbWU6IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlCiAgfSwKICBxdWFudGl0eTogewogICAgdHlwZTogTnVtYmVyLAogICAgcmVxdWlyZWQ6IHRydWUKICB9Cn0pOwoKbW9kdWxlLmV4cG9ydHMgPSBtb25nb29zZS5tb2RlbCgnSXRlbScsIGl0ZW1TY2hlbWEpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+const itemSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  }
+});
+
+module.exports = mongoose.model('Item', itemSchema);</pre></div><div class='content'></div><h1>Create Operation</h1>
+<div class='content'></div><h2>Adding a New Item</h2>
+<div class='content'><p>In <code>app.js</code>, add a route to handle the creation of a new item.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgSXRlbSA9IHJlcXVpcmUoJy4vbW9kZWxzL0l0ZW0nKTsKCmFwcC5wb3N0KCcvaXRlbXMnLCBhc3luYyAocmVxLCByZXMpID0+IHsKICBjb25zdCB7IG5hbWUsIHF1YW50aXR5IH0gPSByZXEuYm9keTsKICB0cnkgewogICAgY29uc3QgbmV3SXRlbSA9IG5ldyBJdGVtKHsgbmFtZSwgcXVhbnRpdHkgfSk7CiAgICBhd2FpdCBuZXdJdGVtLnNhdmUoKTsKICAgIHJlcy5zdGF0dXMoMjAxKS5qc29uKG5ld0l0ZW0pOwogIH0gY2F0Y2ggKGVycikgewogICAgcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogZXJyLm1lc3NhZ2UgfSk7CiAgfQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const Item = require('./models/Item');
+
+app.post('/items', async (req, res) =&gt; {
+  const { name, quantity } = req.body;
+  try {
+    const newItem = new Item({ name, quantity });
+    await newItem.save();
+    res.status(201).json(newItem);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This route listens for POST requests at <code>/items</code>, creates a new item using the data from the request body, and saves it to the database.</li>
+</ul>
+</div><h1>Read Operation</h1>
+<div class='content'></div><h2>Retrieving All Items</h2>
+<div class='content'><p>Add a route to fetch all items.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL2l0ZW1zJywgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IGl0ZW1zID0gYXdhaXQgSXRlbS5maW5kKCk7CiAgICByZXMuc3RhdHVzKDIwMCkuanNvbihpdGVtcyk7CiAgfSBjYXRjaCAoZXJyKSB7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiBlcnIubWVzc2FnZSB9KTsKICB9Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/items', async (req, res) =&gt; {
+  try {
+    const items = await Item.find();
+    res.status(200).json(items);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This route listens for GET requests at <code>/items</code> and retrieves all items from the database.</li>
+</ul>
+</div><h2>Retrieving a Single Item by ID</h2>
+<div class='content'><p>Add a route to fetch a single item by its ID.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL2l0ZW1zLzppZCcsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBpdGVtID0gYXdhaXQgSXRlbS5maW5kQnlJZChyZXEucGFyYW1zLmlkKTsKICAgIGlmICghaXRlbSkgcmV0dXJuIHJlcy5zdGF0dXMoNDA0KS5qc29uKHsgZXJyb3I6ICdJdGVtIG5vdCBmb3VuZCcgfSk7CiAgICByZXMuc3RhdHVzKDIwMCkuanNvbihpdGVtKTsKICB9IGNhdGNoIChlcnIpIHsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgZXJyb3I6IGVyci5tZXNzYWdlIH0pOwogIH0KfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/items/:id', async (req, res) =&gt; {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ error: 'Item not found' });
+    res.status(200).json(item);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This route listens for GET requests at <code>/items/:id</code> and retrieves a specific item by its ID.</li>
+</ul>
+</div><h1>Update Operation</h1>
+<div class='content'></div><h2>Updating an Item by ID</h2>
+<div class='content'><p>Add a route to update an item.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnB1dCgnL2l0ZW1zLzppZCcsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIGNvbnN0IHsgbmFtZSwgcXVhbnRpdHkgfSA9IHJlcS5ib2R5OwogIHRyeSB7CiAgICBjb25zdCB1cGRhdGVkSXRlbSA9IGF3YWl0IEl0ZW0uZmluZEJ5SWRBbmRVcGRhdGUocmVxLnBhcmFtcy5pZCwgeyBuYW1lLCBxdWFudGl0eSB9LCB7IG5ldzogdHJ1ZSB9KTsKICAgIGlmICghdXBkYXRlZEl0ZW0pIHJldHVybiByZXMuc3RhdHVzKDQwNCkuanNvbih7IGVycm9yOiAnSXRlbSBub3QgZm91bmQnIH0pOwogICAgcmVzLnN0YXR1cygyMDApLmpzb24odXBkYXRlZEl0ZW0pOwogIH0gY2F0Y2ggKGVycikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogZXJyLm1lc3NhZ2UgfSk7CiAgfQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.put('/items/:id', async (req, res) =&gt; {
+  const { name, quantity } = req.body;
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(req.params.id, { name, quantity }, { new: true });
+    if (!updatedItem) return res.status(404).json({ error: 'Item not found' });
+    res.status(200).json(updatedItem);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This route listens for PUT requests at <code>/items/:id</code>, updates the item with the provided data, and returns the updated item.</li>
+</ul>
+</div><h1>Delete Operation</h1>
+<div class='content'></div><h2>Deleting an Item by ID</h2>
+<div class='content'><p>Add a route to delete an item.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmRlbGV0ZSgnL2l0ZW1zLzppZCcsIGFzeW5jIChyZXEsIHJlcykgPT4gewogIHRyeSB7CiAgICBjb25zdCBkZWxldGVkSXRlbSA9IGF3YWl0IEl0ZW0uZmluZEJ5SWRBbmREZWxldGUocmVxLnBhcmFtcy5pZCk7CiAgICBpZiAoIWRlbGV0ZWRJdGVtKSByZXR1cm4gcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBlcnJvcjogJ0l0ZW0gbm90IGZvdW5kJyB9KTsKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHsgbWVzc2FnZTogJ0l0ZW0gZGVsZXRlZCBzdWNjZXNzZnVsbHknIH0pOwogIH0gY2F0Y2ggKGVycikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBlcnJvcjogZXJyLm1lc3NhZ2UgfSk7CiAgfQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.delete('/items/:id', async (req, res) =&gt; {
+  try {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+    if (!deletedItem) return res.status(404).json({ error: 'Item not found' });
+    res.status(200).json({ message: 'Item deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This route listens for DELETE requests at <code>/items/:id</code> and deletes the specified item from the database.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to perform basic CRUD operations using Node.js and MongoDB. You set up a Node.js application, connected it to a MongoDB database, and created routes to handle creating, reading, updating, and deleting items. These operations form the backbone of most web applications, and mastering them is crucial for any developer.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='mysql-sequelize'>&#x25C4;Using MySQL with Sequelize</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performing CRUD Operations</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='intro-to-express'>Introduction to Express.js &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

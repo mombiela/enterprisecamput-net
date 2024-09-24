@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch in Production</title>
+
+    <link rel="alternate" href="https://campusempresa.com/elasticsearch/elasticsearch-in-production" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/elasticsearch/elasticsearch-in-production" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/elasticsearch/elasticsearch-in-production" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/elasticsearch/elasticsearch-in-production" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/elasticsearch-in-production" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='audit-logging'>&#x25C4;Audit Logging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Elasticsearch in Production</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='troubleshooting'>Troubleshooting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Elasticsearch is a powerful search and analytics engine that is widely used in production environments. This section will cover best practices, optimization techniques, and considerations for deploying Elasticsearch in a production setting.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Cluster Setup</strong>: Understanding how to set up and manage an Elasticsearch cluster.</li>
+<li><strong>Index Management</strong>: Best practices for creating, managing, and optimizing indices.</li>
+<li><strong>Monitoring and Alerting</strong>: Tools and techniques for monitoring the health and performance of your Elasticsearch cluster.</li>
+<li><strong>Security</strong>: Implementing security measures to protect your data.</li>
+<li><strong>Backup and Restore</strong>: Strategies for backing up and restoring your Elasticsearch data.</li>
+<li><strong>Scaling</strong>: Techniques for scaling your Elasticsearch cluster to handle increased load.</li>
+</ul>
+</div><h1>Cluster Setup</h1>
+<div class='content'><p>Setting up an Elasticsearch cluster involves configuring multiple nodes to work together. Each node can have different roles such as master, data, and ingest nodes.</p>
+</div><h2>Example Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBlbGFzdGljc2VhcmNoLnltbApjbHVzdGVyLm5hbWU6IG15LWNsdXN0ZXIKbm9kZS5uYW1lOiBub2RlLTEKbm9kZS5yb2xlczogW21hc3RlciwgZGF0YV0KbmV0d29yay5ob3N0OiAwLjAuMC4wCmRpc2NvdmVyeS5zZWVkX2hvc3RzOiBbIm5vZGUtMSIsICJub2RlLTIiLCAibm9kZS0zIl0KY2x1c3Rlci5pbml0aWFsX21hc3Rlcl9ub2RlczogWyJub2RlLTEiLCAibm9kZS0yIiwgIm5vZGUtMyJd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># elasticsearch.yml
+cluster.name: my-cluster
+node.name: node-1
+node.roles: [master, data]
+network.host: 0.0.0.0
+discovery.seed_hosts: [&quot;node-1&quot;, &quot;node-2&quot;, &quot;node-3&quot;]
+cluster.initial_master_nodes: [&quot;node-1&quot;, &quot;node-2&quot;, &quot;node-3&quot;]</pre></div><div class='content'><ul>
+<li><strong>cluster.name</strong>: The name of your cluster.</li>
+<li><strong>node.name</strong>: The name of the node.</li>
+<li><strong>node.roles</strong>: Roles assigned to the node.</li>
+<li><strong>network.host</strong>: Network settings for the node.</li>
+<li><strong>discovery.seed_hosts</strong>: List of nodes to discover.</li>
+<li><strong>cluster.initial_master_nodes</strong>: Initial master nodes for cluster formation.</li>
+</ul>
+</div><h1>Index Management</h1>
+<div class='content'><p>Proper index management is crucial for maintaining performance and efficiency.</p>
+</div><h2>Best Practices</h2>
+<div class='content'><ul>
+<li><strong>Sharding</strong>: Determine the optimal number of shards based on your data size and query patterns.</li>
+<li><strong>Replication</strong>: Use replication to ensure data availability and fault tolerance.</li>
+<li><strong>Index Lifecycle Management (ILM)</strong>: Automate index management tasks such as rollover, shrink, and delete.</li>
+</ul>
+</div><h2>Example ILM Policy</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJwb2xpY3kiOiB7CiAgICAicGhhc2VzIjogewogICAgICAiaG90IjogewogICAgICAgICJhY3Rpb25zIjogewogICAgICAgICAgInJvbGxvdmVyIjogewogICAgICAgICAgICAibWF4X3NpemUiOiAiNTBHQiIsCiAgICAgICAgICAgICJtYXhfYWdlIjogIjMwZCIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0sCiAgICAgICJkZWxldGUiOiB7CiAgICAgICAgIm1pbl9hZ2UiOiAiOTBkIiwKICAgICAgICAiYWN0aW9ucyI6IHsKICAgICAgICAgICJkZWxldGUiOiB7fQogICAgICAgIH0KICAgICAgfQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;policy&quot;: {
+    &quot;phases&quot;: {
+      &quot;hot&quot;: {
+        &quot;actions&quot;: {
+          &quot;rollover&quot;: {
+            &quot;max_size&quot;: &quot;50GB&quot;,
+            &quot;max_age&quot;: &quot;30d&quot;
+          }
+        }
+      },
+      &quot;delete&quot;: {
+        &quot;min_age&quot;: &quot;90d&quot;,
+        &quot;actions&quot;: {
+          &quot;delete&quot;: {}
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>hot phase</strong>: Rollover the index when it reaches 50GB or 30 days old.</li>
+<li><strong>delete phase</strong>: Delete the index after 90 days.</li>
+</ul>
+</div><h1>Monitoring and Alerting</h1>
+<div class='content'><p>Monitoring the health and performance of your Elasticsearch cluster is essential.</p>
+</div><h2>Tools</h2>
+<div class='content'><ul>
+<li><strong>Elasticsearch Monitoring</strong>: Built-in monitoring features.</li>
+<li><strong>Kibana</strong>: Visualize and analyze cluster metrics.</li>
+<li><strong>Prometheus and Grafana</strong>: Use these tools for advanced monitoring and alerting.</li>
+</ul>
+</div><h2>Example Alerting Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0cmlnZ2VyIjogewogICAgInNjaGVkdWxlIjogewogICAgICAiaW50ZXJ2YWwiOiAiMW0iCiAgICB9CiAgfSwKICAiaW5wdXQiOiB7CiAgICAic2VhcmNoIjogewogICAgICAicmVxdWVzdCI6IHsKICAgICAgICAiaW5kaWNlcyI6IFsibWV0cmljYmVhdC0qIl0sCiAgICAgICAgImJvZHkiOiB7CiAgICAgICAgICAicXVlcnkiOiB7CiAgICAgICAgICAgICJyYW5nZSI6IHsKICAgICAgICAgICAgICAidGltZXN0YW1wIjogewogICAgICAgICAgICAgICAgImd0ZSI6ICJub3ctMW0iCiAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgICB9CiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfSwKICAiY29uZGl0aW9uIjogewogICAgImNvbXBhcmUiOiB7CiAgICAgICJjdHgucGF5bG9hZC5oaXRzLnRvdGFsIjogewogICAgICAgICJndCI6IDEwMDAKICAgICAgfQogICAgfQogIH0sCiAgImFjdGlvbnMiOiB7CiAgICAiZW1haWxfYWRtaW4iOiB7CiAgICAgICJlbWFpbCI6IHsKICAgICAgICAidG8iOiAiYWRtaW5AZXhhbXBsZS5jb20iLAogICAgICAgICJzdWJqZWN0IjogIkhpZ2ggUXVlcnkgTG9hZCBBbGVydCIsCiAgICAgICAgImJvZHkiOiAiVGhlIHF1ZXJ5IGxvYWQgaGFzIGV4Y2VlZGVkIDEwMDAgcXVlcmllcyBwZXIgbWludXRlLiIKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;trigger&quot;: {
+    &quot;schedule&quot;: {
+      &quot;interval&quot;: &quot;1m&quot;
+    }
+  },
+  &quot;input&quot;: {
+    &quot;search&quot;: {
+      &quot;request&quot;: {
+        &quot;indices&quot;: [&quot;metricbeat-*&quot;],
+        &quot;body&quot;: {
+          &quot;query&quot;: {
+            &quot;range&quot;: {
+              &quot;timestamp&quot;: {
+                &quot;gte&quot;: &quot;now-1m&quot;
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  &quot;condition&quot;: {
+    &quot;compare&quot;: {
+      &quot;ctx.payload.hits.total&quot;: {
+        &quot;gt&quot;: 1000
+      }
+    }
+  },
+  &quot;actions&quot;: {
+    &quot;email_admin&quot;: {
+      &quot;email&quot;: {
+        &quot;to&quot;: &quot;admin@example.com&quot;,
+        &quot;subject&quot;: &quot;High Query Load Alert&quot;,
+        &quot;body&quot;: &quot;The query load has exceeded 1000 queries per minute.&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>trigger</strong>: Defines the schedule for the alert.</li>
+<li><strong>input</strong>: Specifies the search query to monitor.</li>
+<li><strong>condition</strong>: The condition that triggers the alert.</li>
+<li><strong>actions</strong>: Actions to take when the condition is met.</li>
+</ul>
+</div><h1>Security</h1>
+<div class='content'><p>Securing your Elasticsearch cluster is critical to protect your data.</p>
+</div><h2>Best Practices</h2>
+<div class='content'><ul>
+<li><strong>Authentication and Authorization</strong>: Use built-in security features or external tools like LDAP.</li>
+<li><strong>Encryption</strong>: Encrypt data at rest and in transit.</li>
+<li><strong>Access Control</strong>: Implement role-based access control (RBAC).</li>
+</ul>
+</div><h2>Example Security Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBlbGFzdGljc2VhcmNoLnltbAp4cGFjay5zZWN1cml0eS5lbmFibGVkOiB0cnVlCnhwYWNrLnNlY3VyaXR5LnRyYW5zcG9ydC5zc2wuZW5hYmxlZDogdHJ1ZQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLnZlcmlmaWNhdGlvbl9tb2RlOiBjZXJ0aWZpY2F0ZQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLmtleTogL3BhdGgvdG8va2V5LnBlbQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLmNlcnRpZmljYXRlOiAvcGF0aC90by9jZXJ0LnBlbQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLmNlcnRpZmljYXRlX2F1dGhvcml0aWVzOiBbIi9wYXRoL3RvL2NhLnBlbSJd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># elasticsearch.yml
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.key: /path/to/key.pem
+xpack.security.transport.ssl.certificate: /path/to/cert.pem
+xpack.security.transport.ssl.certificate_authorities: [&quot;/path/to/ca.pem&quot;]</pre></div><div class='content'><ul>
+<li><strong>xpack.security.enabled</strong>: Enable security features.</li>
+<li><strong>xpack.security.transport.ssl.enabled</strong>: Enable SSL for transport layer.</li>
+<li><strong>xpack.security.transport.ssl.verification_mode</strong>: Set verification mode.</li>
+<li><strong>xpack.security.transport.ssl.key</strong>: Path to SSL key.</li>
+<li><strong>xpack.security.transport.ssl.certificate</strong>: Path to SSL certificate.</li>
+<li><strong>xpack.security.transport.ssl.certificate_authorities</strong>: Path to CA certificate.</li>
+</ul>
+</div><h1>Backup and Restore</h1>
+<div class='content'><p>Regular backups are essential to prevent data loss.</p>
+</div><h2>Strategies</h2>
+<div class='content'><ul>
+<li><strong>Snapshot and Restore</strong>: Use Elasticsearch's snapshot and restore features.</li>
+<li><strong>Automated Backups</strong>: Schedule regular backups using tools like Curator.</li>
+</ul>
+</div><h2>Example Snapshot Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9fc25hcHNob3QvbXlfYmFja3VwCnsKICAidHlwZSI6ICJmcyIsCiAgInNldHRpbmdzIjogewogICAgImxvY2F0aW9uIjogIi9tb3VudC9iYWNrdXBzL215X2JhY2t1cCIsCiAgICAiY29tcHJlc3MiOiB0cnVlCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /_snapshot/my_backup
+{
+  &quot;type&quot;: &quot;fs&quot;,
+  &quot;settings&quot;: {
+    &quot;location&quot;: &quot;/mount/backups/my_backup&quot;,
+    &quot;compress&quot;: true
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>type</strong>: Type of snapshot repository.</li>
+<li><strong>settings</strong>: Configuration settings for the repository.</li>
+</ul>
+</div><h1>Scaling</h1>
+<div class='content'><p>Scaling your Elasticsearch cluster allows it to handle increased load.</p>
+</div><h2>Techniques</h2>
+<div class='content'><ul>
+<li><strong>Horizontal Scaling</strong>: Add more nodes to the cluster.</li>
+<li><strong>Vertical Scaling</strong>: Increase the resources (CPU, RAM) of existing nodes.</li>
+<li><strong>Shard Reallocation</strong>: Reallocate shards to balance the load.</li>
+</ul>
+</div><h2>Example Scaling Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBlbGFzdGljc2VhcmNoLnltbApjbHVzdGVyLnJvdXRpbmcuYWxsb2NhdGlvbi5hd2FyZW5lc3MuYXR0cmlidXRlczogcmFja19pZApub2RlLmF0dHIucmFja19pZDogcmFja18x"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># elasticsearch.yml
+cluster.routing.allocation.awareness.attributes: rack_id
+node.attr.rack_id: rack_1</pre></div><div class='content'><ul>
+<li><strong>cluster.routing.allocation.awareness.attributes</strong>: Attribute for shard allocation awareness.</li>
+<li><strong>node.attr.rack_id</strong>: Node attribute for rack awareness.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Deploying Elasticsearch in production requires careful planning and management. By following best practices for cluster setup, index management, monitoring, security, backup, and scaling, you can ensure that your Elasticsearch deployment is robust, secure, and performant.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='audit-logging'>&#x25C4;Audit Logging</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Elasticsearch in Production</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='troubleshooting'>Troubleshooting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

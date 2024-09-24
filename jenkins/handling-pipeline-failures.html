@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Pipeline Failures</title>
+
+    <link rel="alternate" href="https://campusempresa.com/jenkins/handling-pipeline-failures" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/jenkins/handling-pipeline-failures" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/jenkins/handling-pipeline-failures" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/jenkins/handling-pipeline-failures" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/jenkins/handling-pipeline-failures" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pipeline-libraries'>&#x25C4;Pipeline Libraries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Handling Pipeline Failures</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pipeline-best-practices'>Pipeline Best Practices &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Handling pipeline failures is a critical aspect of maintaining a robust CI/CD process in Jenkins. This topic will guide you through understanding, identifying, and managing pipeline failures from a beginner to an advanced level.</p>
+</div><h1>Understanding Pipeline Failures</h1>
+<div class='content'><p>Pipeline failures occur when one or more stages in your Jenkins pipeline do not execute as expected. These failures can be due to various reasons such as code errors, environmental issues, or misconfigurations.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Stages</strong>: Different phases of the pipeline (e.g., Build, Test, Deploy).</li>
+<li><strong>Steps</strong>: Individual tasks within a stage.</li>
+<li><strong>Failure</strong>: When a step or stage does not complete successfully.</li>
+</ul>
+</div><h1>Identifying Pipeline Failures</h1>
+<div class='content'><p>To effectively handle pipeline failures, you first need to identify where and why they occur.</p>
+</div><h2>Common Causes of Failures</h2>
+<div class='content'><ul>
+<li><strong>Code Errors</strong>: Syntax errors, failed tests, etc.</li>
+<li><strong>Environment Issues</strong>: Missing dependencies, incorrect configurations.</li>
+<li><strong>Resource Constraints</strong>: Insufficient memory, disk space, etc.</li>
+</ul>
+</div><h2>Example: Identifying a Failure</h2>
+<div class='content'><p>Consider a simple Jenkins pipeline:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICBzaCAnbWFrZSBidWlsZCcgLy8gVGhpcyBzdGVwIG1pZ2h0IGZhaWwgaWYgJ21ha2UnIGlzIG5vdCBpbnN0YWxsZWQKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIHRlc3QnIC8vIFRoaXMgc3RlcCBtaWdodCBmYWlsIGlmIHRlc3RzIGZhaWwKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnRGVwbG95JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdEZXBsb3lpbmcuLi4nCiAgICAgICAgICAgICAgICBzaCAnbWFrZSBkZXBsb3knIC8vIFRoaXMgc3RlcCBtaWdodCBmYWlsIGlmIGRlcGxveW1lbnQgZmFpbHMKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'make build' // This step might fail if 'make' is not installed
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'make test' // This step might fail if tests fail
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy' // This step might fail if deployment fails
+            }
+        }
+    }
+}</pre></div><div class='content'><p>In this example, if the <code>make build</code> command fails, the pipeline will stop, and Jenkins will mark it as failed.</p>
+</div><h1>Managing Pipeline Failures</h1>
+<div class='content'><p>Once you identify a failure, the next step is to manage and mitigate it.</p>
+</div><h2>Techniques to Handle Failures</h2>
+<div class='content'><ul>
+<li><strong>Retry Mechanism</strong>: Automatically retry failed steps.</li>
+<li><strong>Conditional Execution</strong>: Execute steps based on the success or failure of previous steps.</li>
+<li><strong>Notifications</strong>: Alert relevant teams about failures.</li>
+</ul>
+</div><h2>Example: Implementing a Retry Mechanism</h2>
+<div class='content'><p>You can use the <code>retry</code> block to retry a step a specified number of times:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICByZXRyeSgzKSB7CiAgICAgICAgICAgICAgICAgICAgc2ggJ21ha2UgYnVpbGQnIC8vIFJldHJ5IHVwIHRvIDMgdGltZXMgaWYgdGhpcyBzdGVwIGZhaWxzCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ1Rlc3QnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ1Rlc3RpbmcuLi4nCiAgICAgICAgICAgICAgICBzaCAnbWFrZSB0ZXN0JwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIGRlcGxveScKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                retry(3) {
+                    sh 'make build' // Retry up to 3 times if this step fails
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'make test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy'
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Example: Conditional Execution</h2>
+<div class='content'><p>Use the <code>post</code> block to define actions based on the pipeline's outcome:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICBzaCAnbWFrZSBidWlsZCcKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIHRlc3QnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgc2ggJ21ha2UgZGVwbG95JwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgcG9zdCB7CiAgICAgICAgc3VjY2VzcyB7CiAgICAgICAgICAgIGVjaG8gJ1BpcGVsaW5lIHN1Y2NlZWRlZCEnCiAgICAgICAgfQogICAgICAgIGZhaWx1cmUgewogICAgICAgICAgICBlY2hvICdQaXBlbGluZSBmYWlsZWQhJwogICAgICAgICAgICBtYWlsIHRvOiAndGVhbUBleGFtcGxlLmNvbScsCiAgICAgICAgICAgICAgICAgc3ViamVjdDogIlBpcGVsaW5lIEZhaWxlZDogJHtjdXJyZW50QnVpbGQuZnVsbERpc3BsYXlOYW1lfSIsCiAgICAgICAgICAgICAgICAgYm9keTogIlNvbWV0aGluZyB3ZW50IHdyb25nLiBQbGVhc2UgY2hlY2sgdGhlIEplbmtpbnMgY29uc29sZSBvdXRwdXQuIgogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'make build'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'make test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy'
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+            mail to: 'team@example.com',
+                 subject: &quot;Pipeline Failed: ${currentBuild.fullDisplayName}&quot;,
+                 body: &quot;Something went wrong. Please check the Jenkins console output.&quot;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Advanced Techniques</h1>
+<div class='content'><p>For advanced users, handling pipeline failures might involve more sophisticated techniques such as parallel execution and custom error handling.</p>
+</div><h2>Parallel Execution</h2>
+<div class='content'><p>Run multiple stages in parallel to save time and isolate failures:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdQYXJhbGxlbCBTdGFnZXMnKSB7CiAgICAgICAgICAgIHBhcmFsbGVsIHsKICAgICAgICAgICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nLi4uJwogICAgICAgICAgICAgICAgICAgICAgICBzaCAnbWFrZSBidWlsZCcKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ1Rlc3RpbmcuLi4nCiAgICAgICAgICAgICAgICAgICAgICAgIHNoICdtYWtlIHRlc3QnCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIGRlcGxveScKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Parallel Stages') {
+            parallel {
+                stage('Build') {
+                    steps {
+                        echo 'Building...'
+                        sh 'make build'
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        echo 'Testing...'
+                        sh 'make test'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy'
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Custom Error Handling</h2>
+<div class='content'><p>Use <code>try-catch</code> blocks within your pipeline script for custom error handling:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICBzY3JpcHQgewogICAgICAgICAgICAgICAgICAgIHRyeSB7CiAgICAgICAgICAgICAgICAgICAgICAgIHNoICdtYWtlIGJ1aWxkJwogICAgICAgICAgICAgICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkIGZhaWxlZCEnCiAgICAgICAgICAgICAgICAgICAgICAgIGN1cnJlbnRCdWlsZC5yZXN1bHQgPSAnRkFJTFVSRScKICAgICAgICAgICAgICAgICAgICAgICAgdGhyb3cgZQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIHRlc3QnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgc2ggJ21ha2UgZGVwbG95JwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                script {
+                    try {
+                        sh 'make build'
+                    } catch (Exception e) {
+                        echo 'Build failed!'
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'make test'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy'
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Handling pipeline failures effectively ensures a smooth CI/CD process and minimizes downtime. By understanding common causes, implementing retry mechanisms, using conditional execution, and applying advanced techniques, you can manage and mitigate pipeline failures in Jenkins. Always monitor your pipelines and continuously improve your error handling strategies to maintain a robust and reliable build process.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pipeline-libraries'>&#x25C4;Pipeline Libraries</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Handling Pipeline Failures</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='pipeline-best-practices'>Pipeline Best Practices &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

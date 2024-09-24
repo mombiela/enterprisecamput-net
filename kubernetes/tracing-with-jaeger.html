@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracing with Jaeger</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/tracing-with-jaeger" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/tracing-with-jaeger" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/tracing-with-jaeger" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/tracing-with-jaeger" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/tracing-with-jaeger" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging-with-efk'>&#x25C4;Logging with Elasticsearch, Fluentd, and Kibana (EFK)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Tracing with Jaeger</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='alerting'>Alerting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Distributed Tracing</h1>
+<div class='content'><p>Distributed tracing is a method used to track and monitor requests as they flow through various services in a microservices architecture. It helps in identifying performance bottlenecks, understanding service dependencies, and debugging complex issues.</p>
+</div><h1>What is Jaeger?</h1>
+<div class='content'><p>Jaeger is an open-source, end-to-end distributed tracing tool that helps in monitoring and troubleshooting microservices-based distributed systems. It is used for:</p>
+<ul>
+<li>Performance optimization</li>
+<li>Root cause analysis</li>
+<li>Service dependency analysis</li>
+</ul>
+</div><h1>Setting Up Jaeger in Kubernetes</h1>
+<div class='content'><p>To start using Jaeger in your Kubernetes cluster, you need to deploy Jaeger components. This can be done using Helm, a package manager for Kubernetes.</p>
+</div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>A running Kubernetes cluster</li>
+<li>Helm installed on your local machine</li>
+</ul>
+</div><h2>Installing Jaeger with Helm</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add the Jaeger Helm repository:</strong></p>
+<pre><code class="language-sh">helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
+helm repo update
+</code></pre>
+</li>
+<li>
+<p><strong>Install Jaeger:</strong></p>
+<pre><code class="language-sh">helm install jaeger jaegertracing/jaeger
+</code></pre>
+</li>
+<li>
+<p><strong>Verify the installation:</strong></p>
+<pre><code class="language-sh">kubectl get all -l app.kubernetes.io/instance=jaeger
+</code></pre>
+</li>
+</ol>
+</div><h1>Instrumenting Your Application</h1>
+<div class='content'><p>To trace requests, you need to instrument your application code to send trace data to Jaeger.</p>
+</div><h2>Example: Instrumenting a Python Application</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install the Jaeger client library:</strong></p>
+<pre><code class="language-sh">pip install jaeger-client
+</code></pre>
+</li>
+<li>
+<p><strong>Add tracing to your application:</strong></p>
+<pre><code class="language-python">from jaeger_client import Config
+from flask import Flask
+
+app = Flask(__name__)
+
+def init_tracer(service_name='my-service'):
+    config = Config(
+        config={
+            'sampler': {'type': 'const', 'param': 1},
+            'logging': True,
+        },
+        service_name=service_name,
+    )
+    return config.initialize_tracer()
+
+tracer = init_tracer()
+
+@app.route('/')
+def hello():
+    with tracer.start_span('hello-world') as span:
+        span.set_tag('example-tag', 'hello-world')
+        return 'Hello, World!'
+
+if __name__ == '__main__':
+    app.run()
+</code></pre>
+</li>
+</ol>
+</div><h1>Viewing Traces in Jaeger UI</h1>
+<div class='content'><p>Once your application is instrumented and running, you can view the traces in the Jaeger UI.</p>
+<ol>
+<li>
+<p><strong>Access the Jaeger UI:</strong></p>
+<pre><code class="language-sh">kubectl port-forward svc/jaeger-query 16686:16686
+</code></pre>
+<p>Open your browser and navigate to <code>http://localhost:16686</code>.</p>
+</li>
+<li>
+<p><strong>Search for traces:</strong></p>
+<ul>
+<li>Select your service from the dropdown.</li>
+<li>Click on &quot;Find Traces&quot; to view the trace data.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Advanced Configuration</h1>
+<div class='content'><p>Jaeger provides various configuration options to customize its behavior.</p>
+</div><h2>Sampling Strategies</h2>
+<div class='content'><p>Sampling determines which traces are collected and sent to Jaeger. Common strategies include:</p>
+<ul>
+<li><strong>Const Sampling:</strong> Always sample a fixed percentage of traces.</li>
+<li><strong>Probabilistic Sampling:</strong> Sample traces based on a probability.</li>
+</ul>
+</div><h2>Example: Configuring Sampling in Kubernetes</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a ConfigMap for sampling:</strong></p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jaeger-sampling
+data:
+  sampling.json: |
+    {
+      &quot;service_strategies&quot;: [
+        {
+          &quot;service&quot;: &quot;my-service&quot;,
+          &quot;type&quot;: &quot;probabilistic&quot;,
+          &quot;param&quot;: 0.1
+        }
+      ]
+    }
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the ConfigMap:</strong></p>
+<pre><code class="language-sh">kubectl apply -f jaeger-sampling-configmap.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Update the Jaeger deployment to use the ConfigMap:</strong></p>
+<pre><code class="language-yaml">spec:
+  containers:
+  - name: jaeger-agent
+    volumeMounts:
+    - name: sampling-config
+      mountPath: /etc/jaeger/sampling
+      subPath: sampling.json
+  volumes:
+  - name: sampling-config
+    configMap:
+      name: jaeger-sampling
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Tracing with Jaeger in a Kubernetes environment provides powerful insights into your microservices architecture. By following the steps outlined, you can set up Jaeger, instrument your applications, and start analyzing traces to optimize performance and troubleshoot issues. Advanced configurations like sampling strategies allow you to fine-tune the tracing to suit your needs.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging-with-efk'>&#x25C4;Logging with Elasticsearch, Fluentd, and Kibana (EFK)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Tracing with Jaeger</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='alerting'>Alerting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

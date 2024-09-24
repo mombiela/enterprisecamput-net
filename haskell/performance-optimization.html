@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization in Haskell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/haskell/performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/haskell/performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/haskell/performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/haskell/performance-optimization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/haskell/performance-optimization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-style-formatting'>&#x25C4;Code Style and Formatting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performance Optimization in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='refactoring-haskell-code'>Refactoring Haskell Code &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Performance Optimization</h1>
+<div class='content'><p>Performance optimization in Haskell involves improving the efficiency of your code in terms of speed and memory usage. This section will guide you through various techniques and best practices to write performant Haskell code.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Lazy Evaluation</strong>: Understanding how Haskell's lazy evaluation works is crucial for performance optimization.</li>
+<li><strong>Strictness</strong>: Knowing when and how to use strict evaluation to avoid unnecessary memory usage.</li>
+<li><strong>Profiling</strong>: Tools and techniques to profile Haskell programs.</li>
+<li><strong>Data Structures</strong>: Choosing the right data structures for performance.</li>
+<li><strong>Concurrency and Parallelism</strong>: Leveraging Haskell's capabilities for concurrent and parallel programming.</li>
+</ul>
+</div><h1>Lazy Evaluation</h1>
+<div class='content'><p>Haskell uses lazy evaluation by default, meaning expressions are not evaluated until their values are needed. This can lead to performance improvements but also to unexpected memory usage.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gTGF6eSBldmFsdWF0aW9uIGV4YW1wbGUKbGV0IGluZmluaXRlTGlzdCA9IFsxLi5dICAtLSBUaGlzIGxpc3QgaXMgbm90IGV2YWx1YXRlZCB1bnRpbCBuZWVkZWQKdGFrZSAxMCBpbmZpbml0ZUxpc3QgICAgICAgLS0gT25seSB0aGUgZmlyc3QgMTAgZWxlbWVudHMgYXJlIGV2YWx1YXRlZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Lazy evaluation example
+let infiniteList = [1..]  -- This list is not evaluated until needed
+take 10 infiniteList       -- Only the first 10 elements are evaluated</pre></div><div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li>Lazy evaluation can save computation time by avoiding unnecessary calculations.</li>
+<li>It can also lead to memory leaks if not managed properly.</li>
+</ul>
+</div><h1>Strictness</h1>
+<div class='content'><p>Sometimes, forcing evaluation (strictness) can improve performance by reducing memory usage.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gVXNpbmcgc3RyaWN0IGV2YWx1YXRpb24KaW1wb3J0IENvbnRyb2wuRGVlcFNlcSAoZGVlcHNlcSkKCmxldCBsaXN0ID0gWzEuLjEwMDAwMDBdCmxpc3QgYGRlZXBzZXFgIHB1dFN0ckxuICJMaXN0IGV2YWx1YXRlZCI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Using strict evaluation
+import Control.DeepSeq (deepseq)
+
+let list = [1..1000000]
+list `deepseq` putStrLn &quot;List evaluated&quot;</pre></div><div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li>Use strict evaluation to avoid building up large thunks (deferred computations).</li>
+<li>The <code>seq</code> and <code>deepseq</code> functions can help enforce strict evaluation.</li>
+</ul>
+</div><h1>Profiling</h1>
+<div class='content'><p>Profiling helps identify performance bottlenecks in your code.</p>
+</div><h2>Tools</h2>
+<div class='content'><ul>
+<li><strong>GHC Profiler</strong>: The Glasgow Haskell Compiler (GHC) includes built-in profiling tools.</li>
+<li><strong>Criterion</strong>: A library for benchmarking Haskell code.</li>
+</ul>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ29tcGlsZSB3aXRoIHByb2ZpbGluZyBlbmFibGVkCmdoYyAtcHJvZiAtZnByb2YtYXV0byAtcnRzb3B0cyBNeVByb2dyYW0uaHMKCi0tIFJ1biB0aGUgcHJvZ3JhbSB3aXRoIHByb2ZpbGluZwouL015UHJvZ3JhbSArUlRTIC1w"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Compile with profiling enabled
+ghc -prof -fprof-auto -rtsopts MyProgram.hs
+
+-- Run the program with profiling
+./MyProgram +RTS -p</pre></div><div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li>Profiling provides insights into which parts of your code are consuming the most resources.</li>
+<li>Use profiling data to guide your optimization efforts.</li>
+</ul>
+</div><h1>Data Structures</h1>
+<div class='content'><p>Choosing the right data structures can have a significant impact on performance.</p>
+</div><h2>Comparison Table</h2>
+<div class='content'><p>| Data Structure | Use Case | Performance Characteristics |
+|----------------|----------|-----------------------------|
+| List           | Sequential access, small data | O(n) access time |
+| Vector         | Random access, large data | O(1) access time |
+| Map            | Key-value pairs | O(log n) access time |</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHF1YWxpZmllZCBEYXRhLlZlY3RvciBhcyBWCgpsZXQgdmVjID0gVi5mcm9tTGlzdCBbMS4uMTAwMDAwMF0KcHJpbnQgKHZlYyBWLiEgOTk5OTk5KSAgLS0gRmFzdCByYW5kb20gYWNjZXNz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import qualified Data.Vector as V
+
+let vec = V.fromList [1..1000000]
+print (vec V.! 999999)  -- Fast random access</pre></div><div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li>Lists are simple but can be inefficient for large datasets.</li>
+<li>Vectors provide fast random access and are more memory efficient for large datasets.</li>
+<li>Maps are useful for key-value pairs with efficient lookups.</li>
+</ul>
+</div><h1>Concurrency and Parallelism</h1>
+<div class='content'><p>Haskell provides robust support for concurrent and parallel programming, which can significantly improve performance for certain tasks.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuUGFyYWxsZWwgKHBhciwgcHNlcSkKCmxldCBhID0gZXhwZW5zaXZlQ29tcHV0YXRpb24xCmxldCBiID0gZXhwZW5zaXZlQ29tcHV0YXRpb24yCmEgYHBhcmAgKGIgYHBzZXFgIChhICsgYikp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Parallel (par, pseq)
+
+let a = expensiveComputation1
+let b = expensiveComputation2
+a `par` (b `pseq` (a + b))</pre></div><div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li>Use <code>par</code> and <code>pseq</code> to parallelize computations.</li>
+<li>Concurrency can be achieved using threads and asynchronous programming.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Performance optimization in Haskell involves a deep understanding of lazy evaluation, strictness, profiling, data structures, and concurrency. By applying these techniques, you can write efficient and performant Haskell code. Remember to always profile your code to identify bottlenecks and guide your optimization efforts.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-style-formatting'>&#x25C4;Code Style and Formatting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Performance Optimization in Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='refactoring-haskell-code'>Refactoring Haskell Code &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using NGINX as a Web Server</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nginx/nginx-as-web-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nginx/nginx-as-web-server" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nginx/nginx-as-web-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nginx/nginx-as-web-server" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nginx/nginx-as-web-server" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='optimizing-performance'>&#x25C4;Optimizing Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using NGINX as a Web Server</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-and-fastcgi'>NGINX and FastCGI &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to NGINX</h1>
+<div class='content'><p>NGINX is a powerful, high-performance web server that can also be used as a reverse proxy, load balancer, and HTTP cache. It is known for its stability, rich feature set, simple configuration, and low resource consumption.</p>
+</div><h1>Installing NGINX</h1>
+<div class='content'><p>To start using NGINX, you first need to install it on your system. The installation process varies depending on your operating system.</p>
+</div><h2>On Ubuntu/Debian</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IGluc3RhbGwgbmdpbng="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt update
+sudo apt install nginx</pre></div><div class='content'></div><h2>On CentOS/RHEL</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyB5dW0gaW5zdGFsbCBlcGVsLXJlbGVhc2UKc3VkbyB5dW0gaW5zdGFsbCBuZ2lueA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo yum install epel-release
+sudo yum install nginx</pre></div><div class='content'></div><h2>On Windows</h2>
+<div class='content'><p>For Windows, you can download the NGINX binaries from the official <a href="https://nginx.org/en/download.html">NGINX website</a> and follow the installation instructions provided.</p>
+</div><h1>Basic Configuration</h1>
+<div class='content'><p>Once installed, you need to configure NGINX to serve your web content.</p>
+</div><h2>Default Configuration File</h2>
+<div class='content'><p>The main configuration file for NGINX is usually located at <code>/etc/nginx/nginx.conf</code>.</p>
+</div><h2>Basic Configuration Example</h2>
+<div class='content'><p>Below is a simple example of an NGINX configuration file to serve static content from <code>/var/www/html</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgICAgICBpbmRleCBpbmRleC5odG1sIGluZGV4Lmh0bTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        root /var/www/html;
+        index index.html index.htm;
+    }
+}</pre></div><div class='content'><ul>
+<li><code>listen 80;</code> - Tells NGINX to listen on port 80.</li>
+<li><code>server_name example.com;</code> - Specifies the domain name.</li>
+<li><code>location / { ... }</code> - Defines how to handle requests to the root URL.</li>
+</ul>
+</div><h1>Starting and Stopping NGINX</h1>
+<div class='content'><p>You can control the NGINX service using the following commands:</p>
+</div><h2>On Ubuntu/Debian</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgbmdpbngKc3VkbyBzeXN0ZW1jdGwgc3RvcCBuZ2lueApzdWRvIHN5c3RlbWN0bCByZXN0YXJ0IG5naW54"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx</pre></div><div class='content'></div><h2>On CentOS/RHEL</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgbmdpbngKc3VkbyBzeXN0ZW1jdGwgc3RvcCBuZ2lueApzdWRvIHN5c3RlbWN0bCByZXN0YXJ0IG5naW54"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start nginx
+sudo systemctl stop nginx
+sudo systemctl restart nginx</pre></div><div class='content'></div><h1>Serving Static Content</h1>
+<div class='content'><p>NGINX is often used to serve static content such as HTML, CSS, and JavaScript files.</p>
+</div><h2>Example Configuration</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgICAgICBpbmRleCBpbmRleC5odG1sOwogICAgfQoKICAgIGxvY2F0aW9uIC9pbWFnZXMvIHsKICAgICAgICByb290IC92YXIvd3d3L2h0bWw7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location /images/ {
+        root /var/www/html;
+    }
+}</pre></div><div class='content'><ul>
+<li>The <code>location /images/</code> block specifies that requests to <code>/images/</code> should be served from <code>/var/www/html/images/</code>.</li>
+</ul>
+</div><h1>Handling Dynamic Content</h1>
+<div class='content'><p>NGINX can also be configured to handle dynamic content by passing requests to an application server such as PHP-FPM, Node.js, or Python.</p>
+</div><h2>Example with PHP-FPM</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgIGluZGV4IGluZGV4LnBocCBpbmRleC5odG1sOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHRyeV9maWxlcyAkdXJpICR1cmkvID00MDQ7CiAgICB9CgogICAgbG9jYXRpb24gfiBcLnBocCQgewogICAgICAgIGluY2x1ZGUgc25pcHBldHMvZmFzdGNnaS1waHAuY29uZjsKICAgICAgICBmYXN0Y2dpX3Bhc3MgdW5peDovdmFyL3J1bi9waHAvcGhwNy40LWZwbS5zb2NrOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    root /var/www/html;
+    index index.php index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php7.4-fpm.sock;
+    }
+}</pre></div><div class='content'><ul>
+<li><code>try_files $uri $uri/ =404;</code> - Tries to serve the requested file, if not found, returns a 404 error.</li>
+<li><code>location ~ \.php$ { ... }</code> - Handles PHP files by passing them to the PHP-FPM service.</li>
+</ul>
+</div><h1>Security Best Practices</h1>
+<div class='content'><p>To ensure your NGINX server is secure, follow these best practices:</p>
+<ul>
+<li>
+<p><strong>Disable Server Tokens</strong>: Prevent NGINX from displaying its version number.</p>
+<pre><code class="language-nginx">server_tokens off;
+</code></pre>
+</li>
+<li>
+<p><strong>Limit Request Size</strong>: Prevent large requests that could potentially harm your server.</p>
+<pre><code class="language-nginx">client_max_body_size 1M;
+</code></pre>
+</li>
+<li>
+<p><strong>Use HTTPS</strong>: Always use HTTPS to encrypt data between the client and server.</p>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Using NGINX as a web server involves installing the software, configuring it to serve static and dynamic content, and applying security best practices. By mastering these basics, you can leverage NGINX's powerful features to build robust and efficient web applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='optimizing-performance'>&#x25C4;Optimizing Performance</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Using NGINX as a Web Server</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-and-fastcgi'>NGINX and FastCGI &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

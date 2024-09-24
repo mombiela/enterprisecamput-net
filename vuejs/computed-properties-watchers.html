@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computed Properties and Watchers in Vue.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/vuejs/computed-properties-watchers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/vuejs/computed-properties-watchers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/vuejs/computed-properties-watchers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/vuejs/computed-properties-watchers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/vuejs/computed-properties-watchers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-binding'>&#x25C4;Data Binding</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Computed Properties and Watchers in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='class-style-bindings'>Class and Style Bindings &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In Vue.js, computed properties and watchers are powerful features that help manage and react to data changes efficiently. This section will cover the basics of computed properties and watchers, their differences, and how to use them effectively in your Vue.js applications.</p>
+</div><h1>Computed Properties</h1>
+<div class='content'></div><h2>What are Computed Properties?</h2>
+<div class='content'><ul>
+<li>Computed properties are properties that are dependent on other data properties.</li>
+<li>They are cached based on their dependencies, meaning they will only re-evaluate when one of their dependencies changes.</li>
+<li>Useful for complex calculations or data transformations that need to be reactive.</li>
+</ul>
+</div><h2>Basic Usage</h2>
+<div class='content'><p>Computed properties are defined within the <code>computed</code> option in a Vue component.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8cD5PcmlnaW5hbCBNZXNzYWdlOiB7eyBtZXNzYWdlIH19PC9wPgogICAgPHA+UmV2ZXJzZWQgTWVzc2FnZToge3sgcmV2ZXJzZWRNZXNzYWdlIH19PC9wPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIGRhdGEoKSB7CiAgICByZXR1cm4gewogICAgICBtZXNzYWdlOiAnSGVsbG8gVnVlLmpzIScKICAgIH07CiAgfSwKICBjb21wdXRlZDogewogICAgcmV2ZXJzZWRNZXNzYWdlKCkgewogICAgICByZXR1cm4gdGhpcy5tZXNzYWdlLnNwbGl0KCcnKS5yZXZlcnNlKCkuam9pbignJyk7CiAgICB9CiAgfQp9Owo8L3NjcmlwdD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Original Message: {{ message }}&lt;/p&gt;
+    &lt;p&gt;Reversed Message: {{ reversedMessage }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      message: 'Hello Vue.js!'
+    };
+  },
+  computed: {
+    reversedMessage() {
+      return this.message.split('').reverse().join('');
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Caching</strong>: Computed properties are cached based on their reactive dependencies.</li>
+<li><strong>Dependency Tracking</strong>: Vue automatically tracks dependencies of computed properties.</li>
+</ul>
+</div><h2>Example: Computed Property with Multiple Dependencies</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8cD5GdWxsIE5hbWU6IHt7IGZ1bGxOYW1lIH19PC9wPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIGRhdGEoKSB7CiAgICByZXR1cm4gewogICAgICBmaXJzdE5hbWU6ICdKb2huJywKICAgICAgbGFzdE5hbWU6ICdEb2UnCiAgICB9OwogIH0sCiAgY29tcHV0ZWQ6IHsKICAgIGZ1bGxOYW1lKCkgewogICAgICByZXR1cm4gYCR7dGhpcy5maXJzdE5hbWV9ICR7dGhpcy5sYXN0TmFtZX1gOwogICAgfQogIH0KfTsKPC9zY3JpcHQ+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Full Name: {{ fullName }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      firstName: 'John',
+      lastName: 'Doe'
+    };
+  },
+  computed: {
+    fullName() {
+      return `${this.firstName} ${this.lastName}`;
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Watchers</h1>
+<div class='content'></div><h2>What are Watchers?</h2>
+<div class='content'><ul>
+<li>Watchers are functions that watch for changes in a specific data property and execute a callback when the data changes.</li>
+<li>Useful for performing asynchronous operations or complex logic in response to data changes.</li>
+</ul>
+</div><h2>Basic Usage</h2>
+<div class='content'><p>Watchers are defined within the <code>watch</code> option in a Vue component.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8cD5NZXNzYWdlOiB7eyBtZXNzYWdlIH19PC9wPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIGRhdGEoKSB7CiAgICByZXR1cm4gewogICAgICBtZXNzYWdlOiAnSGVsbG8gVnVlLmpzIScKICAgIH07CiAgfSwKICB3YXRjaDogewogICAgbWVzc2FnZShuZXdWYWx1ZSwgb2xkVmFsdWUpIHsKICAgICAgY29uc29sZS5sb2coYE1lc3NhZ2UgY2hhbmdlZCBmcm9tICR7b2xkVmFsdWV9IHRvICR7bmV3VmFsdWV9YCk7CiAgICB9CiAgfQp9Owo8L3NjcmlwdD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Message: {{ message }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      message: 'Hello Vue.js!'
+    };
+  },
+  watch: {
+    message(newValue, oldValue) {
+      console.log(`Message changed from ${oldValue} to ${newValue}`);
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Immediate Execution</strong>: Watchers can be set to execute immediately upon creation.</li>
+<li><strong>Deep Watching</strong>: Watchers can be configured to watch nested properties.</li>
+</ul>
+</div><h2>Example: Watcher with Asynchronous Operation</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8cD5TZWFyY2ggUXVlcnk6IHt7IHF1ZXJ5IH19PC9wPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIGRhdGEoKSB7CiAgICByZXR1cm4gewogICAgICBxdWVyeTogJycKICAgIH07CiAgfSwKICB3YXRjaDogewogICAgcXVlcnkobmV3UXVlcnkpIHsKICAgICAgdGhpcy5mZXRjaFJlc3VsdHMobmV3UXVlcnkpOwogICAgfQogIH0sCiAgbWV0aG9kczogewogICAgZmV0Y2hSZXN1bHRzKHF1ZXJ5KSB7CiAgICAgIC8vIFNpbXVsYXRlIGFuIEFQSSBjYWxsCiAgICAgIHNldFRpbWVvdXQoKCkgPT4gewogICAgICAgIGNvbnNvbGUubG9nKGBGZXRjaGluZyByZXN1bHRzIGZvciAke3F1ZXJ5fWApOwogICAgICB9LCA1MDApOwogICAgfQogIH0KfTsKPC9zY3JpcHQ+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;p&gt;Search Query: {{ query }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      query: ''
+    };
+  },
+  watch: {
+    query(newQuery) {
+      this.fetchResults(newQuery);
+    }
+  },
+  methods: {
+    fetchResults(query) {
+      // Simulate an API call
+      setTimeout(() =&gt; {
+        console.log(`Fetching results for ${query}`);
+      }, 500);
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Comparison: Computed Properties vs. Watchers</h1>
+<div class='content'><p>| Feature               | Computed Properties                          | Watchers                                      |
+|-----------------------|----------------------------------------------|-----------------------------------------------|
+| Use Case              | Data transformation, derived state           | Asynchronous operations, complex logic        |
+| Caching               | Yes                                           | No                                            |
+| Dependency Tracking   | Automatic                                     | Manual                                        |
+| Syntax                | Defined in <code>computed</code> option                  | Defined in <code>watch</code> option                     |
+| Execution             | Synchronous                                   | Can be asynchronous                           |</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Computed properties and watchers are essential tools in Vue.js for managing reactive data. Computed properties are ideal for data transformations and derived state, while watchers are better suited for handling side effects and complex logic in response to data changes. Understanding when and how to use these features will help you build more efficient and maintainable Vue.js applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-binding'>&#x25C4;Data Binding</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Computed Properties and Watchers in Vue.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='class-style-bindings'>Class and Style Bindings &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

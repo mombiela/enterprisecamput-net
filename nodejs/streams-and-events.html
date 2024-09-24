@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Streams and Events in Node.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/streams-and-events" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/streams-and-events" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/streams-and-events" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nodejs/streams-and-events" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nodejs/streams-and-events" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-buffers'>&#x25C4;Working with Buffers</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Streams and Events in Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='callbacks'>Callbacks &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Streams</h1>
+<div class='content'><p>Streams are a powerful feature in Node.js that allow you to handle data efficiently. They are instances of EventEmitter and can be used to read or write data continuously.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Readable Streams</strong>: Used for reading data.</li>
+<li><strong>Writable Streams</strong>: Used for writing data.</li>
+<li><strong>Duplex Streams</strong>: Can be used for both reading and writing.</li>
+<li><strong>Transform Streams</strong>: A type of duplex stream where the output is computed based on the input.</li>
+</ul>
+</div><h2>Example: Reading from a Readable Stream</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwpjb25zdCByZWFkYWJsZVN0cmVhbSA9IGZzLmNyZWF0ZVJlYWRTdHJlYW0oJ2V4YW1wbGUudHh0JywgJ3V0ZjgnKTsKCnJlYWRhYmxlU3RyZWFtLm9uKCdkYXRhJywgKGNodW5rKSA9PiB7CiAgY29uc29sZS5sb2coYFJlY2VpdmVkICR7Y2h1bmsubGVuZ3RofSBieXRlcyBvZiBkYXRhLmApOwogIGNvbnNvbGUubG9nKGNodW5rKTsKfSk7CgpyZWFkYWJsZVN0cmVhbS5vbignZW5kJywgKCkgPT4gewogIGNvbnNvbGUubG9nKCdObyBtb3JlIGRhdGEuJyk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+const readableStream = fs.createReadStream('example.txt', 'utf8');
+
+readableStream.on('data', (chunk) =&gt; {
+  console.log(`Received ${chunk.length} bytes of data.`);
+  console.log(chunk);
+});
+
+readableStream.on('end', () =&gt; {
+  console.log('No more data.');
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code reads data from <code>example.txt</code> in chunks and logs it to the console. The <code>data</code> event is emitted when a chunk of data is available, and the <code>end</code> event is emitted when there is no more data to read.</li>
+</ul>
+</div><h1>Writable Streams</h1>
+<div class='content'><p>Writable streams are used to write data to a destination.</p>
+</div><h2>Example: Writing to a Writable Stream</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwpjb25zdCB3cml0YWJsZVN0cmVhbSA9IGZzLmNyZWF0ZVdyaXRlU3RyZWFtKCdvdXRwdXQudHh0Jyk7Cgp3cml0YWJsZVN0cmVhbS53cml0ZSgnSGVsbG8sIHdvcmxkIVxuJyk7CndyaXRhYmxlU3RyZWFtLndyaXRlKCdXcml0aW5nIGRhdGEgdG8gYSBmaWxlLlxuJyk7CndyaXRhYmxlU3RyZWFtLmVuZCgnRmluaXNoZWQgd3JpdGluZy4nKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+const writableStream = fs.createWriteStream('output.txt');
+
+writableStream.write('Hello, world!\n');
+writableStream.write('Writing data to a file.\n');
+writableStream.end('Finished writing.');</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code writes data to <code>output.txt</code>. The <code>write</code> method is used to write data, and the <code>end</code> method is used to signal the end of writing.</li>
+</ul>
+</div><h1>Duplex and Transform Streams</h1>
+<div class='content'><p>Duplex streams can read and write data, while transform streams can modify or transform the data as it is read or written.</p>
+</div><h2>Example: Transform Stream</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBUcmFuc2Zvcm0gfSA9IHJlcXVpcmUoJ3N0cmVhbScpOwoKY2xhc3MgVXBwZXJjYXNlVHJhbnNmb3JtIGV4dGVuZHMgVHJhbnNmb3JtIHsKICBfdHJhbnNmb3JtKGNodW5rLCBlbmNvZGluZywgY2FsbGJhY2spIHsKICAgIHRoaXMucHVzaChjaHVuay50b1N0cmluZygpLnRvVXBwZXJDYXNlKCkpOwogICAgY2FsbGJhY2soKTsKICB9Cn0KCmNvbnN0IHVwcGVyY2FzZSA9IG5ldyBVcHBlcmNhc2VUcmFuc2Zvcm0oKTsKCnByb2Nlc3Muc3RkaW4ucGlwZSh1cHBlcmNhc2UpLnBpcGUocHJvY2Vzcy5zdGRvdXQpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { Transform } = require('stream');
+
+class UppercaseTransform extends Transform {
+  _transform(chunk, encoding, callback) {
+    this.push(chunk.toString().toUpperCase());
+    callback();
+  }
+}
+
+const uppercase = new UppercaseTransform();
+
+process.stdin.pipe(uppercase).pipe(process.stdout);</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code creates a transform stream that converts input data to uppercase. The <code>process.stdin</code> stream is piped through the transform stream and then to <code>process.stdout</code>.</li>
+</ul>
+</div><h1>Introduction to Events</h1>
+<div class='content'><p>Node.js is built around an event-driven architecture. The <code>EventEmitter</code> class is at the core of this architecture.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>EventEmitter</strong>: A class that allows you to create, emit, and listen to events.</li>
+<li><strong>on(event, listener)</strong>: Adds a listener for the specified event.</li>
+<li><strong>emit(event, [arg1], [arg2], [...])</strong>: Emits the specified event.</li>
+</ul>
+</div><h2>Example: Basic EventEmitter</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgRXZlbnRFbWl0dGVyID0gcmVxdWlyZSgnZXZlbnRzJyk7CmNvbnN0IG15RW1pdHRlciA9IG5ldyBFdmVudEVtaXR0ZXIoKTsKCm15RW1pdHRlci5vbignZXZlbnQnLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ0FuIGV2ZW50IG9jY3VycmVkIScpOwp9KTsKCm15RW1pdHRlci5lbWl0KCdldmVudCcpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const EventEmitter = require('events');
+const myEmitter = new EventEmitter();
+
+myEmitter.on('event', () =&gt; {
+  console.log('An event occurred!');
+});
+
+myEmitter.emit('event');</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code creates an instance of <code>EventEmitter</code>, adds a listener for the <code>event</code> event, and then emits the event.</li>
+</ul>
+</div><h1>Advanced Event Handling</h1>
+<div class='content'><p>You can pass arguments to event listeners and handle multiple events.</p>
+</div><h2>Example: Passing Arguments to Event Listeners</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgRXZlbnRFbWl0dGVyID0gcmVxdWlyZSgnZXZlbnRzJyk7CmNvbnN0IG15RW1pdHRlciA9IG5ldyBFdmVudEVtaXR0ZXIoKTsKCm15RW1pdHRlci5vbignZ3JlZXQnLCAobmFtZSkgPT4gewogIGNvbnNvbGUubG9nKGBIZWxsbywgJHtuYW1lfSFgKTsKfSk7CgpteUVtaXR0ZXIuZW1pdCgnZ3JlZXQnLCAnQWxpY2UnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const EventEmitter = require('events');
+const myEmitter = new EventEmitter();
+
+myEmitter.on('greet', (name) =&gt; {
+  console.log(`Hello, ${name}!`);
+});
+
+myEmitter.emit('greet', 'Alice');</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code emits the <code>greet</code> event with an argument, and the listener logs a personalized greeting.</li>
+</ul>
+</div><h1>Combining Streams and Events</h1>
+<div class='content'><p>Streams and events often work together in Node.js applications.</p>
+</div><h2>Example: Using Streams with EventEmitter</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwpjb25zdCBFdmVudEVtaXR0ZXIgPSByZXF1aXJlKCdldmVudHMnKTsKY29uc3QgbXlFbWl0dGVyID0gbmV3IEV2ZW50RW1pdHRlcigpOwoKY29uc3QgcmVhZGFibGVTdHJlYW0gPSBmcy5jcmVhdGVSZWFkU3RyZWFtKCdleGFtcGxlLnR4dCcsICd1dGY4Jyk7CgpyZWFkYWJsZVN0cmVhbS5vbignZGF0YScsIChjaHVuaykgPT4gewogIG15RW1pdHRlci5lbWl0KCdkYXRhUmVjZWl2ZWQnLCBjaHVuayk7Cn0pOwoKbXlFbWl0dGVyLm9uKCdkYXRhUmVjZWl2ZWQnLCAoZGF0YSkgPT4gewogIGNvbnNvbGUubG9nKGBEYXRhIHJlY2VpdmVkOiAke2RhdGF9YCk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+const EventEmitter = require('events');
+const myEmitter = new EventEmitter();
+
+const readableStream = fs.createReadStream('example.txt', 'utf8');
+
+readableStream.on('data', (chunk) =&gt; {
+  myEmitter.emit('dataReceived', chunk);
+});
+
+myEmitter.on('dataReceived', (data) =&gt; {
+  console.log(`Data received: ${data}`);
+});</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This code reads data from a file and emits a custom event <code>dataReceived</code> each time a chunk of data is read. The event listener logs the received data.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Streams and events are fundamental concepts in Node.js that enable efficient data handling and event-driven programming. Understanding how to use readable, writable, duplex, and transform streams, as well as how to work with the EventEmitter class, is crucial for building scalable and efficient Node.js applications.</p>
+<p>By mastering these concepts, you can handle large amounts of data and create responsive applications that react to various events seamlessly.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-buffers'>&#x25C4;Working with Buffers</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Streams and Events in Node.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='callbacks'>Callbacks &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

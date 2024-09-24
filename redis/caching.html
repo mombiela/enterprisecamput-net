@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching with Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/caching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/caching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/caching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/caching" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/caching" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-custom-modules'>&#x25C4;Creating Custom Modules</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Caching with Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='session-storage'>Session Storage &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Caching</h1>
+<div class='content'><p>Caching is a technique used to store frequently accessed data in a temporary storage area, or cache, to improve the speed and efficiency of data retrieval. Redis, an in-memory data structure store, is widely used for caching due to its high performance and flexibility.</p>
+</div><h1>Why Use Redis for Caching?</h1>
+<div class='content'><ul>
+<li><strong>Speed</strong>: Redis stores data in memory, making data retrieval extremely fast.</li>
+<li><strong>Versatility</strong>: Supports various data structures like strings, hashes, lists, sets, and sorted sets.</li>
+<li><strong>Persistence</strong>: Offers options for data persistence, ensuring data durability.</li>
+<li><strong>Scalability</strong>: Can be scaled horizontally with Redis Cluster.</li>
+</ul>
+</div><h1>Basic Caching Concepts</h1>
+<div class='content'><ul>
+<li><strong>Cache Hit</strong>: When the requested data is found in the cache.</li>
+<li><strong>Cache Miss</strong>: When the requested data is not found in the cache, requiring a fetch from the primary data store.</li>
+<li><strong>TTL (Time to Live)</strong>: The duration for which a cache entry remains valid.</li>
+</ul>
+</div><h1>Setting Up Redis</h1>
+<div class='content'><p>To start using Redis for caching, you need to install Redis on your system. You can download it from the <a href="https://redis.io/download">official Redis website</a> or use a package manager like <code>apt</code> for Ubuntu:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IGluc3RhbGwgcmVkaXMtc2VydmVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt update
+sudo apt install redis-server</pre></div><div class='content'><p>Start the Redis server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgcmVkaXMtc2VydmVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start redis-server</pre></div><div class='content'></div><h1>Basic Caching Operations</h1>
+<div class='content'></div><h2>Storing Data in the Cache</h2>
+<div class='content'><p>To store data in Redis, you can use the <code>SET</code> command. Here’s an example in Python using the <code>redis-py</code> library:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCgojIENvbm5lY3QgdG8gUmVkaXMgc2VydmVyCnIgPSByZWRpcy5SZWRpcyhob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTApCgojIFNldCBhIGtleS12YWx1ZSBwYWlyCnIuc2V0KCd1c2VybmFtZScsICdqb2huX2RvZScpCgojIFNldCBhIGtleS12YWx1ZSBwYWlyIHdpdGggYW4gZXhwaXJhdGlvbiB0aW1lIChUVEwpCnIuc2V0ZXgoJ3Nlc3Npb25faWQnLCAzNjAwLCAnYWJjMTIzJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+
+# Connect to Redis server
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Set a key-value pair
+r.set('username', 'john_doe')
+
+# Set a key-value pair with an expiration time (TTL)
+r.setex('session_id', 3600, 'abc123')</pre></div><div class='content'></div><h2>Retrieving Data from the Cache</h2>
+<div class='content'><p>To retrieve data, use the <code>GET</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZXQgdGhlIHZhbHVlIG9mIGEga2V5CnVzZXJuYW1lID0gci5nZXQoJ3VzZXJuYW1lJykKcHJpbnQodXNlcm5hbWUuZGVjb2RlKCd1dGYtOCcpKSAgIyBPdXRwdXQ6IGpvaG5fZG9l"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Get the value of a key
+username = r.get('username')
+print(username.decode('utf-8'))  # Output: john_doe</pre></div><div class='content'></div><h2>Deleting Data from the Cache</h2>
+<div class='content'><p>To delete data, use the <code>DEL</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWxldGUgYSBrZXkKci5kZWxldGUoJ3VzZXJuYW1lJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Delete a key
+r.delete('username')</pre></div><div class='content'></div><h1>Advanced Caching Techniques</h1>
+<div class='content'></div><h2>Cache Eviction Policies</h2>
+<div class='content'><p>Redis supports several cache eviction policies to manage memory usage:</p>
+<ul>
+<li><strong>noeviction</strong>: Returns an error when the memory limit is reached.</li>
+<li><strong>allkeys-lru</strong>: Removes the least recently used (LRU) keys.</li>
+<li><strong>volatile-lru</strong>: Removes the LRU keys with an expiration set.</li>
+<li><strong>allkeys-random</strong>: Removes random keys.</li>
+<li><strong>volatile-random</strong>: Removes random keys with an expiration set.</li>
+<li><strong>volatile-ttl</strong>: Removes keys with the shortest TTL.</li>
+</ul>
+<p>You can configure the eviction policy in the Redis configuration file (<code>redis.conf</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWF4bWVtb3J5LXBvbGljeSBhbGxrZXlzLWxydQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>maxmemory-policy allkeys-lru</pre></div><div class='content'></div><h2>Using Hashes for Efficient Storage</h2>
+<div class='content'><p>Hashes are useful for storing related data together. For example, storing user profile information:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgbXVsdGlwbGUgZmllbGRzIGluIGEgaGFzaApyLmhtc2V0KCd1c2VyOjEwMDAnLCB7J3VzZXJuYW1lJzogJ2pvaG5fZG9lJywgJ2VtYWlsJzogJ2pvaG5AZXhhbXBsZS5jb20nLCAnYWdlJzogMzB9KQoKIyBHZXQgYWxsIGZpZWxkcyBpbiBhIGhhc2gKdXNlcl9wcm9maWxlID0gci5oZ2V0YWxsKCd1c2VyOjEwMDAnKQpwcmludCh1c2VyX3Byb2ZpbGUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set multiple fields in a hash
+r.hmset('user:1000', {'username': 'john_doe', 'email': 'john@example.com', 'age': 30})
+
+# Get all fields in a hash
+user_profile = r.hgetall('user:1000')
+print(user_profile)</pre></div><div class='content'></div><h2>Implementing a Cache-aside Pattern</h2>
+<div class='content'><p>In the cache-aside pattern, the application code is responsible for loading data into the cache. Here’s an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGdldF91c2VyX3Byb2ZpbGUodXNlcl9pZCk6CiAgICAjIFRyeSB0byBnZXQgZGF0YSBmcm9tIGNhY2hlCiAgICB1c2VyX3Byb2ZpbGUgPSByLmhnZXRhbGwoZid1c2VyOnt1c2VyX2lkfScpCiAgICAKICAgIGlmIHVzZXJfcHJvZmlsZToKICAgICAgICByZXR1cm4gdXNlcl9wcm9maWxlCiAgICBlbHNlOgogICAgICAgICMgU2ltdWxhdGUgZmV0Y2hpbmcgZGF0YSBmcm9tIGEgZGF0YWJhc2UKICAgICAgICB1c2VyX3Byb2ZpbGUgPSB7J3VzZXJuYW1lJzogJ2pvaG5fZG9lJywgJ2VtYWlsJzogJ2pvaG5AZXhhbXBsZS5jb20nLCAnYWdlJzogMzB9CiAgICAgICAgCiAgICAgICAgIyBTdG9yZSBkYXRhIGluIGNhY2hlCiAgICAgICAgci5obXNldChmJ3VzZXI6e3VzZXJfaWR9JywgdXNlcl9wcm9maWxlKQogICAgICAgIAogICAgICAgIHJldHVybiB1c2VyX3Byb2ZpbGUKCiMgRmV0Y2ggdXNlciBwcm9maWxlCnByb2ZpbGUgPSBnZXRfdXNlcl9wcm9maWxlKDEwMDApCnByaW50KHByb2ZpbGUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def get_user_profile(user_id):
+    # Try to get data from cache
+    user_profile = r.hgetall(f'user:{user_id}')
+    
+    if user_profile:
+        return user_profile
+    else:
+        # Simulate fetching data from a database
+        user_profile = {'username': 'john_doe', 'email': 'john@example.com', 'age': 30}
+        
+        # Store data in cache
+        r.hmset(f'user:{user_id}', user_profile)
+        
+        return user_profile
+
+# Fetch user profile
+profile = get_user_profile(1000)
+print(profile)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Caching with Redis can significantly improve the performance and scalability of your applications. By understanding basic and advanced caching techniques, you can effectively manage data retrieval and ensure efficient memory usage. Redis offers a powerful and flexible platform for implementing various caching strategies, making it an essential tool for modern software development.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-custom-modules'>&#x25C4;Creating Custom Modules</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Caching with Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='session-storage'>Session Storage &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

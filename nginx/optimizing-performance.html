@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizing Performance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nginx/optimizing-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nginx/optimizing-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nginx/optimizing-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/nginx/optimizing-performance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/nginx/optimizing-performance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='rate-limiting'>&#x25C4;Rate Limiting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimizing Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-as-web-server'>Using NGINX as a Web Server &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Performance Optimization</h1>
+<div class='content'><p>Optimizing the performance of your NGINX server is crucial for ensuring fast, reliable, and efficient web service delivery. This section will guide you through various techniques and best practices to enhance the performance of your NGINX server, from beginner to advanced levels.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Caching</strong>: Storing frequently accessed data in memory to reduce load times.</li>
+<li><strong>Load Balancing</strong>: Distributing incoming traffic across multiple servers to ensure no single server is overwhelmed.</li>
+<li><strong>Compression</strong>: Reducing the size of files sent from the server to the client to speed up load times.</li>
+<li><strong>Connection Handling</strong>: Efficiently managing client connections to maximize server throughput.</li>
+<li><strong>Resource Limits</strong>: Setting appropriate limits on resources to prevent overuse and ensure stability.</li>
+</ul>
+</div><h1>Caching</h1>
+<div class='content'><p>Caching can significantly reduce the load on your server and improve response times.</p>
+</div><h2>Beginner: Basic Caching</h2>
+<div class='content'><p>To enable basic caching in NGINX, you can use the <code>proxy_cache</code> directive.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC9kYXRhL25naW54L2NhY2hlIGxldmVscz0xOjIga2V5c196b25lPW15X2NhY2hlOjEwbSBtYXhfc2l6ZT0xMGcgaW5hY3RpdmU9NjBtIHVzZV90ZW1wX3BhdGg9b2ZmOwogICAgCiAgICBzZXJ2ZXIgewogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9jYWNoZSBteV9jYWNoZTsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICAgICAgcHJveHlfY2FjaGVfdmFsaWQgMjAwIDMwMiAxMG07CiAgICAgICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDQwNCAxbTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+    
+    server {
+        location / {
+            proxy_cache my_cache;
+            proxy_pass http://backend;
+            proxy_cache_valid 200 302 10m;
+            proxy_cache_valid 404 1m;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>proxy_cache_path</code>: Defines the path and parameters for the cache.</li>
+<li><code>proxy_cache</code>: Enables caching for a specific location.</li>
+<li><code>proxy_pass</code>: Forwards requests to the backend server.</li>
+<li><code>proxy_cache_valid</code>: Sets cache validity for different response codes.</li>
+</ul>
+</div><h2>Advanced: Fine-Tuning Cache</h2>
+<div class='content'><p>For more advanced caching, you can fine-tune the cache settings to better suit your needs.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC9kYXRhL25naW54L2NhY2hlIGxldmVscz0xOjIga2V5c196b25lPW15X2NhY2hlOjEwbSBtYXhfc2l6ZT0xMGcgaW5hY3RpdmU9NjBtIHVzZV90ZW1wX3BhdGg9b2ZmOwogICAgCiAgICBzZXJ2ZXIgewogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9jYWNoZSBteV9jYWNoZTsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICAgICAgcHJveHlfY2FjaGVfdmFsaWQgMjAwIDMwMiAxMG07CiAgICAgICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDQwNCAxbTsKICAgICAgICAgICAgYWRkX2hlYWRlciBYLUNhY2hlLVN0YXR1cyAkdXBzdHJlYW1fY2FjaGVfc3RhdHVzOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+    
+    server {
+        location / {
+            proxy_cache my_cache;
+            proxy_pass http://backend;
+            proxy_cache_valid 200 302 10m;
+            proxy_cache_valid 404 1m;
+            add_header X-Cache-Status $upstream_cache_status;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>add_header X-Cache-Status $upstream_cache_status</code>: Adds a header to the response to indicate cache status.</li>
+</ul>
+</div><h1>Load Balancing</h1>
+<div class='content'><p>Load balancing helps distribute traffic evenly across multiple servers.</p>
+</div><h2>Beginner: Round Robin Load Balancing</h2>
+<div class='content'><p>The simplest form of load balancing is round-robin.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>upstream</code>: Defines a group of servers.</li>
+<li><code>proxy_pass</code>: Forwards requests to the upstream group.</li>
+</ul>
+</div><h2>Advanced: Least Connections Load Balancing</h2>
+<div class='content'><p>For more efficient load distribution, use the least connections method.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        least_conn;
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>least_conn</code>: Distributes requests to the server with the fewest active connections.</li>
+</ul>
+</div><h1>Compression</h1>
+<div class='content'><p>Compression reduces the size of files sent from the server, speeding up load times.</p>
+</div><h2>Beginner: Enabling Gzip Compression</h2>
+<div class='content'><p>Enable gzip compression to reduce response sizes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBnemlwIG9uOwogICAgZ3ppcF90eXBlcyB0ZXh0L3BsYWluIHRleHQvY3NzIGFwcGxpY2F0aW9uL2pzb24gYXBwbGljYXRpb24vamF2YXNjcmlwdCB0ZXh0L3htbCBhcHBsaWNhdGlvbi94bWwgYXBwbGljYXRpb24veG1sK3JzcyB0ZXh0L2phdmFzY3JpcHQ7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+}</pre></div><div class='content'><ul>
+<li><code>gzip on</code>: Enables gzip compression.</li>
+<li><code>gzip_types</code>: Specifies the MIME types to compress.</li>
+</ul>
+</div><h2>Advanced: Fine-Tuning Gzip Compression</h2>
+<div class='content'><p>Fine-tune gzip settings for better performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBnemlwIG9uOwogICAgZ3ppcF90eXBlcyB0ZXh0L3BsYWluIHRleHQvY3NzIGFwcGxpY2F0aW9uL2pzb24gYXBwbGljYXRpb24vamF2YXNjcmlwdCB0ZXh0L3htbCBhcHBsaWNhdGlvbi94bWwgYXBwbGljYXRpb24veG1sK3JzcyB0ZXh0L2phdmFzY3JpcHQ7CiAgICBnemlwX2NvbXBfbGV2ZWwgNTsKICAgIGd6aXBfbWluX2xlbmd0aCAyNTY7CiAgICBnemlwX3Byb3hpZWQgYW55Owp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_comp_level 5;
+    gzip_min_length 256;
+    gzip_proxied any;
+}</pre></div><div class='content'><ul>
+<li><code>gzip_comp_level</code>: Sets the compression level (1-9).</li>
+<li><code>gzip_min_length</code>: Compresses responses only if they exceed this length.</li>
+<li><code>gzip_proxied</code>: Enables compression for proxied requests.</li>
+</ul>
+</div><h1>Connection Handling</h1>
+<div class='content'><p>Efficient connection handling is crucial for maximizing server throughput.</p>
+</div><h2>Beginner: Basic Connection Handling</h2>
+<div class='content'><p>Set basic connection limits to prevent overload.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGxpbWl0X2Nvbm5fem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9YWRkcjoxMG07CiAgICAgICAgICAgIGxpbWl0X2Nvbm4gYWRkciAxMDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            limit_conn_zone $binary_remote_addr zone=addr:10m;
+            limit_conn addr 10;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>limit_conn_zone</code>: Defines a shared memory zone for connection limits.</li>
+<li><code>limit_conn</code>: Sets the maximum number of connections per IP.</li>
+</ul>
+</div><h2>Advanced: Optimizing Connection Handling</h2>
+<div class='content'><p>Optimize connection handling for better performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGxpbWl0X2Nvbm5fem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9YWRkcjoxMG07CiAgICAgICAgICAgIGxpbWl0X2Nvbm4gYWRkciAxMDsKICAgICAgICAgICAga2VlcGFsaXZlX3RpbWVvdXQgNjU7CiAgICAgICAgICAgIHNlbmRmaWxlIG9uOwogICAgICAgICAgICB0Y3Bfbm9wdXNoIG9uOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            limit_conn_zone $binary_remote_addr zone=addr:10m;
+            limit_conn addr 10;
+            keepalive_timeout 65;
+            sendfile on;
+            tcp_nopush on;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>keepalive_timeout</code>: Sets the timeout for keep-alive connections.</li>
+<li><code>sendfile</code>: Enables efficient file transfer.</li>
+<li><code>tcp_nopush</code>: Reduces the number of packets sent.</li>
+</ul>
+</div><h1>Resource Limits</h1>
+<div class='content'><p>Setting appropriate resource limits ensures stability and prevents overuse.</p>
+</div><h2>Beginner: Basic Resource Limits</h2>
+<div class='content'><p>Set basic resource limits to prevent server overload.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGNsaWVudF9tYXhfYm9keV9zaXplIDFtOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            client_max_body_size 1m;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>client_max_body_size</code>: Limits the size of client request bodies.</li>
+</ul>
+</div><h2>Advanced: Fine-Tuning Resource Limits</h2>
+<div class='content'><p>Fine-tune resource limits for better control.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGNsaWVudF9tYXhfYm9keV9zaXplIDFtOwogICAgICAgICAgICBjbGllbnRfYm9keV90aW1lb3V0IDEyOwogICAgICAgICAgICBjbGllbnRfaGVhZGVyX3RpbWVvdXQgMTI7CiAgICAgICAgICAgIGxhcmdlX2NsaWVudF9oZWFkZXJfYnVmZmVycyA0IDE2azsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            client_max_body_size 1m;
+            client_body_timeout 12;
+            client_header_timeout 12;
+            large_client_header_buffers 4 16k;
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><code>client_body_timeout</code>: Sets the timeout for reading client request bodies.</li>
+<li><code>client_header_timeout</code>: Sets the timeout for reading client request headers.</li>
+<li><code>large_client_header_buffers</code>: Allocates buffers for large client headers.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Optimizing the performance of your NGINX server involves a combination of caching, load balancing, compression, efficient connection handling, and setting appropriate resource limits. By implementing these techniques, you can ensure your server runs efficiently, providing fast and reliable service to your users.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='rate-limiting'>&#x25C4;Rate Limiting</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimizing Performance</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-as-web-server'>Using NGINX as a Web Server &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

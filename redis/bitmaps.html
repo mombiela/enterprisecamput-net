@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitmaps in Redis</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/bitmaps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/bitmaps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/bitmaps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/redis/bitmaps" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/redis/bitmaps" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hashes'>&#x25C4;Hashes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Bitmaps in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='hyperloglogs'>HyperLogLogs &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Bitmaps</h1>
+<div class='content'><p>Bitmaps are a powerful data structure in Redis that allow you to store and manipulate binary data efficiently. They are particularly useful for tasks that involve large sets of binary data, such as tracking user activity, feature flags, or any scenario where you need to manage a large number of boolean values.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Bitmap</strong>: A sequence of bits (0s and 1s) that can be manipulated individually.</li>
+<li><strong>Bit</strong>: The smallest unit of data in a bitmap, representing a binary value (0 or 1).</li>
+<li><strong>Offset</strong>: The position of a bit within a bitmap.</li>
+</ul>
+</div><h1>Basic Bitmap Operations</h1>
+<div class='content'><p>Redis provides several commands to work with bitmaps. Here are some of the most commonly used ones:</p>
+</div><h2>Setting and Getting Bits</h2>
+<div class='content'><ul>
+<li><strong>SETBIT key offset value</strong>: Sets the bit at the specified offset in the bitmap stored at key.</li>
+<li><strong>GETBIT key offset</strong>: Returns the bit value at the specified offset in the bitmap stored at key.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgdGhlIGJpdCBhdCBvZmZzZXQgMTAgdG8gMQpTRVRCSVQgdXNlcjoxMDAwIDEwIDEKCiMgR2V0IHRoZSBiaXQgYXQgb2Zmc2V0IDEwCkdFVEJJVCB1c2VyOjEwMDAgMTA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set the bit at offset 10 to 1
+SETBIT user:1000 10 1
+
+# Get the bit at offset 10
+GETBIT user:1000 10</pre></div><div class='content'></div><h2>Counting Bits</h2>
+<div class='content'><ul>
+<li><strong>BITCOUNT key [start end]</strong>: Counts the number of set bits (1s) in the bitmap stored at key. Optionally, you can specify a range with start and end offsets.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb3VudCB0aGUgbnVtYmVyIG9mIHNldCBiaXRzIGluIHRoZSBlbnRpcmUgYml0bWFwCkJJVENPVU5UIHVzZXI6MTAwMAoKIyBDb3VudCB0aGUgbnVtYmVyIG9mIHNldCBiaXRzIGluIGEgc3BlY2lmaWMgcmFuZ2UKQklUQ09VTlQgdXNlcjoxMDAwIDAgMTU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Count the number of set bits in the entire bitmap
+BITCOUNT user:1000
+
+# Count the number of set bits in a specific range
+BITCOUNT user:1000 0 15</pre></div><div class='content'></div><h2>Bitwise Operations</h2>
+<div class='content'><ul>
+<li><strong>BITOP operation destkey key [key ...]</strong>: Performs a bitwise operation between multiple bitmaps and stores the result in the destination key. Supported operations are AND, OR, XOR, and NOT.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQZXJmb3JtIGEgYml0d2lzZSBBTkQgYmV0d2VlbiB0d28gYml0bWFwcyBhbmQgc3RvcmUgdGhlIHJlc3VsdApCSVRPUCBBTkQgcmVzdWx0IHVzZXI6MTAwMCB1c2VyOjEwMDEKCiMgUGVyZm9ybSBhIGJpdHdpc2UgT1IgYmV0d2VlbiB0d28gYml0bWFwcyBhbmQgc3RvcmUgdGhlIHJlc3VsdApCSVRPUCBPUiByZXN1bHQgdXNlcjoxMDAwIHVzZXI6MTAwMQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Perform a bitwise AND between two bitmaps and store the result
+BITOP AND result user:1000 user:1001
+
+# Perform a bitwise OR between two bitmaps and store the result
+BITOP OR result user:1000 user:1001</pre></div><div class='content'></div><h1>Advanced Bitmap Operations</h1>
+<h2>Bitfield Operations</h2>
+<div class='content'><ul>
+<li><strong>BITFIELD key [GET type offset] [SET type offset value] [INCRBY type offset increment]</strong>: Allows you to perform multiple bit-level operations in a single command. This is useful for more complex manipulations of bitmaps.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgYSA1LWJpdCBpbnRlZ2VyIGF0IG9mZnNldCAwIHRvIDEwCkJJVEZJRUxEIHVzZXI6MTAwMCBTRVQgdTUgMCAxMAoKIyBHZXQgdGhlIDUtYml0IGludGVnZXIgYXQgb2Zmc2V0IDAKQklURklFTEQgdXNlcjoxMDAwIEdFVCB1NSAwCgojIEluY3JlbWVudCB0aGUgNS1iaXQgaW50ZWdlciBhdCBvZmZzZXQgMCBieSAxCkJJVEZJRUxEIHVzZXI6MTAwMCBJTkNSQlkgdTUgMCAx"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set a 5-bit integer at offset 0 to 10
+BITFIELD user:1000 SET u5 0 10
+
+# Get the 5-bit integer at offset 0
+BITFIELD user:1000 GET u5 0
+
+# Increment the 5-bit integer at offset 0 by 1
+BITFIELD user:1000 INCRBY u5 0 1</pre></div><div class='content'></div><h2>Bit Position</h2>
+<div class='content'><ul>
+<li><strong>BITPOS key bit [start] [end]</strong>: Returns the position of the first bit set to the specified value (0 or 1) in the bitmap stored at key. Optionally, you can specify a range with start and end offsets.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGaW5kIHRoZSBwb3NpdGlvbiBvZiB0aGUgZmlyc3Qgc2V0IGJpdCAoMSkKQklUUE9TIHVzZXI6MTAwMCAxCgojIEZpbmQgdGhlIHBvc2l0aW9uIG9mIHRoZSBmaXJzdCB1bnNldCBiaXQgKDApIHdpdGhpbiBhIHJhbmdlCkJJVFBPUyB1c2VyOjEwMDAgMCAwIDE1"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Find the position of the first set bit (1)
+BITPOS user:1000 1
+
+# Find the position of the first unset bit (0) within a range
+BITPOS user:1000 0 0 15</pre></div><div class='content'></div><h1>Use Cases for Bitmaps</h1>
+<div class='content'><ul>
+<li><strong>User Activity Tracking</strong>: Track whether a user has performed a specific action on a given day.</li>
+<li><strong>Feature Flags</strong>: Enable or disable features for users.</li>
+<li><strong>Resource Allocation</strong>: Manage availability of resources (e.g., seats in a theater).</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>Bitmaps in Redis are a versatile and efficient way to handle binary data. They allow you to perform a wide range of operations, from simple bit setting and getting to complex bitfield manipulations and bitwise operations. Understanding how to use these commands effectively can help you solve various problems related to tracking, resource management, and more.</p>
+<p>By mastering bitmaps, you can leverage Redis to handle large-scale binary data operations with ease and efficiency.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hashes'>&#x25C4;Hashes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Bitmaps in Redis</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='hyperloglogs'>HyperLogLogs &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

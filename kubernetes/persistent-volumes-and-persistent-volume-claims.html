@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent Volumes and Persistent Volume Claims</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/kubernetes/persistent-volumes-and-persistent-volume-claims" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/persistent-volumes-and-persistent-volume-claims" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies'>&#x25C4;Network Policies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Persistent Volumes and Persistent Volume Claims</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='storage-classes'>Storage Classes &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In Kubernetes, managing storage is a critical aspect of running stateful applications. Persistent Volumes (PVs) and Persistent Volume Claims (PVCs) are the primary resources used to manage storage in a Kubernetes cluster. This section will cover the concepts, usage, and best practices for PVs and PVCs, from beginner to advanced levels.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Persistent Volumes (PVs)</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A Persistent Volume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.</li>
+<li><strong>Lifecycle</strong>: PVs have a lifecycle independent of any individual Pod that uses the PV. They exist beyond the lifetime of a Pod and can be reused by different Pods.</li>
+<li><strong>Types</strong>: PVs can be backed by various storage systems like NFS, iSCSI, cloud provider storage (e.g., AWS EBS, GCE PD), etc.</li>
+</ul>
+</div><h2>Persistent Volume Claims (PVCs)</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A Persistent Volume Claim (PVC) is a request for storage by a user. It is similar to a Pod in that Pods consume node resources and PVCs consume PV resources.</li>
+<li><strong>Binding</strong>: PVCs are bound to PVs. When a PVC is created, Kubernetes looks for a PV that satisfies the claim's requirements and binds them together.</li>
+<li><strong>Access Modes</strong>: PVCs can request different access modes such as ReadWriteOnce, ReadOnlyMany, and ReadWriteMany.</li>
+</ul>
+</div><h1>Creating Persistent Volumes and Persistent Volume Claims</h1>
+<div class='content'></div><h2>Example: Creating a Persistent Volume</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBleGFtcGxlLXB2CnNwZWM6CiAgY2FwYWNpdHk6CiAgICBzdG9yYWdlOiAxMEdpCiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogbWFudWFsCiAgaG9zdFBhdGg6CiAgICBwYXRoOiAiL21udC9kYXRhIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: &quot;/mnt/data&quot;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>capacity</code>: Specifies the storage size.</li>
+<li><code>accessModes</code>: Defines how the volume can be accessed.</li>
+<li><code>persistentVolumeReclaimPolicy</code>: Determines what happens to the PV after the PVC is deleted (e.g., Retain, Recycle, Delete).</li>
+<li><code>storageClassName</code>: Associates the PV with a StorageClass.</li>
+<li><code>hostPath</code>: Specifies the path on the host node's filesystem.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Creating a Persistent Volume Claim</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcHZjCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICByZXNvdXJjZXM6CiAgICByZXF1ZXN0czoKICAgICAgc3RvcmFnZTogMTBHaQogIHN0b3JhZ2VDbGFzc05hbWU6IG1hbnVhbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>accessModes</code>: Requests the same access mode as the PV.</li>
+<li><code>resources.requests.storage</code>: Specifies the amount of storage requested.</li>
+<li><code>storageClassName</code>: Must match the <code>storageClassName</code> of the PV.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Binding PVs and PVCs</h1>
+<div class='content'><ul>
+<li>When a PVC is created, Kubernetes searches for a matching PV based on the requested storage size and access modes.</li>
+<li>Once a suitable PV is found, it is bound to the PVC, and the PVC can be used by Pods.</li>
+</ul>
+</div><h2>Example: Using a PVC in a Pod</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAgIC0gbmFtZTogZXhhbXBsZS1jb250YWluZXIKICAgICAgaW1hZ2U6IG5naW54CiAgICAgIHZvbHVtZU1vdW50czoKICAgICAgICAtIG1vdW50UGF0aDogIi91c3Ivc2hhcmUvbmdpbngvaHRtbCIKICAgICAgICAgIG5hbWU6IGV4YW1wbGUtdm9sdW1lCiAgdm9sdW1lczoKICAgIC0gbmFtZTogZXhhbXBsZS12b2x1bWUKICAgICAgcGVyc2lzdGVudFZvbHVtZUNsYWltOgogICAgICAgIGNsYWltTmFtZTogZXhhbXBsZS1wdmM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+    - name: example-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: example-volume
+  volumes:
+    - name: example-volume
+      persistentVolumeClaim:
+        claimName: example-pvc</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>volumeMounts</code>: Specifies where the volume will be mounted inside the container.</li>
+<li><code>volumes</code>: References the PVC by <code>claimName</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Topics</h1>
+<div class='content'></div><h2>Dynamic Provisioning</h2>
+<div class='content'><ul>
+<li><strong>Storage Classes</strong>: Define different classes of storage that can be dynamically provisioned.</li>
+<li><strong>Provisioners</strong>: Storage classes use provisioners to create PVs dynamically.</li>
+</ul>
+</div><h2>Example: Creating a Storage Class</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGZhc3QKcHJvdmlzaW9uZXI6IGt1YmVybmV0ZXMuaW8vZ2NlLXBkCnBhcmFtZXRlcnM6CiAgdHlwZTogcGQtc3NkCiAgcmVwbGljYXRpb24tdHlwZTogbm9uZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: none</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>provisioner</code>: Specifies the type of provisioner (e.g., GCE PD, AWS EBS).</li>
+<li><code>parameters</code>: Additional parameters for the provisioner.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: PVC with Dynamic Provisioning</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IGR5bmFtaWMtcHZjCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICByZXNvdXJjZXM6CiAgICByZXF1ZXN0czoKICAgICAgc3RvcmFnZTogNUdpCiAgc3RvcmFnZUNsYXNzTmFtZTogZmFzdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>storageClassName</code>: Matches the name of the StorageClass, triggering dynamic provisioning.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Best Practices</h1>
+<div class='content'><ul>
+<li><strong>Use Storage Classes</strong>: Leverage Storage Classes for dynamic provisioning to simplify storage management.</li>
+<li><strong>Set Appropriate Reclaim Policies</strong>: Choose the right reclaim policy (Retain, Recycle, Delete) based on your use case.</li>
+<li><strong>Monitor Storage Usage</strong>: Regularly monitor storage usage and adjust PVC sizes as needed.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding Persistent Volumes and Persistent Volume Claims is essential for managing storage in Kubernetes. By mastering these concepts, you can ensure that your stateful applications have reliable and scalable storage solutions. Remember to use Storage Classes for dynamic provisioning and follow best practices to optimize your storage management.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies'>&#x25C4;Network Policies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Persistent Volumes and Persistent Volume Claims</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='storage-classes'>Storage Classes &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

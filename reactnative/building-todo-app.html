@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a To-Do App in React Native</title>
+
+    <link rel="alternate" href="https://campusempresa.com/reactnative/building-todo-app" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/reactnative/building-todo-app" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/reactnative/building-todo-app" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/reactnative/building-todo-app" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/reactnative/building-todo-app" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ci-cd'>&#x25C4;Continuous Integration and Continuous Deployment (CI/CD)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a To-Do App in React Native</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='creating-weather-app'>Creating a Weather App &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this course, we will build a To-Do App using React Native. This project will help you understand the fundamentals of React Native and how to apply them to create a functional mobile application. We will start from the basics and gradually move to more advanced topics.</p>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>Before we start coding, we need to set up our development environment.</p>
+<ul>
+<li><strong>Install Node.js</strong>: Ensure you have Node.js installed. You can download it from <a href="https://nodejs.org/">nodejs.org</a>.</li>
+<li><strong>Install Expo CLI</strong>: Expo is a framework and platform for universal React applications. Install it using npm:
+<pre><code class="language-bash">npm install -g expo-cli
+</code></pre>
+</li>
+<li><strong>Initialize a New Project</strong>: Create a new React Native project using Expo CLI:
+<pre><code class="language-bash">expo init ToDoApp
+cd ToDoApp
+expo start
+</code></pre>
+</li>
+</ul>
+</div><h1>Basic Structure of a React Native App</h1>
+<div class='content'><p>Understanding the basic structure of a React Native app is crucial.</p>
+<ul>
+<li><strong>App.js</strong>: The main entry point of the application.</li>
+<li><strong>Components</strong>: Reusable pieces of UI.</li>
+<li><strong>State Management</strong>: Managing the state of the application.</li>
+</ul>
+</div><h2>Example: Basic App Structure</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgU3R5bGVTaGVldCwgVGV4dCwgVmlldyB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CgpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBBcHAoKSB7CiAgcmV0dXJuICgKICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfT4KICAgICAgPFRleHQ+V2VsY29tZSB0byB0aGUgVG8tRG8gQXBwITwvVGV4dD4KICAgIDwvVmlldz4KICApOwp9Cgpjb25zdCBzdHlsZXMgPSBTdHlsZVNoZWV0LmNyZWF0ZSh7CiAgY29udGFpbmVyOiB7CiAgICBmbGV4OiAxLAogICAgYmFja2dyb3VuZENvbG9yOiAnI2ZmZicsCiAgICBhbGlnbkl0ZW1zOiAnY2VudGVyJywKICAgIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywKICB9LAp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+
+export default function App() {
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text&gt;Welcome to the To-Do App!&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});</pre></div><div class='content'></div><h1>Creating the To-Do List Component</h1>
+<div class='content'><p>We will create a To-Do List component that will display our tasks.</p>
+<ul>
+<li><strong>State Management</strong>: Use React's <code>useState</code> hook to manage the list of tasks.</li>
+<li><strong>Rendering List</strong>: Use <code>FlatList</code> to render the list of tasks.</li>
+</ul>
+</div><h2>Example: To-Do List Component</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0LCBGbGF0TGlzdCwgU3R5bGVTaGVldCB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7Cgpjb25zdCBUb0RvTGlzdCA9ICgpID0+IHsKICBjb25zdCBbdGFza3MsIHNldFRhc2tzXSA9IHVzZVN0YXRlKFsKICAgIHsga2V5OiAnMScsIHRhc2s6ICdCdXkgZ3JvY2VyaWVzJyB9LAogICAgeyBrZXk6ICcyJywgdGFzazogJ1dhbGsgdGhlIGRvZycgfSwKICAgIHsga2V5OiAnMycsIHRhc2s6ICdSZWFkIGEgYm9vaycgfSwKICBdKTsKCiAgcmV0dXJuICgKICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfT4KICAgICAgPEZsYXRMaXN0CiAgICAgICAgZGF0YT17dGFza3N9CiAgICAgICAgcmVuZGVySXRlbT17KHsgaXRlbSB9KSA9PiA8VGV4dCBzdHlsZT17c3R5bGVzLml0ZW19PntpdGVtLnRhc2t9PC9UZXh0Pn0KICAgICAgLz4KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgZmxleDogMSwKICAgIHBhZGRpbmdUb3A6IDIyLAogIH0sCiAgaXRlbTogewogICAgcGFkZGluZzogMTAsCiAgICBmb250U2l6ZTogMTgsCiAgICBoZWlnaHQ6IDQ0LAogIH0sCn0pOwoKZXhwb3J0IGRlZmF1bHQgVG9Eb0xpc3Q7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
+
+const ToDoList = () =&gt; {
+  const [tasks, setTasks] = useState([
+    { key: '1', task: 'Buy groceries' },
+    { key: '2', task: 'Walk the dog' },
+    { key: '3', task: 'Read a book' },
+  ]);
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;FlatList
+        data={tasks}
+        renderItem={({ item }) =&gt; &lt;Text style={styles.item}&gt;{item.task}&lt;/Text&gt;}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+});
+
+export default ToDoList;</pre></div><div class='content'></div><h1>Adding New Tasks</h1>
+<div class='content'><p>We need a way to add new tasks to our list.</p>
+<ul>
+<li><strong>TextInput</strong>: Use <code>TextInput</code> to capture user input.</li>
+<li><strong>Button</strong>: Use <code>Button</code> to add the task to the list.</li>
+</ul>
+</div><h2>Example: Adding New Tasks</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0SW5wdXQsIEJ1dHRvbiwgRmxhdExpc3QsIFRleHQsIFN0eWxlU2hlZXQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVG9Eb0FwcCA9ICgpID0+IHsKICBjb25zdCBbdGFza3MsIHNldFRhc2tzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbdGV4dCwgc2V0VGV4dF0gPSB1c2VTdGF0ZSgnJyk7CgogIGNvbnN0IGFkZFRhc2sgPSAoKSA9PiB7CiAgICBzZXRUYXNrcyhbLi4udGFza3MsIHsga2V5OiBNYXRoLnJhbmRvbSgpLnRvU3RyaW5nKCksIHRhc2s6IHRleHQgfV0pOwogICAgc2V0VGV4dCgnJyk7CiAgfTsKCiAgcmV0dXJuICgKICAgIDxWaWV3IHN0eWxlPXtzdHlsZXMuY29udGFpbmVyfT4KICAgICAgPFRleHRJbnB1dAogICAgICAgIHN0eWxlPXtzdHlsZXMuaW5wdXR9CiAgICAgICAgcGxhY2Vob2xkZXI9IkFkZCBuZXcgdGFzayIKICAgICAgICB2YWx1ZT17dGV4dH0KICAgICAgICBvbkNoYW5nZVRleHQ9e3NldFRleHR9CiAgICAgIC8+CiAgICAgIDxCdXR0b24gdGl0bGU9IkFkZCBUYXNrIiBvblByZXNzPXthZGRUYXNrfSAvPgogICAgICA8RmxhdExpc3QKICAgICAgICBkYXRhPXt0YXNrc30KICAgICAgICByZW5kZXJJdGVtPXsoeyBpdGVtIH0pID0+IDxUZXh0IHN0eWxlPXtzdHlsZXMuaXRlbX0+e2l0ZW0udGFza308L1RleHQ+fQogICAgICAvPgogICAgPC9WaWV3PgogICk7Cn07Cgpjb25zdCBzdHlsZXMgPSBTdHlsZVNoZWV0LmNyZWF0ZSh7CiAgY29udGFpbmVyOiB7CiAgICBmbGV4OiAxLAogICAgcGFkZGluZ1RvcDogMjIsCiAgfSwKICBpbnB1dDogewogICAgaGVpZ2h0OiA0MCwKICAgIGJvcmRlckNvbG9yOiAnZ3JheScsCiAgICBib3JkZXJXaWR0aDogMSwKICAgIG1hcmdpbkJvdHRvbTogMTAsCiAgICBwYWRkaW5nTGVmdDogOCwKICB9LAogIGl0ZW06IHsKICAgIHBhZGRpbmc6IDEwLAogICAgZm9udFNpemU6IDE4LAogICAgaGVpZ2h0OiA0NCwKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IFRvRG9BcHA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, TextInput, Button, FlatList, Text, StyleSheet } from 'react-native';
+
+const ToDoApp = () =&gt; {
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState('');
+
+  const addTask = () =&gt; {
+    setTasks([...tasks, { key: Math.random().toString(), task: text }]);
+    setText('');
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Add new task&quot;
+        value={text}
+        onChangeText={setText}
+      /&gt;
+      &lt;Button title=&quot;Add Task&quot; onPress={addTask} /&gt;
+      &lt;FlatList
+        data={tasks}
+        renderItem={({ item }) =&gt; &lt;Text style={styles.item}&gt;{item.task}&lt;/Text&gt;}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+});
+
+export default ToDoApp;</pre></div><div class='content'></div><h1>Deleting Tasks</h1>
+<div class='content'><p>To make our app more functional, we need to add the ability to delete tasks.</p>
+<ul>
+<li><strong>TouchableOpacity</strong>: Use <code>TouchableOpacity</code> to make each task item clickable.</li>
+<li><strong>Filter Function</strong>: Use the filter function to remove the task from the list.</li>
+</ul>
+</div><h2>Example: Deleting Tasks</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0SW5wdXQsIEJ1dHRvbiwgRmxhdExpc3QsIFRleHQsIFRvdWNoYWJsZU9wYWNpdHksIFN0eWxlU2hlZXQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVG9Eb0FwcCA9ICgpID0+IHsKICBjb25zdCBbdGFza3MsIHNldFRhc2tzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbdGV4dCwgc2V0VGV4dF0gPSB1c2VTdGF0ZSgnJyk7CgogIGNvbnN0IGFkZFRhc2sgPSAoKSA9PiB7CiAgICBzZXRUYXNrcyhbLi4udGFza3MsIHsga2V5OiBNYXRoLnJhbmRvbSgpLnRvU3RyaW5nKCksIHRhc2s6IHRleHQgfV0pOwogICAgc2V0VGV4dCgnJyk7CiAgfTsKCiAgY29uc3QgZGVsZXRlVGFzayA9IChrZXkpID0+IHsKICAgIHNldFRhc2tzKHRhc2tzLmZpbHRlcih0YXNrID0+IHRhc2sua2V5ICE9PSBrZXkpKTsKICB9OwoKICByZXR1cm4gKAogICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5jb250YWluZXJ9PgogICAgICA8VGV4dElucHV0CiAgICAgICAgc3R5bGU9e3N0eWxlcy5pbnB1dH0KICAgICAgICBwbGFjZWhvbGRlcj0iQWRkIG5ldyB0YXNrIgogICAgICAgIHZhbHVlPXt0ZXh0fQogICAgICAgIG9uQ2hhbmdlVGV4dD17c2V0VGV4dH0KICAgICAgLz4KICAgICAgPEJ1dHRvbiB0aXRsZT0iQWRkIFRhc2siIG9uUHJlc3M9e2FkZFRhc2t9IC8+CiAgICAgIDxGbGF0TGlzdAogICAgICAgIGRhdGE9e3Rhc2tzfQogICAgICAgIHJlbmRlckl0ZW09eyh7IGl0ZW0gfSkgPT4gKAogICAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkgb25QcmVzcz17KCkgPT4gZGVsZXRlVGFzayhpdGVtLmtleSl9PgogICAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLml0ZW19PntpdGVtLnRhc2t9PC9UZXh0PgogICAgICAgICAgPC9Ub3VjaGFibGVPcGFjaXR5PgogICAgICAgICl9CiAgICAgIC8+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmNvbnN0IHN0eWxlcyA9IFN0eWxlU2hlZXQuY3JlYXRlKHsKICBjb250YWluZXI6IHsKICAgIGZsZXg6IDEsCiAgICBwYWRkaW5nVG9wOiAyMiwKICB9LAogIGlucHV0OiB7CiAgICBoZWlnaHQ6IDQwLAogICAgYm9yZGVyQ29sb3I6ICdncmF5JywKICAgIGJvcmRlcldpZHRoOiAxLAogICAgbWFyZ2luQm90dG9tOiAxMCwKICAgIHBhZGRpbmdMZWZ0OiA4LAogIH0sCiAgaXRlbTogewogICAgcGFkZGluZzogMTAsCiAgICBmb250U2l6ZTogMTgsCiAgICBoZWlnaHQ6IDQ0LAogIH0sCn0pOwoKZXhwb3J0IGRlZmF1bHQgVG9Eb0FwcDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, TextInput, Button, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+const ToDoApp = () =&gt; {
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState('');
+
+  const addTask = () =&gt; {
+    setTasks([...tasks, { key: Math.random().toString(), task: text }]);
+    setText('');
+  };
+
+  const deleteTask = (key) =&gt; {
+    setTasks(tasks.filter(task =&gt; task.key !== key));
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Add new task&quot;
+        value={text}
+        onChangeText={setText}
+      /&gt;
+      &lt;Button title=&quot;Add Task&quot; onPress={addTask} /&gt;
+      &lt;FlatList
+        data={tasks}
+        renderItem={({ item }) =&gt; (
+          &lt;TouchableOpacity onPress={() =&gt; deleteTask(item.key)}&gt;
+            &lt;Text style={styles.item}&gt;{item.task}&lt;/Text&gt;
+          &lt;/TouchableOpacity&gt;
+        )}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+  },
+});
+
+export default ToDoApp;</pre></div><div class='content'></div><h1>Styling the App</h1>
+<div class='content'><p>To make our app visually appealing, we will add some styles.</p>
+<ul>
+<li><strong>StyleSheet</strong>: Use <code>StyleSheet</code> to create styles.</li>
+<li><strong>Flexbox</strong>: Use Flexbox for layout.</li>
+</ul>
+</div><h2>Example: Styling the App</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0SW5wdXQsIEJ1dHRvbiwgRmxhdExpc3QsIFRleHQsIFRvdWNoYWJsZU9wYWNpdHksIFN0eWxlU2hlZXQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVG9Eb0FwcCA9ICgpID0+IHsKICBjb25zdCBbdGFza3MsIHNldFRhc2tzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbdGV4dCwgc2V0VGV4dF0gPSB1c2VTdGF0ZSgnJyk7CgogIGNvbnN0IGFkZFRhc2sgPSAoKSA9PiB7CiAgICBzZXRUYXNrcyhbLi4udGFza3MsIHsga2V5OiBNYXRoLnJhbmRvbSgpLnRvU3RyaW5nKCksIHRhc2s6IHRleHQgfV0pOwogICAgc2V0VGV4dCgnJyk7CiAgfTsKCiAgY29uc3QgZGVsZXRlVGFzayA9IChrZXkpID0+IHsKICAgIHNldFRhc2tzKHRhc2tzLmZpbHRlcih0YXNrID0+IHRhc2sua2V5ICE9PSBrZXkpKTsKICB9OwoKICByZXR1cm4gKAogICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5jb250YWluZXJ9PgogICAgICA8VGV4dElucHV0CiAgICAgICAgc3R5bGU9e3N0eWxlcy5pbnB1dH0KICAgICAgICBwbGFjZWhvbGRlcj0iQWRkIG5ldyB0YXNrIgogICAgICAgIHZhbHVlPXt0ZXh0fQogICAgICAgIG9uQ2hhbmdlVGV4dD17c2V0VGV4dH0KICAgICAgLz4KICAgICAgPEJ1dHRvbiB0aXRsZT0iQWRkIFRhc2siIG9uUHJlc3M9e2FkZFRhc2t9IC8+CiAgICAgIDxGbGF0TGlzdAogICAgICAgIGRhdGE9e3Rhc2tzfQogICAgICAgIHJlbmRlckl0ZW09eyh7IGl0ZW0gfSkgPT4gKAogICAgICAgICAgPFRvdWNoYWJsZU9wYWNpdHkgb25QcmVzcz17KCkgPT4gZGVsZXRlVGFzayhpdGVtLmtleSl9PgogICAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLml0ZW19PntpdGVtLnRhc2t9PC9UZXh0PgogICAgICAgICAgPC9Ub3VjaGFibGVPcGFjaXR5PgogICAgICAgICl9CiAgICAgIC8+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmNvbnN0IHN0eWxlcyA9IFN0eWxlU2hlZXQuY3JlYXRlKHsKICBjb250YWluZXI6IHsKICAgIGZsZXg6IDEsCiAgICBwYWRkaW5nVG9wOiAyMiwKICAgIHBhZGRpbmdIb3Jpem9udGFsOiAyMCwKICAgIGJhY2tncm91bmRDb2xvcjogJyNmOGY4ZjgnLAogIH0sCiAgaW5wdXQ6IHsKICAgIGhlaWdodDogNDAsCiAgICBib3JkZXJDb2xvcjogJ2dyYXknLAogICAgYm9yZGVyV2lkdGg6IDEsCiAgICBtYXJnaW5Cb3R0b206IDEwLAogICAgcGFkZGluZ0xlZnQ6IDgsCiAgICBib3JkZXJSYWRpdXM6IDUsCiAgfSwKICBpdGVtOiB7CiAgICBwYWRkaW5nOiAxMCwKICAgIGZvbnRTaXplOiAxOCwKICAgIGhlaWdodDogNDQsCiAgICBiYWNrZ3JvdW5kQ29sb3I6ICcjZmZmJywKICAgIG1hcmdpbkJvdHRvbTogNSwKICAgIGJvcmRlclJhZGl1czogNSwKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IFRvRG9BcHA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, TextInput, Button, FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+const ToDoApp = () =&gt; {
+  const [tasks, setTasks] = useState([]);
+  const [text, setText] = useState('');
+
+  const addTask = () =&gt; {
+    setTasks([...tasks, { key: Math.random().toString(), task: text }]);
+    setText('');
+  };
+
+  const deleteTask = (key) =&gt; {
+    setTasks(tasks.filter(task =&gt; task.key !== key));
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Add new task&quot;
+        value={text}
+        onChangeText={setText}
+      /&gt;
+      &lt;Button title=&quot;Add Task&quot; onPress={addTask} /&gt;
+      &lt;FlatList
+        data={tasks}
+        renderItem={({ item }) =&gt; (
+          &lt;TouchableOpacity onPress={() =&gt; deleteTask(item.key)}&gt;
+            &lt;Text style={styles.item}&gt;{item.task}&lt;/Text&gt;
+          &lt;/TouchableOpacity&gt;
+        )}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 22,
+    paddingHorizontal: 20,
+    backgroundColor: '#f8f8f8',
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingLeft: 8,
+    borderRadius: 5,
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+    height: 44,
+    backgroundColor: '#fff',
+    marginBottom: 5,
+    borderRadius: 5,
+  },
+});
+
+export default ToDoApp;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this course, we have built a simple To-Do App using React Native. We covered:</p>
+<ul>
+<li>Setting up the development environment.</li>
+<li>Understanding the basic structure of a React Native app.</li>
+<li>Creating and managing state for a To-Do List component.</li>
+<li>Adding new tasks.</li>
+<li>Deleting tasks.</li>
+<li>Styling the app.</li>
+</ul>
+<p>By completing this project, you should have a solid understanding of React Native fundamentals and be able to build more complex applications. Keep practicing and exploring more advanced features of React Native to enhance your skills.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='ci-cd'>&#x25C4;Continuous Integration and Continuous Deployment (CI/CD)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Building a To-Do App in React Native</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='creating-weather-app'>Creating a Weather App &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

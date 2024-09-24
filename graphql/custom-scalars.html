@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Scalars in GraphQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/graphql/custom-scalars" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/graphql/custom-scalars" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/graphql/custom-scalars" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/graphql/custom-scalars" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/graphql/custom-scalars" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-studies'>&#x25C4;Case Studies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Scalars in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='schema-federation'>Schema Federation &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Scalars</h1>
+<div class='content'><p>In GraphQL, scalars are the basic data types that represent the leaves of the query. The default scalar types provided by GraphQL are:</p>
+<ul>
+<li><code>Int</code>: A signed 32-bit integer.</li>
+<li><code>Float</code>: A signed double-precision floating-point value.</li>
+<li><code>String</code>: A UTF-8 character sequence.</li>
+<li><code>Boolean</code>: A true or false value.</li>
+<li><code>ID</code>: A unique identifier, often used to refetch an object or as a key for a cache.</li>
+</ul>
+</div><h1>Why Custom Scalars?</h1>
+<div class='content'><p>While the default scalar types cover many use cases, there are scenarios where you need more specific types. For example:</p>
+<ul>
+<li>Dates and times.</li>
+<li>Email addresses.</li>
+<li>URLs.</li>
+<li>Custom validation logic.</li>
+</ul>
+<p>Custom scalars allow you to define your own data types with specific validation and serialization logic.</p>
+</div><h1>Defining Custom Scalars</h1>
+<div class='content'><p>To define a custom scalar, you need to:</p>
+<ol>
+<li>Define the scalar in your GraphQL schema.</li>
+<li>Implement the scalar's behavior in your server code.</li>
+</ol>
+</div><h2>Schema Definition</h2>
+<div class='content'><p>In your GraphQL schema, you declare a custom scalar using the <code>scalar</code> keyword.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2NhbGFyIERhdGU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>scalar Date</pre></div><div class='content'></div><h2>Implementing Custom Scalars</h2>
+<div class='content'><p>The implementation of a custom scalar involves defining how the scalar should be parsed and serialized. This typically includes:</p>
+<ul>
+<li>Parsing input values from queries.</li>
+<li>Serializing output values for responses.</li>
+<li>Parsing values from variables.</li>
+</ul>
+<p>Here’s an example of a custom <code>Date</code> scalar in JavaScript using Apollo Server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBHcmFwaFFMU2NhbGFyVHlwZSwgS2luZCB9ID0gcmVxdWlyZSgnZ3JhcGhxbCcpOwoKY29uc3QgRGF0ZVNjYWxhciA9IG5ldyBHcmFwaFFMU2NhbGFyVHlwZSh7CiAgbmFtZTogJ0RhdGUnLAogIGRlc2NyaXB0aW9uOiAnQSBjdXN0b20gc2NhbGFyIHRvIGhhbmRsZSBkYXRlIHZhbHVlcycsCiAgc2VyaWFsaXplKHZhbHVlKSB7CiAgICAvLyBDb252ZXJ0IG91dGdvaW5nIERhdGUgdG8gSVNPIHN0cmluZyBmb3IgSlNPTgogICAgcmV0dXJuIHZhbHVlIGluc3RhbmNlb2YgRGF0ZSA/IHZhbHVlLnRvSVNPU3RyaW5nKCkgOiBudWxsOwogIH0sCiAgcGFyc2VWYWx1ZSh2YWx1ZSkgewogICAgLy8gQ29udmVydCBpbmNvbWluZyBJU08gc3RyaW5nIHRvIERhdGUKICAgIHJldHVybiB0eXBlb2YgdmFsdWUgPT09ICdzdHJpbmcnID8gbmV3IERhdGUodmFsdWUpIDogbnVsbDsKICB9LAogIHBhcnNlTGl0ZXJhbChhc3QpIHsKICAgIC8vIENvbnZlcnQgaGFyZC1jb2RlZCBBU1Qgc3RyaW5nIHRvIERhdGUKICAgIHJldHVybiBhc3Qua2luZCA9PT0gS2luZC5TVFJJTkcgPyBuZXcgRGF0ZShhc3QudmFsdWUpIDogbnVsbDsKICB9Cn0pOwoKbW9kdWxlLmV4cG9ydHMgPSBEYXRlU2NhbGFyOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { GraphQLScalarType, Kind } = require('graphql');
+
+const DateScalar = new GraphQLScalarType({
+  name: 'Date',
+  description: 'A custom scalar to handle date values',
+  serialize(value) {
+    // Convert outgoing Date to ISO string for JSON
+    return value instanceof Date ? value.toISOString() : null;
+  },
+  parseValue(value) {
+    // Convert incoming ISO string to Date
+    return typeof value === 'string' ? new Date(value) : null;
+  },
+  parseLiteral(ast) {
+    // Convert hard-coded AST string to Date
+    return ast.kind === Kind.STRING ? new Date(ast.value) : null;
+  }
+});
+
+module.exports = DateScalar;</pre></div><div class='content'></div><h2>Using Custom Scalars in Resolvers</h2>
+<div class='content'><p>After defining and implementing the custom scalar, you need to include it in your GraphQL server setup.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlcicpOwpjb25zdCBEYXRlU2NhbGFyID0gcmVxdWlyZSgnLi9EYXRlU2NhbGFyJyk7Cgpjb25zdCB0eXBlRGVmcyA9IGdxbGAKICBzY2FsYXIgRGF0ZQoKICB0eXBlIEV2ZW50IHsKICAgIGlkOiBJRCEKICAgIG5hbWU6IFN0cmluZyEKICAgIGRhdGU6IERhdGUhCiAgfQoKICB0eXBlIFF1ZXJ5IHsKICAgIGV2ZW50czogW0V2ZW50IV0hCiAgfQpgOwoKY29uc3QgcmVzb2x2ZXJzID0gewogIERhdGU6IERhdGVTY2FsYXIsCiAgUXVlcnk6IHsKICAgIGV2ZW50czogKCkgPT4gWwogICAgICB7IGlkOiAnMScsIG5hbWU6ICdHcmFwaFFMIE1lZXR1cCcsIGRhdGU6IG5ldyBEYXRlKCkgfSwKICAgICAgeyBpZDogJzInLCBuYW1lOiAnQXBvbGxvIFdvcmtzaG9wJywgZGF0ZTogbmV3IERhdGUoKSB9CiAgICBdCiAgfQp9OwoKY29uc3Qgc2VydmVyID0gbmV3IEFwb2xsb1NlcnZlcih7IHR5cGVEZWZzLCByZXNvbHZlcnMgfSk7CgpzZXJ2ZXIubGlzdGVuKCkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFNlcnZlciByZWFkeSBhdCAke3VybH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql } = require('apollo-server');
+const DateScalar = require('./DateScalar');
+
+const typeDefs = gql`
+  scalar Date
+
+  type Event {
+    id: ID!
+    name: String!
+    date: Date!
+  }
+
+  type Query {
+    events: [Event!]!
+  }
+`;
+
+const resolvers = {
+  Date: DateScalar,
+  Query: {
+    events: () =&gt; [
+      { id: '1', name: 'GraphQL Meetup', date: new Date() },
+      { id: '2', name: 'Apollo Workshop', date: new Date() }
+    ]
+  }
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'></div><h1>Common Use Cases for Custom Scalars</h1>
+<div class='content'><ul>
+<li><strong>Date/Time</strong>: Handling date and time values in a standardized format.</li>
+<li><strong>Email</strong>: Validating email addresses.</li>
+<li><strong>URL</strong>: Ensuring that a string is a valid URL.</li>
+<li><strong>JSON</strong>: Allowing arbitrary JSON objects as input/output.</li>
+</ul>
+</div><h1>Example: Custom Email Scalar</h1>
+<div class='content'><p>Here’s an example of a custom <code>Email</code> scalar:</p>
+</div><h2>Schema Definition</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2NhbGFyIEVtYWls"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>scalar Email</pre></div><div class='content'></div><h2>Implementation</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBHcmFwaFFMU2NhbGFyVHlwZSwgS2luZCB9ID0gcmVxdWlyZSgnZ3JhcGhxbCcpOwpjb25zdCB7IGlzRW1haWwgfSA9IHJlcXVpcmUoJ3ZhbGlkYXRvcicpOwoKY29uc3QgRW1haWxTY2FsYXIgPSBuZXcgR3JhcGhRTFNjYWxhclR5cGUoewogIG5hbWU6ICdFbWFpbCcsCiAgZGVzY3JpcHRpb246ICdBIGN1c3RvbSBzY2FsYXIgdG8gaGFuZGxlIGVtYWlsIGFkZHJlc3NlcycsCiAgc2VyaWFsaXplKHZhbHVlKSB7CiAgICByZXR1cm4gdmFsdWU7CiAgfSwKICBwYXJzZVZhbHVlKHZhbHVlKSB7CiAgICBpZiAoIWlzRW1haWwodmFsdWUpKSB7CiAgICAgIHRocm93IG5ldyBFcnJvcigiSW52YWxpZCBlbWFpbCBhZGRyZXNzIik7CiAgICB9CiAgICByZXR1cm4gdmFsdWU7CiAgfSwKICBwYXJzZUxpdGVyYWwoYXN0KSB7CiAgICBpZiAoYXN0LmtpbmQgIT09IEtpbmQuU1RSSU5HIHx8ICFpc0VtYWlsKGFzdC52YWx1ZSkpIHsKICAgICAgdGhyb3cgbmV3IEVycm9yKCJJbnZhbGlkIGVtYWlsIGFkZHJlc3MiKTsKICAgIH0KICAgIHJldHVybiBhc3QudmFsdWU7CiAgfQp9KTsKCm1vZHVsZS5leHBvcnRzID0gRW1haWxTY2FsYXI7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { GraphQLScalarType, Kind } = require('graphql');
+const { isEmail } = require('validator');
+
+const EmailScalar = new GraphQLScalarType({
+  name: 'Email',
+  description: 'A custom scalar to handle email addresses',
+  serialize(value) {
+    return value;
+  },
+  parseValue(value) {
+    if (!isEmail(value)) {
+      throw new Error(&quot;Invalid email address&quot;);
+    }
+    return value;
+  },
+  parseLiteral(ast) {
+    if (ast.kind !== Kind.STRING || !isEmail(ast.value)) {
+      throw new Error(&quot;Invalid email address&quot;);
+    }
+    return ast.value;
+  }
+});
+
+module.exports = EmailScalar;</pre></div><div class='content'></div><h2>Using the Email Scalar</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlcicpOwpjb25zdCBFbWFpbFNjYWxhciA9IHJlcXVpcmUoJy4vRW1haWxTY2FsYXInKTsKCmNvbnN0IHR5cGVEZWZzID0gZ3FsYAogIHNjYWxhciBFbWFpbAoKICB0eXBlIFVzZXIgewogICAgaWQ6IElEIQogICAgbmFtZTogU3RyaW5nIQogICAgZW1haWw6IEVtYWlsIQogIH0KCiAgdHlwZSBRdWVyeSB7CiAgICB1c2VyczogW1VzZXIhXSEKICB9CmA7Cgpjb25zdCByZXNvbHZlcnMgPSB7CiAgRW1haWw6IEVtYWlsU2NhbGFyLAogIFF1ZXJ5OiB7CiAgICB1c2VyczogKCkgPT4gWwogICAgICB7IGlkOiAnMScsIG5hbWU6ICdBbGljZScsIGVtYWlsOiAnYWxpY2VAZXhhbXBsZS5jb20nIH0sCiAgICAgIHsgaWQ6ICcyJywgbmFtZTogJ0JvYicsIGVtYWlsOiAnYm9iQGV4YW1wbGUuY29tJyB9CiAgICBdCiAgfQp9OwoKY29uc3Qgc2VydmVyID0gbmV3IEFwb2xsb1NlcnZlcih7IHR5cGVEZWZzLCByZXNvbHZlcnMgfSk7CgpzZXJ2ZXIubGlzdGVuKCkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFNlcnZlciByZWFkeSBhdCAke3VybH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql } = require('apollo-server');
+const EmailScalar = require('./EmailScalar');
+
+const typeDefs = gql`
+  scalar Email
+
+  type User {
+    id: ID!
+    name: String!
+    email: Email!
+  }
+
+  type Query {
+    users: [User!]!
+  }
+`;
+
+const resolvers = {
+  Email: EmailScalar,
+  Query: {
+    users: () =&gt; [
+      { id: '1', name: 'Alice', email: 'alice@example.com' },
+      { id: '2', name: 'Bob', email: 'bob@example.com' }
+    ]
+  }
+};
+
+const server = new ApolloServer({ typeDefs, resolvers });
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Custom scalars in GraphQL provide a powerful way to extend the basic types to fit your application's specific needs. By defining and implementing custom scalars, you can ensure that your data is validated and serialized correctly, leading to more robust and maintainable applications. Whether you need to handle dates, emails, or any other specialized data type, custom scalars offer the flexibility to do so effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-studies'>&#x25C4;Case Studies</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Scalars in GraphQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='schema-federation'>Schema Federation &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

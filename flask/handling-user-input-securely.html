@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling User Input Securely</title>
+
+    <link rel="alternate" href="https://campusempresa.com/flask/handling-user-input-securely" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/flask/handling-user-input-securely" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/flask/handling-user-input-securely" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/flask/handling-user-input-securely" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/flask/handling-user-input-securely" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-uploads'>&#x25C4;File Uploads</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Handling User Input Securely</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-sqlalchemy'>Introduction to SQLAlchemy &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Handling user input securely is a critical aspect of web development. In this section, we will explore how to manage user input in Flask applications to prevent common security vulnerabilities.</p>
+</div><h1>Introduction to User Input Security</h1>
+<div class='content'><ul>
+<li><strong>Importance of Security</strong>: Understanding why securing user input is crucial.</li>
+<li><strong>Common Vulnerabilities</strong>: Overview of common security issues such as SQL Injection, Cross-Site Scripting (XSS), and Cross-Site Request Forgery (CSRF).</li>
+</ul>
+</div><h1>Validating User Input</h1>
+<div class='content'><ul>
+<li><strong>Client-Side vs. Server-Side Validation</strong>:
+<ul>
+<li>Client-side validation improves user experience but should not be solely relied upon.</li>
+<li>Server-side validation is essential for security.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Simple Form Validation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlbmRlcl90ZW1wbGF0ZV9zdHJpbmcKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL3N1Ym1pdCcsIG1ldGhvZHM9WydQT1NUJ10pCmRlZiBzdWJtaXQoKToKICAgIHVzZXJuYW1lID0gcmVxdWVzdC5mb3JtLmdldCgndXNlcm5hbWUnKQogICAgaWYgbm90IHVzZXJuYW1lIG9yIGxlbih1c2VybmFtZSkgPCAzOgogICAgICAgIHJldHVybiAiSW52YWxpZCB1c2VybmFtZSIsIDQwMAogICAgcmV0dXJuIGYiV2VsY29tZSwge3VzZXJuYW1lfSEiCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    username = request.form.get('username')
+    if not username or len(username) &lt; 3:
+        return &quot;Invalid username&quot;, 400
+    return f&quot;Welcome, {username}!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This example shows basic server-side validation where the username must be at least 3 characters long.</li>
+</ul>
+</div><h1>Sanitizing User Input</h1>
+<div class='content'><ul>
+<li><strong>Why Sanitize?</strong>: To remove potentially harmful characters or code from user input.</li>
+<li><strong>Common Techniques</strong>:
+<ul>
+<li>Escaping HTML characters.</li>
+<li>Using libraries like <code>bleach</code> to clean input.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Example: Sanitizing Input with Bleach</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGJsZWFjaApmcm9tIGZsYXNrIGltcG9ydCBGbGFzaywgcmVxdWVzdCwgcmVuZGVyX3RlbXBsYXRlX3N0cmluZwoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvc3VibWl0JywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIHN1Ym1pdCgpOgogICAgdXNlcm5hbWUgPSByZXF1ZXN0LmZvcm0uZ2V0KCd1c2VybmFtZScpCiAgICBzYW5pdGl6ZWRfdXNlcm5hbWUgPSBibGVhY2guY2xlYW4odXNlcm5hbWUpCiAgICByZXR1cm4gZiJXZWxjb21lLCB7c2FuaXRpemVkX3VzZXJuYW1lfSEiCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import bleach
+from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    username = request.form.get('username')
+    sanitized_username = bleach.clean(username)
+    return f&quot;Welcome, {sanitized_username}!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This example uses the <code>bleach</code> library to sanitize the username input, removing any potentially harmful HTML or script tags.</li>
+</ul>
+</div><h1>Protecting Against SQL Injection</h1>
+<div class='content'><ul>
+<li><strong>What is SQL Injection?</strong>: A technique where attackers can execute arbitrary SQL code on your database.</li>
+<li><strong>Using ORM</strong>: Object-Relational Mapping (ORM) tools like SQLAlchemy can help prevent SQL injection.</li>
+</ul>
+</div><h2>Example: Using SQLAlchemy</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZ1snU1FMQUxDSEVNWV9EQVRBQkFTRV9VUkknXSA9ICdzcWxpdGU6Ly8vdGVzdC5kYicKZGIgPSBTUUxBbGNoZW15KGFwcCkKCmNsYXNzIFVzZXIoZGIuTW9kZWwpOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHVzZXJuYW1lID0gZGIuQ29sdW1uKGRiLlN0cmluZyg4MCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKCkBhcHAucm91dGUoJy9hZGRfdXNlcicsIG1ldGhvZHM9WydQT1NUJ10pCmRlZiBhZGRfdXNlcigpOgogICAgdXNlcm5hbWUgPSByZXF1ZXN0LmZvcm0uZ2V0KCd1c2VybmFtZScpCiAgICBpZiBub3QgdXNlcm5hbWU6CiAgICAgICAgcmV0dXJuICJJbnZhbGlkIHVzZXJuYW1lIiwgNDAwCiAgICBuZXdfdXNlciA9IFVzZXIodXNlcm5hbWU9dXNlcm5hbWUpCiAgICBkYi5zZXNzaW9uLmFkZChuZXdfdXNlcikKICAgIGRiLnNlc3Npb24uY29tbWl0KCkKICAgIHJldHVybiBmIlVzZXIge3VzZXJuYW1lfSBhZGRlZCEiCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    username = request.form.get('username')
+    if not username:
+        return &quot;Invalid username&quot;, 400
+    new_user = User(username=username)
+    db.session.add(new_user)
+    db.session.commit()
+    return f&quot;User {username} added!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This example demonstrates how to use SQLAlchemy to safely insert user data into the database, mitigating the risk of SQL injection.</li>
+</ul>
+</div><h1>Preventing Cross-Site Scripting (XSS)</h1>
+<div class='content'><ul>
+<li><strong>What is XSS?</strong>: A vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users.</li>
+<li><strong>Escaping Output</strong>: Always escape user-generated content before rendering it in HTML.</li>
+</ul>
+</div><h2>Example: Escaping Output</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlbmRlcl90ZW1wbGF0ZV9zdHJpbmcKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL3N1Ym1pdCcsIG1ldGhvZHM9WydQT1NUJ10pCmRlZiBzdWJtaXQoKToKICAgIHVzZXJuYW1lID0gcmVxdWVzdC5mb3JtLmdldCgndXNlcm5hbWUnKQogICAgZXNjYXBlZF91c2VybmFtZSA9IGVzY2FwZSh1c2VybmFtZSkKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGVfc3RyaW5nKCc8aDE+V2VsY29tZSwge3sgdXNlcm5hbWUgfX08L2gxPicsIHVzZXJuYW1lPWVzY2FwZWRfdXNlcm5hbWUpCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, render_template_string
+
+app = Flask(__name__)
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    username = request.form.get('username')
+    escaped_username = escape(username)
+    return render_template_string('&lt;h1&gt;Welcome, {{ username }}&lt;/h1&gt;', username=escaped_username)
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This example uses Flask's <code>escape</code> function to sanitize the username before rendering it in the HTML template.</li>
+</ul>
+</div><h1>Implementing CSRF Protection</h1>
+<div class='content'><ul>
+<li><strong>What is CSRF?</strong>: An attack that tricks the user into submitting a request they did not intend to make.</li>
+<li><strong>Using Flask-WTF</strong>: Flask-WTF extension provides CSRF protection out of the box.</li>
+</ul>
+</div><h2>Example: CSRF Protection with Flask-WTF</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZSwgcmVxdWVzdApmcm9tIGZsYXNrX3d0ZiBpbXBvcnQgRmxhc2tGb3JtCmZyb20gd3Rmb3JtcyBpbXBvcnQgU3RyaW5nRmllbGQsIFN1Ym1pdEZpZWxkCmZyb20gd3Rmb3Jtcy52YWxpZGF0b3JzIGltcG9ydCBEYXRhUmVxdWlyZWQKZnJvbSBmbGFza193dGYuY3NyZiBpbXBvcnQgQ1NSRlByb3RlY3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQphcHAuY29uZmlnWydTRUNSRVRfS0VZJ10gPSAnbXlzZWNyZXQnCmNzcmYgPSBDU1JGUHJvdGVjdChhcHApCgpjbGFzcyBNeUZvcm0oRmxhc2tGb3JtKToKICAgIHVzZXJuYW1lID0gU3RyaW5nRmllbGQoJ1VzZXJuYW1lJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCldKQogICAgc3VibWl0ID0gU3VibWl0RmllbGQoJ1N1Ym1pdCcpCgpAYXBwLnJvdXRlKCcvc3VibWl0JywgbWV0aG9kcz1bJ0dFVCcsICdQT1NUJ10pCmRlZiBzdWJtaXQoKToKICAgIGZvcm0gPSBNeUZvcm0oKQogICAgaWYgZm9ybS52YWxpZGF0ZV9vbl9zdWJtaXQoKToKICAgICAgICB1c2VybmFtZSA9IGZvcm0udXNlcm5hbWUuZGF0YQogICAgICAgIHJldHVybiBmIldlbGNvbWUsIHt1c2VybmFtZX0hIgogICAgcmV0dXJuIHJlbmRlcl90ZW1wbGF0ZSgnZm9ybS5odG1sJywgZm9ybT1mb3JtKQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template, request
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+from flask_wtf.csrf import CSRFProtect
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'mysecret'
+csrf = CSRFProtect(app)
+
+class MyForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    form = MyForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        return f&quot;Welcome, {username}!&quot;
+    return render_template('form.html', form=form)
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This example shows how to use Flask-WTF to create a form with CSRF protection. The <code>CSRFProtect</code> class ensures that all forms include a CSRF token.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Securing user input is a fundamental aspect of building robust Flask applications. By validating, sanitizing, and protecting against common vulnerabilities like SQL Injection, XSS, and CSRF, you can significantly enhance the security of your web applications. Always stay updated with the latest security practices and regularly review your code for potential vulnerabilities.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-uploads'>&#x25C4;File Uploads</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Handling User Input Securely</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-sqlalchemy'>Introduction to SQLAlchemy &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

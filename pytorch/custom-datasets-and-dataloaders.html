@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Datasets and DataLoaders</title>
+
+    <link rel="alternate" href="https://campusempresa.com/pytorch/custom-datasets-and-dataloaders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/pytorch/custom-datasets-and-dataloaders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/pytorch/custom-datasets-and-dataloaders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/pytorch/custom-datasets-and-dataloaders" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/pytorch/custom-datasets-and-dataloaders" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transformers'>&#x25C4;Transformers</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Datasets and DataLoaders</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='custom-loss-functions'>Custom Loss Functions &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to create custom datasets and dataloaders in PyTorch. This is crucial for handling data that doesn't fit into the standard datasets provided by PyTorch. By the end of this section, you will be able to create your own datasets and efficiently load them using PyTorch's DataLoader.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Dataset Class</strong>: A custom class that inherits from <code>torch.utils.data.Dataset</code> and implements the <code>__len__</code> and <code>__getitem__</code> methods.</li>
+<li><strong>DataLoader Class</strong>: A class that provides an iterable over a dataset with support for batching, shuffling, and multi-process data loading.</li>
+</ul>
+</div><h1>Creating a Custom Dataset</h1>
+<div class='content'><p>To create a custom dataset, you need to subclass <code>torch.utils.data.Dataset</code> and override two methods:</p>
+<ol>
+<li><code>__len__</code>: Returns the size of the dataset.</li>
+<li><code>__getitem__</code>: Retrieves a sample from the dataset at the given index.</li>
+</ol>
+</div><h2>Example: Custom Image Dataset</h2>
+<div class='content'><p>Let's create a custom dataset for loading images and their corresponding labels.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9zCmZyb20gUElMIGltcG9ydCBJbWFnZQppbXBvcnQgdG9yY2gKZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhc2V0CgpjbGFzcyBDdXN0b21JbWFnZURhdGFzZXQoRGF0YXNldCk6CiAgICBkZWYgX19pbml0X18oc2VsZiwgaW1nX2RpciwgdHJhbnNmb3JtPU5vbmUpOgogICAgICAgIHNlbGYuaW1nX2RpciA9IGltZ19kaXIKICAgICAgICBzZWxmLnRyYW5zZm9ybSA9IHRyYW5zZm9ybQogICAgICAgIHNlbGYuaW1nX2xhYmVscyA9IFsoaW1nX25hbWUsIGludChpbWdfbmFtZS5zcGxpdCgnXycpWzFdKSkgZm9yIGltZ19uYW1lIGluIG9zLmxpc3RkaXIoaW1nX2RpcildCgogICAgZGVmIF9fbGVuX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGxlbihzZWxmLmltZ19sYWJlbHMpCgogICAgZGVmIF9fZ2V0aXRlbV9fKHNlbGYsIGlkeCk6CiAgICAgICAgaW1nX25hbWUsIGxhYmVsID0gc2VsZi5pbWdfbGFiZWxzW2lkeF0KICAgICAgICBpbWdfcGF0aCA9IG9zLnBhdGguam9pbihzZWxmLmltZ19kaXIsIGltZ19uYW1lKQogICAgICAgIGltYWdlID0gSW1hZ2Uub3BlbihpbWdfcGF0aCkKICAgICAgICAKICAgICAgICBpZiBzZWxmLnRyYW5zZm9ybToKICAgICAgICAgICAgaW1hZ2UgPSBzZWxmLnRyYW5zZm9ybShpbWFnZSkKICAgICAgICAKICAgICAgICByZXR1cm4gaW1hZ2UsIGxhYmVs"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import os
+from PIL import Image
+import torch
+from torch.utils.data import Dataset
+
+class CustomImageDataset(Dataset):
+    def __init__(self, img_dir, transform=None):
+        self.img_dir = img_dir
+        self.transform = transform
+        self.img_labels = [(img_name, int(img_name.split('_')[1])) for img_name in os.listdir(img_dir)]
+
+    def __len__(self):
+        return len(self.img_labels)
+
+    def __getitem__(self, idx):
+        img_name, label = self.img_labels[idx]
+        img_path = os.path.join(self.img_dir, img_name)
+        image = Image.open(img_path)
+        
+        if self.transform:
+            image = self.transform(image)
+        
+        return image, label</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>__init__</code>: Initializes the dataset with the directory of images and an optional transform.</li>
+<li><code>__len__</code>: Returns the number of images in the directory.</li>
+<li><code>__getitem__</code>: Loads an image and its label based on the index.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Using DataLoader</h1>
+<div class='content'><p>The <code>DataLoader</code> class provides an efficient way to iterate over the dataset. It supports batching, shuffling, and parallel data loading.</p>
+</div><h2>Example: Using DataLoader with Custom Dataset</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0b3JjaHZpc2lvbiBpbXBvcnQgdHJhbnNmb3Jtcwpmcm9tIHRvcmNoLnV0aWxzLmRhdGEgaW1wb3J0IERhdGFMb2FkZXIKCiMgRGVmaW5lIGEgdHJhbnNmb3JtIHRvIGNvbnZlcnQgaW1hZ2VzIHRvIHRlbnNvcnMKdHJhbnNmb3JtID0gdHJhbnNmb3Jtcy5Db21wb3NlKFsKICAgIHRyYW5zZm9ybXMuUmVzaXplKCgxMjgsIDEyOCkpLAogICAgdHJhbnNmb3Jtcy5Ub1RlbnNvcigpCl0pCgojIENyZWF0ZSBhbiBpbnN0YW5jZSBvZiB0aGUgY3VzdG9tIGRhdGFzZXQKZGF0YXNldCA9IEN1c3RvbUltYWdlRGF0YXNldChpbWdfZGlyPSdwYXRoL3RvL2ltYWdlcycsIHRyYW5zZm9ybT10cmFuc2Zvcm0pCgojIENyZWF0ZSBhIERhdGFMb2FkZXIKZGF0YWxvYWRlciA9IERhdGFMb2FkZXIoZGF0YXNldCwgYmF0Y2hfc2l6ZT00LCBzaHVmZmxlPVRydWUsIG51bV93b3JrZXJzPTIpCgojIEl0ZXJhdGUgb3ZlciB0aGUgRGF0YUxvYWRlcgpmb3IgaW1hZ2VzLCBsYWJlbHMgaW4gZGF0YWxvYWRlcjoKICAgIHByaW50KGltYWdlcy5zaXplKCksIGxhYmVscyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from torchvision import transforms
+from torch.utils.data import DataLoader
+
+# Define a transform to convert images to tensors
+transform = transforms.Compose([
+    transforms.Resize((128, 128)),
+    transforms.ToTensor()
+])
+
+# Create an instance of the custom dataset
+dataset = CustomImageDataset(img_dir='path/to/images', transform=transform)
+
+# Create a DataLoader
+dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=2)
+
+# Iterate over the DataLoader
+for images, labels in dataloader:
+    print(images.size(), labels)</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>transform</code>: A series of transformations applied to each image.</li>
+<li><code>DataLoader</code>: Creates an iterable over the dataset with batching, shuffling, and parallel loading.</li>
+<li><code>for images, labels in dataloader</code>: Iterates over the dataset in batches.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Advanced Usage</h1>
+<div class='content'></div><h2>Handling Different Data Types</h2>
+<div class='content'><p>You can create custom datasets for various data types such as text, audio, or even complex multi-modal data.</p>
+</div><h2>Example: Custom Text Dataset</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQ3VzdG9tVGV4dERhdGFzZXQoRGF0YXNldCk6CiAgICBkZWYgX19pbml0X18oc2VsZiwgdGV4dF9maWxlLCB0cmFuc2Zvcm09Tm9uZSk6CiAgICAgICAgd2l0aCBvcGVuKHRleHRfZmlsZSwgJ3InKSBhcyBmaWxlOgogICAgICAgICAgICBzZWxmLnRleHRfZGF0YSA9IGZpbGUucmVhZGxpbmVzKCkKICAgICAgICBzZWxmLnRyYW5zZm9ybSA9IHRyYW5zZm9ybQoKICAgIGRlZiBfX2xlbl9fKHNlbGYpOgogICAgICAgIHJldHVybiBsZW4oc2VsZi50ZXh0X2RhdGEpCgogICAgZGVmIF9fZ2V0aXRlbV9fKHNlbGYsIGlkeCk6CiAgICAgICAgdGV4dCA9IHNlbGYudGV4dF9kYXRhW2lkeF0uc3RyaXAoKQogICAgICAgIAogICAgICAgIGlmIHNlbGYudHJhbnNmb3JtOgogICAgICAgICAgICB0ZXh0ID0gc2VsZi50cmFuc2Zvcm0odGV4dCkKICAgICAgICAKICAgICAgICByZXR1cm4gdGV4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class CustomTextDataset(Dataset):
+    def __init__(self, text_file, transform=None):
+        with open(text_file, 'r') as file:
+            self.text_data = file.readlines()
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.text_data)
+
+    def __getitem__(self, idx):
+        text = self.text_data[idx].strip()
+        
+        if self.transform:
+            text = self.transform(text)
+        
+        return text</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>__init__</code>: Reads text data from a file.</li>
+<li><code>__len__</code>: Returns the number of lines in the text file.</li>
+<li><code>__getitem__</code>: Retrieves a line of text and applies any transformations.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Creating custom datasets and dataloaders in PyTorch allows you to handle a wide variety of data types and formats. By subclassing <code>torch.utils.data.Dataset</code> and using <code>DataLoader</code>, you can efficiently load and preprocess your data, making it ready for training machine learning models.</p>
+<ul>
+<li><strong>Key Takeaways</strong>:
+<ul>
+<li>Subclass <code>torch.utils.data.Dataset</code> to create custom datasets.</li>
+<li>Implement <code>__len__</code> and <code>__getitem__</code> methods.</li>
+<li>Use <code>DataLoader</code> for efficient data loading with support for batching, shuffling, and parallel processing.</li>
+</ul>
+</li>
+</ul>
+<p>With these tools, you can handle any dataset, no matter how complex or unique, and prepare it for your machine learning tasks.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='transformers'>&#x25C4;Transformers</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Custom Datasets and DataLoaders</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='custom-loss-functions'>Custom Loss Functions &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>
