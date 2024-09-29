@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Singleton</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/patrones_diseno/02-02-singleton" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/patrones_diseno/02-02-singleton" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/patrones_diseno/02-02-singleton" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/patrones_diseno/02-02-singleton" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/patrones_diseno/02-02-singleton" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-introduction-creational' title="Introduction to Creational Patterns">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Singleton</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-factory-method' title="Factory Method">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>The Singleton pattern is a creational design pattern that ensures a class has only one instance and provides a global point of access to that instance. This is useful when exactly one object is needed to coordinate actions across the system.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Single Instance</strong>: Ensures that a class has only one instance.</li>
+<li><strong>Global Access Point</strong>: Provides a way to access the instance from anywhere in the application.</li>
+<li><strong>Lazy Initialization</strong>: The instance is created only when it is needed.</li>
+</ul>
+</div><h1>Structure</h1>
+<div class='content'><p>The Singleton pattern typically involves the following components:</p>
+<ol>
+<li><strong>Private Constructor</strong>: Prevents other classes from instantiating the Singleton class.</li>
+<li><strong>Static Variable</strong>: Holds the single instance of the Singleton class.</li>
+<li><strong>Static Method</strong>: Provides a way to access the instance.</li>
+</ol>
+</div><h1>Example in Java</h1>
+<div class='content'><p>Here is a simple implementation of the Singleton pattern in Java:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFNpbmdsZXRvbiB7CiAgICAvLyBTdGF0aWMgdmFyaWFibGUgdG8gaG9sZCB0aGUgc2luZ2xlIGluc3RhbmNlCiAgICBwcml2YXRlIHN0YXRpYyBTaW5nbGV0b24gaW5zdGFuY2U7CgogICAgLy8gUHJpdmF0ZSBjb25zdHJ1Y3RvciB0byBwcmV2ZW50IGluc3RhbnRpYXRpb24KICAgIHByaXZhdGUgU2luZ2xldG9uKCkge30KCiAgICAvLyBTdGF0aWMgbWV0aG9kIHRvIHByb3ZpZGUgYWNjZXNzIHRvIHRoZSBpbnN0YW5jZQogICAgcHVibGljIHN0YXRpYyBTaW5nbGV0b24gZ2V0SW5zdGFuY2UoKSB7CiAgICAgICAgaWYgKGluc3RhbmNlID09IG51bGwpIHsKICAgICAgICAgICAgaW5zdGFuY2UgPSBuZXcgU2luZ2xldG9uKCk7CiAgICAgICAgfQogICAgICAgIHJldHVybiBpbnN0YW5jZTsKICAgIH0KCiAgICAvLyBFeGFtcGxlIG1ldGhvZCB0byBkZW1vbnN0cmF0ZSBmdW5jdGlvbmFsaXR5CiAgICBwdWJsaWMgdm9pZCBzaG93TWVzc2FnZSgpIHsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIkhlbGxvIGZyb20gU2luZ2xldG9uISIpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Singleton {
+    // Static variable to hold the single instance
+    private static Singleton instance;
+
+    // Private constructor to prevent instantiation
+    private Singleton() {}
+
+    // Static method to provide access to the instance
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    // Example method to demonstrate functionality
+    public void showMessage() {
+        System.out.println(&quot;Hello from Singleton!&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Private Constructor</strong>: The constructor is private, so it cannot be called from outside the class.</li>
+<li><strong>Static Variable</strong>: The <code>instance</code> variable holds the single instance of the class.</li>
+<li><strong>Static Method</strong>: The <code>getInstance</code> method checks if the instance is <code>null</code> and creates it if necessary. This ensures that only one instance is created.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise 1: Implement Singleton in Python</h2>
+<div class='content'><p>Implement the Singleton pattern in Python.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgU2luZ2xldG9uOgogICAgX2luc3RhbmNlID0gTm9uZQoKICAgIGRlZiBfX25ld19fKGNscyk6CiAgICAgICAgaWYgY2xzLl9pbnN0YW5jZSBpcyBOb25lOgogICAgICAgICAgICBjbHMuX2luc3RhbmNlID0gc3VwZXIoU2luZ2xldG9uLCBjbHMpLl9fbmV3X18oY2xzKQogICAgICAgIHJldHVybiBjbHMuX2luc3RhbmNlCgogICAgZGVmIHNob3dfbWVzc2FnZShzZWxmKToKICAgICAgICBwcmludCgiSGVsbG8gZnJvbSBTaW5nbGV0b24hIikKCiMgVGVzdCB0aGUgU2luZ2xldG9uIGltcGxlbWVudGF0aW9uCnNpbmdsZXRvbjEgPSBTaW5nbGV0b24oKQpzaW5nbGV0b24yID0gU2luZ2xldG9uKCkKCnNpbmdsZXRvbjEuc2hvd19tZXNzYWdlKCkKcHJpbnQoc2luZ2xldG9uMSBpcyBzaW5nbGV0b24yKSAgIyBTaG91bGQgcHJpbnQgVHJ1ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Singleton:
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(Singleton, cls).__new__(cls)
+        return cls._instance
+
+    def show_message(self):
+        print(&quot;Hello from Singleton!&quot;)
+
+# Test the Singleton implementation
+singleton1 = Singleton()
+singleton2 = Singleton()
+
+singleton1.show_message()
+print(singleton1 is singleton2)  # Should print True</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>__new__</code> Method</strong>: The <code>__new__</code> method is overridden to control the creation of the instance. If <code>_instance</code> is <code>None</code>, a new instance is created.</li>
+<li><strong>Instance Check</strong>: The <code>print(singleton1 is singleton2)</code> statement checks if both variables point to the same instance, which should be <code>True</code>.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Multiple Instances</strong>: Ensure that the Singleton class cannot be instantiated more than once. This can happen if the constructor is not private or if the instance is not checked properly.</li>
+<li><strong>Thread Safety</strong>: In a multi-threaded environment, ensure that the Singleton instance is created in a thread-safe manner. This can be achieved using synchronization mechanisms.</li>
+</ul>
+</div><h2>Thread-Safe Singleton in Java</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFRocmVhZFNhZmVTaW5nbGV0b24gewogICAgcHJpdmF0ZSBzdGF0aWMgVGhyZWFkU2FmZVNpbmdsZXRvbiBpbnN0YW5jZTsKCiAgICBwcml2YXRlIFRocmVhZFNhZmVTaW5nbGV0b24oKSB7fQoKICAgIHB1YmxpYyBzdGF0aWMgc3luY2hyb25pemVkIFRocmVhZFNhZmVTaW5nbGV0b24gZ2V0SW5zdGFuY2UoKSB7CiAgICAgICAgaWYgKGluc3RhbmNlID09IG51bGwpIHsKICAgICAgICAgICAgaW5zdGFuY2UgPSBuZXcgVGhyZWFkU2FmZVNpbmdsZXRvbigpOwogICAgICAgIH0KICAgICAgICByZXR1cm4gaW5zdGFuY2U7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class ThreadSafeSingleton {
+    private static ThreadSafeSingleton instance;
+
+    private ThreadSafeSingleton() {}
+
+    public static synchronized ThreadSafeSingleton getInstance() {
+        if (instance == null) {
+            instance = new ThreadSafeSingleton();
+        }
+        return instance;
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Synchronized Method</strong>: The <code>getInstance</code> method is synchronized to ensure that only one thread can execute it at a time, preventing multiple instances from being created.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><ul>
+<li>The Singleton pattern ensures that a class has only one instance and provides a global access point to it.</li>
+<li>It involves a private constructor, a static variable, and a static method.</li>
+<li>Care must be taken to ensure thread safety in multi-threaded environments.</li>
+<li>Practical exercises help reinforce the concept and provide hands-on experience.</li>
+</ul>
+<p>In the next topic, we will explore the Factory Method pattern, which provides a way to create objects without specifying the exact class of the object that will be created.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-introduction-creational' title="Introduction to Creational Patterns">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-factory-method' title="Factory Method">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

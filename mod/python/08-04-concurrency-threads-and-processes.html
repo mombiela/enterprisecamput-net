@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrency: Threads and Processes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/08-04-concurrency-threads-and-processes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/08-04-concurrency-threads-and-processes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/python/08-04-concurrency-threads-and-processes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-context-managers' title="Context Managers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Concurrency: Threads and Processes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio for Asynchronous Programming">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Concurrency is a fundamental concept in programming that allows multiple tasks to run simultaneously, improving the efficiency and performance of applications. In Python, concurrency can be achieved using threads and processes. This section will cover the basics of threads and processes, their differences, and how to implement them in Python.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Concurrency vs. Parallelism</strong>:</p>
+<ul>
+<li><strong>Concurrency</strong>: Multiple tasks make progress by sharing the same resources (e.g., CPU).</li>
+<li><strong>Parallelism</strong>: Multiple tasks run simultaneously on different resources (e.g., multiple CPUs).</li>
+</ul>
+</li>
+<li>
+<p><strong>Threads</strong>:</p>
+<ul>
+<li>Lightweight, share the same memory space.</li>
+<li>Suitable for I/O-bound tasks.</li>
+</ul>
+</li>
+<li>
+<p><strong>Processes</strong>:</p>
+<ul>
+<li>Heavyweight, have separate memory space.</li>
+<li>Suitable for CPU-bound tasks.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Threads in Python</h1>
+<div class='content'></div><h2>Creating and Starting Threads</h2>
+<div class='content'><p>Python provides the <code>threading</code> module to work with threads. Below is an example of creating and starting a thread:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGkpCgojIENyZWF0ZSBhIHRocmVhZAp0aHJlYWQgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1wcmludF9udW1iZXJzKQoKIyBTdGFydCB0aGUgdGhyZWFkCnRocmVhZC5zdGFydCgpCgojIFdhaXQgZm9yIHRoZSB0aHJlYWQgdG8gY29tcGxldGUKdGhyZWFkLmpvaW4oKQoKcHJpbnQoIlRocmVhZCBoYXMgZmluaXNoZWQgZXhlY3V0aW9uLiIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+
+def print_numbers():
+    for i in range(5):
+        print(i)
+
+# Create a thread
+thread = threading.Thread(target=print_numbers)
+
+# Start the thread
+thread.start()
+
+# Wait for the thread to complete
+thread.join()
+
+print(&quot;Thread has finished execution.&quot;)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Importing the threading module</strong>: We import the <code>threading</code> module to work with threads.</li>
+<li><strong>Defining a function</strong>: The <code>print_numbers</code> function prints numbers from 0 to 4.</li>
+<li><strong>Creating a thread</strong>: We create a thread object by passing the target function <code>print_numbers</code>.</li>
+<li><strong>Starting the thread</strong>: The <code>start</code> method begins the execution of the thread.</li>
+<li><strong>Joining the thread</strong>: The <code>join</code> method waits for the thread to complete before proceeding.</li>
+</ul>
+</div><h2>Practical Exercise: Threading</h2>
+<div class='content'><p><strong>Exercise</strong>: Create a program that uses two threads to print numbers and letters simultaneously.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGkpCgpkZWYgcHJpbnRfbGV0dGVycygpOgogICAgZm9yIGxldHRlciBpbiAnYWJjZGUnOgogICAgICAgIHByaW50KGxldHRlcikKCiMgQ3JlYXRlIHRocmVhZHMKdGhyZWFkMSA9IHRocmVhZGluZy5UaHJlYWQodGFyZ2V0PXByaW50X251bWJlcnMpCnRocmVhZDIgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1wcmludF9sZXR0ZXJzKQoKIyBTdGFydCB0aHJlYWRzCnRocmVhZDEuc3RhcnQoKQp0aHJlYWQyLnN0YXJ0KCkKCiMgV2FpdCBmb3IgdGhyZWFkcyB0byBjb21wbGV0ZQp0aHJlYWQxLmpvaW4oKQp0aHJlYWQyLmpvaW4oKQoKcHJpbnQoIkJvdGggdGhyZWFkcyBoYXZlIGZpbmlzaGVkIGV4ZWN1dGlvbi4iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+
+def print_numbers():
+    for i in range(5):
+        print(i)
+
+def print_letters():
+    for letter in 'abcde':
+        print(letter)
+
+# Create threads
+thread1 = threading.Thread(target=print_numbers)
+thread2 = threading.Thread(target=print_letters)
+
+# Start threads
+thread1.start()
+thread2.start()
+
+# Wait for threads to complete
+thread1.join()
+thread2.join()
+
+print(&quot;Both threads have finished execution.&quot;)</pre></div><div class='content'></div><h1>Processes in Python</h1>
+<div class='content'></div><h2>Creating and Starting Processes</h2>
+<div class='content'><p>Python provides the <code>multiprocessing</code> module to work with processes. Below is an example of creating and starting a process:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGkpCgojIENyZWF0ZSBhIHByb2Nlc3MKcHJvY2VzcyA9IG11bHRpcHJvY2Vzc2luZy5Qcm9jZXNzKHRhcmdldD1wcmludF9udW1iZXJzKQoKIyBTdGFydCB0aGUgcHJvY2Vzcwpwcm9jZXNzLnN0YXJ0KCkKCiMgV2FpdCBmb3IgdGhlIHByb2Nlc3MgdG8gY29tcGxldGUKcHJvY2Vzcy5qb2luKCkKCnByaW50KCJQcm9jZXNzIGhhcyBmaW5pc2hlZCBleGVjdXRpb24uIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+
+def print_numbers():
+    for i in range(5):
+        print(i)
+
+# Create a process
+process = multiprocessing.Process(target=print_numbers)
+
+# Start the process
+process.start()
+
+# Wait for the process to complete
+process.join()
+
+print(&quot;Process has finished execution.&quot;)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Importing the multiprocessing module</strong>: We import the <code>multiprocessing</code> module to work with processes.</li>
+<li><strong>Defining a function</strong>: The <code>print_numbers</code> function prints numbers from 0 to 4.</li>
+<li><strong>Creating a process</strong>: We create a process object by passing the target function <code>print_numbers</code>.</li>
+<li><strong>Starting the process</strong>: The <code>start</code> method begins the execution of the process.</li>
+<li><strong>Joining the process</strong>: The <code>join</code> method waits for the process to complete before proceeding.</li>
+</ul>
+</div><h2>Practical Exercise: Multiprocessing</h2>
+<div class='content'><p><strong>Exercise</strong>: Create a program that uses two processes to print numbers and letters simultaneously.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGkpCgpkZWYgcHJpbnRfbGV0dGVycygpOgogICAgZm9yIGxldHRlciBpbiAnYWJjZGUnOgogICAgICAgIHByaW50KGxldHRlcikKCiMgQ3JlYXRlIHByb2Nlc3Nlcwpwcm9jZXNzMSA9IG11bHRpcHJvY2Vzc2luZy5Qcm9jZXNzKHRhcmdldD1wcmludF9udW1iZXJzKQpwcm9jZXNzMiA9IG11bHRpcHJvY2Vzc2luZy5Qcm9jZXNzKHRhcmdldD1wcmludF9sZXR0ZXJzKQoKIyBTdGFydCBwcm9jZXNzZXMKcHJvY2VzczEuc3RhcnQoKQpwcm9jZXNzMi5zdGFydCgpCgojIFdhaXQgZm9yIHByb2Nlc3NlcyB0byBjb21wbGV0ZQpwcm9jZXNzMS5qb2luKCkKcHJvY2VzczIuam9pbigpCgpwcmludCgiQm90aCBwcm9jZXNzZXMgaGF2ZSBmaW5pc2hlZCBleGVjdXRpb24uIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+
+def print_numbers():
+    for i in range(5):
+        print(i)
+
+def print_letters():
+    for letter in 'abcde':
+        print(letter)
+
+# Create processes
+process1 = multiprocessing.Process(target=print_numbers)
+process2 = multiprocessing.Process(target=print_letters)
+
+# Start processes
+process1.start()
+process2.start()
+
+# Wait for processes to complete
+process1.join()
+process2.join()
+
+print(&quot;Both processes have finished execution.&quot;)</pre></div><div class='content'></div><h1>Comparison: Threads vs. Processes</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Threads</th>
+<th>Processes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory Sharing</td>
+<td>Shared memory space</td>
+<td>Separate memory space</td>
+</tr>
+<tr>
+<td>Overhead</td>
+<td>Lower overhead</td>
+<td>Higher overhead</td>
+</tr>
+<tr>
+<td>Suitable for</td>
+<td>I/O-bound tasks</td>
+<td>CPU-bound tasks</td>
+</tr>
+<tr>
+<td>Creation Time</td>
+<td>Faster</td>
+<td>Slower</td>
+</tr>
+<tr>
+<td>Communication</td>
+<td>Easier (shared memory)</td>
+<td>Harder (inter-process communication)</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Race Conditions</strong>: When multiple threads/processes access shared resources simultaneously, it can lead to inconsistent results. Use locks or other synchronization mechanisms to prevent this.</li>
+<li><strong>Deadlocks</strong>: Occur when two or more threads/processes are waiting for each other to release resources. Avoid nested locks and ensure proper resource management.</li>
+<li><strong>GIL (Global Interpreter Lock)</strong>: Python's GIL can limit the performance of CPU-bound tasks in multi-threaded programs. Use multiprocessing for CPU-bound tasks to bypass the GIL.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the concepts of concurrency using threads and processes in Python. We learned how to create and manage threads and processes, compared their features, and discussed common pitfalls. Understanding these concepts is crucial for writing efficient and performant Python programs. In the next section, we will delve into asynchronous programming with <code>asyncio</code>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-context-managers' title="Context Managers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio for Asynchronous Programming">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

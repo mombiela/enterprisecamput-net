@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Workers and Progressive Web Apps (PWAs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/07-04-service-workers-pwas" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/07-04-service-workers-pwas" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/07-04-service-workers-pwas" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/javascript/07-04-service-workers-pwas" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/07-04-service-workers-pwas" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-websockets' title="WebSockets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Service Workers and Progressive Web Apps (PWAs)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-introduction-webassembly' title="Introduction to WebAssembly">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Progressive Web Apps (PWAs) are web applications that use modern web capabilities to deliver an app-like experience to users. They are reliable, fast, and engaging. One of the key technologies behind PWAs is Service Workers.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Service Workers</strong>: A script that your browser runs in the background, separate from a web page, enabling features that don't need a web page or user interaction.</li>
+<li><strong>Caching</strong>: Service Workers can intercept network requests and serve cached responses, making your app work offline.</li>
+<li><strong>Push Notifications</strong>: Service Workers can handle push notifications, allowing your app to re-engage users.</li>
+<li><strong>Background Sync</strong>: Allows your app to defer actions until the user has stable connectivity.</li>
+</ol>
+</div><h1>Setting Up a Service Worker</h1>
+<div class='content'></div><h2>Registering a Service Worker</h2>
+<div class='content'><p>To use a Service Worker, you first need to register it in your main JavaScript file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKCdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IpIHsKICB3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcignbG9hZCcsICgpID0+IHsKICAgIG5hdmlnYXRvci5zZXJ2aWNlV29ya2VyLnJlZ2lzdGVyKCcvc2VydmljZS13b3JrZXIuanMnKQogICAgICAudGhlbihyZWdpc3RyYXRpb24gPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdTZXJ2aWNlV29ya2VyIHJlZ2lzdHJhdGlvbiBzdWNjZXNzZnVsIHdpdGggc2NvcGU6ICcsIHJlZ2lzdHJhdGlvbi5zY29wZSk7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ1NlcnZpY2VXb3JrZXIgcmVnaXN0cmF0aW9uIGZhaWxlZDogJywgZXJyb3IpOwogICAgICB9KTsKICB9KTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =&gt; {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration =&gt; {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(error =&gt; {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Feature Detection</strong>: Check if the browser supports Service Workers.</li>
+<li><strong>Event Listener</strong>: Wait for the window to load before registering the Service Worker.</li>
+<li><strong>Register</strong>: Register the Service Worker script located at <code>/service-worker.js</code>.</li>
+<li><strong>Logging</strong>: Log the success or failure of the registration.</li>
+</ul>
+</div><h1>Writing a Service Worker</h1>
+<div class='content'></div><h2>Basic Service Worker Script</h2>
+<div class='content'><p>Create a file named <code>service-worker.js</code> in your project root.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgQ0FDSEVfTkFNRSA9ICdteS1jYWNoZS12MSc7CmNvbnN0IHVybHNUb0NhY2hlID0gWwogICcvJywKICAnL3N0eWxlcy9tYWluLmNzcycsCiAgJy9zY3JpcHQvbWFpbi5qcycKXTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGV2ZW50ID0+IHsKICBldmVudC53YWl0VW50aWwoCiAgICBjYWNoZXMub3BlbihDQUNIRV9OQU1FKQogICAgICAudGhlbihjYWNoZSA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ09wZW5lZCBjYWNoZScpOwogICAgICAgIHJldHVybiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpOwogICAgICB9KQogICk7Cn0pOwoKc2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQogICAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgaWYgKHJlc3BvbnNlKSB7CiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7CiAgICAgICAgfQogICAgICAgIHJldHVybiBmZXRjaChldmVudC5yZXF1ZXN0KTsKICAgICAgfSkKICApOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const CACHE_NAME = 'my-cache-v1';
+const urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/script/main.js'
+];
+
+self.addEventListener('install', event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('fetch', event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response =&gt; {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>CACHE_NAME</strong>: Name of the cache storage.</li>
+<li><strong>urlsToCache</strong>: Array of URLs to cache during the installation.</li>
+<li><strong>Install Event</strong>: Cache the specified URLs when the Service Worker is installed.</li>
+<li><strong>Fetch Event</strong>: Intercept network requests and serve cached responses if available, otherwise fetch from the network.</li>
+</ul>
+</div><h1>Progressive Web Apps (PWAs)</h1>
+<div class='content'></div><h2>Key Features of PWAs</h2>
+<div class='content'><ol>
+<li><strong>Responsive</strong>: Fits any form factor, desktop, mobile, tablet, or whatever is next.</li>
+<li><strong>Connectivity Independent</strong>: Works offline or on low-quality networks.</li>
+<li><strong>App-like</strong>: Feels like an app to the user with app-style interactions and navigation.</li>
+<li><strong>Fresh</strong>: Always up-to-date thanks to the Service Worker update process.</li>
+<li><strong>Safe</strong>: Served via HTTPS to prevent snooping and ensure content hasn't been tampered with.</li>
+<li><strong>Discoverable</strong>: Identifiable as “applications” thanks to W3C manifests and service worker registration scope allowing search engines to find them.</li>
+<li><strong>Re-engageable</strong>: Makes re-engagement easy through features like push notifications.</li>
+<li><strong>Installable</strong>: Allows users to “keep” apps they find most useful on their home screen without the hassle of an app store.</li>
+<li><strong>Linkable</strong>: Easily share via URL and does not require complex installation.</li>
+</ol>
+</div><h2>Creating a Web App Manifest</h2>
+<div class='content'><p>A Web App Manifest is a JSON file that provides metadata about your web application.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogIk15IFByb2dyZXNzaXZlIFdlYiBBcHAiLAogICJzaG9ydF9uYW1lIjogIk15UFdBIiwKICAic3RhcnRfdXJsIjogIi9pbmRleC5odG1sIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiIzAwMDAwMCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogIi9pbWFnZXMvaWNvbi0xOTJ4MTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICIvaW1hZ2VzL2ljb24tNTEyeDUxMi5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;My Progressive Web App&quot;,
+  &quot;short_name&quot;: &quot;MyPWA&quot;,
+  &quot;start_url&quot;: &quot;/index.html&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#ffffff&quot;,
+  &quot;theme_color&quot;: &quot;#000000&quot;,
+  &quot;icons&quot;: [
+    {
+      &quot;src&quot;: &quot;/images/icon-192x192.png&quot;,
+      &quot;sizes&quot;: &quot;192x192&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/images/icon-512x512.png&quot;,
+      &quot;sizes&quot;: &quot;512x512&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    }
+  ]
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>name</strong>: Full name of the app.</li>
+<li><strong>short_name</strong>: Short name of the app, used when there is insufficient space to display the full name.</li>
+<li><strong>start_url</strong>: URL that loads when the app is launched.</li>
+<li><strong>display</strong>: Defines the preferred display mode for the app (e.g., standalone, fullscreen).</li>
+<li><strong>background_color</strong>: Background color for the splash screen.</li>
+<li><strong>theme_color</strong>: Theme color for the browser.</li>
+<li><strong>icons</strong>: Array of icon objects specifying the app icons.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create a Simple PWA</h2>
+<div class='content'><ol>
+<li><strong>Create a basic HTML file</strong> (<code>index.html</code>).</li>
+<li><strong>Create a Service Worker</strong> (<code>service-worker.js</code>) to cache the HTML file.</li>
+<li><strong>Create a Web App Manifest</strong> (<code>manifest.json</code>).</li>
+<li><strong>Register the Service Worker</strong> in your main JavaScript file (<code>main.js</code>).</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>index.html</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8bGluayByZWw9Im1hbmlmZXN0IiBocmVmPSIvbWFuaWZlc3QuanNvbiI+CiAgPHRpdGxlPk15IFBXQTwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgPGgxPldlbGNvbWUgdG8gTXkgUHJvZ3Jlc3NpdmUgV2ViIEFwcCE8L2gxPgogIDxzY3JpcHQgc3JjPSIvbWFpbi5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;link rel=&quot;manifest&quot; href=&quot;/manifest.json&quot;&gt;
+  &lt;title&gt;My PWA&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Welcome to My Progressive Web App!&lt;/h1&gt;
+  &lt;script src=&quot;/main.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><h4>service-worker.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgQ0FDSEVfTkFNRSA9ICdteS1jYWNoZS12MSc7CmNvbnN0IHVybHNUb0NhY2hlID0gWwogICcvJywKICAnL2luZGV4Lmh0bWwnCl07CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkKICAgICAgLnRoZW4oY2FjaGUgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdPcGVuZWQgY2FjaGUnKTsKICAgICAgICByZXR1cm4gY2FjaGUuYWRkQWxsKHVybHNUb0NhY2hlKTsKICAgICAgfSkKICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7CiAgZXZlbnQucmVzcG9uZFdpdGgoCiAgICBjYWNoZXMubWF0Y2goZXZlbnQucmVxdWVzdCkKICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICAgIGlmIChyZXNwb25zZSkgewogICAgICAgICAgcmV0dXJuIHJlc3BvbnNlOwogICAgICAgIH0KICAgICAgICByZXR1cm4gZmV0Y2goZXZlbnQucmVxdWVzdCk7CiAgICAgIH0pCiAgKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const CACHE_NAME = 'my-cache-v1';
+const urlsToCache = [
+  '/',
+  '/index.html'
+];
+
+self.addEventListener('install', event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; {
+        console.log('Opened cache');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('fetch', event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response =&gt; {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});</pre></div><div class='content'><h4>manifest.json</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogIk15IFByb2dyZXNzaXZlIFdlYiBBcHAiLAogICJzaG9ydF9uYW1lIjogIk15UFdBIiwKICAic3RhcnRfdXJsIjogIi9pbmRleC5odG1sIiwKICAiZGlzcGxheSI6ICJzdGFuZGFsb25lIiwKICAiYmFja2dyb3VuZF9jb2xvciI6ICIjZmZmZmZmIiwKICAidGhlbWVfY29sb3IiOiAiIzAwMDAwMCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogIi9pbWFnZXMvaWNvbi0xOTJ4MTkyLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfSwKICAgIHsKICAgICAgInNyYyI6ICIvaW1hZ2VzL2ljb24tNTEyeDUxMi5wbmciLAogICAgICAic2l6ZXMiOiAiNTEyeDUxMiIsCiAgICAgICJ0eXBlIjogImltYWdlL3BuZyIKICAgIH0KICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;My Progressive Web App&quot;,
+  &quot;short_name&quot;: &quot;MyPWA&quot;,
+  &quot;start_url&quot;: &quot;/index.html&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#ffffff&quot;,
+  &quot;theme_color&quot;: &quot;#000000&quot;,
+  &quot;icons&quot;: [
+    {
+      &quot;src&quot;: &quot;/images/icon-192x192.png&quot;,
+      &quot;sizes&quot;: &quot;192x192&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    },
+    {
+      &quot;src&quot;: &quot;/images/icon-512x512.png&quot;,
+      &quot;sizes&quot;: &quot;512x512&quot;,
+      &quot;type&quot;: &quot;image/png&quot;
+    }
+  ]
+}</pre></div><div class='content'><h4>main.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKCdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IpIHsKICB3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcignbG9hZCcsICgpID0+IHsKICAgIG5hdmlnYXRvci5zZXJ2aWNlV29ya2VyLnJlZ2lzdGVyKCcvc2VydmljZS13b3JrZXIuanMnKQogICAgICAudGhlbihyZWdpc3RyYXRpb24gPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdTZXJ2aWNlV29ya2VyIHJlZ2lzdHJhdGlvbiBzdWNjZXNzZnVsIHdpdGggc2NvcGU6ICcsIHJlZ2lzdHJhdGlvbi5zY29wZSk7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ1NlcnZpY2VXb3JrZXIgcmVnaXN0cmF0aW9uIGZhaWxlZDogJywgZXJyb3IpOwogICAgICB9KTsKICB9KTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =&gt; {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration =&gt; {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch(error =&gt; {
+        console.log('ServiceWorker registration failed: ', error);
+      });
+  });
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned about Service Workers and Progressive Web Apps (PWAs). You now know how to:</p>
+<ul>
+<li>Register and write a basic Service Worker.</li>
+<li>Create a Web App Manifest.</li>
+<li>Understand the key features of PWAs.</li>
+</ul>
+<p>By combining these technologies, you can create web applications that are reliable, fast, and engaging, providing a superior user experience. In the next module, we will explore Browser APIs and other advanced topics to further enhance your web applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-websockets' title="WebSockets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-introduction-webassembly' title="Introduction to WebAssembly">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

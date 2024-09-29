@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building REST APIs with Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/10-03-building-rest-apis-with-flask" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/10-03-building-rest-apis-with-flask" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/10-03-building-rest-apis-with-flask" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/python/10-03-building-rest-apis-with-flask" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/python/10-03-building-rest-apis-with-flask" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-flask-framework-basics' title="Flask Framework Basics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Building REST APIs with Flask</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-introduction-to-django' title="Introduction to Django">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to build RESTful APIs using the Flask framework. REST (Representational State Transfer) is an architectural style that uses HTTP requests to access and manipulate data. Flask is a lightweight WSGI web application framework in Python that is easy to use and well-suited for building APIs.</p>
+</div><h1>Objectives</h1>
+<div class='content'><p>By the end of this section, you will be able to:</p>
+<ul>
+<li>Understand the basics of RESTful APIs.</li>
+<li>Set up a Flask application for building APIs.</li>
+<li>Create endpoints for CRUD (Create, Read, Update, Delete) operations.</li>
+<li>Handle JSON data in Flask.</li>
+<li>Implement error handling in your API.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting this section, ensure you have:</p>
+<ul>
+<li>Basic knowledge of Flask (covered in the previous section).</li>
+<li>Python installed on your machine.</li>
+<li>Flask installed (<code>pip install Flask</code>).</li>
+</ul>
+</div><h1>1. Introduction to RESTful APIs</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Resource</strong>: Any piece of data that can be named and manipulated, such as a user, a blog post, or a product.</li>
+<li><strong>Endpoint</strong>: A specific URL where a resource can be accessed.</li>
+<li><strong>HTTP Methods</strong>: The actions you can perform on a resource (GET, POST, PUT, DELETE).</li>
+<li><strong>Status Codes</strong>: Standardized codes that indicate the result of an HTTP request (e.g., 200 OK, 404 Not Found).</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>HTTP Method</th>
+<th>Endpoint</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>/api/users</td>
+<td>Retrieve a list of users</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>/api/users</td>
+<td>Create a new user</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>/api/users/{id}</td>
+<td>Retrieve a specific user</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>/api/users/{id}</td>
+<td>Update a specific user</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>/api/users/{id}</td>
+<td>Delete a specific user</td>
+</tr>
+</tbody>
+</table>
+</div><h1>2. Setting Up the Flask Application</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Project Directory</strong>:</p>
+<pre><code class="language-bash">mkdir flask_api
+cd flask_api
+</code></pre>
+</li>
+<li>
+<p><strong>Set Up a Virtual Environment</strong>:</p>
+<pre><code class="language-bash">python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+</code></pre>
+</li>
+<li>
+<p><strong>Install Flask</strong>:</p>
+<pre><code class="language-bash">pip install Flask
+</code></pre>
+</li>
+<li>
+<p><strong>Create the Flask Application</strong>:</p>
+<pre><code class="language-python"># app.py
+from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return &quot;Welcome to the Flask REST API!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li>
+<p><strong>Run the Application</strong>:</p>
+<pre><code class="language-bash">python app.py
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Creating Endpoints for CRUD Operations</h1>
+<div class='content'></div><h2>Example: User Management API</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define the User Resource</strong>:</p>
+<pre><code class="language-python">users = [
+    {'id': 1, 'name': 'John Doe', 'email': 'john@example.com'},
+    {'id': 2, 'name': 'Jane Doe', 'email': 'jane@example.com'}
+]
+</code></pre>
+</li>
+<li>
+<p><strong>Create Endpoints</strong>:</p>
+<ul>
+<li>
+<p><strong>GET /api/users</strong>: Retrieve all users</p>
+<pre><code class="language-python">@app.route('/api/users', methods=['GET'])
+def get_users():
+    return jsonify(users)
+</code></pre>
+</li>
+<li>
+<p><strong>GET /api/users/{id}</strong>: Retrieve a specific user</p>
+<pre><code class="language-python">@app.route('/api/users/&lt;int:user_id&gt;', methods=['GET'])
+def get_user(user_id):
+    user = next((user for user in users if user['id'] == user_id), None)
+    if user:
+        return jsonify(user)
+    return jsonify({'message': 'User not found'}), 404
+</code></pre>
+</li>
+<li>
+<p><strong>POST /api/users</strong>: Create a new user</p>
+<pre><code class="language-python">@app.route('/api/users', methods=['POST'])
+def create_user():
+    new_user = request.get_json()
+    new_user['id'] = len(users) + 1
+    users.append(new_user)
+    return jsonify(new_user), 201
+</code></pre>
+</li>
+<li>
+<p><strong>PUT /api/users/{id}</strong>: Update a specific user</p>
+<pre><code class="language-python">@app.route('/api/users/&lt;int:user_id&gt;', methods=['PUT'])
+def update_user(user_id):
+    user = next((user for user in users if user['id'] == user_id), None)
+    if user:
+        data = request.get_json()
+        user.update(data)
+        return jsonify(user)
+    return jsonify({'message': 'User not found'}), 404
+</code></pre>
+</li>
+<li>
+<p><strong>DELETE /api/users/{id}</strong>: Delete a specific user</p>
+<pre><code class="language-python">@app.route('/api/users/&lt;int:user_id&gt;', methods=['DELETE'])
+def delete_user(user_id):
+    global users
+    users = [user for user in users if user['id'] != user_id]
+    return jsonify({'message': 'User deleted'})
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>4. Handling JSON Data</h1>
+<div class='content'></div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL2FwaS9kYXRhJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGhhbmRsZV9kYXRhKCk6CiAgICBkYXRhID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICByZXR1cm4ganNvbmlmeShkYXRhKSwgMjAxCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['POST'])
+def handle_data():
+    data = request.get_json()
+    return jsonify(data), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>5. Implementing Error Handling</h1>
+<div class='content'></div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5lcnJvcmhhbmRsZXIoNDA0KQpkZWYgbm90X2ZvdW5kKGVycm9yKToKICAgIHJldHVybiBqc29uaWZ5KHsnbWVzc2FnZSc6ICdSZXNvdXJjZSBub3QgZm91bmQnfSksIDQwNAoKQGFwcC5lcnJvcmhhbmRsZXIoNDAwKQpkZWYgYmFkX3JlcXVlc3QoZXJyb3IpOgogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0JhZCByZXF1ZXN0J30pLCA0MDA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.errorhandler(404)
+def not_found(error):
+    return jsonify({'message': 'Resource not found'}), 404
+
+@app.errorhandler(400)
+def bad_request(error):
+    return jsonify({'message': 'Bad request'}), 400</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a Flask API for managing a list of books. Each book should have an <code>id</code>, <code>title</code>, <code>author</code>, and <code>published_date</code>.</p>
+<ol>
+<li><strong>Set up the Flask application</strong>.</li>
+<li><strong>Create endpoints for CRUD operations</strong>:
+<ul>
+<li>GET /api/books</li>
+<li>GET /api/books/{id}</li>
+<li>POST /api/books</li>
+<li>PUT /api/books/{id}</li>
+<li>DELETE /api/books/{id}</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKYm9va3MgPSBbCiAgICB7J2lkJzogMSwgJ3RpdGxlJzogJzE5ODQnLCAnYXV0aG9yJzogJ0dlb3JnZSBPcndlbGwnLCAncHVibGlzaGVkX2RhdGUnOiAnMTk0OS0wNi0wOCd9LAogICAgeydpZCc6IDIsICd0aXRsZSc6ICdUbyBLaWxsIGEgTW9ja2luZ2JpcmQnLCAnYXV0aG9yJzogJ0hhcnBlciBMZWUnLCAncHVibGlzaGVkX2RhdGUnOiAnMTk2MC0wNy0xMSd9Cl0KCkBhcHAucm91dGUoJy9hcGkvYm9va3MnLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBnZXRfYm9va3MoKToKICAgIHJldHVybiBqc29uaWZ5KGJvb2tzKQoKQGFwcC5yb3V0ZSgnL2FwaS9ib29rcy88aW50OmJvb2tfaWQ+JywgbWV0aG9kcz1bJ0dFVCddKQpkZWYgZ2V0X2Jvb2soYm9va19pZCk6CiAgICBib29rID0gbmV4dCgoYm9vayBmb3IgYm9vayBpbiBib29rcyBpZiBib29rWydpZCddID09IGJvb2tfaWQpLCBOb25lKQogICAgaWYgYm9vazoKICAgICAgICByZXR1cm4ganNvbmlmeShib29rKQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0Jvb2sgbm90IGZvdW5kJ30pLCA0MDQKCkBhcHAucm91dGUoJy9hcGkvYm9va3MnLCBtZXRob2RzPVsnUE9TVCddKQpkZWYgY3JlYXRlX2Jvb2soKToKICAgIG5ld19ib29rID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICBuZXdfYm9va1snaWQnXSA9IGxlbihib29rcykgKyAxCiAgICBib29rcy5hcHBlbmQobmV3X2Jvb2spCiAgICByZXR1cm4ganNvbmlmeShuZXdfYm9vayksIDIwMQoKQGFwcC5yb3V0ZSgnL2FwaS9ib29rcy88aW50OmJvb2tfaWQ+JywgbWV0aG9kcz1bJ1BVVCddKQpkZWYgdXBkYXRlX2Jvb2soYm9va19pZCk6CiAgICBib29rID0gbmV4dCgoYm9vayBmb3IgYm9vayBpbiBib29rcyBpZiBib29rWydpZCddID09IGJvb2tfaWQpLCBOb25lKQogICAgaWYgYm9vazoKICAgICAgICBkYXRhID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICAgICAgYm9vay51cGRhdGUoZGF0YSkKICAgICAgICByZXR1cm4ganNvbmlmeShib29rKQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0Jvb2sgbm90IGZvdW5kJ30pLCA0MDQKCkBhcHAucm91dGUoJy9hcGkvYm9va3MvPGludDpib29rX2lkPicsIG1ldGhvZHM9WydERUxFVEUnXSkKZGVmIGRlbGV0ZV9ib29rKGJvb2tfaWQpOgogICAgZ2xvYmFsIGJvb2tzCiAgICBib29rcyA9IFtib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gIT0gYm9va19pZF0KICAgIHJldHVybiBqc29uaWZ5KHsnbWVzc2FnZSc6ICdCb29rIGRlbGV0ZWQnfSkKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+books = [
+    {'id': 1, 'title': '1984', 'author': 'George Orwell', 'published_date': '1949-06-08'},
+    {'id': 2, 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee', 'published_date': '1960-07-11'}
+]
+
+@app.route('/api/books', methods=['GET'])
+def get_books():
+    return jsonify(books)
+
+@app.route('/api/books/&lt;int:book_id&gt;', methods=['GET'])
+def get_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book:
+        return jsonify(book)
+    return jsonify({'message': 'Book not found'}), 404
+
+@app.route('/api/books', methods=['POST'])
+def create_book():
+    new_book = request.get_json()
+    new_book['id'] = len(books) + 1
+    books.append(new_book)
+    return jsonify(new_book), 201
+
+@app.route('/api/books/&lt;int:book_id&gt;', methods=['PUT'])
+def update_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book:
+        data = request.get_json()
+        book.update(data)
+        return jsonify(book)
+    return jsonify({'message': 'Book not found'}), 404
+
+@app.route('/api/books/&lt;int:book_id&gt;', methods=['DELETE'])
+def delete_book(book_id):
+    global books
+    books = [book for book in books if book['id'] != book_id]
+    return jsonify({'message': 'Book deleted'})
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to build RESTful APIs using Flask. You now know how to:</p>
+<ul>
+<li>Set up a Flask application for API development.</li>
+<li>Create endpoints for CRUD operations.</li>
+<li>Handle JSON data in Flask.</li>
+<li>Implement error handling in your API.</li>
+</ul>
+<p>In the next section, we will explore how to integrate databases with Flask to persist data.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-flask-framework-basics' title="Flask Framework Basics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-introduction-to-django' title="Introduction to Django">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

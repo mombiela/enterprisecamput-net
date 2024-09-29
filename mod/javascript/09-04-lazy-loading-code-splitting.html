@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazy Loading and Code Splitting</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/09-04-lazy-loading-code-splitting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/09-04-lazy-loading-code-splitting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/09-04-lazy-loading-code-splitting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/javascript/09-04-lazy-loading-code-splitting" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/09-04-lazy-loading-code-splitting" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-efficient-dom-manipulation' title="Efficient DOM Manipulation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Lazy Loading and Code Splitting</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-introduction-react' title="Introduction to React">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In modern web development, performance optimization is crucial for delivering a smooth user experience. Two powerful techniques to achieve this are lazy loading and code splitting. These methods help reduce the initial load time of web applications and improve overall performance by loading resources only when they are needed.</p>
+</div><h1>What is Lazy Loading?</h1>
+<div class='content'><p>Lazy loading is a design pattern commonly used in web development to defer the loading of non-critical resources at the initial page load. Instead, these resources are loaded only when they are needed. This can significantly improve the performance of web applications by reducing the initial load time and bandwidth consumption.</p>
+</div><h2>Key Concepts of Lazy Loading</h2>
+<div class='content'><ol>
+<li><strong>Deferred Loading</strong>: Resources such as images, scripts, or components are loaded only when they enter the viewport or are required by the user.</li>
+<li><strong>Intersection Observer API</strong>: A modern JavaScript API that allows you to detect when an element enters or exits the viewport, making it ideal for implementing lazy loading.</li>
+<li><strong>Placeholder Content</strong>: Temporary content displayed while the actual resource is being loaded.</li>
+</ol>
+</div><h2>Example: Lazy Loading Images</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+TGF6eSBMb2FkaW5nIEV4YW1wbGU8L3RpdGxlPgogICAgPHN0eWxlPgogICAgICAgIC5wbGFjZWhvbGRlciB7CiAgICAgICAgICAgIHdpZHRoOiAxMDAlOwogICAgICAgICAgICBoZWlnaHQ6IDIwMHB4OwogICAgICAgICAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjY2NjOwogICAgICAgIH0KICAgICAgICBpbWcgewogICAgICAgICAgICB3aWR0aDogMTAwJTsKICAgICAgICAgICAgaGVpZ2h0OiBhdXRvOwogICAgICAgICAgICBkaXNwbGF5OiBub25lOwogICAgICAgIH0KICAgIDwvc3R5bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8ZGl2IGNsYXNzPSJwbGFjZWhvbGRlciIgZGF0YS1zcmM9ImltYWdlMS5qcGciPjwvZGl2PgogICAgPGRpdiBjbGFzcz0icGxhY2Vob2xkZXIiIGRhdGEtc3JjPSJpbWFnZTIuanBnIj48L2Rpdj4KICAgIDxkaXYgY2xhc3M9InBsYWNlaG9sZGVyIiBkYXRhLXNyYz0iaW1hZ2UzLmpwZyI+PC9kaXY+CgogICAgPHNjcmlwdD4KICAgICAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCJET01Db250ZW50TG9hZGVkIiwgZnVuY3Rpb24oKSB7CiAgICAgICAgICAgIGNvbnN0IHBsYWNlaG9sZGVycyA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoJy5wbGFjZWhvbGRlcicpOwoKICAgICAgICAgICAgY29uc3Qgb2JzZXJ2ZXIgPSBuZXcgSW50ZXJzZWN0aW9uT2JzZXJ2ZXIoKGVudHJpZXMsIG9ic2VydmVyKSA9PiB7CiAgICAgICAgICAgICAgICBlbnRyaWVzLmZvckVhY2goZW50cnkgPT4gewogICAgICAgICAgICAgICAgICAgIGlmIChlbnRyeS5pc0ludGVyc2VjdGluZykgewogICAgICAgICAgICAgICAgICAgICAgICBjb25zdCBwbGFjZWhvbGRlciA9IGVudHJ5LnRhcmdldDsKICAgICAgICAgICAgICAgICAgICAgICAgY29uc3QgaW1nID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnaW1nJyk7CiAgICAgICAgICAgICAgICAgICAgICAgIGltZy5zcmMgPSBwbGFjZWhvbGRlci5nZXRBdHRyaWJ1dGUoJ2RhdGEtc3JjJyk7CiAgICAgICAgICAgICAgICAgICAgICAgIGltZy5vbmxvYWQgPSAoKSA9PiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICBwbGFjZWhvbGRlci5yZXBsYWNlV2l0aChpbWcpOwogICAgICAgICAgICAgICAgICAgICAgICB9OwogICAgICAgICAgICAgICAgICAgICAgICBvYnNlcnZlci51bm9ic2VydmUocGxhY2Vob2xkZXIpOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0pOwogICAgICAgICAgICB9KTsKCiAgICAgICAgICAgIHBsYWNlaG9sZGVycy5mb3JFYWNoKHBsYWNlaG9sZGVyID0+IHsKICAgICAgICAgICAgICAgIG9ic2VydmVyLm9ic2VydmUocGxhY2Vob2xkZXIpOwogICAgICAgICAgICB9KTsKICAgICAgICB9KTsKICAgIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Lazy Loading Example&lt;/title&gt;
+    &lt;style&gt;
+        .placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #ccc;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            display: none;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;placeholder&quot; data-src=&quot;image1.jpg&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;placeholder&quot; data-src=&quot;image2.jpg&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;placeholder&quot; data-src=&quot;image3.jpg&quot;&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        document.addEventListener(&quot;DOMContentLoaded&quot;, function() {
+            const placeholders = document.querySelectorAll('.placeholder');
+
+            const observer = new IntersectionObserver((entries, observer) =&gt; {
+                entries.forEach(entry =&gt; {
+                    if (entry.isIntersecting) {
+                        const placeholder = entry.target;
+                        const img = document.createElement('img');
+                        img.src = placeholder.getAttribute('data-src');
+                        img.onload = () =&gt; {
+                            placeholder.replaceWith(img);
+                        };
+                        observer.unobserve(placeholder);
+                    }
+                });
+            });
+
+            placeholders.forEach(placeholder =&gt; {
+                observer.observe(placeholder);
+            });
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>HTML Structure</strong>: We have a series of <code>div</code> elements with the class <code>placeholder</code> and a <code>data-src</code> attribute containing the image URL.</li>
+<li><strong>CSS</strong>: Styles for the placeholder and images.</li>
+<li><strong>JavaScript</strong>: Uses the Intersection Observer API to detect when a placeholder enters the viewport. When it does, an <code>img</code> element is created, and the image is loaded. Once the image is loaded, it replaces the placeholder.</li>
+</ul>
+</div><h1>What is Code Splitting?</h1>
+<div class='content'><p>Code splitting is a technique used to split your code into various bundles or chunks, which can then be loaded on demand. This helps in reducing the initial load time by only loading the necessary code for the current page or feature.</p>
+</div><h2>Key Concepts of Code Splitting</h2>
+<div class='content'><ol>
+<li><strong>Dynamic Imports</strong>: JavaScript's <code>import()</code> function allows you to load modules dynamically.</li>
+<li><strong>Webpack</strong>: A popular module bundler that supports code splitting out of the box.</li>
+<li><strong>Route-based Splitting</strong>: Splitting code based on different routes in a single-page application (SPA).</li>
+</ol>
+</div><h2>Example: Code Splitting with Webpack</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKbW9kdWxlLmV4cG9ydHMgPSB7CiAgICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICAgIG91dHB1dDogewogICAgICAgIGZpbGVuYW1lOiAnW25hbWVdLmJ1bmRsZS5qcycsCiAgICAgICAgcGF0aDogX19kaXJuYW1lICsgJy9kaXN0JwogICAgfSwKICAgIG9wdGltaXphdGlvbjogewogICAgICAgIHNwbGl0Q2h1bmtzOiB7CiAgICAgICAgICAgIGNodW5rczogJ2FsbCcsCiAgICAgICAgfSwKICAgIH0sCn07CgovLyBzcmMvaW5kZXguanMKaW1wb3J0KCcuL21vZHVsZUEnKS50aGVuKG1vZHVsZUEgPT4gewogICAgbW9kdWxlQS5kZWZhdWx0KCk7Cn0pOwoKaW1wb3J0KCcuL21vZHVsZUInKS50aGVuKG1vZHVsZUIgPT4gewogICAgbW9kdWxlQi5kZWZhdWx0KCk7Cn0pOwoKLy8gc3JjL21vZHVsZUEuanMKZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24oKSB7CiAgICBjb25zb2xlLmxvZygnTW9kdWxlIEEgbG9hZGVkJyk7Cn0KCi8vIHNyYy9tb2R1bGVCLmpzCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uKCkgewogICAgY29uc29sZS5sb2coJ01vZHVsZSBCIGxvYWRlZCcpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: '[name].bundle.js',
+        path: __dirname + '/dist'
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
+};
+
+// src/index.js
+import('./moduleA').then(moduleA =&gt; {
+    moduleA.default();
+});
+
+import('./moduleB').then(moduleB =&gt; {
+    moduleB.default();
+});
+
+// src/moduleA.js
+export default function() {
+    console.log('Module A loaded');
+}
+
+// src/moduleB.js
+export default function() {
+    console.log('Module B loaded');
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Webpack Configuration</strong>: The <code>splitChunks</code> option in the Webpack configuration enables code splitting for all chunks.</li>
+<li><strong>Dynamic Imports</strong>: In <code>index.js</code>, <code>import()</code> is used to dynamically load <code>moduleA</code> and <code>moduleB</code>. These modules are only loaded when needed, reducing the initial bundle size.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Implement lazy loading for a list of images and code splitting for a simple web application using Webpack.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Lazy Loading</strong>:</p>
+<ul>
+<li>Create an HTML file with multiple image placeholders.</li>
+<li>Use the Intersection Observer API to load images only when they enter the viewport.</li>
+</ul>
+</li>
+<li>
+<p><strong>Code Splitting</strong>:</p>
+<ul>
+<li>Set up a basic Webpack configuration.</li>
+<li>Create multiple JavaScript modules and dynamically import them in the main entry file.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Lazy Loading</h4>
+<p>Refer to the example provided earlier in this section.</p>
+<h4>Code Splitting</h4>
+<ol>
+<li><strong>Webpack Configuration</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKbW9kdWxlLmV4cG9ydHMgPSB7CiAgICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICAgIG91dHB1dDogewogICAgICAgIGZpbGVuYW1lOiAnW25hbWVdLmJ1bmRsZS5qcycsCiAgICAgICAgcGF0aDogX19kaXJuYW1lICsgJy9kaXN0JwogICAgfSwKICAgIG9wdGltaXphdGlvbjogewogICAgICAgIHNwbGl0Q2h1bmtzOiB7CiAgICAgICAgICAgIGNodW5rczogJ2FsbCcsCiAgICAgICAgfSwKICAgIH0sCn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+module.exports = {
+    entry: './src/index.js',
+    output: {
+        filename: '[name].bundle.js',
+        path: __dirname + '/dist'
+    },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },
+};</pre></div><div class='content'><ol start="2">
+<li><strong>JavaScript Modules</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2luZGV4LmpzCmltcG9ydCgnLi9tb2R1bGVBJykudGhlbihtb2R1bGVBID0+IHsKICAgIG1vZHVsZUEuZGVmYXVsdCgpOwp9KTsKCmltcG9ydCgnLi9tb2R1bGVCJykudGhlbihtb2R1bGVCID0+IHsKICAgIG1vZHVsZUIuZGVmYXVsdCgpOwp9KTsKCi8vIHNyYy9tb2R1bGVBLmpzCmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uKCkgewogICAgY29uc29sZS5sb2coJ01vZHVsZSBBIGxvYWRlZCcpOwp9CgovLyBzcmMvbW9kdWxlQi5qcwpleHBvcnQgZGVmYXVsdCBmdW5jdGlvbigpIHsKICAgIGNvbnNvbGUubG9nKCdNb2R1bGUgQiBsb2FkZWQnKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/index.js
+import('./moduleA').then(moduleA =&gt; {
+    moduleA.default();
+});
+
+import('./moduleB').then(moduleB =&gt; {
+    moduleB.default();
+});
+
+// src/moduleA.js
+export default function() {
+    console.log('Module A loaded');
+}
+
+// src/moduleB.js
+export default function() {
+    console.log('Module B loaded');
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Lazy loading and code splitting are essential techniques for optimizing the performance of web applications. By deferring the loading of non-critical resources and splitting code into manageable chunks, you can significantly reduce the initial load time and improve the user experience. Practice implementing these techniques in your projects to become proficient in performance optimization.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-efficient-dom-manipulation' title="Efficient DOM Manipulation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-introduction-react' title="Introduction to React">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>
