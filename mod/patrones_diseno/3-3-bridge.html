@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3: Structural Patterns</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/patrones_diseno/3-3-bridge" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/patrones_diseno/3-3-bridge" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/patrones_diseno/3-3-bridge" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/patrones_diseno/3-3-bridge" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/patrones_diseno/3-3-bridge" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-4'>
+					<a href='3-2-adapter'>&#x25C4;Adapter</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 3: Structural Patterns</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='3-4-composite'>Composite &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Topic 3-3: Bridge Pattern</h1>
+<div class='content'></div><h2>Introduction to the Bridge Pattern</h2>
+<div class='content'><p>The Bridge Pattern is a structural design pattern that decouples an abstraction from its implementation so that the two can vary independently. This pattern is particularly useful when both the abstraction and the implementation may change over time, and you want to avoid a situation where a change in one requires a change in the other.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Abstraction</strong>: The high-level control layer for some entity. This is what the client interacts with.</li>
+<li><strong>Implementation</strong>: The low-level working layer that performs the actual work.</li>
+<li><strong>Decoupling</strong>: Separating the abstraction from the implementation to allow them to vary independently.</li>
+</ul>
+</div><h2>Structure</h2>
+<div class='content'><p>The Bridge Pattern involves four main components:</p>
+<ol>
+<li><strong>Abstraction</strong>: Defines the abstraction's interface and maintains a reference to an object of type <code>Implementor</code>.</li>
+<li><strong>RefinedAbstraction</strong>: Extends the interface defined by <code>Abstraction</code>.</li>
+<li><strong>Implementor</strong>: Defines the interface for implementation classes.</li>
+<li><strong>ConcreteImplementor</strong>: Implements the <code>Implementor</code> interface.</li>
+</ol>
+</div><h2>UML Diagram</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QWJzdHJhY3Rpb24KICAgKyBvcGVyYXRpb24oKQogICB8CiAgICstLS0tLS0tLS0tLS0tLS0tKwogICB8ICAgICAgICAgICAgICAgIHwKUmVmaW5lZEFic3RyYWN0aW9uICAgSW1wbGVtZW50b3IKICAgKyBvcGVyYXRpb24oKSAgICArIG9wZXJhdGlvbkltcGwoKQogICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgICAgICAgICAgICstLS0tLS0tLS0tLS0tLS0tKwogICAgICAgICAgICAgICAgICAgICB8ICAgICAgICAgICAgICAgIHwKICAgICAgICAgICAgICAgICBDb25jcmV0ZUltcGxlbWVudG9yQSBDb25jcmV0ZUltcGxlbWVudG9yQgogICAgICAgICAgICAgICAgICAgICArIG9wZXJhdGlvbkltcGwoKSArIG9wZXJhdGlvbkltcGwoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Abstraction
+   + operation()
+   |
+   +----------------+
+   |                |
+RefinedAbstraction   Implementor
+   + operation()    + operationImpl()
+                     |
+                     +----------------+
+                     |                |
+                 ConcreteImplementorA ConcreteImplementorB
+                     + operationImpl() + operationImpl()</pre></div><div class='content'></div><h2>Example</h2>
+<div class='content'><p>Let's consider an example where we have different types of remote controls (abstractions) for different types of devices (implementations).</p>
+<h4>Step 1: Define the Implementor Interface</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW1wbGVtZW50b3IKcHVibGljIGludGVyZmFjZSBEZXZpY2UgewogICAgdm9pZCB0dXJuT24oKTsKICAgIHZvaWQgdHVybk9mZigpOwogICAgdm9pZCBzZXRWb2x1bWUoaW50IHZvbHVtZSk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Implementor
+public interface Device {
+    void turnOn();
+    void turnOff();
+    void setVolume(int volume);
+}</pre></div><div class='content'><h4>Step 2: Create Concrete Implementors</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uY3JldGVJbXBsZW1lbnRvckEKcHVibGljIGNsYXNzIFRWIGltcGxlbWVudHMgRGV2aWNlIHsKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgdHVybk9uKCkgewogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiVHVybmluZyBvbiB0aGUgVFYuIik7CiAgICB9CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCB0dXJuT2ZmKCkgewogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiVHVybmluZyBvZmYgdGhlIFRWLiIpOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgc2V0Vm9sdW1lKGludCB2b2x1bWUpIHsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIlNldHRpbmcgVFYgdm9sdW1lIHRvICIgKyB2b2x1bWUpOwogICAgfQp9CgovLyBDb25jcmV0ZUltcGxlbWVudG9yQgpwdWJsaWMgY2xhc3MgUmFkaW8gaW1wbGVtZW50cyBEZXZpY2UgewogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCB0dXJuT24oKSB7CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJUdXJuaW5nIG9uIHRoZSBSYWRpby4iKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIHR1cm5PZmYoKSB7CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJUdXJuaW5nIG9mZiB0aGUgUmFkaW8uIik7CiAgICB9CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCBzZXRWb2x1bWUoaW50IHZvbHVtZSkgewogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiU2V0dGluZyBSYWRpbyB2b2x1bWUgdG8gIiArIHZvbHVtZSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ConcreteImplementorA
+public class TV implements Device {
+    @Override
+    public void turnOn() {
+        System.out.println(&quot;Turning on the TV.&quot;);
+    }
+
+    @Override
+    public void turnOff() {
+        System.out.println(&quot;Turning off the TV.&quot;);
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        System.out.println(&quot;Setting TV volume to &quot; + volume);
+    }
+}
+
+// ConcreteImplementorB
+public class Radio implements Device {
+    @Override
+    public void turnOn() {
+        System.out.println(&quot;Turning on the Radio.&quot;);
+    }
+
+    @Override
+    public void turnOff() {
+        System.out.println(&quot;Turning off the Radio.&quot;);
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        System.out.println(&quot;Setting Radio volume to &quot; + volume);
+    }
+}</pre></div><div class='content'><h4>Step 3: Define the Abstraction</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQWJzdHJhY3Rpb24KcHVibGljIGFic3RyYWN0IGNsYXNzIFJlbW90ZUNvbnRyb2wgewogICAgcHJvdGVjdGVkIERldmljZSBkZXZpY2U7CgogICAgcHVibGljIFJlbW90ZUNvbnRyb2woRGV2aWNlIGRldmljZSkgewogICAgICAgIHRoaXMuZGV2aWNlID0gZGV2aWNlOwogICAgfQoKICAgIHB1YmxpYyBhYnN0cmFjdCB2b2lkIHR1cm5PbigpOwogICAgcHVibGljIGFic3RyYWN0IHZvaWQgdHVybk9mZigpOwogICAgcHVibGljIGFic3RyYWN0IHZvaWQgc2V0Vm9sdW1lKGludCB2b2x1bWUpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Abstraction
+public abstract class RemoteControl {
+    protected Device device;
+
+    public RemoteControl(Device device) {
+        this.device = device;
+    }
+
+    public abstract void turnOn();
+    public abstract void turnOff();
+    public abstract void setVolume(int volume);
+}</pre></div><div class='content'><h4>Step 4: Create Refined Abstractions</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVmaW5lZEFic3RyYWN0aW9uCnB1YmxpYyBjbGFzcyBBZHZhbmNlZFJlbW90ZUNvbnRyb2wgZXh0ZW5kcyBSZW1vdGVDb250cm9sIHsKCiAgICBwdWJsaWMgQWR2YW5jZWRSZW1vdGVDb250cm9sKERldmljZSBkZXZpY2UpIHsKICAgICAgICBzdXBlcihkZXZpY2UpOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgdHVybk9uKCkgewogICAgICAgIGRldmljZS50dXJuT24oKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIHR1cm5PZmYoKSB7CiAgICAgICAgZGV2aWNlLnR1cm5PZmYoKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIHNldFZvbHVtZShpbnQgdm9sdW1lKSB7CiAgICAgICAgZGV2aWNlLnNldFZvbHVtZSh2b2x1bWUpOwogICAgfQoKICAgIHB1YmxpYyB2b2lkIG11dGUoKSB7CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJNdXRpbmcgdGhlIGRldmljZS4iKTsKICAgICAgICBkZXZpY2Uuc2V0Vm9sdW1lKDApOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// RefinedAbstraction
+public class AdvancedRemoteControl extends RemoteControl {
+
+    public AdvancedRemoteControl(Device device) {
+        super(device);
+    }
+
+    @Override
+    public void turnOn() {
+        device.turnOn();
+    }
+
+    @Override
+    public void turnOff() {
+        device.turnOff();
+    }
+
+    @Override
+    public void setVolume(int volume) {
+        device.setVolume(volume);
+    }
+
+    public void mute() {
+        System.out.println(&quot;Muting the device.&quot;);
+        device.setVolume(0);
+    }
+}</pre></div><div class='content'><h4>Step 5: Client Code</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIENsaWVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgRGV2aWNlIHR2ID0gbmV3IFRWKCk7CiAgICAgICAgUmVtb3RlQ29udHJvbCByZW1vdGVDb250cm9sID0gbmV3IEFkdmFuY2VkUmVtb3RlQ29udHJvbCh0dik7CgogICAgICAgIHJlbW90ZUNvbnRyb2wudHVybk9uKCk7CiAgICAgICAgcmVtb3RlQ29udHJvbC5zZXRWb2x1bWUoMTApOwogICAgICAgIHJlbW90ZUNvbnRyb2wudHVybk9mZigpOwoKICAgICAgICBEZXZpY2UgcmFkaW8gPSBuZXcgUmFkaW8oKTsKICAgICAgICByZW1vdGVDb250cm9sID0gbmV3IEFkdmFuY2VkUmVtb3RlQ29udHJvbChyYWRpbyk7CgogICAgICAgIHJlbW90ZUNvbnRyb2wudHVybk9uKCk7CiAgICAgICAgcmVtb3RlQ29udHJvbC5zZXRWb2x1bWUoNSk7CiAgICAgICAgcmVtb3RlQ29udHJvbC50dXJuT2ZmKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Client {
+    public static void main(String[] args) {
+        Device tv = new TV();
+        RemoteControl remoteControl = new AdvancedRemoteControl(tv);
+
+        remoteControl.turnOn();
+        remoteControl.setVolume(10);
+        remoteControl.turnOff();
+
+        Device radio = new Radio();
+        remoteControl = new AdvancedRemoteControl(radio);
+
+        remoteControl.turnOn();
+        remoteControl.setVolume(5);
+        remoteControl.turnOff();
+    }
+}</pre></div><div class='content'></div><h2>Summary</h2>
+<div class='content'><p>The Bridge Pattern is a powerful way to decouple an abstraction from its implementation, allowing both to vary independently. This pattern is particularly useful when you have a hierarchy of abstractions and implementations, and you want to avoid a combinatorial explosion of classes. By using the Bridge Pattern, you can create flexible and maintainable code that can adapt to changing requirements.</p>
+</div><h2>Exercises</h2>
+<div class='content'><ol>
+<li><strong>Exercise 1</strong>: Implement a <code>RemoteControl</code> for a <code>SmartLight</code> device using the Bridge Pattern.</li>
+<li><strong>Exercise 2</strong>: Extend the example to include additional functionalities like <code>changeChannel</code> for the <code>TV</code> and <code>tuneFrequency</code> for the <code>Radio</code>.</li>
+<li><strong>Exercise 3</strong>: Discuss how the Bridge Pattern can be applied in a real-world scenario in your current project or a project you have worked on before.</li>
+</ol>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='3-2-adapter'>&#x25C4;Adapter</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 3: Structural Patterns</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='3-4-composite'>Composite &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

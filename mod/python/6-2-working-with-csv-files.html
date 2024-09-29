@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 6: File Handling</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/6-2-working-with-csv-files" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/6-2-working-with-csv-files" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/6-2-working-with-csv-files" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/python/6-2-working-with-csv-files" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/python/6-2-working-with-csv-files" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-4'>
+					<a href='6-1-reading-writing-files'>&#x25C4;Reading and Writing Files</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 6: File Handling</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='6-3-handling-exceptions'>Handling Exceptions &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>6-2: Working with CSV Files</h1>
+<div class='content'></div><h2>Introduction</h2>
+<div class='content'><p>CSV (Comma-Separated Values) files are a common format for storing tabular data. In this lesson, we will learn how to read from and write to CSV files using Python's built-in <code>csv</code> module.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>CSV File Structure</strong>: Understanding the basic structure of a CSV file.</li>
+<li><strong>Reading CSV Files</strong>: Using Python to read data from a CSV file.</li>
+<li><strong>Writing CSV Files</strong>: Using Python to write data to a CSV file.</li>
+<li><strong>Handling CSV Data</strong>: Processing and manipulating data read from a CSV file.</li>
+</ol>
+</div><h2>CSV File Structure</h2>
+<div class='content'><p>A CSV file typically contains:</p>
+<ul>
+<li><strong>Rows</strong>: Each row represents a record.</li>
+<li><strong>Columns</strong>: Each column represents a field within the record.</li>
+<li><strong>Delimiter</strong>: A character (usually a comma) that separates the fields.</li>
+</ul>
+<p>Example of a CSV file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmFtZSxBZ2UsT2NjdXBhdGlvbgpBbGljZSwzMCxFbmdpbmVlcgpCb2IsMjUsRGF0YSBTY2llbnRpc3QKQ2hhcmxpZSwzNSxUZWFjaGVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Name,Age,Occupation
+Alice,30,Engineer
+Bob,25,Data Scientist
+Charlie,35,Teacher</pre></div><div class='content'></div><h2>Reading CSV Files</h2>
+<div class='content'><p>To read a CSV file in Python, we use the <code>csv.reader</code> function. Here is a step-by-step example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNzdgoKIyBPcGVuIHRoZSBDU1YgZmlsZQp3aXRoIG9wZW4oJ2V4YW1wbGUuY3N2JywgbW9kZT0ncicpIGFzIGZpbGU6CiAgICAjIENyZWF0ZSBhIENTViByZWFkZXIgb2JqZWN0CiAgICBjc3ZfcmVhZGVyID0gY3N2LnJlYWRlcihmaWxlKQogICAgCiAgICAjIEl0ZXJhdGUgb3ZlciBlYWNoIHJvdyBpbiB0aGUgQ1NWIGZpbGUKICAgIGZvciByb3cgaW4gY3N2X3JlYWRlcjoKICAgICAgICBwcmludChyb3cp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import csv
+
+# Open the CSV file
+with open('example.csv', mode='r') as file:
+    # Create a CSV reader object
+    csv_reader = csv.reader(file)
+    
+    # Iterate over each row in the CSV file
+    for row in csv_reader:
+        print(row)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>open('example.csv', mode='r')</code>: Opens the file in read mode.</li>
+<li><code>csv.reader(file)</code>: Creates a CSV reader object.</li>
+<li><code>for row in csv_reader</code>: Iterates over each row in the CSV file.</li>
+</ul>
+</div><h2>Writing CSV Files</h2>
+<div class='content'><p>To write data to a CSV file, we use the <code>csv.writer</code> function. Here is an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNzdgoKIyBEYXRhIHRvIGJlIHdyaXR0ZW4gdG8gdGhlIENTViBmaWxlCmRhdGEgPSBbCiAgICBbJ05hbWUnLCAnQWdlJywgJ09jY3VwYXRpb24nXSwKICAgIFsnQWxpY2UnLCAzMCwgJ0VuZ2luZWVyJ10sCiAgICBbJ0JvYicsIDI1LCAnRGF0YSBTY2llbnRpc3QnXSwKICAgIFsnQ2hhcmxpZScsIDM1LCAnVGVhY2hlciddCl0KCiMgT3BlbiB0aGUgQ1NWIGZpbGUgaW4gd3JpdGUgbW9kZQp3aXRoIG9wZW4oJ291dHB1dC5jc3YnLCBtb2RlPSd3JywgbmV3bGluZT0nJykgYXMgZmlsZToKICAgICMgQ3JlYXRlIGEgQ1NWIHdyaXRlciBvYmplY3QKICAgIGNzdl93cml0ZXIgPSBjc3Yud3JpdGVyKGZpbGUpCiAgICAKICAgICMgV3JpdGUgcm93cyB0byB0aGUgQ1NWIGZpbGUKICAgIGNzdl93cml0ZXIud3JpdGVyb3dzKGRhdGEp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import csv
+
+# Data to be written to the CSV file
+data = [
+    ['Name', 'Age', 'Occupation'],
+    ['Alice', 30, 'Engineer'],
+    ['Bob', 25, 'Data Scientist'],
+    ['Charlie', 35, 'Teacher']
+]
+
+# Open the CSV file in write mode
+with open('output.csv', mode='w', newline='') as file:
+    # Create a CSV writer object
+    csv_writer = csv.writer(file)
+    
+    # Write rows to the CSV file
+    csv_writer.writerows(data)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>open('output.csv', mode='w', newline='')</code>: Opens the file in write mode. The <code>newline=''</code> argument prevents extra blank lines.</li>
+<li><code>csv.writer(file)</code>: Creates a CSV writer object.</li>
+<li><code>csv_writer.writerows(data)</code>: Writes multiple rows to the CSV file.</li>
+</ul>
+</div><h2>Handling CSV Data</h2>
+<div class='content'><p>Often, we need to process and manipulate the data read from a CSV file. Here is an example of reading a CSV file and performing some basic operations:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNzdgoKIyBPcGVuIHRoZSBDU1YgZmlsZQp3aXRoIG9wZW4oJ2V4YW1wbGUuY3N2JywgbW9kZT0ncicpIGFzIGZpbGU6CiAgICBjc3ZfcmVhZGVyID0gY3N2LnJlYWRlcihmaWxlKQogICAgCiAgICAjIFNraXAgdGhlIGhlYWRlciByb3cKICAgIG5leHQoY3N2X3JlYWRlcikKICAgIAogICAgIyBJbml0aWFsaXplIGEgbGlzdCB0byBzdG9yZSBwcm9jZXNzZWQgZGF0YQogICAgcHJvY2Vzc2VkX2RhdGEgPSBbXQogICAgCiAgICAjIEl0ZXJhdGUgb3ZlciBlYWNoIHJvdyBpbiB0aGUgQ1NWIGZpbGUKICAgIGZvciByb3cgaW4gY3N2X3JlYWRlcjoKICAgICAgICBuYW1lID0gcm93WzBdCiAgICAgICAgYWdlID0gaW50KHJvd1sxXSkKICAgICAgICBvY2N1cGF0aW9uID0gcm93WzJdCiAgICAgICAgCiAgICAgICAgIyBQZXJmb3JtIHNvbWUgcHJvY2Vzc2luZyAoZS5nLiwgZmlsdGVyIGJ5IGFnZSkKICAgICAgICBpZiBhZ2UgPiAzMDoKICAgICAgICAgICAgcHJvY2Vzc2VkX2RhdGEuYXBwZW5kKFtuYW1lLCBhZ2UsIG9jY3VwYXRpb25dKQogICAgCiAgICBwcmludChwcm9jZXNzZWRfZGF0YSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import csv
+
+# Open the CSV file
+with open('example.csv', mode='r') as file:
+    csv_reader = csv.reader(file)
+    
+    # Skip the header row
+    next(csv_reader)
+    
+    # Initialize a list to store processed data
+    processed_data = []
+    
+    # Iterate over each row in the CSV file
+    for row in csv_reader:
+        name = row[0]
+        age = int(row[1])
+        occupation = row[2]
+        
+        # Perform some processing (e.g., filter by age)
+        if age &gt; 30:
+            processed_data.append([name, age, occupation])
+    
+    print(processed_data)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>next(csv_reader)</code>: Skips the header row.</li>
+<li><code>int(row[1])</code>: Converts the age from string to integer.</li>
+<li><code>if age &gt; 30</code>: Filters records where age is greater than 30.</li>
+</ul>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise:</strong></p>
+<ol>
+<li>Create a CSV file named <code>students.csv</code> with the following content:
+<pre><code>Name,Grade,Subject
+John,85,Math
+Jane,90,Science
+Mike,78,English
+</code></pre>
+</li>
+<li>Write a Python script to read the <code>students.csv</code> file and print the names of students who scored more than 80.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNzdgoKIyBPcGVuIHRoZSBDU1YgZmlsZQp3aXRoIG9wZW4oJ3N0dWRlbnRzLmNzdicsIG1vZGU9J3InKSBhcyBmaWxlOgogICAgY3N2X3JlYWRlciA9IGNzdi5yZWFkZXIoZmlsZSkKICAgIAogICAgIyBTa2lwIHRoZSBoZWFkZXIgcm93CiAgICBuZXh0KGNzdl9yZWFkZXIpCiAgICAKICAgICMgSXRlcmF0ZSBvdmVyIGVhY2ggcm93IGluIHRoZSBDU1YgZmlsZQogICAgZm9yIHJvdyBpbiBjc3ZfcmVhZGVyOgogICAgICAgIG5hbWUgPSByb3dbMF0KICAgICAgICBncmFkZSA9IGludChyb3dbMV0pCiAgICAgICAgCiAgICAgICAgIyBQcmludCBuYW1lcyBvZiBzdHVkZW50cyB3aG8gc2NvcmVkIG1vcmUgdGhhbiA4MAogICAgICAgIGlmIGdyYWRlID4gODA6CiAgICAgICAgICAgIHByaW50KG5hbWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import csv
+
+# Open the CSV file
+with open('students.csv', mode='r') as file:
+    csv_reader = csv.reader(file)
+    
+    # Skip the header row
+    next(csv_reader)
+    
+    # Iterate over each row in the CSV file
+    for row in csv_reader:
+        name = row[0]
+        grade = int(row[1])
+        
+        # Print names of students who scored more than 80
+        if grade &gt; 80:
+            print(name)</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>File Not Found</strong>: Ensure the file path is correct when opening a CSV file.</li>
+<li><strong>Extra Blank Lines</strong>: Use <code>newline=''</code> when opening a file in write mode to prevent extra blank lines.</li>
+<li><strong>Data Types</strong>: Remember to convert data types (e.g., strings to integers) when processing CSV data.</li>
+</ul>
+</div><h2>Conclusion</h2>
+<div class='content'><p>In this lesson, we covered the basics of working with CSV files in Python. We learned how to read from and write to CSV files, as well as how to process and manipulate CSV data. These skills are essential for handling tabular data in various applications.</p>
+<p>Next, we will explore handling exceptions in Python to make our programs more robust and error-resistant.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='6-1-reading-writing-files'>&#x25C4;Reading and Writing Files</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 6: File Handling</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='6-3-handling-exceptions'>Handling Exceptions &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

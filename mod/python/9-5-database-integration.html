@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 9: Web Development with Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/9-5-database-integration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/9-5-database-integration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/9-5-database-integration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/python/9-5-database-integration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/python/9-5-database-integration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-4'>
+					<a href='9-4-form-handling'>&#x25C4;Form Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 9: Web Development with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='10-1-unit-testing-unittest'>Unit Testing with unittest &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>9-5: Database Integration</h1>
+<div class='content'><p>In this section, we will learn how to integrate a database with a Flask web application. We will cover the following topics:</p>
+<ol>
+<li><strong>Introduction to Databases in Flask</strong></li>
+<li><strong>Setting Up SQLAlchemy</strong></li>
+<li><strong>Defining Models</strong></li>
+<li><strong>Performing CRUD Operations</strong></li>
+<li><strong>Using Flask-Migrate for Database Migrations</strong></li>
+<li><strong>Practical Example</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h2>1. Introduction to Databases in Flask</h2>
+<div class='content'><p>Flask does not come with built-in database support, but it can be easily integrated with various databases using extensions. One of the most popular extensions for database integration in Flask is SQLAlchemy, which is an Object Relational Mapper (ORM) that allows you to interact with the database using Python classes and objects.</p>
+</div><h2>2. Setting Up SQLAlchemy</h2>
+<div class='content'><p>To get started with SQLAlchemy in Flask, you need to install the <code>Flask-SQLAlchemy</code> extension. You can install it using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stU1FMQWxjaGVteQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-SQLAlchemy</pre></div><div class='content'><p>Next, you need to configure your Flask application to use SQLAlchemy. Here is an example of how to set up SQLAlchemy in your Flask app:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZ1snU1FMQUxDSEVNWV9EQVRBQkFTRV9VUkknXSA9ICdzcWxpdGU6Ly8vZXhhbXBsZS5kYicKYXBwLmNvbmZpZ1snU1FMQUxDSEVNWV9UUkFDS19NT0RJRklDQVRJT05TJ10gPSBGYWxzZQoKZGIgPSBTUUxBbGNoZW15KGFwcCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)</pre></div><div class='content'></div><h2>3. Defining Models</h2>
+<div class='content'><p>In SQLAlchemy, you define models as Python classes that inherit from <code>db.Model</code>. Each class represents a table in the database, and each attribute represents a column in the table.</p>
+<p>Here is an example of defining a simple <code>User</code> model:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgVXNlcihkYi5Nb2RlbCk6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgdXNlcm5hbWUgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDgwKSwgdW5pcXVlPVRydWUsIG51bGxhYmxlPUZhbHNlKQogICAgZW1haWwgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDEyMCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKCiAgICBkZWYgX19yZXByX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGYnPFVzZXIge3NlbGYudXNlcm5hbWV9Pic="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'&lt;User {self.username}&gt;'</pre></div><div class='content'></div><h2>4. Performing CRUD Operations</h2>
+<div class='content'><p>CRUD stands for Create, Read, Update, and Delete. These are the basic operations you can perform on a database.</p>
+<h4>Create</h4>
+<p>To add a new record to the database, you create an instance of the model and add it to the session:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmV3X3VzZXIgPSBVc2VyKHVzZXJuYW1lPSdqb2huX2RvZScsIGVtYWlsPSdqb2huQGV4YW1wbGUuY29tJykKZGIuc2Vzc2lvbi5hZGQobmV3X3VzZXIpCmRiLnNlc3Npb24uY29tbWl0KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>new_user = User(username='john_doe', email='john@example.com')
+db.session.add(new_user)
+db.session.commit()</pre></div><div class='content'><h4>Read</h4>
+<p>To query records from the database, you use the <code>query</code> attribute of the model:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlcnMgPSBVc2VyLnF1ZXJ5LmFsbCgpICAjIEdldCBhbGwgdXNlcnMKdXNlciA9IFVzZXIucXVlcnkuZmlsdGVyX2J5KHVzZXJuYW1lPSdqb2huX2RvZScpLmZpcnN0KCkgICMgR2V0IGEgc3BlY2lmaWMgdXNlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>users = User.query.all()  # Get all users
+user = User.query.filter_by(username='john_doe').first()  # Get a specific user</pre></div><div class='content'><h4>Update</h4>
+<p>To update a record, you modify the attributes of the instance and commit the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlciA9IFVzZXIucXVlcnkuZmlsdGVyX2J5KHVzZXJuYW1lPSdqb2huX2RvZScpLmZpcnN0KCkKdXNlci5lbWFpbCA9ICdqb2huX2RvZUBleGFtcGxlLmNvbScKZGIuc2Vzc2lvbi5jb21taXQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>user = User.query.filter_by(username='john_doe').first()
+user.email = 'john_doe@example.com'
+db.session.commit()</pre></div><div class='content'><h4>Delete</h4>
+<p>To delete a record, you use the <code>delete</code> method and commit the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlciA9IFVzZXIucXVlcnkuZmlsdGVyX2J5KHVzZXJuYW1lPSdqb2huX2RvZScpLmZpcnN0KCkKZGIuc2Vzc2lvbi5kZWxldGUodXNlcikKZGIuc2Vzc2lvbi5jb21taXQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>user = User.query.filter_by(username='john_doe').first()
+db.session.delete(user)
+db.session.commit()</pre></div><div class='content'></div><h2>5. Using Flask-Migrate for Database Migrations</h2>
+<div class='content'><p>Flask-Migrate is an extension that handles SQLAlchemy database migrations for Flask applications using Alembic. You can install it using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stTWlncmF0ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-Migrate</pre></div><div class='content'><p>To set up Flask-Migrate, you need to initialize it in your Flask app:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19taWdyYXRlIGltcG9ydCBNaWdyYXRlCgptaWdyYXRlID0gTWlncmF0ZShhcHAsIGRiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_migrate import Migrate
+
+migrate = Migrate(app, db)</pre></div><div class='content'><p>You also need to create a migration repository:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zmxhc2sgZGIgaW5pdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>flask db init</pre></div><div class='content'><p>To create a new migration, you use the <code>flask db migrate</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zmxhc2sgZGIgbWlncmF0ZSAtbSAiSW5pdGlhbCBtaWdyYXRpb24uIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>flask db migrate -m &quot;Initial migration.&quot;</pre></div><div class='content'><p>To apply the migration, you use the <code>flask db upgrade</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zmxhc2sgZGIgdXBncmFkZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>flask db upgrade</pre></div><div class='content'></div><h2>6. Practical Example</h2>
+<div class='content'><p>Let's create a simple Flask application that integrates with a SQLite database to manage users.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CmZyb20gZmxhc2tfbWlncmF0ZSBpbXBvcnQgTWlncmF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCmFwcC5jb25maWdbJ1NRTEFMQ0hFTVlfREFUQUJBU0VfVVJJJ10gPSAnc3FsaXRlOi8vL2V4YW1wbGUuZGInCmFwcC5jb25maWdbJ1NRTEFMQ0hFTVlfVFJBQ0tfTU9ESUZJQ0FUSU9OUyddID0gRmFsc2UKCmRiID0gU1FMQWxjaGVteShhcHApCm1pZ3JhdGUgPSBNaWdyYXRlKGFwcCwgZGIpCgpjbGFzcyBVc2VyKGRiLk1vZGVsKToKICAgIGlkID0gZGIuQ29sdW1uKGRiLkludGVnZXIsIHByaW1hcnlfa2V5PVRydWUpCiAgICB1c2VybmFtZSA9IGRiLkNvbHVtbihkYi5TdHJpbmcoODApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBlbWFpbCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMTIwKSwgdW5pcXVlPVRydWUsIG51bGxhYmxlPUZhbHNlKQoKICAgIGRlZiBfX3JlcHJfXyhzZWxmKToKICAgICAgICByZXR1cm4gZic8VXNlciB7c2VsZi51c2VybmFtZX0+JwoKQGFwcC5yb3V0ZSgnL3VzZXJzJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGNyZWF0ZV91c2VyKCk6CiAgICBkYXRhID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICBuZXdfdXNlciA9IFVzZXIodXNlcm5hbWU9ZGF0YVsndXNlcm5hbWUnXSwgZW1haWw9ZGF0YVsnZW1haWwnXSkKICAgIGRiLnNlc3Npb24uYWRkKG5ld191c2VyKQogICAgZGIuc2Vzc2lvbi5jb21taXQoKQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1VzZXIgY3JlYXRlZCBzdWNjZXNzZnVsbHknfSksIDIwMQoKQGFwcC5yb3V0ZSgnL3VzZXJzJywgbWV0aG9kcz1bJ0dFVCddKQpkZWYgZ2V0X3VzZXJzKCk6CiAgICB1c2VycyA9IFVzZXIucXVlcnkuYWxsKCkKICAgIHJldHVybiBqc29uaWZ5KFt7J2lkJzogdXNlci5pZCwgJ3VzZXJuYW1lJzogdXNlci51c2VybmFtZSwgJ2VtYWlsJzogdXNlci5lbWFpbH0gZm9yIHVzZXIgaW4gdXNlcnNdKQoKQGFwcC5yb3V0ZSgnL3VzZXJzLzxpbnQ6aWQ+JywgbWV0aG9kcz1bJ1BVVCddKQpkZWYgdXBkYXRlX3VzZXIoaWQpOgogICAgZGF0YSA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgdXNlciA9IFVzZXIucXVlcnkuZ2V0KGlkKQogICAgaWYgdXNlcjoKICAgICAgICB1c2VyLnVzZXJuYW1lID0gZGF0YVsndXNlcm5hbWUnXQogICAgICAgIHVzZXIuZW1haWwgPSBkYXRhWydlbWFpbCddCiAgICAgICAgZGIuc2Vzc2lvbi5jb21taXQoKQogICAgICAgIHJldHVybiBqc29uaWZ5KHsnbWVzc2FnZSc6ICdVc2VyIHVwZGF0ZWQgc3VjY2Vzc2Z1bGx5J30pCiAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnVXNlciBub3QgZm91bmQnfSksIDQwNAoKQGFwcC5yb3V0ZSgnL3VzZXJzLzxpbnQ6aWQ+JywgbWV0aG9kcz1bJ0RFTEVURSddKQpkZWYgZGVsZXRlX3VzZXIoaWQpOgogICAgdXNlciA9IFVzZXIucXVlcnkuZ2V0KGlkKQogICAgaWYgdXNlcjoKICAgICAgICBkYi5zZXNzaW9uLmRlbGV0ZSh1c2VyKQogICAgICAgIGRiLnNlc3Npb24uY29tbWl0KCkKICAgICAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnVXNlciBkZWxldGVkIHN1Y2Nlc3NmdWxseSd9KQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1VzZXIgbm90IGZvdW5kJ30pLCA0MDQKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///example.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'&lt;User {self.username}&gt;'
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    new_user = User(username=data['username'], email=data['email'])
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'User created successfully'}), 201
+
+@app.route('/users', methods=['GET'])
+def get_users():
+    users = User.query.all()
+    return jsonify([{'id': user.id, 'username': user.username, 'email': user.email} for user in users])
+
+@app.route('/users/&lt;int:id&gt;', methods=['PUT'])
+def update_user(id):
+    data = request.get_json()
+    user = User.query.get(id)
+    if user:
+        user.username = data['username']
+        user.email = data['email']
+        db.session.commit()
+        return jsonify({'message': 'User updated successfully'})
+    return jsonify({'message': 'User not found'}), 404
+
+@app.route('/users/&lt;int:id&gt;', methods=['DELETE'])
+def delete_user(id):
+    user = User.query.get(id)
+    if user:
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'message': 'User deleted successfully'})
+    return jsonify({'message': 'User not found'}), 404
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>7. Exercises</h2>
+<div class='content'><h4>Exercise 1: Create a Product Model</h4>
+<ol>
+<li>
+<p>Define a <code>Product</code> model with the following attributes:</p>
+<ul>
+<li><code>id</code>: Integer, primary key</li>
+<li><code>name</code>: String, unique, not nullable</li>
+<li><code>price</code>: Float, not nullable</li>
+</ul>
+</li>
+<li>
+<p>Add a few products to the database.</p>
+</li>
+<li>
+<p>Query all products and print their details.</p>
+</li>
+</ol>
+<h4>Solution:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUHJvZHVjdChkYi5Nb2RlbCk6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgbmFtZSA9IGRiLkNvbHVtbihkYi5TdHJpbmcoODApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwcmljZSA9IGRiLkNvbHVtbihkYi5GbG9hdCwgbnVsbGFibGU9RmFsc2UpCgogICAgZGVmIF9fcmVwcl9fKHNlbGYpOgogICAgICAgIHJldHVybiBmJzxQcm9kdWN0IHtzZWxmLm5hbWV9PicKCiMgQWRkaW5nIHByb2R1Y3RzCnByb2R1Y3QxID0gUHJvZHVjdChuYW1lPSdMYXB0b3AnLCBwcmljZT05OTkuOTkpCnByb2R1Y3QyID0gUHJvZHVjdChuYW1lPSdTbWFydHBob25lJywgcHJpY2U9NDk5Ljk5KQpkYi5zZXNzaW9uLmFkZChwcm9kdWN0MSkKZGIuc2Vzc2lvbi5hZGQocHJvZHVjdDIpCmRiLnNlc3Npb24uY29tbWl0KCkKCiMgUXVlcnlpbmcgcHJvZHVjdHMKcHJvZHVjdHMgPSBQcm9kdWN0LnF1ZXJ5LmFsbCgpCmZvciBwcm9kdWN0IGluIHByb2R1Y3RzOgogICAgcHJpbnQoZidQcm9kdWN0OiB7cHJvZHVjdC5uYW1lfSwgUHJpY2U6IHtwcm9kdWN0LnByaWNlfScp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    price = db.Column(db.Float, nullable=False)
+
+    def __repr__(self):
+        return f'&lt;Product {self.name}&gt;'
+
+# Adding products
+product1 = Product(name='Laptop', price=999.99)
+product2 = Product(name='Smartphone', price=499.99)
+db.session.add(product1)
+db.session.add(product2)
+db.session.commit()
+
+# Querying products
+products = Product.query.all()
+for product in products:
+    print(f'Product: {product.name}, Price: {product.price}')</pre></div><div class='content'><h4>Exercise 2: Implement Update and Delete for Products</h4>
+<ol>
+<li>Implement a route to update a product's details.</li>
+<li>Implement a route to delete a product.</li>
+</ol>
+<h4>Solution:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL3Byb2R1Y3RzLzxpbnQ6aWQ+JywgbWV0aG9kcz1bJ1BVVCddKQpkZWYgdXBkYXRlX3Byb2R1Y3QoaWQpOgogICAgZGF0YSA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgcHJvZHVjdCA9IFByb2R1Y3QucXVlcnkuZ2V0KGlkKQogICAgaWYgcHJvZHVjdDoKICAgICAgICBwcm9kdWN0Lm5hbWUgPSBkYXRhWyduYW1lJ10KICAgICAgICBwcm9kdWN0LnByaWNlID0gZGF0YVsncHJpY2UnXQogICAgICAgIGRiLnNlc3Npb24uY29tbWl0KCkKICAgICAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnUHJvZHVjdCB1cGRhdGVkIHN1Y2Nlc3NmdWxseSd9KQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1Byb2R1Y3Qgbm90IGZvdW5kJ30pLCA0MDQKCkBhcHAucm91dGUoJy9wcm9kdWN0cy88aW50OmlkPicsIG1ldGhvZHM9WydERUxFVEUnXSkKZGVmIGRlbGV0ZV9wcm9kdWN0KGlkKToKICAgIHByb2R1Y3QgPSBQcm9kdWN0LnF1ZXJ5LmdldChpZCkKICAgIGlmIHByb2R1Y3Q6CiAgICAgICAgZGIuc2Vzc2lvbi5kZWxldGUocHJvZHVjdCkKICAgICAgICBkYi5zZXNzaW9uLmNvbW1pdCgpCiAgICAgICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1Byb2R1Y3QgZGVsZXRlZCBzdWNjZXNzZnVsbHknfSkKICAgIHJldHVybiBqc29uaWZ5KHsnbWVzc2FnZSc6ICdQcm9kdWN0IG5vdCBmb3VuZCd9KSwgNDA0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/products/&lt;int:id&gt;', methods=['PUT'])
+def update_product(id):
+    data = request.get_json()
+    product = Product.query.get(id)
+    if product:
+        product.name = data['name']
+        product.price = data['price']
+        db.session.commit()
+        return jsonify({'message': 'Product updated successfully'})
+    return jsonify({'message': 'Product not found'}), 404
+
+@app.route('/products/&lt;int:id&gt;', methods=['DELETE'])
+def delete_product(id):
+    product = Product.query.get(id)
+    if product:
+        db.session.delete(product)
+        db.session.commit()
+        return jsonify({'message': 'Product deleted successfully'})
+    return jsonify({'message': 'Product not found'}), 404</pre></div><div class='content'></div><h2>Conclusion</h2>
+<div class='content'><p>In this section, we learned how to integrate a database with a Flask web application using SQLAlchemy. We covered setting up SQLAlchemy, defining models, performing CRUD operations, and using Flask-Migrate for database migrations. We also implemented a practical example and provided exercises to reinforce the learned concepts. In the next module, we will explore testing and debugging techniques in Flask applications.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='9-4-form-handling'>&#x25C4;Form Handling</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Module 9: Web Development with Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='10-1-unit-testing-unittest'>Unit Testing with unittest &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>
