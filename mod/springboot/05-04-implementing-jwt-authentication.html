@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing JWT Authentication</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/05-04-implementing-jwt-authentication" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/05-04-implementing-jwt-authentication" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/05-04-implementing-jwt-authentication" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/05-04-implementing-jwt-authentication" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/05-04-implementing-jwt-authentication" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-user-authentication-authorization' title="User Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Implementing JWT Authentication</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-introduction-testing' title="Introduction to Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to implement JWT (JSON Web Token) authentication in a Spring Boot application. JWT is a popular method for securing APIs, as it allows for stateless authentication and is easy to use with modern web applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>JWT Basics</strong>: Understanding what JWT is and how it works.</li>
+<li><strong>Spring Security</strong>: Configuring Spring Security to use JWT.</li>
+<li><strong>Creating JWT Tokens</strong>: Generating JWT tokens upon successful authentication.</li>
+<li><strong>Validating JWT Tokens</strong>: Validating JWT tokens for protected routes.</li>
+<li><strong>Practical Example</strong>: Implementing JWT authentication in a Spring Boot application.</li>
+</ol>
+</div><h1>JWT Basics</h1>
+<div class='content'></div><h2>What is JWT?</h2>
+<div class='content'><p>JWT (JSON Web Token) is a compact, URL-safe means of representing claims to be transferred between two parties. The claims in a JWT are encoded as a JSON object that is used as the payload of a JSON Web Signature (JWS) structure or as the plaintext of a JSON Web Encryption (JWE) structure.</p>
+</div><h2>Structure of JWT</h2>
+<div class='content'><p>A JWT consists of three parts:</p>
+<ol>
+<li><strong>Header</strong>: Contains the type of token (JWT) and the signing algorithm (e.g., HMAC SHA256).</li>
+<li><strong>Payload</strong>: Contains the claims. This is where the user data is stored.</li>
+<li><strong>Signature</strong>: Used to verify the token's integrity and authenticity.</li>
+</ol>
+<p>Example of a JWT:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnpkV0lpT2lKMWMyVnlNU0lzSW1WNGNDSTZNVFl4TmpJek9UQXlNbjAuU2ZsS3h3UkpTTWVLS0YyUVQ0ZndwTWVKZjM2UE9rNnlKVl9hZFFzc3c1Yw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMSIsImV4cCI6MTYxNjIzOTAyMn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</pre></div><div class='content'></div><h1>Spring Security Configuration</h1>
+<div class='content'></div><h2>Dependencies</h2>
+<div class='content'><p>First, add the necessary dependencies to your <code>pom.xml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXNlY3VyaXR5PC9hcnRpZmFjdElkPgo8L2RlcGVuZGVuY3k+CjxkZXBlbmRlbmN5PgogICAgPGdyb3VwSWQ+aW8uanNvbndlYnRva2VuPC9ncm91cElkPgogICAgPGFydGlmYWN0SWQ+amp3dDwvYXJ0aWZhY3RJZD4KICAgIDx2ZXJzaW9uPjAuOS4xPC92ZXJzaW9uPgo8L2RlcGVuZGVuY3k+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.jsonwebtoken&lt;/groupId&gt;
+    &lt;artifactId&gt;jjwt&lt;/artifactId&gt;
+    &lt;version&gt;0.9.1&lt;/version&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Security Configuration</h2>
+<div class='content'><p>Create a security configuration class to configure Spring Security to use JWT:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuY29udGV4dC5hbm5vdGF0aW9uLkJlYW47CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLmNvbnRleHQuYW5ub3RhdGlvbi5Db25maWd1cmF0aW9uOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5jb25maWcuYW5ub3RhdGlvbi53ZWIuYnVpbGRlcnMuSHR0cFNlY3VyaXR5OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5jb25maWcuYW5ub3RhdGlvbi53ZWIuY29uZmlndXJhdGlvbi5FbmFibGVXZWJTZWN1cml0eTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29uZmlnLmFubm90YXRpb24ud2ViLmNvbmZpZ3VyYXRpb24uV2ViU2VjdXJpdHlDb25maWd1cmVyQWRhcHRlcjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29uZmlnLmh0dHAuU2Vzc2lvbkNyZWF0aW9uUG9saWN5OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS53ZWIuYXV0aGVudGljYXRpb24uVXNlcm5hbWVQYXNzd29yZEF1dGhlbnRpY2F0aW9uRmlsdGVyOwoKQENvbmZpZ3VyYXRpb24KQEVuYWJsZVdlYlNlY3VyaXR5CnB1YmxpYyBjbGFzcyBTZWN1cml0eUNvbmZpZyBleHRlbmRzIFdlYlNlY3VyaXR5Q29uZmlndXJlckFkYXB0ZXIgewoKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgY29uZmlndXJlKEh0dHBTZWN1cml0eSBodHRwKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBodHRwLmNzcmYoKS5kaXNhYmxlKCkKICAgICAgICAgICAgLmF1dGhvcml6ZVJlcXVlc3RzKCkKICAgICAgICAgICAgLmFudE1hdGNoZXJzKCIvYXV0aC8qKiIpLnBlcm1pdEFsbCgpCiAgICAgICAgICAgIC5hbnlSZXF1ZXN0KCkuYXV0aGVudGljYXRlZCgpCiAgICAgICAgICAgIC5hbmQoKQogICAgICAgICAgICAuc2Vzc2lvbk1hbmFnZW1lbnQoKS5zZXNzaW9uQ3JlYXRpb25Qb2xpY3koU2Vzc2lvbkNyZWF0aW9uUG9saWN5LlNUQVRFTEVTUyk7CgogICAgICAgIGh0dHAuYWRkRmlsdGVyQmVmb3JlKGp3dEF1dGhlbnRpY2F0aW9uRmlsdGVyKCksIFVzZXJuYW1lUGFzc3dvcmRBdXRoZW50aWNhdGlvbkZpbHRlci5jbGFzcyk7CiAgICB9CgogICAgQEJlYW4KICAgIHB1YmxpYyBKd3RBdXRoZW50aWNhdGlvbkZpbHRlciBqd3RBdXRoZW50aWNhdGlvbkZpbHRlcigpIHsKICAgICAgICByZXR1cm4gbmV3IEp3dEF1dGhlbnRpY2F0aW9uRmlsdGVyKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+            .authorizeRequests()
+            .antMatchers(&quot;/auth/**&quot;).permitAll()
+            .anyRequest().authenticated()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
+}</pre></div><div class='content'></div><h1>Creating JWT Tokens</h1>
+<div class='content'></div><h2>Authentication Controller</h2>
+<div class='content'><p>Create an authentication controller to handle login requests and generate JWT tokens:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuYmVhbnMuZmFjdG9yeS5hbm5vdGF0aW9uLkF1dG93aXJlZDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuYXV0aGVudGljYXRpb24uQXV0aGVudGljYXRpb25NYW5hZ2VyOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5hdXRoZW50aWNhdGlvbi5Vc2VybmFtZVBhc3N3b3JkQXV0aGVudGljYXRpb25Ub2tlbjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS5BdXRoZW50aWNhdGlvbjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS5BdXRoZW50aWNhdGlvbkV4Y2VwdGlvbjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS51c2VyZGV0YWlscy5Vc2VyRGV0YWlsczsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmJpbmQuYW5ub3RhdGlvbi4qOwoKQFJlc3RDb250cm9sbGVyCkBSZXF1ZXN0TWFwcGluZygiL2F1dGgiKQpwdWJsaWMgY2xhc3MgQXV0aENvbnRyb2xsZXIgewoKICAgIEBBdXRvd2lyZWQKICAgIHByaXZhdGUgQXV0aGVudGljYXRpb25NYW5hZ2VyIGF1dGhlbnRpY2F0aW9uTWFuYWdlcjsKCiAgICBAQXV0b3dpcmVkCiAgICBwcml2YXRlIEp3dFRva2VuUHJvdmlkZXIgand0VG9rZW5Qcm92aWRlcjsKCiAgICBAUG9zdE1hcHBpbmcoIi9sb2dpbiIpCiAgICBwdWJsaWMgU3RyaW5nIGxvZ2luKEBSZXF1ZXN0Qm9keSBBdXRoUmVxdWVzdCBhdXRoUmVxdWVzdCkgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIEF1dGhlbnRpY2F0aW9uIGF1dGhlbnRpY2F0aW9uID0gYXV0aGVudGljYXRpb25NYW5hZ2VyLmF1dGhlbnRpY2F0ZSgKICAgICAgICAgICAgICAgIG5ldyBVc2VybmFtZVBhc3N3b3JkQXV0aGVudGljYXRpb25Ub2tlbihhdXRoUmVxdWVzdC5nZXRVc2VybmFtZSgpLCBhdXRoUmVxdWVzdC5nZXRQYXNzd29yZCgpKQogICAgICAgICAgICApOwoKICAgICAgICAgICAgVXNlckRldGFpbHMgdXNlckRldGFpbHMgPSAoVXNlckRldGFpbHMpIGF1dGhlbnRpY2F0aW9uLmdldFByaW5jaXBhbCgpOwogICAgICAgICAgICByZXR1cm4gand0VG9rZW5Qcm92aWRlci5jcmVhdGVUb2tlbih1c2VyRGV0YWlscy5nZXRVc2VybmFtZSgpKTsKICAgICAgICB9IGNhdGNoIChBdXRoZW50aWNhdGlvbkV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIHRocm93IG5ldyBSdW50aW1lRXhjZXB0aW9uKCJJbnZhbGlkIHVzZXJuYW1lL3Bhc3N3b3JkIik7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(&quot;/auth&quot;)
+public class AuthController {
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @PostMapping(&quot;/login&quot;)
+    public String login(@RequestBody AuthRequest authRequest) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+            );
+
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return jwtTokenProvider.createToken(userDetails.getUsername());
+        } catch (AuthenticationException e) {
+            throw new RuntimeException(&quot;Invalid username/password&quot;);
+        }
+    }
+}</pre></div><div class='content'></div><h2>JWT Token Provider</h2>
+<div class='content'><p>Create a utility class to generate and validate JWT tokens:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGlvLmpzb253ZWJ0b2tlbi5DbGFpbXM7CmltcG9ydCBpby5qc29ud2VidG9rZW4uSnd0czsKaW1wb3J0IGlvLmpzb253ZWJ0b2tlbi5TaWduYXR1cmVBbGdvcml0aG07CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLmJlYW5zLmZhY3RvcnkuYW5ub3RhdGlvbi5WYWx1ZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc3RlcmVvdHlwZS5Db21wb25lbnQ7CgppbXBvcnQgamF2YS51dGlsLkRhdGU7CgpAQ29tcG9uZW50CnB1YmxpYyBjbGFzcyBKd3RUb2tlblByb3ZpZGVyIHsKCiAgICBAVmFsdWUoIiR7and0LnNlY3JldH0iKQogICAgcHJpdmF0ZSBTdHJpbmcgc2VjcmV0S2V5OwoKICAgIEBWYWx1ZSgiJHtqd3QuZXhwaXJhdGlvbn0iKQogICAgcHJpdmF0ZSBsb25nIHZhbGlkaXR5SW5NaWxsaXNlY29uZHM7CgogICAgcHVibGljIFN0cmluZyBjcmVhdGVUb2tlbihTdHJpbmcgdXNlcm5hbWUpIHsKICAgICAgICBDbGFpbXMgY2xhaW1zID0gSnd0cy5jbGFpbXMoKS5zZXRTdWJqZWN0KHVzZXJuYW1lKTsKICAgICAgICBEYXRlIG5vdyA9IG5ldyBEYXRlKCk7CiAgICAgICAgRGF0ZSB2YWxpZGl0eSA9IG5ldyBEYXRlKG5vdy5nZXRUaW1lKCkgKyB2YWxpZGl0eUluTWlsbGlzZWNvbmRzKTsKCiAgICAgICAgcmV0dXJuIEp3dHMuYnVpbGRlcigpCiAgICAgICAgICAgICAgICAuc2V0Q2xhaW1zKGNsYWltcykKICAgICAgICAgICAgICAgIC5zZXRJc3N1ZWRBdChub3cpCiAgICAgICAgICAgICAgICAuc2V0RXhwaXJhdGlvbih2YWxpZGl0eSkKICAgICAgICAgICAgICAgIC5zaWduV2l0aChTaWduYXR1cmVBbGdvcml0aG0uSFMyNTYsIHNlY3JldEtleSkKICAgICAgICAgICAgICAgIC5jb21wYWN0KCk7CiAgICB9CgogICAgcHVibGljIGJvb2xlYW4gdmFsaWRhdGVUb2tlbihTdHJpbmcgdG9rZW4pIHsKICAgICAgICB0cnkgewogICAgICAgICAgICBKd3RzLnBhcnNlcigpLnNldFNpZ25pbmdLZXkoc2VjcmV0S2V5KS5wYXJzZUNsYWltc0p3cyh0b2tlbik7CiAgICAgICAgICAgIHJldHVybiB0cnVlOwogICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICB9CgogICAgcHVibGljIFN0cmluZyBnZXRVc2VybmFtZShTdHJpbmcgdG9rZW4pIHsKICAgICAgICByZXR1cm4gSnd0cy5wYXJzZXIoKS5zZXRTaWduaW5nS2V5KHNlY3JldEtleSkucGFyc2VDbGFpbXNKd3ModG9rZW4pLmdldEJvZHkoKS5nZXRTdWJqZWN0KCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+@Component
+public class JwtTokenProvider {
+
+    @Value(&quot;${jwt.secret}&quot;)
+    private String secretKey;
+
+    @Value(&quot;${jwt.expiration}&quot;)
+    private long validityInMilliseconds;
+
+    public String createToken(String username) {
+        Claims claims = Jwts.claims().setSubject(username);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + validityInMilliseconds);
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public String getUsername(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+}</pre></div><div class='content'></div><h1>Validating JWT Tokens</h1>
+<div class='content'></div><h2>JWT Authentication Filter</h2>
+<div class='content'><p>Create a filter to validate JWT tokens for protected routes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuYmVhbnMuZmFjdG9yeS5hbm5vdGF0aW9uLkF1dG93aXJlZDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS5jb250ZXh0LlNlY3VyaXR5Q29udGV4dEhvbGRlcjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS51c2VyZGV0YWlscy5Vc2VyRGV0YWlsczsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS51c2VyZGV0YWlscy5Vc2VyRGV0YWlsc1NlcnZpY2U7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5LndlYi5hdXRoZW50aWNhdGlvbi5XZWJBdXRoZW50aWNhdGlvbkRldGFpbHNTb3VyY2U7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLndlYi5maWx0ZXIuT25jZVBlclJlcXVlc3RGaWx0ZXI7CgppbXBvcnQgamF2YXguc2VydmxldC5GaWx0ZXJDaGFpbjsKaW1wb3J0IGphdmF4LnNlcnZsZXQuU2VydmxldEV4Y2VwdGlvbjsKaW1wb3J0IGphdmF4LnNlcnZsZXQuaHR0cC5IdHRwU2VydmxldFJlcXVlc3Q7CmltcG9ydCBqYXZheC5zZXJ2bGV0Lmh0dHAuSHR0cFNlcnZsZXRSZXNwb25zZTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgSnd0QXV0aGVudGljYXRpb25GaWx0ZXIgZXh0ZW5kcyBPbmNlUGVyUmVxdWVzdEZpbHRlciB7CgogICAgQEF1dG93aXJlZAogICAgcHJpdmF0ZSBKd3RUb2tlblByb3ZpZGVyIGp3dFRva2VuUHJvdmlkZXI7CgogICAgQEF1dG93aXJlZAogICAgcHJpdmF0ZSBVc2VyRGV0YWlsc1NlcnZpY2UgdXNlckRldGFpbHNTZXJ2aWNlOwoKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgZG9GaWx0ZXJJbnRlcm5hbChIdHRwU2VydmxldFJlcXVlc3QgcmVxdWVzdCwgSHR0cFNlcnZsZXRSZXNwb25zZSByZXNwb25zZSwgRmlsdGVyQ2hhaW4gZmlsdGVyQ2hhaW4pCiAgICAgICAgICAgIHRocm93cyBTZXJ2bGV0RXhjZXB0aW9uLCBJT0V4Y2VwdGlvbiB7CiAgICAgICAgU3RyaW5nIHRva2VuID0gcmVzb2x2ZVRva2VuKHJlcXVlc3QpOwogICAgICAgIGlmICh0b2tlbiAhPSBudWxsICYmIGp3dFRva2VuUHJvdmlkZXIudmFsaWRhdGVUb2tlbih0b2tlbikpIHsKICAgICAgICAgICAgU3RyaW5nIHVzZXJuYW1lID0gand0VG9rZW5Qcm92aWRlci5nZXRVc2VybmFtZSh0b2tlbik7CiAgICAgICAgICAgIFVzZXJEZXRhaWxzIHVzZXJEZXRhaWxzID0gdXNlckRldGFpbHNTZXJ2aWNlLmxvYWRVc2VyQnlVc2VybmFtZSh1c2VybmFtZSk7CiAgICAgICAgICAgIFVzZXJuYW1lUGFzc3dvcmRBdXRoZW50aWNhdGlvblRva2VuIGF1dGhlbnRpY2F0aW9uID0gbmV3IFVzZXJuYW1lUGFzc3dvcmRBdXRoZW50aWNhdGlvblRva2VuKAogICAgICAgICAgICAgICAgICAgIHVzZXJEZXRhaWxzLCBudWxsLCB1c2VyRGV0YWlscy5nZXRBdXRob3JpdGllcygpKTsKICAgICAgICAgICAgYXV0aGVudGljYXRpb24uc2V0RGV0YWlscyhuZXcgV2ViQXV0aGVudGljYXRpb25EZXRhaWxzU291cmNlKCkuYnVpbGREZXRhaWxzKHJlcXVlc3QpKTsKICAgICAgICAgICAgU2VjdXJpdHlDb250ZXh0SG9sZGVyLmdldENvbnRleHQoKS5zZXRBdXRoZW50aWNhdGlvbihhdXRoZW50aWNhdGlvbik7CiAgICAgICAgfQogICAgICAgIGZpbHRlckNoYWluLmRvRmlsdGVyKHJlcXVlc3QsIHJlc3BvbnNlKTsKICAgIH0KCiAgICBwcml2YXRlIFN0cmluZyByZXNvbHZlVG9rZW4oSHR0cFNlcnZsZXRSZXF1ZXN0IHJlcXVlc3QpIHsKICAgICAgICBTdHJpbmcgYmVhcmVyVG9rZW4gPSByZXF1ZXN0LmdldEhlYWRlcigiQXV0aG9yaXphdGlvbiIpOwogICAgICAgIGlmIChiZWFyZXJUb2tlbiAhPSBudWxsICYmIGJlYXJlclRva2VuLnN0YXJ0c1dpdGgoIkJlYXJlciAiKSkgewogICAgICAgICAgICByZXR1cm4gYmVhcmVyVG9rZW4uc3Vic3RyaW5nKDcpOwogICAgICAgIH0KICAgICAgICByZXR1cm4gbnVsbDsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String token = resolveToken(request);
+        if (token != null &amp;&amp; jwtTokenProvider.validateToken(token)) {
+            String username = jwtTokenProvider.getUsername(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(&quot;Authorization&quot;);
+        if (bearerToken != null &amp;&amp; bearerToken.startsWith(&quot;Bearer &quot;)) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'></div><h2>Application Properties</h2>
+<div class='content'><p>Add the following properties to your <code>application.properties</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("and0LnNlY3JldD15b3VyX3NlY3JldF9rZXkKand0LmV4cGlyYXRpb249MzYwMDAwMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>jwt.secret=your_secret_key
+jwt.expiration=3600000</pre></div><div class='content'></div><h2>UserDetailsService Implementation</h2>
+<div class='content'><p>Implement the <code>UserDetailsService</code> to load user-specific data:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS51c2VyZGV0YWlscy5Vc2VyRGV0YWlsczsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc2VjdXJpdHkuY29yZS51c2VyZGV0YWlscy5Vc2VyRGV0YWlsc1NlcnZpY2U7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLnNlY3VyaXR5LmNvcmUudXNlcmRldGFpbHMuVXNlcm5hbWVOb3RGb3VuZEV4Y2VwdGlvbjsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuc3RlcmVvdHlwZS5TZXJ2aWNlOwoKQFNlcnZpY2UKcHVibGljIGNsYXNzIEN1c3RvbVVzZXJEZXRhaWxzU2VydmljZSBpbXBsZW1lbnRzIFVzZXJEZXRhaWxzU2VydmljZSB7CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgVXNlckRldGFpbHMgbG9hZFVzZXJCeVVzZXJuYW1lKFN0cmluZyB1c2VybmFtZSkgdGhyb3dzIFVzZXJuYW1lTm90Rm91bmRFeGNlcHRpb24gewogICAgICAgIC8vIExvYWQgdXNlciBmcm9tIGRhdGFiYXNlIG9yIGFueSBvdGhlciBzb3VyY2UKICAgICAgICAvLyBGb3Igc2ltcGxpY2l0eSwgcmV0dXJuaW5nIGEgaGFyZGNvZGVkIHVzZXIKICAgICAgICByZXR1cm4gb3JnLnNwcmluZ2ZyYW1ld29yay5zZWN1cml0eS5jb3JlLnVzZXJkZXRhaWxzLlVzZXIKICAgICAgICAgICAgICAgIC53aXRoVXNlcm5hbWUoInVzZXIxIikKICAgICAgICAgICAgICAgIC5wYXNzd29yZCgie25vb3B9cGFzc3dvcmQiKQogICAgICAgICAgICAgICAgLmF1dGhvcml0aWVzKCJST0xFX1VTRVIiKQogICAgICAgICAgICAgICAgLmJ1aWxkKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CustomUserDetailsService implements UserDetailsService {
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Load user from database or any other source
+        // For simplicity, returning a hardcoded user
+        return org.springframework.security.core.userdetails.User
+                .withUsername(&quot;user1&quot;)
+                .password(&quot;{noop}password&quot;)
+                .authorities(&quot;ROLE_USER&quot;)
+                .build();
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have covered the basics of JWT, how to configure Spring Security to use JWT, and how to create and validate JWT tokens. We also provided a practical example of implementing JWT authentication in a Spring Boot application. This knowledge will help you secure your APIs and ensure that only authenticated users can access protected resources.</p>
+<p>Next, we will move on to testing in Spring Boot, where we will learn how to write unit and integration tests for our application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-user-authentication-authorization' title="User Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-introduction-testing' title="Introduction to Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

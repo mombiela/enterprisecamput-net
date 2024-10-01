@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Directives</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular/03-05-custom-directives" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular/03-05-custom-directives" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular/03-05-custom-directives" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular/03-05-custom-directives" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular/03-05-custom-directives" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-built-in-directives' title="Built-in Directives">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Custom Directives</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-services' title="Introduction to Services">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore custom directives in Angular. Directives are a powerful feature in Angular that allow you to extend the HTML vocabulary and create reusable components. Custom directives can be used to manipulate the DOM, apply styles, and add behavior to elements.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>What are Directives?</strong></p>
+<ul>
+<li>Directives are classes that add additional behavior to elements in your Angular applications.</li>
+<li>There are three types of directives in Angular:
+<ul>
+<li><strong>Component Directives</strong>: Directives with a template.</li>
+<li><strong>Structural Directives</strong>: Directives that change the DOM layout by adding and removing DOM elements (e.g., <code>*ngIf</code>, <code>*ngFor</code>).</li>
+<li><strong>Attribute Directives</strong>: Directives that change the appearance or behavior of an element, component, or another directive (e.g., <code>ngClass</code>, <code>ngStyle</code>).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Creating a Custom Directive</strong></p>
+<ul>
+<li>Custom directives are typically attribute directives.</li>
+<li>They are created using the <code>@Directive</code> decorator.</li>
+</ul>
+</li>
+<li>
+<p><strong>Using Custom Directives</strong></p>
+<ul>
+<li>Custom directives can be applied to elements in your templates.</li>
+<li>They can interact with the host element and respond to events.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Creating a Custom Directive</h1>
+<div class='content'><p>Let's create a simple custom directive that changes the background color of an element when it is hovered over.</p>
+</div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Generate the Directive</strong></p>
+<ul>
+<li>Use Angular CLI to generate a new directive:
+<pre><code class="language-bash">ng generate directive highlight
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Implement the Directive</strong></p>
+<ul>
+<li>Open the generated <code>highlight.directive.ts</code> file and implement the directive logic:
+<pre><code class="language-typescript">import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+  @Input() appHighlight: string;
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.highlight(this.appHighlight || 'yellow');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.highlight(null);
+  }
+
+  private highlight(color: string) {
+    this.el.nativeElement.style.backgroundColor = color;
+  }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Use the Directive in a Template</strong></p>
+<ul>
+<li>Apply the directive to an element in your component template:
+<pre><code class="language-html">&lt;p appHighlight=&quot;lightblue&quot;&gt;Hover over this text to see the highlight effect.&lt;/p&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>@Directive Decorator</strong>: Defines the directive and its selector (<code>[appHighlight]</code>).</li>
+<li><strong>ElementRef</strong>: A service that grants direct access to the DOM element.</li>
+<li><strong>@Input()</strong>: Binds the directive's input property to the attribute value.</li>
+<li><strong>@HostListener()</strong>: Listens to events on the host element and triggers the specified methods.</li>
+<li><strong>highlight() Method</strong>: Changes the background color of the host element.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a custom directive that changes the text color of an element when it is clicked.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li>Generate a new directive named <code>textColor</code>.</li>
+<li>Implement the directive to change the text color on click.</li>
+<li>Use the directive in a component template.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Generate the Directive</strong></p>
+<pre><code class="language-bash">ng generate directive textColor
+</code></pre>
+</li>
+<li>
+<p><strong>Implement the Directive</strong></p>
+<pre><code class="language-typescript">import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appTextColor]'
+})
+export class TextColorDirective {
+  @Input() appTextColor: string;
+
+  constructor(private el: ElementRef) {}
+
+  @HostListener('click') onClick() {
+    this.changeTextColor(this.appTextColor || 'blue');
+  }
+
+  private changeTextColor(color: string) {
+    this.el.nativeElement.style.color = color;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Directive in a Template</strong></p>
+<pre><code class="language-html">&lt;p appTextColor=&quot;red&quot;&gt;Click this text to change its color to red.&lt;/p&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Forgetting to Declare the Directive</strong>: Ensure that the directive is declared in the <code>declarations</code> array of your module.</li>
+<li><strong>Incorrect Selector</strong>: Make sure the selector in the <code>@Directive</code> decorator matches the attribute used in the template.</li>
+<li><strong>Direct DOM Manipulation</strong>: Avoid direct DOM manipulation when possible. Use Angular's built-in methods and services.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned about custom directives in Angular. We created a custom directive to change the background color of an element on hover and another to change the text color on click. Custom directives are a powerful way to encapsulate and reuse behavior across your application. In the next section, we will explore services and dependency injection in Angular.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-built-in-directives' title="Built-in Directives">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-services' title="Introduction to Services">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

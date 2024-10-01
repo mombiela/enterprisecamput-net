@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Query Execution Plans</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/06-02-query-execution-plans" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/06-02-query-execution-plans" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/06-02-query-execution-plans" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bigquery/06-02-query-execution-plans" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/06-02-query-execution-plans" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-query-optimization-techniques' title="Query Optimization Techniques">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Understanding Query Execution Plans</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-using-materialized-views' title="Using Materialized Views">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the concept of query execution plans in BigQuery. Understanding how BigQuery executes your queries is crucial for optimizing performance and ensuring efficient use of resources.</p>
+</div><h1>What is a Query Execution Plan?</h1>
+<div class='content'><p>A query execution plan is a detailed roadmap that BigQuery follows to execute a SQL query. It outlines the steps and operations BigQuery performs to retrieve and process the data. By analyzing the execution plan, you can identify potential bottlenecks and optimize your queries for better performance.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Query Stages</h2>
+<div class='content'><p>BigQuery breaks down a query into multiple stages. Each stage represents a specific operation, such as scanning data, filtering, joining tables, or aggregating results.</p>
+</div><h2>2. Execution Steps</h2>
+<div class='content'><p>Within each stage, there are execution steps that detail the specific actions taken. These steps include reading data from storage, applying filters, performing joins, and more.</p>
+</div><h2>3. Parallelism</h2>
+<div class='content'><p>BigQuery leverages parallelism to execute queries efficiently. It distributes the workload across multiple nodes, allowing for faster processing of large datasets.</p>
+</div><h2>4. Slot Usage</h2>
+<div class='content'><p>Slots are units of computational capacity in BigQuery. The execution plan shows how many slots are used at each stage, helping you understand the resource consumption of your query.</p>
+</div><h1>Viewing Query Execution Plans</h1>
+<div class='content'><p>To view the execution plan of a query in BigQuery, follow these steps:</p>
+<ol>
+<li><strong>Run the Query</strong>: Execute your SQL query in the BigQuery console.</li>
+<li><strong>Query History</strong>: Navigate to the &quot;Query History&quot; tab.</li>
+<li><strong>Execution Details</strong>: Click on the query to view its execution details.</li>
+<li><strong>Execution Plan</strong>: In the execution details, you will find the execution plan, which provides a visual representation of the query stages and steps.</li>
+</ol>
+</div><h1>Example: Analyzing a Query Execution Plan</h1>
+<div class='content'><p>Let's consider a simple query and analyze its execution plan.</p>
+</div><h2>Query</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgdXNlcl9pZCwKICBDT1VOVCgqKSBBUyB0b3RhbF9vcmRlcnMKRlJPTQogIGBwcm9qZWN0LmRhdGFzZXQub3JkZXJzYApXSEVSRQogIG9yZGVyX2RhdGUgPj0gJzIwMjMtMDEtMDEnCkdST1VQIEJZCiAgdXNlcl9pZApPUkRFUiBCWQogIHRvdGFsX29yZGVycyBERVNDCkxJTUlUIDEwOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+  user_id,
+  COUNT(*) AS total_orders
+FROM
+  `project.dataset.orders`
+WHERE
+  order_date &gt;= '2023-01-01'
+GROUP BY
+  user_id
+ORDER BY
+  total_orders DESC
+LIMIT 10;</pre></div><div class='content'></div><h2>Execution Plan Breakdown</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Stage 1: Scan</strong></p>
+<ul>
+<li><strong>Operation</strong>: Read data from the <code>orders</code> table.</li>
+<li><strong>Details</strong>: Scan the <code>order_date</code> column to filter records from '2023-01-01' onwards.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 2: Filter</strong></p>
+<ul>
+<li><strong>Operation</strong>: Apply the filter condition <code>order_date &gt;= '2023-01-01'</code>.</li>
+<li><strong>Details</strong>: Only records that meet the filter criteria are passed to the next stage.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 3: Group By</strong></p>
+<ul>
+<li><strong>Operation</strong>: Group the filtered records by <code>user_id</code>.</li>
+<li><strong>Details</strong>: Aggregate the data to count the total orders for each user.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 4: Sort</strong></p>
+<ul>
+<li><strong>Operation</strong>: Sort the grouped results by <code>total_orders</code> in descending order.</li>
+<li><strong>Details</strong>: Arrange the results to identify the top 10 users with the most orders.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 5: Limit</strong></p>
+<ul>
+<li><strong>Operation</strong>: Limit the results to the top 10 records.</li>
+<li><strong>Details</strong>: Return only the first 10 rows from the sorted results.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Analyze the Execution Plan</h2>
+<div class='content'><ol>
+<li><strong>Query</strong>: Write a query to find the top 5 products with the highest sales in the <code>sales</code> table.</li>
+<li><strong>Execution Plan</strong>: View and analyze the execution plan for your query.</li>
+<li><strong>Optimization</strong>: Identify any potential bottlenecks and suggest optimizations.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Query</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgcHJvZHVjdF9pZCwKICBTVU0oc2FsZXNfYW1vdW50KSBBUyB0b3RhbF9zYWxlcwpGUk9NCiAgYHByb2plY3QuZGF0YXNldC5zYWxlc2AKR1JPVVAgQlkKICBwcm9kdWN0X2lkCk9SREVSIEJZCiAgdG90YWxfc2FsZXMgREVTQwpMSU1JVCA1Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+  product_id,
+  SUM(sales_amount) AS total_sales
+FROM
+  `project.dataset.sales`
+GROUP BY
+  product_id
+ORDER BY
+  total_sales DESC
+LIMIT 5;</pre></div><div class='content'><h4>Execution Plan Analysis</h4>
+<ol>
+<li>
+<p><strong>Stage 1: Scan</strong></p>
+<ul>
+<li><strong>Operation</strong>: Read data from the <code>sales</code> table.</li>
+<li><strong>Details</strong>: Scan the <code>sales_amount</code> column to aggregate sales.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 2: Group By</strong></p>
+<ul>
+<li><strong>Operation</strong>: Group the scanned records by <code>product_id</code>.</li>
+<li><strong>Details</strong>: Aggregate the data to sum the sales amount for each product.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 3: Sort</strong></p>
+<ul>
+<li><strong>Operation</strong>: Sort the grouped results by <code>total_sales</code> in descending order.</li>
+<li><strong>Details</strong>: Arrange the results to identify the top 5 products with the highest sales.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 4: Limit</strong></p>
+<ul>
+<li><strong>Operation</strong>: Limit the results to the top 5 records.</li>
+<li><strong>Details</strong>: Return only the first 5 rows from the sorted results.</li>
+</ul>
+</li>
+</ol>
+<h4>Optimization Tips</h4>
+<ul>
+<li><strong>Filter Early</strong>: If possible, add a filter condition to reduce the number of records scanned.</li>
+<li><strong>Use Partitioning</strong>: Partition the <code>sales</code> table by date to speed up the scan operation.</li>
+<li><strong>Avoid Unnecessary Columns</strong>: Select only the necessary columns to reduce data transfer and processing time.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding query execution plans is essential for optimizing your BigQuery queries. By analyzing the execution stages and steps, you can identify inefficiencies and make informed decisions to improve query performance. In the next section, we will explore the use of materialized views to further enhance query efficiency.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-query-optimization-techniques' title="Query Optimization Techniques">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-using-materialized-views' title="Using Materialized Views">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

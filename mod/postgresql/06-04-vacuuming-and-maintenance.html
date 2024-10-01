@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacuuming and Maintenance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/06-04-vacuuming-and-maintenance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/06-04-vacuuming-and-maintenance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/06-04-vacuuming-and-maintenance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/06-04-vacuuming-and-maintenance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/06-04-vacuuming-and-maintenance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-analyzing-query-performance' title="Analyzing Query Performance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Vacuuming and Maintenance</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-user-roles-and-permissions' title="User Roles and Permissions">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In PostgreSQL, regular maintenance is crucial to ensure optimal performance and prevent database bloat. One of the key maintenance tasks is vacuuming, which helps reclaim storage occupied by dead tuples and updates the statistics used by the query planner. This section will cover the following topics:</p>
+<ol>
+<li><strong>Understanding Vacuuming</strong></li>
+<li><strong>Types of Vacuuming</strong></li>
+<li><strong>Autovacuum</strong></li>
+<li><strong>Manual Vacuuming</strong></li>
+<li><strong>Maintenance Best Practices</strong></li>
+</ol>
+</div><h1>1. Understanding Vacuuming</h1>
+<div class='content'></div><h2>What is Vacuuming?</h2>
+<div class='content'><p>Vacuuming is a process in PostgreSQL that helps to:</p>
+<ul>
+<li>Reclaim storage occupied by dead tuples.</li>
+<li>Update statistics for the query planner.</li>
+<li>Prevent transaction ID wraparound issues.</li>
+</ul>
+</div><h2>Why is Vacuuming Necessary?</h2>
+<div class='content'><p>When rows are updated or deleted in PostgreSQL, the old versions of the rows are not immediately removed. Instead, they are marked as dead tuples. Over time, these dead tuples can accumulate, leading to:</p>
+<ul>
+<li>Increased storage usage.</li>
+<li>Degraded query performance.</li>
+<li>Inefficient use of indexes.</li>
+</ul>
+</div><h1>2. Types of Vacuuming</h1>
+<div class='content'><p>PostgreSQL provides two types of vacuuming:</p>
+</div><h2>2.1. VACUUM</h2>
+<div class='content'><p>The <code>VACUUM</code> command reclaims storage occupied by dead tuples. It does not lock the tables, allowing normal operations to continue.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM;</pre></div><div class='content'></div><h2>2.2. VACUUM FULL</h2>
+<div class='content'><p>The <code>VACUUM FULL</code> command performs a more thorough vacuuming by rewriting the entire table. This can reclaim more space but requires an exclusive lock on the table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIEZVTEw7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM FULL;</pre></div><div class='content'><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+<th>Locking Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>VACUUM</code></td>
+<td>Reclaims storage occupied by dead tuples</td>
+<td>Non-blocking</td>
+</tr>
+<tr>
+<td><code>VACUUM FULL</code></td>
+<td>Rewrites the entire table to reclaim more space</td>
+<td>Requires exclusive lock</td>
+</tr>
+</tbody>
+</table>
+</div><h1>3. Autovacuum</h1>
+<div class='content'></div><h2>What is Autovacuum?</h2>
+<div class='content'><p>Autovacuum is a background process in PostgreSQL that automatically performs vacuuming and analyze operations. It helps maintain the health of the database without manual intervention.</p>
+</div><h2>Configuring Autovacuum</h2>
+<div class='content'><p>Autovacuum can be configured using the following parameters in the <code>postgresql.conf</code> file:</p>
+<ul>
+<li><code>autovacuum</code>: Enables or disables the autovacuum daemon.</li>
+<li><code>autovacuum_naptime</code>: Sets the delay between autovacuum runs.</li>
+<li><code>autovacuum_vacuum_threshold</code>: Sets the minimum number of tuple updates or deletions before vacuuming a table.</li>
+<li><code>autovacuum_analyze_threshold</code>: Sets the minimum number of tuple inserts, updates, or deletions before analyzing a table.</li>
+</ul>
+<p>Example configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXV0b3ZhY3V1bSA9IG9uCmF1dG92YWN1dW1fbmFwdGltZSA9ICcxbWluJwphdXRvdmFjdXVtX3ZhY3V1bV90aHJlc2hvbGQgPSA1MAphdXRvdmFjdXVtX2FuYWx5emVfdGhyZXNob2xkID0gNTA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>autovacuum = on
+autovacuum_naptime = '1min'
+autovacuum_vacuum_threshold = 50
+autovacuum_analyze_threshold = 50</pre></div><div class='content'></div><h1>4. Manual Vacuuming</h1>
+<div class='content'></div><h2>When to Perform Manual Vacuuming?</h2>
+<div class='content'><p>While autovacuum handles most maintenance tasks, there are scenarios where manual vacuuming is necessary:</p>
+<ul>
+<li>After bulk data loads or large updates.</li>
+<li>When autovacuum is disabled or not aggressive enough.</li>
+<li>To address specific performance issues.</li>
+</ul>
+</div><h2>Performing Manual Vacuuming</h2>
+<div class='content'><p>To manually vacuum a specific table:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIG15X3RhYmxlOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM my_table;</pre></div><div class='content'><p>To perform a full vacuum on a specific table:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIEZVTEwgbXlfdGFibGU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM FULL my_table;</pre></div><div class='content'></div><h1>5. Maintenance Best Practices</h1>
+<div class='content'></div><h2>Regular Maintenance</h2>
+<div class='content'><ul>
+<li>Ensure autovacuum is enabled and properly configured.</li>
+<li>Schedule regular manual vacuuming for large or frequently updated tables.</li>
+</ul>
+</div><h2>Monitoring</h2>
+<div class='content'><ul>
+<li>Monitor the <code>pg_stat_user_tables</code> view to track vacuuming activity and table statistics.</li>
+<li>Use the <code>pg_stat_activity</code> view to monitor ongoing vacuum operations.</li>
+</ul>
+</div><h2>Analyzing Tables</h2>
+<div class='content'><p>Regularly analyze tables to update statistics for the query planner:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QU5BTFlaRSBteV90YWJsZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ANALYZE my_table;</pre></div><div class='content'></div><h2>Reindexing</h2>
+<div class='content'><p>Periodically reindex tables to maintain index efficiency:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UkVJTkRFWCBUQUJMRSBteV90YWJsZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>REINDEX TABLE my_table;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Vacuuming and maintenance are essential tasks in PostgreSQL to ensure optimal performance and efficient storage usage. By understanding the different types of vacuuming, configuring autovacuum, and performing manual maintenance when necessary, you can keep your PostgreSQL database running smoothly. Regular monitoring and analysis further help in maintaining the health of your database. In the next section, we will delve into <strong>User Roles and Permissions</strong> to manage database security effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-analyzing-query-performance' title="Analyzing Query Performance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-user-roles-and-permissions' title="User Roles and Permissions">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Errors</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/04-02-custom-errors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/04-02-custom-errors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/04-02-custom-errors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/go/04-02-custom-errors" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/go/04-02-custom-errors" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-error-handling-basics' title="Error Handling Basics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Custom Errors</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-panic-and-recover' title="Panic and Recover">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In Go, error handling is a critical aspect of writing robust and maintainable code. While the standard <code>error</code> type is sufficient for many cases, there are situations where you need more detailed information about an error. This is where custom errors come into play.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Standard Error Interface</strong>: The <code>error</code> interface in Go is defined as:</p>
+<pre><code class="language-go">type error interface {
+    Error() string
+}
+</code></pre>
+<p>Any type that implements this interface can be used as an error.</p>
+</li>
+<li>
+<p><strong>Creating Custom Errors</strong>: You can create custom error types by defining a struct and implementing the <code>Error</code> method.</p>
+</li>
+<li>
+<p><strong>Error Wrapping</strong>: Go 1.13 introduced error wrapping, which allows you to wrap an error with additional context.</p>
+</li>
+</ol>
+</div><h1>Creating Custom Errors</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li><strong>Define a Struct</strong>: Create a struct to hold additional error information.</li>
+<li><strong>Implement the <code>Error</code> Method</strong>: Implement the <code>Error</code> method for your struct to satisfy the <code>error</code> interface.</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Let's create a custom error type for a file processing application.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIGEgY3VzdG9tIGVycm9yIHR5cGUKdHlwZSBGaWxlRXJyb3Igc3RydWN0IHsKICAgIEZpbGVOYW1lIHN0cmluZwogICAgRXJyICAgICAgZXJyb3IKfQoKLy8gSW1wbGVtZW50IHRoZSBFcnJvciBtZXRob2QKZnVuYyAoZSAqRmlsZUVycm9yKSBFcnJvcigpIHN0cmluZyB7CiAgICByZXR1cm4gZm10LlNwcmludGYoImVycm9yIHByb2Nlc3NpbmcgZmlsZSAlczogJXYiLCBlLkZpbGVOYW1lLCBlLkVycikKfQoKLy8gQSBmdW5jdGlvbiB0aGF0IHJldHVybnMgYSBjdXN0b20gZXJyb3IKZnVuYyBwcm9jZXNzRmlsZShmaWxlTmFtZSBzdHJpbmcpIGVycm9yIHsKICAgIC8vIFNpbXVsYXRlIGFuIGVycm9yCiAgICBlcnIgOj0gZm10LkVycm9yZigiZmlsZSBub3QgZm91bmQiKQogICAgcmV0dXJuICZGaWxlRXJyb3J7CiAgICAgICAgRmlsZU5hbWU6IGZpbGVOYW1lLAogICAgICAgIEVycjogICAgICBlcnIsCiAgICB9Cn0KCmZ1bmMgbWFpbigpIHsKICAgIGVyciA6PSBwcm9jZXNzRmlsZSgiZXhhbXBsZS50eHQiKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgZm10LlByaW50bG4oZXJyKQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type FileError struct {
+    FileName string
+    Err      error
+}
+
+// Implement the Error method
+func (e *FileError) Error() string {
+    return fmt.Sprintf(&quot;error processing file %s: %v&quot;, e.FileName, e.Err)
+}
+
+// A function that returns a custom error
+func processFile(fileName string) error {
+    // Simulate an error
+    err := fmt.Errorf(&quot;file not found&quot;)
+    return &amp;FileError{
+        FileName: fileName,
+        Err:      err,
+    }
+}
+
+func main() {
+    err := processFile(&quot;example.txt&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Struct Definition</strong>: <code>FileError</code> struct holds the file name and the underlying error.</li>
+<li><strong>Error Method</strong>: The <code>Error</code> method formats the error message to include the file name and the underlying error.</li>
+<li><strong>Function Usage</strong>: The <code>processFile</code> function simulates an error and returns a <code>FileError</code>.</li>
+</ul>
+</div><h1>Error Wrapping</h1>
+<div class='content'><p>Go 1.13 introduced the <code>errors</code> package, which provides functions for error wrapping and unwrapping.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImVycm9ycyIKICAgICJmbXQiCikKCi8vIERlZmluZSBhIGN1c3RvbSBlcnJvciB0eXBlCnR5cGUgRmlsZUVycm9yIHN0cnVjdCB7CiAgICBGaWxlTmFtZSBzdHJpbmcKICAgIEVyciAgICAgIGVycm9yCn0KCi8vIEltcGxlbWVudCB0aGUgRXJyb3IgbWV0aG9kCmZ1bmMgKGUgKkZpbGVFcnJvcikgRXJyb3IoKSBzdHJpbmcgewogICAgcmV0dXJuIGZtdC5TcHJpbnRmKCJlcnJvciBwcm9jZXNzaW5nIGZpbGUgJXM6ICV2IiwgZS5GaWxlTmFtZSwgZS5FcnIpCn0KCi8vIEEgZnVuY3Rpb24gdGhhdCByZXR1cm5zIGEgd3JhcHBlZCBlcnJvcgpmdW5jIHByb2Nlc3NGaWxlKGZpbGVOYW1lIHN0cmluZykgZXJyb3IgewogICAgLy8gU2ltdWxhdGUgYW4gZXJyb3IKICAgIGVyciA6PSBmbXQuRXJyb3JmKCJmaWxlIG5vdCBmb3VuZCIpCiAgICByZXR1cm4gJkZpbGVFcnJvcnsKICAgICAgICBGaWxlTmFtZTogZmlsZU5hbWUsCiAgICAgICAgRXJyOiAgICAgIGZtdC5FcnJvcmYoInByb2Nlc3NGaWxlOiAldyIsIGVyciksCiAgICB9Cn0KCmZ1bmMgbWFpbigpIHsKICAgIGVyciA6PSBwcm9jZXNzRmlsZSgiZXhhbXBsZS50eHQiKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgZm10LlByaW50bG4oZXJyKQogICAgICAgIC8vIFVud3JhcCB0aGUgZXJyb3IKICAgICAgICBpZiBlcnJvcnMuSXMoZXJyLCBmbXQuRXJyb3JmKCJmaWxlIG5vdCBmb3VuZCIpKSB7CiAgICAgICAgICAgIGZtdC5QcmludGxuKCJUaGUgZmlsZSB3YXMgbm90IGZvdW5kLiIpCiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;errors&quot;
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type FileError struct {
+    FileName string
+    Err      error
+}
+
+// Implement the Error method
+func (e *FileError) Error() string {
+    return fmt.Sprintf(&quot;error processing file %s: %v&quot;, e.FileName, e.Err)
+}
+
+// A function that returns a wrapped error
+func processFile(fileName string) error {
+    // Simulate an error
+    err := fmt.Errorf(&quot;file not found&quot;)
+    return &amp;FileError{
+        FileName: fileName,
+        Err:      fmt.Errorf(&quot;processFile: %w&quot;, err),
+    }
+}
+
+func main() {
+    err := processFile(&quot;example.txt&quot;)
+    if err != nil {
+        fmt.Println(err)
+        // Unwrap the error
+        if errors.Is(err, fmt.Errorf(&quot;file not found&quot;)) {
+            fmt.Println(&quot;The file was not found.&quot;)
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Error Wrapping</strong>: The <code>fmt.Errorf(&quot;processFile: %w&quot;, err)</code> wraps the original error with additional context.</li>
+<li><strong>Error Unwrapping</strong>: The <code>errors.Is</code> function checks if the error matches the original error.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Custom Error</h2>
+<div class='content'><p><strong>Task</strong>: Create a custom error type for a user authentication system. The error should include the username and the reason for the failure.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIGEgY3VzdG9tIGVycm9yIHR5cGUKdHlwZSBBdXRoRXJyb3Igc3RydWN0IHsKICAgIFVzZXJuYW1lIHN0cmluZwogICAgUmVhc29uICAgc3RyaW5nCn0KCi8vIEltcGxlbWVudCB0aGUgRXJyb3IgbWV0aG9kCmZ1bmMgKGUgKkF1dGhFcnJvcikgRXJyb3IoKSBzdHJpbmcgewogICAgcmV0dXJuIGZtdC5TcHJpbnRmKCJhdXRoZW50aWNhdGlvbiBmYWlsZWQgZm9yIHVzZXIgJXM6ICVzIiwgZS5Vc2VybmFtZSwgZS5SZWFzb24pCn0KCi8vIEEgZnVuY3Rpb24gdGhhdCByZXR1cm5zIGEgY3VzdG9tIGVycm9yCmZ1bmMgYXV0aGVudGljYXRlKHVzZXJuYW1lLCBwYXNzd29yZCBzdHJpbmcpIGVycm9yIHsKICAgIC8vIFNpbXVsYXRlIGFuIGF1dGhlbnRpY2F0aW9uIGZhaWx1cmUKICAgIHJldHVybiAmQXV0aEVycm9yewogICAgICAgIFVzZXJuYW1lOiB1c2VybmFtZSwKICAgICAgICBSZWFzb246ICAgImludmFsaWQgcGFzc3dvcmQiLAogICAgfQp9CgpmdW5jIG1haW4oKSB7CiAgICBlcnIgOj0gYXV0aGVudGljYXRlKCJqb2huX2RvZSIsICJ3cm9uZ19wYXNzd29yZCIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBmbXQuUHJpbnRsbihlcnIpCiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type AuthError struct {
+    Username string
+    Reason   string
+}
+
+// Implement the Error method
+func (e *AuthError) Error() string {
+    return fmt.Sprintf(&quot;authentication failed for user %s: %s&quot;, e.Username, e.Reason)
+}
+
+// A function that returns a custom error
+func authenticate(username, password string) error {
+    // Simulate an authentication failure
+    return &amp;AuthError{
+        Username: username,
+        Reason:   &quot;invalid password&quot;,
+    }
+}
+
+func main() {
+    err := authenticate(&quot;john_doe&quot;, &quot;wrong_password&quot;)
+    if err != nil {
+        fmt.Println(err)
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Wrap and Unwrap Errors</h2>
+<div class='content'><p><strong>Task</strong>: Modify the previous exercise to wrap the error with additional context and then unwrap it to check the original error.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImVycm9ycyIKICAgICJmbXQiCikKCi8vIERlZmluZSBhIGN1c3RvbSBlcnJvciB0eXBlCnR5cGUgQXV0aEVycm9yIHN0cnVjdCB7CiAgICBVc2VybmFtZSBzdHJpbmcKICAgIFJlYXNvbiAgIHN0cmluZwp9CgovLyBJbXBsZW1lbnQgdGhlIEVycm9yIG1ldGhvZApmdW5jIChlICpBdXRoRXJyb3IpIEVycm9yKCkgc3RyaW5nIHsKICAgIHJldHVybiBmbXQuU3ByaW50ZigiYXV0aGVudGljYXRpb24gZmFpbGVkIGZvciB1c2VyICVzOiAlcyIsIGUuVXNlcm5hbWUsIGUuUmVhc29uKQp9CgovLyBBIGZ1bmN0aW9uIHRoYXQgcmV0dXJucyBhIHdyYXBwZWQgZXJyb3IKZnVuYyBhdXRoZW50aWNhdGUodXNlcm5hbWUsIHBhc3N3b3JkIHN0cmluZykgZXJyb3IgewogICAgLy8gU2ltdWxhdGUgYW4gYXV0aGVudGljYXRpb24gZmFpbHVyZQogICAgZXJyIDo9ICZBdXRoRXJyb3J7CiAgICAgICAgVXNlcm5hbWU6IHVzZXJuYW1lLAogICAgICAgIFJlYXNvbjogICAiaW52YWxpZCBwYXNzd29yZCIsCiAgICB9CiAgICByZXR1cm4gZm10LkVycm9yZigiYXV0aGVudGljYXRlOiAldyIsIGVycikKfQoKZnVuYyBtYWluKCkgewogICAgZXJyIDo9IGF1dGhlbnRpY2F0ZSgiam9obl9kb2UiLCAid3JvbmdfcGFzc3dvcmQiKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgZm10LlByaW50bG4oZXJyKQogICAgICAgIC8vIFVud3JhcCB0aGUgZXJyb3IKICAgICAgICB2YXIgYXV0aEVyciAqQXV0aEVycm9yCiAgICAgICAgaWYgZXJyb3JzLkFzKGVyciwgJmF1dGhFcnIpIHsKICAgICAgICAgICAgZm10LlByaW50ZigiT3JpZ2luYWwgZXJyb3I6ICV2XG4iLCBhdXRoRXJyKQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;errors&quot;
+    &quot;fmt&quot;
+)
+
+// Define a custom error type
+type AuthError struct {
+    Username string
+    Reason   string
+}
+
+// Implement the Error method
+func (e *AuthError) Error() string {
+    return fmt.Sprintf(&quot;authentication failed for user %s: %s&quot;, e.Username, e.Reason)
+}
+
+// A function that returns a wrapped error
+func authenticate(username, password string) error {
+    // Simulate an authentication failure
+    err := &amp;AuthError{
+        Username: username,
+        Reason:   &quot;invalid password&quot;,
+    }
+    return fmt.Errorf(&quot;authenticate: %w&quot;, err)
+}
+
+func main() {
+    err := authenticate(&quot;john_doe&quot;, &quot;wrong_password&quot;)
+    if err != nil {
+        fmt.Println(err)
+        // Unwrap the error
+        var authErr *AuthError
+        if errors.As(err, &amp;authErr) {
+            fmt.Printf(&quot;Original error: %v\n&quot;, authErr)
+        }
+    }
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><ul>
+<li><strong>Custom Errors</strong>: Create custom error types by defining a struct and implementing the <code>Error</code> method.</li>
+<li><strong>Error Wrapping</strong>: Use the <code>fmt.Errorf</code> function with <code>%w</code> to wrap errors with additional context.</li>
+<li><strong>Error Unwrapping</strong>: Use the <code>errors.Is</code> and <code>errors.As</code> functions to check and unwrap errors.</li>
+</ul>
+<p>By mastering custom errors, you can provide more informative error messages and handle errors more effectively in your Go programs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-error-handling-basics' title="Error Handling Basics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-panic-and-recover' title="Panic and Recover">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

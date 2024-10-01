@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploying to AWS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/08-03-deploying-aws" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/08-03-deploying-aws" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/08-03-deploying-aws" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/08-03-deploying-aws" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/08-03-deploying-aws" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-deploying-heroku' title="Deploying to Heroku">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deploying to AWS</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-monitoring-performance' title="Monitoring and Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Deploying a Flask application to Amazon Web Services (AWS) can be a powerful way to ensure your application is scalable, reliable, and secure. In this section, we will cover the steps required to deploy a Flask application to AWS using Elastic Beanstalk, a service that makes it easy to deploy and manage applications in the AWS cloud.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before we begin, make sure you have the following:</p>
+<ul>
+<li>An AWS account.</li>
+<li>AWS CLI installed and configured on your local machine.</li>
+<li>A Flask application ready for deployment.</li>
+</ul>
+</div><h1>Step 1: Setting Up AWS Elastic Beanstalk</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Install the Elastic Beanstalk CLI</strong>:</p>
+<pre><code class="language-bash">pip install awsebcli
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize Elastic Beanstalk in your project directory</strong>:
+Navigate to your Flask project directory and run:</p>
+<pre><code class="language-bash">eb init
+</code></pre>
+<p>Follow the prompts to configure your application. You will need to:</p>
+<ul>
+<li>Select a region.</li>
+<li>Select an application name.</li>
+<li>Choose a platform (select &quot;Python&quot;).</li>
+</ul>
+</li>
+<li>
+<p><strong>Create an Elastic Beanstalk environment</strong>:</p>
+<pre><code class="language-bash">eb create flask-env
+</code></pre>
+<p>This command will create an environment named <code>flask-env</code> and deploy your application to it.</p>
+</li>
+</ol>
+</div><h1>Step 2: Configuring Your Flask Application for AWS</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Create a <code>requirements.txt</code> file</strong>:
+Ensure all your dependencies are listed in a <code>requirements.txt</code> file. You can generate this file using:</p>
+<pre><code class="language-bash">pip freeze &gt; requirements.txt
+</code></pre>
+</li>
+<li>
+<p><strong>Create a <code>Procfile</code></strong>:
+Create a file named <code>Procfile</code> in the root of your project directory with the following content:</p>
+<pre><code class="language-plaintext">web: gunicorn app:app
+</code></pre>
+<p>Replace <code>app:app</code> with the appropriate module and application name if your Flask app is structured differently.</p>
+</li>
+<li>
+<p><strong>Update your Flask configuration</strong>:
+Ensure your Flask application is configured to run in a production environment. For example, you might have a <code>config.py</code> file with:</p>
+<pre><code class="language-python">import os
+
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a_hard_to_guess_string'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///app.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+</code></pre>
+</li>
+</ol>
+</div><h1>Step 3: Deploying Your Application</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy your application</strong>:</p>
+<pre><code class="language-bash">eb deploy
+</code></pre>
+<p>This command will package your application, upload it to AWS, and deploy it to your Elastic Beanstalk environment.</p>
+</li>
+<li>
+<p><strong>Open your application in a web browser</strong>:</p>
+<pre><code class="language-bash">eb open
+</code></pre>
+<p>This command will open your deployed application in your default web browser.</p>
+</li>
+</ol>
+</div><h1>Step 4: Managing Your Application</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Monitor your application</strong>:
+You can monitor your application's health and logs using the Elastic Beanstalk console or the AWS CLI:</p>
+<pre><code class="language-bash">eb status
+eb logs
+</code></pre>
+</li>
+<li>
+<p><strong>Update your application</strong>:
+When you make changes to your application, you can deploy the updates using:</p>
+<pre><code class="language-bash">eb deploy
+</code></pre>
+</li>
+<li>
+<p><strong>Terminate your environment</strong>:
+If you no longer need your Elastic Beanstalk environment, you can terminate it to avoid incurring charges:</p>
+<pre><code class="language-bash">eb terminate flask-env
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Deploy a Sample Flask Application to AWS</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a simple Flask application</strong>:</p>
+<pre><code class="language-python">from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return &quot;Hello, AWS!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li>
+<p><strong>Prepare the application for deployment</strong>:</p>
+<ul>
+<li>Create a <code>requirements.txt</code> file:
+<pre><code class="language-plaintext">Flask==2.0.1
+gunicorn==20.1.0
+</code></pre>
+</li>
+<li>Create a <code>Procfile</code>:
+<pre><code class="language-plaintext">web: gunicorn app:app
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Initialize and deploy using Elastic Beanstalk</strong>:</p>
+<pre><code class="language-bash">eb init
+eb create flask-env
+eb deploy
+eb open
+</code></pre>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>Follow the steps outlined in the exercise to deploy the sample Flask application. Ensure you have the AWS CLI and Elastic Beanstalk CLI installed and configured.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to deploy a Flask application to AWS using Elastic Beanstalk. We walked through setting up Elastic Beanstalk, configuring your Flask application, deploying it, and managing the deployment. By following these steps, you can leverage AWS's powerful infrastructure to host your Flask applications in a scalable and reliable manner.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-deploying-heroku' title="Deploying to Heroku">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-monitoring-performance' title="Monitoring and Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

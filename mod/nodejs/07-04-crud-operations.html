@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/07-04-crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/07-04-crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/07-04-crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/07-04-crud-operations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/07-04-crud-operations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-sql-sequelize' title="Using SQL Databases with Sequelize">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">CRUD Operations</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-introduction-authentication' title="Introduction to Authentication">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>CRUD stands for Create, Read, Update, and Delete. These are the four basic operations that can be performed on data in a database. In this section, we will explore how to implement CRUD operations using Node.js with both MongoDB (using Mongoose) and SQL databases (using Sequelize).</p>
+</div><h1>1. CRUD Operations with MongoDB and Mongoose</h1>
+<div class='content'></div><h2>Setting Up Mongoose</h2>
+<div class='content'><p>First, ensure you have Mongoose installed in your Node.js project:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgbW9uZ29vc2U="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install mongoose</pre></div><div class='content'></div><h2>Connecting to MongoDB</h2>
+<div class='content'><p>Create a file named <code>db.js</code> to handle the database connection:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKbW9uZ29vc2UuY29ubmVjdCgnbW9uZ29kYjovL2xvY2FsaG9zdDoyNzAxNy9teWRhdGFiYXNlJywgewogIHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwKICB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUsCn0pOwoKY29uc3QgZGIgPSBtb25nb29zZS5jb25uZWN0aW9uOwpkYi5vbignZXJyb3InLCBjb25zb2xlLmVycm9yLmJpbmQoY29uc29sZSwgJ2Nvbm5lY3Rpb24gZXJyb3I6JykpOwpkYi5vbmNlKCdvcGVuJywgKCkgPT4gewogIGNvbnNvbGUubG9nKCdDb25uZWN0ZWQgdG8gTW9uZ29EQicpOwp9KTsKCm1vZHVsZS5leHBvcnRzID0gZGI7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/mydatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', () =&gt; {
+  console.log('Connected to MongoDB');
+});
+
+module.exports = db;</pre></div><div class='content'></div><h2>Defining a Schema and Model</h2>
+<div class='content'><p>Create a file named <code>models/User.js</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKY29uc3QgdXNlclNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogIG5hbWU6IFN0cmluZywKICBlbWFpbDogU3RyaW5nLAogIGFnZTogTnVtYmVyLAp9KTsKCmNvbnN0IFVzZXIgPSBtb25nb29zZS5tb2RlbCgnVXNlcicsIHVzZXJTY2hlbWEpOwoKbW9kdWxlLmV4cG9ydHMgPSBVc2VyOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+const userSchema = new mongoose.Schema({
+  name: String,
+  email: String,
+  age: Number,
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;</pre></div><div class='content'></div><h2>Create Operation</h2>
+<div class='content'><p>To create a new user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIENyZWF0ZSBhIG5ldyB1c2VyCmNvbnN0IGNyZWF0ZVVzZXIgPSBhc3luYyAoKSA9PiB7CiAgY29uc3QgdXNlciA9IG5ldyBVc2VyKHsKICAgIG5hbWU6ICdKb2huIERvZScsCiAgICBlbWFpbDogJ2pvaG4uZG9lQGV4YW1wbGUuY29tJywKICAgIGFnZTogMzAsCiAgfSk7CgogIHRyeSB7CiAgICBjb25zdCBzYXZlZFVzZXIgPSBhd2FpdCB1c2VyLnNhdmUoKTsKICAgIGNvbnNvbGUubG9nKCdVc2VyIGNyZWF0ZWQ6Jywgc2F2ZWRVc2VyKTsKICB9IGNhdGNoIChlcnJvcikgewogICAgY29uc29sZS5lcnJvcignRXJyb3IgY3JlYXRpbmcgdXNlcjonLCBlcnJvcik7CiAgfQp9OwoKY3JlYXRlVXNlcigpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Create a new user
+const createUser = async () =&gt; {
+  const user = new User({
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    age: 30,
+  });
+
+  try {
+    const savedUser = await user.save();
+    console.log('User created:', savedUser);
+  } catch (error) {
+    console.error('Error creating user:', error);
+  }
+};
+
+createUser();</pre></div><div class='content'></div><h2>Read Operation</h2>
+<div class='content'><p>To read users from the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIFJlYWQgYWxsIHVzZXJzCmNvbnN0IHJlYWRVc2VycyA9IGFzeW5jICgpID0+IHsKICB0cnkgewogICAgY29uc3QgdXNlcnMgPSBhd2FpdCBVc2VyLmZpbmQoKTsKICAgIGNvbnNvbGUubG9nKCdVc2VyczonLCB1c2Vycyk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHJlYWRpbmcgdXNlcnM6JywgZXJyb3IpOwogIH0KfTsKCnJlYWRVc2VycygpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Read all users
+const readUsers = async () =&gt; {
+  try {
+    const users = await User.find();
+    console.log('Users:', users);
+  } catch (error) {
+    console.error('Error reading users:', error);
+  }
+};
+
+readUsers();</pre></div><div class='content'></div><h2>Update Operation</h2>
+<div class='content'><p>To update a user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIFVwZGF0ZSBhIHVzZXIgYnkgSUQKY29uc3QgdXBkYXRlVXNlciA9IGFzeW5jICh1c2VySWQpID0+IHsKICB0cnkgewogICAgY29uc3QgdXBkYXRlZFVzZXIgPSBhd2FpdCBVc2VyLmZpbmRCeUlkQW5kVXBkYXRlKAogICAgICB1c2VySWQsCiAgICAgIHsgYWdlOiAzNSB9LAogICAgICB7IG5ldzogdHJ1ZSB9CiAgICApOwogICAgY29uc29sZS5sb2coJ1VzZXIgdXBkYXRlZDonLCB1cGRhdGVkVXNlcik7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHVwZGF0aW5nIHVzZXI6JywgZXJyb3IpOwogIH0KfTsKCnVwZGF0ZVVzZXIoJzYwYzcyYjJmOWIxZDRjMWY4YzhiNDU2NycpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Update a user by ID
+const updateUser = async (userId) =&gt; {
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { age: 35 },
+      { new: true }
+    );
+    console.log('User updated:', updatedUser);
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+};
+
+updateUser('60c72b2f9b1d4c1f8c8b4567');</pre></div><div class='content'></div><h2>Delete Operation</h2>
+<div class='content'><p>To delete a user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIERlbGV0ZSBhIHVzZXIgYnkgSUQKY29uc3QgZGVsZXRlVXNlciA9IGFzeW5jICh1c2VySWQpID0+IHsKICB0cnkgewogICAgYXdhaXQgVXNlci5maW5kQnlJZEFuZERlbGV0ZSh1c2VySWQpOwogICAgY29uc29sZS5sb2coJ1VzZXIgZGVsZXRlZCcpOwogIH0gY2F0Y2ggKGVycm9yKSB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBkZWxldGluZyB1c2VyOicsIGVycm9yKTsKICB9Cn07CgpkZWxldGVVc2VyKCc2MGM3MmIyZjliMWQ0YzFmOGM4YjQ1NjcnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Delete a user by ID
+const deleteUser = async (userId) =&gt; {
+  try {
+    await User.findByIdAndDelete(userId);
+    console.log('User deleted');
+  } catch (error) {
+    console.error('Error deleting user:', error);
+  }
+};
+
+deleteUser('60c72b2f9b1d4c1f8c8b4567');</pre></div><div class='content'></div><h1>2. CRUD Operations with SQL Databases and Sequelize</h1>
+<div class='content'></div><h2>Setting Up Sequelize</h2>
+<div class='content'><p>First, ensure you have Sequelize and a SQL database driver (e.g., <code>pg</code> for PostgreSQL) installed:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgc2VxdWVsaXplIHBnIHBnLWhzdG9yZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install sequelize pg pg-hstore</pre></div><div class='content'></div><h2>Connecting to the Database</h2>
+<div class='content'><p>Create a file named <code>db.js</code> to handle the database connection:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBTZXF1ZWxpemUgfSA9IHJlcXVpcmUoJ3NlcXVlbGl6ZScpOwoKY29uc3Qgc2VxdWVsaXplID0gbmV3IFNlcXVlbGl6ZSgnZGF0YWJhc2UnLCAndXNlcm5hbWUnLCAncGFzc3dvcmQnLCB7CiAgaG9zdDogJ2xvY2FsaG9zdCcsCiAgZGlhbGVjdDogJ3Bvc3RncmVzJywKfSk7Cgptb2R1bGUuZXhwb3J0cyA9IHNlcXVlbGl6ZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'postgres',
+});
+
+module.exports = sequelize;</pre></div><div class='content'></div><h2>Defining a Model</h2>
+<div class='content'><p>Create a file named <code>models/User.js</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBEYXRhVHlwZXMgfSA9IHJlcXVpcmUoJ3NlcXVlbGl6ZScpOwpjb25zdCBzZXF1ZWxpemUgPSByZXF1aXJlKCcuLi9kYicpOwoKY29uc3QgVXNlciA9IHNlcXVlbGl6ZS5kZWZpbmUoJ1VzZXInLCB7CiAgbmFtZTogewogICAgdHlwZTogRGF0YVR5cGVzLlNUUklORywKICAgIGFsbG93TnVsbDogZmFsc2UsCiAgfSwKICBlbWFpbDogewogICAgdHlwZTogRGF0YVR5cGVzLlNUUklORywKICAgIGFsbG93TnVsbDogZmFsc2UsCiAgICB1bmlxdWU6IHRydWUsCiAgfSwKICBhZ2U6IHsKICAgIHR5cGU6IERhdGFUeXBlcy5JTlRFR0VSLAogIH0sCn0pOwoKbW9kdWxlLmV4cG9ydHMgPSBVc2VyOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { DataTypes } = require('sequelize');
+const sequelize = require('../db');
+
+const User = sequelize.define('User', {
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  age: {
+    type: DataTypes.INTEGER,
+  },
+});
+
+module.exports = User;</pre></div><div class='content'></div><h2>Create Operation</h2>
+<div class='content'><p>To create a new user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIENyZWF0ZSBhIG5ldyB1c2VyCmNvbnN0IGNyZWF0ZVVzZXIgPSBhc3luYyAoKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBVc2VyLmNyZWF0ZSh7CiAgICAgIG5hbWU6ICdKYW5lIERvZScsCiAgICAgIGVtYWlsOiAnamFuZS5kb2VAZXhhbXBsZS5jb20nLAogICAgICBhZ2U6IDI4LAogICAgfSk7CiAgICBjb25zb2xlLmxvZygnVXNlciBjcmVhdGVkOicsIHVzZXIpOwogIH0gY2F0Y2ggKGVycm9yKSB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBjcmVhdGluZyB1c2VyOicsIGVycm9yKTsKICB9Cn07CgpjcmVhdGVVc2VyKCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Create a new user
+const createUser = async () =&gt; {
+  try {
+    const user = await User.create({
+      name: 'Jane Doe',
+      email: 'jane.doe@example.com',
+      age: 28,
+    });
+    console.log('User created:', user);
+  } catch (error) {
+    console.error('Error creating user:', error);
+  }
+};
+
+createUser();</pre></div><div class='content'></div><h2>Read Operation</h2>
+<div class='content'><p>To read users from the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIFJlYWQgYWxsIHVzZXJzCmNvbnN0IHJlYWRVc2VycyA9IGFzeW5jICgpID0+IHsKICB0cnkgewogICAgY29uc3QgdXNlcnMgPSBhd2FpdCBVc2VyLmZpbmRBbGwoKTsKICAgIGNvbnNvbGUubG9nKCdVc2VyczonLCB1c2Vycyk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHJlYWRpbmcgdXNlcnM6JywgZXJyb3IpOwogIH0KfTsKCnJlYWRVc2VycygpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Read all users
+const readUsers = async () =&gt; {
+  try {
+    const users = await User.findAll();
+    console.log('Users:', users);
+  } catch (error) {
+    console.error('Error reading users:', error);
+  }
+};
+
+readUsers();</pre></div><div class='content'></div><h2>Update Operation</h2>
+<div class='content'><p>To update a user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIFVwZGF0ZSBhIHVzZXIgYnkgSUQKY29uc3QgdXBkYXRlVXNlciA9IGFzeW5jICh1c2VySWQpID0+IHsKICB0cnkgewogICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuZmluZEJ5UGsodXNlcklkKTsKICAgIGlmICh1c2VyKSB7CiAgICAgIHVzZXIuYWdlID0gMzI7CiAgICAgIGF3YWl0IHVzZXIuc2F2ZSgpOwogICAgICBjb25zb2xlLmxvZygnVXNlciB1cGRhdGVkOicsIHVzZXIpOwogICAgfSBlbHNlIHsKICAgICAgY29uc29sZS5sb2coJ1VzZXIgbm90IGZvdW5kJyk7CiAgICB9CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHVwZGF0aW5nIHVzZXI6JywgZXJyb3IpOwogIH0KfTsKCnVwZGF0ZVVzZXIoMSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Update a user by ID
+const updateUser = async (userId) =&gt; {
+  try {
+    const user = await User.findByPk(userId);
+    if (user) {
+      user.age = 32;
+      await user.save();
+      console.log('User updated:', user);
+    } else {
+      console.log('User not found');
+    }
+  } catch (error) {
+    console.error('Error updating user:', error);
+  }
+};
+
+updateUser(1);</pre></div><div class='content'></div><h2>Delete Operation</h2>
+<div class='content'><p>To delete a user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IHJlcXVpcmUoJy4vbW9kZWxzL1VzZXInKTsKCi8vIERlbGV0ZSBhIHVzZXIgYnkgSUQKY29uc3QgZGVsZXRlVXNlciA9IGFzeW5jICh1c2VySWQpID0+IHsKICB0cnkgewogICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuZmluZEJ5UGsodXNlcklkKTsKICAgIGlmICh1c2VyKSB7CiAgICAgIGF3YWl0IHVzZXIuZGVzdHJveSgpOwogICAgICBjb25zb2xlLmxvZygnVXNlciBkZWxldGVkJyk7CiAgICB9IGVsc2UgewogICAgICBjb25zb2xlLmxvZygnVXNlciBub3QgZm91bmQnKTsKICAgIH0KICB9IGNhdGNoIChlcnJvcikgewogICAgY29uc29sZS5lcnJvcignRXJyb3IgZGVsZXRpbmcgdXNlcjonLCBlcnJvcik7CiAgfQp9OwoKZGVsZXRlVXNlcigxKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = require('./models/User');
+
+// Delete a user by ID
+const deleteUser = async (userId) =&gt; {
+  try {
+    const user = await User.findByPk(userId);
+    if (user) {
+      await user.destroy();
+      console.log('User deleted');
+    } else {
+      console.log('User not found');
+    }
+  } catch (error) {
+    console.error('Error deleting user:', error);
+  }
+};
+
+deleteUser(1);</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered how to perform CRUD operations using Node.js with both MongoDB (using Mongoose) and SQL databases (using Sequelize). We learned how to:</p>
+<ul>
+<li>Set up and connect to MongoDB and SQL databases.</li>
+<li>Define schemas and models.</li>
+<li>Implement Create, Read, Update, and Delete operations.</li>
+</ul>
+<p>These fundamental operations are essential for any application that interacts with a database. In the next module, we will delve into authentication and authorization, which are crucial for securing your application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-sql-sequelize' title="Using SQL Databases with Sequelize">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-introduction-authentication' title="Introduction to Authentication">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

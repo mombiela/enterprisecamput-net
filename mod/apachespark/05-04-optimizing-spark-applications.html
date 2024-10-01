@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizing Spark Applications</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/05-04-optimizing-spark-applications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/05-04-optimizing-spark-applications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/05-04-optimizing-spark-applications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/05-04-optimizing-spark-applications" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/05-04-optimizing-spark-applications" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-memory-management' title="Memory Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizing Spark Applications</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-running-spark-aws' title="Running Spark on AWS">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Optimizing Spark applications is crucial for improving performance, reducing costs, and ensuring efficient resource utilization. This section will cover various techniques and best practices to optimize your Spark applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Understanding Spark Jobs and Stages</strong></li>
+<li><strong>Optimizing Transformations</strong></li>
+<li><strong>Efficient Data Serialization</strong></li>
+<li><strong>Resource Allocation and Configuration</strong></li>
+<li><strong>Tuning Spark Parameters</strong></li>
+<li><strong>Monitoring and Debugging</strong></li>
+</ol>
+</div><h1>1. Understanding Spark Jobs and Stages</h1>
+<div class='content'></div><h2>Spark Jobs and Stages</h2>
+<div class='content'><ul>
+<li><strong>Job</strong>: A job is triggered by an action (e.g., <code>count()</code>, <code>collect()</code>) and consists of multiple stages.</li>
+<li><strong>Stage</strong>: A stage is a set of tasks that can be executed in parallel. Stages are divided by shuffle operations.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRhdGEgPSBzYy50ZXh0RmlsZSgiaGRmczovL3BhdGgvdG8vZGF0YSIpCnZhbCB3b3JkcyA9IGRhdGEuZmxhdE1hcChsaW5lID0+IGxpbmUuc3BsaXQoIiAiKSkKdmFsIHdvcmRDb3VudHMgPSB3b3Jkcy5tYXAod29yZCA9PiAod29yZCwgMSkpLnJlZHVjZUJ5S2V5KF8gKyBfKQp3b3JkQ291bnRzLmNvbGxlY3QoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val data = sc.textFile(&quot;hdfs://path/to/data&quot;)
+val words = data.flatMap(line =&gt; line.split(&quot; &quot;))
+val wordCounts = words.map(word =&gt; (word, 1)).reduceByKey(_ + _)
+wordCounts.collect()</pre></div><div class='content'><ul>
+<li><strong>Job</strong>: The <code>collect()</code> action triggers a job.</li>
+<li><strong>Stages</strong>: The job is divided into stages based on transformations and shuffles.</li>
+</ul>
+</div><h1>2. Optimizing Transformations</h1>
+<div class='content'></div><h2>Narrow vs. Wide Transformations</h2>
+<div class='content'><ul>
+<li><strong>Narrow Transformations</strong>: Operations like <code>map</code>, <code>filter</code> that do not require data shuffling.</li>
+<li><strong>Wide Transformations</strong>: Operations like <code>groupByKey</code>, <code>reduceByKey</code> that require data shuffling.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTmFycm93IHRyYW5zZm9ybWF0aW9uCnZhbCBmaWx0ZXJlZERhdGEgPSBkYXRhLmZpbHRlcihsaW5lID0+IGxpbmUuY29udGFpbnMoIlNwYXJrIikpCgovLyBXaWRlIHRyYW5zZm9ybWF0aW9uCnZhbCB3b3JkQ291bnRzID0gd29yZHMucmVkdWNlQnlLZXkoXyArIF8p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Narrow transformation
+val filteredData = data.filter(line =&gt; line.contains(&quot;Spark&quot;))
+
+// Wide transformation
+val wordCounts = words.reduceByKey(_ + _)</pre></div><div class='content'></div><h2>Best Practices</h2>
+<div class='content'><ul>
+<li>Minimize the use of wide transformations.</li>
+<li>Use <code>reduceByKey</code> instead of <code>groupByKey</code> for better performance.</li>
+</ul>
+</div><h1>3. Efficient Data Serialization</h1>
+<div class='content'></div><h2>Serialization Formats</h2>
+<div class='content'><ul>
+<li><strong>Kryo Serialization</strong>: Faster and more compact than Java serialization.</li>
+<li><strong>Java Serialization</strong>: Default but slower and less efficient.</li>
+</ul>
+</div><h2>Enabling Kryo Serialization</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKY29uZi5zZXQoInNwYXJrLnNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5zcGFyay5zZXJpYWxpemVyLktyeW9TZXJpYWxpemVyIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val conf = new SparkConf()
+conf.set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)</pre></div><div class='content'></div><h2>Registering Classes with Kryo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uZi5yZWdpc3RlcktyeW9DbGFzc2VzKEFycmF5KGNsYXNzT2ZbWW91ckNsYXNzXSkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>conf.registerKryoClasses(Array(classOf[YourClass]))</pre></div><div class='content'></div><h1>4. Resource Allocation and Configuration</h1>
+<div class='content'></div><h2>Executors and Cores</h2>
+<div class='content'><ul>
+<li><strong>Executors</strong>: JVM processes responsible for running tasks.</li>
+<li><strong>Cores</strong>: Number of CPU cores allocated to each executor.</li>
+</ul>
+</div><h2>Example Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKY29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLmluc3RhbmNlcyIsICI0IikKY29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLmNvcmVzIiwgIjIiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val conf = new SparkConf()
+conf.set(&quot;spark.executor.instances&quot;, &quot;4&quot;)
+conf.set(&quot;spark.executor.cores&quot;, &quot;2&quot;)</pre></div><div class='content'></div><h2>Memory Configuration</h2>
+<div class='content'><ul>
+<li><strong>Executor Memory</strong>: Memory allocated to each executor.</li>
+<li><strong>Driver Memory</strong>: Memory allocated to the driver.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLm1lbW9yeSIsICI0ZyIpCmNvbmYuc2V0KCJzcGFyay5kcml2ZXIubWVtb3J5IiwgIjJnIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>conf.set(&quot;spark.executor.memory&quot;, &quot;4g&quot;)
+conf.set(&quot;spark.driver.memory&quot;, &quot;2g&quot;)</pre></div><div class='content'></div><h1>5. Tuning Spark Parameters</h1>
+<div class='content'></div><h2>Key Parameters</h2>
+<div class='content'><ul>
+<li><strong>spark.sql.shuffle.partitions</strong>: Number of partitions for shuffles.</li>
+<li><strong>spark.default.parallelism</strong>: Default number of partitions in RDDs.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uZi5zZXQoInNwYXJrLnNxbC5zaHVmZmxlLnBhcnRpdGlvbnMiLCAiMjAwIikKY29uZi5zZXQoInNwYXJrLmRlZmF1bHQucGFyYWxsZWxpc20iLCAiMTAwIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>conf.set(&quot;spark.sql.shuffle.partitions&quot;, &quot;200&quot;)
+conf.set(&quot;spark.default.parallelism&quot;, &quot;100&quot;)</pre></div><div class='content'></div><h1>6. Monitoring and Debugging</h1>
+<div class='content'></div><h2>Spark UI</h2>
+<div class='content'><ul>
+<li><strong>Stages Tab</strong>: View details of stages and tasks.</li>
+<li><strong>Storage Tab</strong>: Monitor RDD and DataFrame storage.</li>
+<li><strong>Environment Tab</strong>: Check configuration settings.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'><p>Access the Spark UI at <code>http://&lt;driver-node&gt;:4040</code>.</p>
+</div><h2>Logging</h2>
+<div class='content'><ul>
+<li>Enable detailed logging for debugging.</li>
+<li>Use <code>log4j</code> for custom logging configurations.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGxvZzRqOmNvbmZpZ3VyYXRpb24+CiAgPGFwcGVuZGVyIG5hbWU9ImNvbnNvbGUiIGNsYXNzPSJvcmcuYXBhY2hlLmxvZzRqLkNvbnNvbGVBcHBlbmRlciI+CiAgICA8bGF5b3V0IGNsYXNzPSJvcmcuYXBhY2hlLmxvZzRqLlBhdHRlcm5MYXlvdXQiPgogICAgICA8cGFyYW0gbmFtZT0iQ29udmVyc2lvblBhdHRlcm4iIHZhbHVlPSIlZHt5eS9NTS9kZCBISDptbTpzc30gJXAgJWN7MX06ICVtJW4iLz4KICAgIDwvbGF5b3V0PgogIDwvYXBwZW5kZXI+CiAgPHJvb3Q+CiAgICA8cHJpb3JpdHkgdmFsdWU9IklORk8iLz4KICAgIDxhcHBlbmRlci1yZWYgcmVmPSJjb25zb2xlIi8+CiAgPC9yb290Pgo8L2xvZzRqOmNvbmZpZ3VyYXRpb24+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;log4j:configuration&gt;
+  &lt;appender name=&quot;console&quot; class=&quot;org.apache.log4j.ConsoleAppender&quot;&gt;
+    &lt;layout class=&quot;org.apache.log4j.PatternLayout&quot;&gt;
+      &lt;param name=&quot;ConversionPattern&quot; value=&quot;%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n&quot;/&gt;
+    &lt;/layout&gt;
+  &lt;/appender&gt;
+  &lt;root&gt;
+    &lt;priority value=&quot;INFO&quot;/&gt;
+    &lt;appender-ref ref=&quot;console&quot;/&gt;
+  &lt;/root&gt;
+&lt;/log4j:configuration&gt;</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Optimize a Spark Application</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Optimize the following Spark application for better performance.</li>
+<li><strong>Code</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRhdGEgPSBzYy50ZXh0RmlsZSgiaGRmczovL3BhdGgvdG8vZGF0YSIpCnZhbCB3b3JkcyA9IGRhdGEuZmxhdE1hcChsaW5lID0+IGxpbmUuc3BsaXQoIiAiKSkKdmFsIHdvcmRDb3VudHMgPSB3b3Jkcy5tYXAod29yZCA9PiAod29yZCwgMSkpLnJlZHVjZUJ5S2V5KF8gKyBfKQp3b3JkQ291bnRzLnNhdmVBc1RleHRGaWxlKCJoZGZzOi8vcGF0aC90by9vdXRwdXQiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val data = sc.textFile(&quot;hdfs://path/to/data&quot;)
+val words = data.flatMap(line =&gt; line.split(&quot; &quot;))
+val wordCounts = words.map(word =&gt; (word, 1)).reduceByKey(_ + _)
+wordCounts.saveAsTextFile(&quot;hdfs://path/to/output&quot;)</pre></div><div class='content'></div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Enable Kryo Serialization</strong>.</li>
+<li><strong>Adjust the number of shuffle partitions</strong>.</li>
+<li><strong>Configure executor and driver memory</strong>.</li>
+<li><strong>Minimize wide transformations</strong>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKY29uZi5zZXQoInNwYXJrLnNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5zcGFyay5zZXJpYWxpemVyLktyeW9TZXJpYWxpemVyIikKY29uZi5zZXQoInNwYXJrLnNxbC5zaHVmZmxlLnBhcnRpdGlvbnMiLCAiMjAwIikKY29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLm1lbW9yeSIsICI0ZyIpCmNvbmYuc2V0KCJzcGFyay5kcml2ZXIubWVtb3J5IiwgIjJnIikKCnZhbCBzYyA9IG5ldyBTcGFya0NvbnRleHQoY29uZikKdmFsIGRhdGEgPSBzYy50ZXh0RmlsZSgiaGRmczovL3BhdGgvdG8vZGF0YSIpCnZhbCB3b3JkcyA9IGRhdGEuZmxhdE1hcChsaW5lID0+IGxpbmUuc3BsaXQoIiAiKSkKdmFsIHdvcmRDb3VudHMgPSB3b3Jkcy5tYXAod29yZCA9PiAod29yZCwgMSkpLnJlZHVjZUJ5S2V5KF8gKyBfKQp3b3JkQ291bnRzLnNhdmVBc1RleHRGaWxlKCJoZGZzOi8vcGF0aC90by9vdXRwdXQiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val conf = new SparkConf()
+conf.set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)
+conf.set(&quot;spark.sql.shuffle.partitions&quot;, &quot;200&quot;)
+conf.set(&quot;spark.executor.memory&quot;, &quot;4g&quot;)
+conf.set(&quot;spark.driver.memory&quot;, &quot;2g&quot;)
+
+val sc = new SparkContext(conf)
+val data = sc.textFile(&quot;hdfs://path/to/data&quot;)
+val words = data.flatMap(line =&gt; line.split(&quot; &quot;))
+val wordCounts = words.map(word =&gt; (word, 1)).reduceByKey(_ + _)
+wordCounts.saveAsTextFile(&quot;hdfs://path/to/output&quot;)</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered various techniques to optimize Spark applications, including understanding Spark jobs and stages, optimizing transformations, efficient data serialization, resource allocation, tuning Spark parameters, and monitoring and debugging. By applying these best practices, you can significantly improve the performance and efficiency of your Spark applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-memory-management' title="Memory Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-running-spark-aws' title="Running Spark on AWS">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

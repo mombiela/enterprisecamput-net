@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizing Physics and Collisions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/unity/09-04-optimizing-physics-collisions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/unity/09-04-optimizing-physics-collisions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/unity/09-04-optimizing-physics-collisions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/unity/09-04-optimizing-physics-collisions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/unity/09-04-optimizing-physics-collisions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-reducing-draw-calls' title="Reducing Draw Calls">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizing Physics and Collisions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-building-publishing-game' title="Building and Publishing Your Game">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this module, we will explore various techniques to optimize physics and collision detection in Unity. Efficient physics and collision handling are crucial for maintaining performance, especially in complex or resource-intensive games. By the end of this module, you will understand how to fine-tune your physics settings and implement best practices to ensure smooth gameplay.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Physics Settings Optimization</strong></li>
+<li><strong>Efficient Use of Colliders</strong></li>
+<li><strong>Layer-Based Collision Detection</strong></li>
+<li><strong>Continuous vs. Discrete Collision Detection</strong></li>
+<li><strong>Physics Materials and Friction</strong></li>
+<li><strong>Reducing Physics Calculations</strong></li>
+</ol>
+</div><h1>1. Physics Settings Optimization</h1>
+<div class='content'></div><h2>Time Step Settings</h2>
+<div class='content'><p>Unity's physics engine updates at a fixed interval, known as the fixed timestep. Adjusting this can have a significant impact on performance.</p>
+<ul>
+<li><strong>Fixed Timestep</strong>: The interval at which the physics engine updates. A smaller timestep results in more frequent updates, which can improve accuracy but at the cost of performance.</li>
+<li><strong>Maximum Allowed Timestep</strong>: Limits how much time the physics engine can spend on a single frame. This prevents the game from freezing if the physics calculations take too long.</li>
+</ul>
+<p><strong>Example: Adjusting Time Step Settings</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBTdGFydCgpIHsKICAgIC8vIFNldCB0aGUgZml4ZWQgdGltZXN0ZXAgdG8gMC4wMiBzZWNvbmRzICg1MCB1cGRhdGVzIHBlciBzZWNvbmQpCiAgICBUaW1lLmZpeGVkRGVsdGFUaW1lID0gMC4wMmY7CiAgICAKICAgIC8vIFNldCB0aGUgbWF4aW11bSBhbGxvd2VkIHRpbWVzdGVwIHRvIDAuMSBzZWNvbmRzCiAgICBUaW1lLm1heGltdW1EZWx0YVRpbWUgPSAwLjFmOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Start() {
+    // Set the fixed timestep to 0.02 seconds (50 updates per second)
+    Time.fixedDeltaTime = 0.02f;
+    
+    // Set the maximum allowed timestep to 0.1 seconds
+    Time.maximumDeltaTime = 0.1f;
+}</pre></div><div class='content'></div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Open your Unity project.</li>
+<li>Go to <code>Edit &gt; Project Settings &gt; Time</code>.</li>
+<li>Adjust the <code>Fixed Timestep</code> and <code>Maximum Allowed Timestep</code> values.</li>
+<li>Observe the impact on your game's performance and physics accuracy.</li>
+</ol>
+</div><h1>2. Efficient Use of Colliders</h1>
+<div class='content'></div><h2>Primitive Colliders vs. Mesh Colliders</h2>
+<div class='content'><ul>
+<li><strong>Primitive Colliders</strong>: Simple shapes like boxes, spheres, and capsules. They are computationally cheaper and should be used whenever possible.</li>
+<li><strong>Mesh Colliders</strong>: Conform to the shape of a mesh. They are more accurate but significantly more expensive in terms of performance.</li>
+</ul>
+<p><strong>Example: Using Primitive Colliders</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBTdGFydCgpIHsKICAgIC8vIEFkZCBhIEJveENvbGxpZGVyIHRvIHRoZSBHYW1lT2JqZWN0CiAgICBnYW1lT2JqZWN0LkFkZENvbXBvbmVudDxCb3hDb2xsaWRlcj4oKTsKICAgIAogICAgLy8gQWRkIGEgU3BoZXJlQ29sbGlkZXIgdG8gdGhlIEdhbWVPYmplY3QKICAgIGdhbWVPYmplY3QuQWRkQ29tcG9uZW50PFNwaGVyZUNvbGxpZGVyPigpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Start() {
+    // Add a BoxCollider to the GameObject
+    gameObject.AddComponent&lt;BoxCollider&gt;();
+    
+    // Add a SphereCollider to the GameObject
+    gameObject.AddComponent&lt;SphereCollider&gt;();
+}</pre></div><div class='content'></div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Replace complex Mesh Colliders with combinations of Primitive Colliders.</li>
+<li>Test the performance impact in your game.</li>
+</ol>
+</div><h1>3. Layer-Based Collision Detection</h1>
+<div class='content'></div><h2>Collision Matrix</h2>
+<div class='content'><p>Unity allows you to define which layers can collide with each other using the collision matrix. This can significantly reduce unnecessary collision checks.</p>
+<p><strong>Example: Setting Up Collision Layers</strong></p>
+<ol>
+<li>Go to <code>Edit &gt; Project Settings &gt; Physics</code>.</li>
+<li>In the <code>Layer Collision Matrix</code>, uncheck the boxes for layers that should not interact.</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Create layers for different types of objects (e.g., Player, Enemies, Environment).</li>
+<li>Configure the collision matrix to disable unnecessary collisions.</li>
+</ol>
+</div><h1>4. Continuous vs. Discrete Collision Detection</h1>
+<div class='content'></div><h2>Collision Detection Modes</h2>
+<div class='content'><ul>
+<li><strong>Discrete</strong>: The default mode, suitable for most objects. It checks for collisions at each fixed update.</li>
+<li><strong>Continuous</strong>: More accurate for fast-moving objects, as it checks for collisions between updates.</li>
+</ul>
+<p><strong>Example: Setting Collision Detection Mode</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBTdGFydCgpIHsKICAgIFJpZ2lkYm9keSByYiA9IGdhbWVPYmplY3QuR2V0Q29tcG9uZW50PFJpZ2lkYm9keT4oKTsKICAgIAogICAgLy8gU2V0IHRvIENvbnRpbnVvdXMgY29sbGlzaW9uIGRldGVjdGlvbgogICAgcmIuY29sbGlzaW9uRGV0ZWN0aW9uTW9kZSA9IENvbGxpc2lvbkRldGVjdGlvbk1vZGUuQ29udGludW91czsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Start() {
+    Rigidbody rb = gameObject.GetComponent&lt;Rigidbody&gt;();
+    
+    // Set to Continuous collision detection
+    rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+}</pre></div><div class='content'></div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Identify fast-moving objects in your game.</li>
+<li>Set their collision detection mode to <code>Continuous</code>.</li>
+</ol>
+</div><h1>5. Physics Materials and Friction</h1>
+<div class='content'></div><h2>Physics Materials</h2>
+<div class='content'><p>Physics materials define how objects interact in terms of friction and bounciness.</p>
+<ul>
+<li><strong>Friction</strong>: Controls how much objects resist sliding against each other.</li>
+<li><strong>Bounciness</strong>: Controls how much objects bounce off each other.</li>
+</ul>
+<p><strong>Example: Creating and Applying a Physics Material</strong></p>
+<ol>
+<li>Create a new Physics Material in the Project window (<code>Assets &gt; Create &gt; Physics Material</code>).</li>
+<li>Adjust the <code>Friction</code> and <code>Bounciness</code> properties.</li>
+<li>Apply the material to a Collider.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBTdGFydCgpIHsKICAgIENvbGxpZGVyIGNvbCA9IGdhbWVPYmplY3QuR2V0Q29tcG9uZW50PENvbGxpZGVyPigpOwogICAgCiAgICAvLyBDcmVhdGUgYSBuZXcgUGh5c2ljcyBNYXRlcmlhbAogICAgUGh5c2ljTWF0ZXJpYWwgbWF0ID0gbmV3IFBoeXNpY01hdGVyaWFsKCk7CiAgICBtYXQuZHluYW1pY0ZyaWN0aW9uID0gMC41ZjsKICAgIG1hdC5zdGF0aWNGcmljdGlvbiA9IDAuNWY7CiAgICBtYXQuYm91bmNpbmVzcyA9IDAuM2Y7CiAgICAKICAgIC8vIEFwcGx5IHRoZSBtYXRlcmlhbCB0byB0aGUgQ29sbGlkZXIKICAgIGNvbC5tYXRlcmlhbCA9IG1hdDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Start() {
+    Collider col = gameObject.GetComponent&lt;Collider&gt;();
+    
+    // Create a new Physics Material
+    PhysicMaterial mat = new PhysicMaterial();
+    mat.dynamicFriction = 0.5f;
+    mat.staticFriction = 0.5f;
+    mat.bounciness = 0.3f;
+    
+    // Apply the material to the Collider
+    col.material = mat;
+}</pre></div><div class='content'></div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Create and apply Physics Materials to different objects.</li>
+<li>Experiment with different friction and bounciness values.</li>
+</ol>
+</div><h1>6. Reducing Physics Calculations</h1>
+<div class='content'></div><h2>Sleep Mode</h2>
+<div class='content'><p>Objects that are not moving can be put to sleep to save on physics calculations.</p>
+<p><strong>Example: Setting Sleep Thresholds</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBTdGFydCgpIHsKICAgIFJpZ2lkYm9keSByYiA9IGdhbWVPYmplY3QuR2V0Q29tcG9uZW50PFJpZ2lkYm9keT4oKTsKICAgIAogICAgLy8gU2V0IHRoZSBzbGVlcCB0aHJlc2hvbGQKICAgIHJiLnNsZWVwVGhyZXNob2xkID0gMC4xZjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void Start() {
+    Rigidbody rb = gameObject.GetComponent&lt;Rigidbody&gt;();
+    
+    // Set the sleep threshold
+    rb.sleepThreshold = 0.1f;
+}</pre></div><div class='content'></div><h2>Practical Exercise</h2>
+<div class='content'><ol>
+<li>Set sleep thresholds for static or rarely moving objects.</li>
+<li>Observe the impact on performance.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this module, we covered various techniques to optimize physics and collision detection in Unity. By adjusting physics settings, using efficient colliders, configuring collision layers, choosing appropriate collision detection modes, applying physics materials, and reducing unnecessary physics calculations, you can significantly improve your game's performance.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li>Adjusted time step settings for better performance.</li>
+<li>Used primitive colliders instead of mesh colliders.</li>
+<li>Configured layer-based collision detection.</li>
+<li>Chose appropriate collision detection modes for different objects.</li>
+<li>Applied physics materials to control friction and bounciness.</li>
+<li>Reduced physics calculations by setting sleep thresholds.</li>
+</ul>
+<p>By implementing these optimizations, you are now better equipped to handle physics and collisions efficiently in your Unity projects. In the next module, we will explore building and publishing your game, ensuring it reaches your audience effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-reducing-draw-calls' title="Reducing Draw Calls">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-building-publishing-game' title="Building and Publishing Your Game">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

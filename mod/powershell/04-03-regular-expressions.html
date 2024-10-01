@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regular Expressions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/powershell/04-03-regular-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/powershell/04-03-regular-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/powershell/04-03-regular-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/powershell/04-03-regular-expressions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/powershell/04-03-regular-expressions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-debugging-scripts' title="Debugging Scripts">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Regular Expressions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-files-directories' title="Working with Files and Directories">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Regular expressions (regex) are powerful tools for pattern matching and text manipulation. In PowerShell, regex can be used to search, match, and replace text within strings. This section will cover the basics of regex, how to use them in PowerShell, and provide practical examples and exercises.</p>
+</div><h1>What are Regular Expressions?</h1>
+<div class='content'><p>Regular expressions are sequences of characters that define a search pattern. They are commonly used for string matching and manipulation tasks such as:</p>
+<ul>
+<li>Validating input (e.g., email addresses, phone numbers)</li>
+<li>Searching for specific patterns within text</li>
+<li>Replacing or extracting parts of a string</li>
+</ul>
+</div><h1>Basic Syntax of Regular Expressions</h1>
+<div class='content'><p>Here are some basic components of regex syntax:</p>
+<ul>
+<li><strong>Literal Characters</strong>: Match the exact characters (e.g., <code>abc</code> matches &quot;abc&quot;).</li>
+<li><strong>Metacharacters</strong>: Special characters with specific meanings (e.g., <code>.</code> matches any character except newline).</li>
+<li><strong>Character Classes</strong>: Define a set of characters to match (e.g., <code>[a-z]</code> matches any lowercase letter).</li>
+<li><strong>Quantifiers</strong>: Specify the number of occurrences (e.g., <code>*</code> matches 0 or more times, <code>+</code> matches 1 or more times).</li>
+<li><strong>Anchors</strong>: Define positions within the string (e.g., <code>^</code> matches the start of a string, <code>$</code> matches the end).</li>
+</ul>
+</div><h1>Using Regular Expressions in PowerShell</h1>
+<div class='content'><p>PowerShell provides several cmdlets and operators for working with regex:</p>
+<ul>
+<li><code>-match</code>: Matches a string against a regex pattern.</li>
+<li><code>-replace</code>: Replaces text matching a regex pattern.</li>
+<li><code>Select-String</code>: Searches for text patterns in files or strings.</li>
+</ul>
+</div><h2>Example 1: Using `-match` Operator</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHN0cmluZyA9ICJIZWxsbywgbXkgZW1haWwgaXMgZXhhbXBsZUBleGFtcGxlLmNvbSIKaWYgKCRzdHJpbmcgLW1hdGNoICJcYltBLVphLXowLTkuXyUrLV0rQFtBLVphLXowLTkuLV0rXC5bQS1afGEtel17Mix9XGIiKSB7CiAgICBXcml0ZS1PdXRwdXQgIlZhbGlkIGVtYWlsIGZvdW5kOiAkKCRtYXRjaGVzWzBdKSIKfSBlbHNlIHsKICAgIFdyaXRlLU91dHB1dCAiTm8gdmFsaWQgZW1haWwgZm91bmQuIgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$string = &quot;Hello, my email is example@example.com&quot;
+if ($string -match &quot;\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b&quot;) {
+    Write-Output &quot;Valid email found: $($matches[0])&quot;
+} else {
+    Write-Output &quot;No valid email found.&quot;
+}</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The regex pattern <code>\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b</code> matches a typical email address format.</li>
+<li><code>$matches[0]</code> contains the matched email address.</li>
+</ul>
+</div><h2>Example 2: Using `-replace` Operator</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHN0cmluZyA9ICJUaGUgcHJpY2UgaXMgJDEwMCIKJG5ld1N0cmluZyA9ICRzdHJpbmcgLXJlcGxhY2UgIlwkXGQrIiwgIiQyMDAiCldyaXRlLU91dHB1dCAkbmV3U3RyaW5n"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$string = &quot;The price is $100&quot;
+$newString = $string -replace &quot;\$\d+&quot;, &quot;$200&quot;
+Write-Output $newString</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The regex pattern <code>\$\d+</code> matches a dollar sign followed by one or more digits.</li>
+<li>The <code>-replace</code> operator replaces the matched text with &quot;$200&quot;.</li>
+</ul>
+</div><h2>Example 3: Using `Select-String` Cmdlet</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R2V0LUNvbnRlbnQgInNhbXBsZS50eHQiIHwgU2VsZWN0LVN0cmluZyAtUGF0dGVybiAiXGJcZHszfS1cZHsyfS1cZHs0fVxiIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Get-Content &quot;sample.txt&quot; | Select-String -Pattern &quot;\b\d{3}-\d{2}-\d{4}\b&quot;</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The regex pattern <code>\b\d{3}-\d{2}-\d{4}\b</code> matches a Social Security number format.</li>
+<li><code>Select-String</code> searches for the pattern in the file &quot;sample.txt&quot;.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Validate Phone Numbers</h2>
+<div class='content'><p><strong>Task:</strong> Write a PowerShell script to validate phone numbers in the format <code>(123) 456-7890</code>.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHBob25lTnVtYmVyID0gIigxMjMpIDQ1Ni03ODkwIgppZiAoJHBob25lTnVtYmVyIC1tYXRjaCAiXlwoXGR7M31cKSBcZHszfS1cZHs0fSQiKSB7CiAgICBXcml0ZS1PdXRwdXQgIlZhbGlkIHBob25lIG51bWJlci4iCn0gZWxzZSB7CiAgICBXcml0ZS1PdXRwdXQgIkludmFsaWQgcGhvbmUgbnVtYmVyLiIKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$phoneNumber = &quot;(123) 456-7890&quot;
+if ($phoneNumber -match &quot;^\(\d{3}\) \d{3}-\d{4}$&quot;) {
+    Write-Output &quot;Valid phone number.&quot;
+} else {
+    Write-Output &quot;Invalid phone number.&quot;
+}</pre></div><div class='content'></div><h2>Exercise 2: Extract Domain Names from URLs</h2>
+<div class='content'><p><strong>Task:</strong> Write a PowerShell script to extract domain names from a list of URLs.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVybHMgPSBAKCJodHRwczovL3d3dy5leGFtcGxlLmNvbSIsICJodHRwOi8vdGVzdC5leGFtcGxlLm9yZyIsICJodHRwczovL3N1Yi5kb21haW4uY29tIikKZm9yZWFjaCAoJHVybCBpbiAkdXJscykgewogICAgaWYgKCR1cmwgLW1hdGNoICJodHRwcz86Ly8od3d3XC4pPyhbXi9dKykiKSB7CiAgICAgICAgV3JpdGUtT3V0cHV0ICJEb21haW46ICQoJG1hdGNoZXNbMl0pIgogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$urls = @(&quot;https://www.example.com&quot;, &quot;http://test.example.org&quot;, &quot;https://sub.domain.com&quot;)
+foreach ($url in $urls) {
+    if ($url -match &quot;https?://(www\.)?([^/]+)&quot;) {
+        Write-Output &quot;Domain: $($matches[2])&quot;
+    }
+}</pre></div><div class='content'></div><h2>Exercise 3: Replace Dates in Text</h2>
+<div class='content'><p><strong>Task:</strong> Write a PowerShell script to replace dates in the format <code>MM/DD/YYYY</code> with <code>YYYY-MM-DD</code>.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHRleHQgPSAiVGhlIGV2ZW50IGlzIG9uIDEyLzI1LzIwMjMuIgokbmV3VGV4dCA9ICR0ZXh0IC1yZXBsYWNlICIoXGR7Mn0pLyhcZHsyfSkvKFxkezR9KSIsICckMy0kMS0kMicKV3JpdGUtT3V0cHV0ICRuZXdUZXh0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$text = &quot;The event is on 12/25/2023.&quot;
+$newText = $text -replace &quot;(\d{2})/(\d{2})/(\d{4})&quot;, '$3-$1-$2'
+Write-Output $newText</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Escaping Metacharacters</strong>: Remember to escape metacharacters (e.g., <code>.</code>) when you want to match them literally.</li>
+<li><strong>Using Anchors</strong>: Use <code>^</code> and <code>$</code> to ensure the pattern matches the entire string, not just a part of it.</li>
+<li><strong>Testing Patterns</strong>: Use online regex testers to validate and test your patterns before using them in scripts.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Regular expressions are a powerful tool for text processing in PowerShell. By understanding the basic syntax and how to use regex with PowerShell cmdlets and operators, you can perform complex text manipulations efficiently. Practice with the provided exercises to reinforce your understanding and become proficient in using regex in your PowerShell scripts.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-debugging-scripts' title="Debugging Scripts">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-files-directories' title="Working with Files and Directories">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

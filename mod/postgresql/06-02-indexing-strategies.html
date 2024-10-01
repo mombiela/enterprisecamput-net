@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexing Strategies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/06-02-indexing-strategies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/06-02-indexing-strategies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/06-02-indexing-strategies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/06-02-indexing-strategies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/06-02-indexing-strategies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-query-optimization' title="Query Optimization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Indexing Strategies</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-analyzing-query-performance' title="Analyzing Query Performance">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='index'><p>Indexes are essential for improving the performance of database queries. In this section, we will explore various indexing strategies in PostgreSQL, understand their use cases, and learn how to implement them effectively.</p>
+</div><h2>Key Concepts</h2>
+<div class='index'><ol>
+<li>
+<p><strong>Index Basics</strong>:</p>
+<ul>
+<li>An index is a database object that improves the speed of data retrieval operations on a table.</li>
+<li>Indexes are created on columns that are frequently used in search conditions, joins, and sorting operations.</li>
+</ul>
+</li>
+<li>
+<p><strong>Types of Indexes</strong>:</p>
+<ul>
+<li><strong>B-tree Index</strong>: The default and most commonly used index type in PostgreSQL.</li>
+<li><strong>Hash Index</strong>: Useful for equality comparisons.</li>
+<li><strong>GIN (Generalized Inverted Index)</strong>: Suitable for indexing composite values like arrays and full-text search.</li>
+<li><strong>GiST (Generalized Search Tree)</strong>: Used for complex data types like geometric data.</li>
+<li><strong>SP-GiST (Space-Partitioned Generalized Search Tree)</strong>: Efficient for certain types of data like hierarchical data.</li>
+<li><strong>BRIN (Block Range INdex)</strong>: Efficient for large tables where the data is naturally clustered.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indexing Strategies</strong>:</p>
+<ul>
+<li><strong>Single-Column Index</strong>: Index on a single column.</li>
+<li><strong>Multi-Column Index</strong>: Index on multiple columns.</li>
+<li><strong>Partial Index</strong>: Index on a subset of rows.</li>
+<li><strong>Unique Index</strong>: Ensures the uniqueness of the indexed column(s).</li>
+<li><strong>Expression Index</strong>: Index based on an expression or function.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Creating Indexes</h2>
+<div class='index'></div><h2>Single-Column Index</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9lbXBsb3llZV9uYW1lIE9OIGVtcGxveWVlcyAobmFtZSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_employee_name ON employees (name);</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: This creates an index on the <code>name</code> column of the <code>employees</code> table. It speeds up queries that search for employees by name.</li>
+</ul>
+</div><h2>Multi-Column Index</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9lbXBsb3llZV9uYW1lX2RvYiBPTiBlbXBsb3llZXMgKG5hbWUsIGRhdGVfb2ZfYmlydGgpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_employee_name_dob ON employees (name, date_of_birth);</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: This creates an index on both the <code>name</code> and <code>date_of_birth</code> columns. It is useful for queries that filter by both columns.</li>
+</ul>
+</div><h2>Partial Index</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9hY3RpdmVfZW1wbG95ZWVzIE9OIGVtcGxveWVlcyAobmFtZSkgV0hFUkUgYWN0aXZlID0gdHJ1ZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_active_employees ON employees (name) WHERE active = true;</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: This index is created only for rows where the <code>active</code> column is <code>true</code>. It is useful for queries that frequently filter by active employees.</li>
+</ul>
+</div><h2>Unique Index</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFVOSVFVRSBJTkRFWCBpZHhfdW5pcXVlX2VtcGxveWVlX2VtYWlsIE9OIGVtcGxveWVlcyAoZW1haWwpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE UNIQUE INDEX idx_unique_employee_email ON employees (email);</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: This ensures that the <code>email</code> column in the <code>employees</code> table contains unique values, preventing duplicate email addresses.</li>
+</ul>
+</div><h2>Expression Index</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9sb3dlcl9uYW1lIE9OIGVtcGxveWVlcyAoTE9XRVIobmFtZSkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_lower_name ON employees (LOWER(name));</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: This index is created on the result of the <code>LOWER(name)</code> expression. It is useful for case-insensitive searches.</li>
+</ul>
+</div><h2>Practical Examples</h2>
+<div class='index'></div><h2>Example 1: Improving Query Performance</h2>
+<div class='index'><p><strong>Scenario</strong>: You have a table <code>orders</code> with columns <code>order_id</code>, <code>customer_id</code>, <code>order_date</code>, and <code>total_amount</code>. You frequently run queries to find orders by <code>customer_id</code>.</p>
+<p><strong>Solution</strong>: Create an index on the <code>customer_id</code> column.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcnNfY3VzdG9tZXJfaWQgT04gb3JkZXJzIChjdXN0b21lcl9pZCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_orders_customer_id ON orders (customer_id);</pre></div><div class='index'><p><strong>Query Before Index</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIGN1c3RvbWVyX2lkID0gMTIzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 123;</pre></div><div class='index'><p><strong>Query After Index</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIGN1c3RvbWVyX2lkID0gMTIzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 123;</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: The <code>EXPLAIN ANALYZE</code> command shows the query execution plan and performance. After creating the index, the query should run faster.</li>
+</ul>
+</div><h2>Example 2: Using Partial Indexes</h2>
+<div class='index'><p><strong>Scenario</strong>: You have a table <code>products</code> with columns <code>product_id</code>, <code>name</code>, <code>price</code>, and <code>in_stock</code>. You frequently query products that are in stock.</p>
+<p><strong>Solution</strong>: Create a partial index on the <code>in_stock</code> column.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9pbl9zdG9ja19wcm9kdWN0cyBPTiBwcm9kdWN0cyAobmFtZSkgV0hFUkUgaW5fc3RvY2sgPSB0cnVlOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_in_stock_products ON products (name) WHERE in_stock = true;</pre></div><div class='index'><p><strong>Query</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBwcm9kdWN0cyBXSEVSRSBpbl9zdG9jayA9IHRydWU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM products WHERE in_stock = true;</pre></div><div class='index'><ul>
+<li><strong>Explanation</strong>: The partial index improves the performance of queries that filter by <code>in_stock = true</code>.</li>
+</ul>
+</div><h2>Exercises</h2>
+<div class='index'></div><h2>Exercise 1: Creating a Multi-Column Index</h2>
+<div class='index'><p><strong>Task</strong>: Create a multi-column index on the <code>orders</code> table for the <code>customer_id</code> and <code>order_date</code> columns.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcnNfY3VzdG9tZXJfZGF0ZSBPTiBvcmRlcnMgKGN1c3RvbWVyX2lkLCBvcmRlcl9kYXRlKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_orders_customer_date ON orders (customer_id, order_date);</pre></div><div class='index'></div><h2>Exercise 2: Creating a Unique Index</h2>
+<div class='index'><p><strong>Task</strong>: Create a unique index on the <code>users</code> table for the <code>username</code> column to ensure that usernames are unique.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFVOSVFVRSBJTkRFWCBpZHhfdW5pcXVlX3VzZXJuYW1lIE9OIHVzZXJzICh1c2VybmFtZSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE UNIQUE INDEX idx_unique_username ON users (username);</pre></div><div class='index'></div><h2>Exercise 3: Creating an Expression Index</h2>
+<div class='index'><p><strong>Task</strong>: Create an expression index on the <code>products</code> table for the <code>LOWER(name)</code> expression to improve case-insensitive searches.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9sb3dlcl9wcm9kdWN0X25hbWUgT04gcHJvZHVjdHMgKExPV0VSKG5hbWUpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_lower_product_name ON products (LOWER(name));</pre></div><div class='index'></div><h2>Common Mistakes and Tips</h2>
+<div class='index'><ul>
+<li><strong>Over-Indexing</strong>: Creating too many indexes can slow down write operations (INSERT, UPDATE, DELETE). Only create indexes that are necessary.</li>
+<li><strong>Index Maintenance</strong>: Regularly monitor and maintain indexes. Use the <code>REINDEX</code> command to rebuild indexes if needed.</li>
+<li><strong>Index Usage</strong>: Use the <code>EXPLAIN</code> command to check if your queries are using the indexes as expected.</li>
+</ul>
+</div><h2>Conclusion</h2>
+<div class='index'><p>In this section, we covered various indexing strategies in PostgreSQL, including single-column, multi-column, partial, unique, and expression indexes. We also provided practical examples and exercises to reinforce the concepts. Understanding and implementing the right indexing strategies can significantly improve the performance of your database queries. In the next section, we will delve into analyzing query performance to further optimize your PostgreSQL database.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-query-optimization' title="Query Optimization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-analyzing-query-performance' title="Analyzing Query Performance">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

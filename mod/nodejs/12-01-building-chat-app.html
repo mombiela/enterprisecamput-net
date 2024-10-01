@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Chat Application</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/12-01-building-chat-app" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/12-01-building-chat-app" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/12-01-building-chat-app" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/12-01-building-chat-app" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/12-01-building-chat-app" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-04-ci-cd' title="Continuous Integration and Deployment">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Building a Chat Application</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='12-02-creating-ecommerce-api' title="Creating an E-commerce API">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this module, we will build a real-time chat application using Node.js and Socket.io. This project will help you understand how to create a server that can handle real-time communication between clients.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the basics of real-time communication.</li>
+<li>Set up a Node.js server with Socket.io.</li>
+<li>Create a simple front-end to interact with the server.</li>
+<li>Implement real-time messaging between clients.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting this module, make sure you have:</p>
+<ul>
+<li>Basic knowledge of Node.js and Express.js.</li>
+<li>Familiarity with HTML, CSS, and JavaScript.</li>
+<li>Installed Node.js and npm on your machine.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Initialize a new Node.js project:</strong></p>
+<pre><code class="language-bash">mkdir chat-app
+cd chat-app
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Install the necessary packages:</strong></p>
+<pre><code class="language-bash">npm install express socket.io
+</code></pre>
+</li>
+<li>
+<p><strong>Create the project structure:</strong></p>
+<pre><code class="language-bash">mkdir public
+touch public/index.html
+touch server.js
+</code></pre>
+</li>
+</ol>
+</div><h2>2. Creating the Server</h2>
+<div class='content'><ol>
+<li><strong>Set up the Express server in <code>server.js</code>:</strong>
+<pre><code class="language-javascript">const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+app.use(express.static('public'));
+
+io.on('connection', (socket) =&gt; {
+    console.log('A user connected');
+    socket.on('disconnect', () =&gt; {
+        console.log('User disconnected');
+    });
+    socket.on('chat message', (msg) =&gt; {
+        io.emit('chat message', msg);
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () =&gt; {
+    console.log(`Server is running on port ${PORT}`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>3. Creating the Front-End</h2>
+<div class='content'><ol>
+<li><strong>Set up the HTML structure in <code>public/index.html</code>:</strong>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Chat App&lt;/title&gt;
+    &lt;style&gt;
+        body { font-family: Arial, sans-serif; }
+        #messages { list-style-type: none; padding: 0; }
+        #messages li { padding: 8px; margin-bottom: 10px; background: #f4f4f4; }
+        #form { display: flex; }
+        #input { flex: 1; padding: 10px; }
+        #send { padding: 10px; }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;ul id=&quot;messages&quot;&gt;&lt;/ul&gt;
+    &lt;form id=&quot;form&quot; action=&quot;&quot;&gt;
+        &lt;input id=&quot;input&quot; autocomplete=&quot;off&quot; /&gt;&lt;button id=&quot;send&quot;&gt;Send&lt;/button&gt;
+    &lt;/form&gt;
+    &lt;script src=&quot;/socket.io/socket.io.js&quot;&gt;&lt;/script&gt;
+    &lt;script&gt;
+        const socket = io();
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+
+        form.addEventListener('submit', (e) =&gt; {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+            }
+        });
+
+        socket.on('chat message', (msg) =&gt; {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>4. Running the Application</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Start the server:</strong></p>
+<pre><code class="language-bash">node server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Open your browser and navigate to <code>http://localhost:3000</code>.</strong></p>
+</li>
+</ol>
+</div><h2>5. Testing the Application</h2>
+<div class='content'><ol>
+<li><strong>Open multiple browser tabs and navigate to <code>http://localhost:3000</code> in each tab.</strong></li>
+<li><strong>Send messages from one tab and see them appear in real-time in all other tabs.</strong></li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this module, you learned how to build a simple real-time chat application using Node.js and Socket.io. You set up a Node.js server, created a front-end to interact with the server, and implemented real-time messaging between clients. This project demonstrates the power of real-time communication and how easily it can be implemented with Node.js and Socket.io.</p>
+</div><h1>Exercises</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Enhance the chat application by adding user names.</strong></p>
+<ul>
+<li>Modify the front-end to prompt users for their names.</li>
+<li>Display the user names along with the messages.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add a feature to notify users when someone joins or leaves the chat.</strong></p>
+<ul>
+<li>Emit events when users connect and disconnect.</li>
+<li>Display notifications in the chat window.</li>
+</ul>
+</li>
+<li>
+<p><strong>Implement a feature to show the list of online users.</strong></p>
+<ul>
+<li>Maintain a list of connected users on the server.</li>
+<li>Update the list in real-time on the front-end.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Adding User Names:</strong></p>
+<ul>
+<li>Modify the front-end to prompt for user names and include them in the messages.</li>
+<li>Update the server to handle user names.</li>
+</ul>
+</li>
+<li>
+<p><strong>User Join/Leave Notifications:</strong></p>
+<ul>
+<li>Emit <code>user joined</code> and <code>user left</code> events from the server.</li>
+<li>Listen for these events on the front-end and display notifications.</li>
+</ul>
+</li>
+<li>
+<p><strong>Online Users List:</strong></p>
+<ul>
+<li>Maintain a list of connected users on the server.</li>
+<li>Emit the updated list to all clients whenever a user connects or disconnects.</li>
+<li>Display the list on the front-end.</li>
+</ul>
+</li>
+</ol>
+<p>By completing these exercises, you will gain a deeper understanding of real-time communication and how to enhance a chat application with additional features.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-04-ci-cd' title="Continuous Integration and Deployment">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='12-02-creating-ecommerce-api' title="Creating an E-commerce API">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

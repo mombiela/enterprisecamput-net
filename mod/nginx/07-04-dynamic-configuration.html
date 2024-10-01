@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Configuration</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/07-04-dynamic-configuration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/07-04-dynamic-configuration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/07-04-dynamic-configuration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/07-04-dynamic-configuration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/07-04-dynamic-configuration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-application-health-monitoring' title="Application Health Monitoring">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Dynamic Configuration</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'><p>Dynamic configuration in NGINX Plus allows you to make changes to your NGINX configuration without needing to reload or restart the server. This feature is particularly useful for environments that require high availability and minimal downtime. In this section, we will cover the following topics:</p>
+<ol>
+<li><strong>Introduction to Dynamic Configuration</strong></li>
+<li><strong>Using the NGINX Plus API</strong></li>
+<li><strong>Dynamic Upstream Configuration</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. Introduction to Dynamic Configuration</h1>
+<div class='content'><p>Dynamic configuration enables you to:</p>
+<ul>
+<li>Add or remove servers from upstream groups.</li>
+<li>Change load balancing methods.</li>
+<li>Modify server weights and other parameters.</li>
+</ul>
+<p>This is achieved through the NGINX Plus API, which provides a RESTful interface for managing NGINX configuration dynamically.</p>
+</div><h1>2. Using the NGINX Plus API</h1>
+<div class='content'><p>The NGINX Plus API is a powerful tool that allows you to interact with your NGINX configuration programmatically. Here are the key endpoints you will use:</p>
+<ul>
+<li><strong>/api/6/http/upstreams</strong>: Manage upstream groups.</li>
+<li><strong>/api/6/http/servers</strong>: Manage HTTP servers.</li>
+<li><strong>/api/6/stream/upstreams</strong>: Manage stream upstream groups.</li>
+<li><strong>/api/6/stream/servers</strong>: Manage stream servers.</li>
+</ul>
+</div><h2>Example: Adding a Server to an Upstream Group</h2>
+<div class='content'><p>To add a server to an upstream group, you can use the following <code>curl</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQT1NUIC1kICd7InNlcnZlciI6ICIxOTIuMTY4LjEuMTAwOjgwIn0nIFwKICAgICBodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpLzYvaHR0cC91cHN0cmVhbXMvbXlfdXBzdHJlYW0vc2VydmVycw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X POST -d '{&quot;server&quot;: &quot;192.168.1.100:80&quot;}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>-X POST</code>: Specifies the HTTP method.</li>
+<li><code>-d '{&quot;server&quot;: &quot;192.168.1.100:80&quot;}'</code>: The data to be sent in JSON format.</li>
+<li><code>http://localhost:8080/api/6/http/upstreams/my_upstream/servers</code>: The API endpoint.</li>
+</ul>
+</div><h1>3. Dynamic Upstream Configuration</h1>
+<div class='content'><p>Dynamic upstream configuration allows you to manage the servers in your upstream groups without reloading NGINX. This is particularly useful for load balancing and high-availability setups.</p>
+</div><h2>Example: Removing a Server from an Upstream Group</h2>
+<div class='content'><p>To remove a server from an upstream group, you can use the following <code>curl</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBERUxFVEUgXAogICAgIGh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvNi9odHRwL3Vwc3RyZWFtcy9teV91cHN0cmVhbS9zZXJ2ZXJzLzE5Mi4xNjguMS4xMDA6ODA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X DELETE \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers/192.168.1.100:80</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>-X DELETE</code>: Specifies the HTTP method.</li>
+<li><code>http://localhost:8080/api/6/http/upstreams/my_upstream/servers/192.168.1.100:80</code>: The API endpoint.</li>
+</ul>
+</div><h1>4. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Changing Load Balancing Method</h2>
+<div class='content'><p>To change the load balancing method for an upstream group, you can use the following <code>curl</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQQVRDSCAtZCAneyJtZXRob2QiOiAibGVhc3RfY29ubiJ9JyBcCiAgICAgaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS82L2h0dHAvdXBzdHJlYW1zL215X3Vwc3RyZWFt"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X PATCH -d '{&quot;method&quot;: &quot;least_conn&quot;}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream</pre></div><div class='content'></div><h2>Example 2: Modifying Server Weight</h2>
+<div class='content'><p>To modify the weight of a server in an upstream group, you can use the following <code>curl</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQQVRDSCAtZCAneyJ3ZWlnaHQiOiAxMH0nIFwKICAgICBodHRwOi8vbG9jYWxob3N0OjgwODAvYXBpLzYvaHR0cC91cHN0cmVhbXMvbXlfdXBzdHJlYW0vc2VydmVycy8xOTIuMTY4LjEuMTAwOjgw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X PATCH -d '{&quot;weight&quot;: 10}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers/192.168.1.100:80</pre></div><div class='content'></div><h1>5. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Add a Server to an Upstream Group</h2>
+<div class='content'><p><strong>Task</strong>: Add a server with the IP address <code>192.168.1.101</code> and port <code>8080</code> to the upstream group <code>my_upstream</code>.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQT1NUIC1kICd7InNlcnZlciI6ICIxOTIuMTY4LjEuMTAxOjgwODAifScgXAogICAgIGh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvNi9odHRwL3Vwc3RyZWFtcy9teV91cHN0cmVhbS9zZXJ2ZXJz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X POST -d '{&quot;server&quot;: &quot;192.168.1.101:8080&quot;}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers</pre></div><div class='content'></div><h2>Exercise 2: Remove a Server from an Upstream Group</h2>
+<div class='content'><p><strong>Task</strong>: Remove the server with the IP address <code>192.168.1.101</code> and port <code>8080</code> from the upstream group <code>my_upstream</code>.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBERUxFVEUgXAogICAgIGh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvNi9odHRwL3Vwc3RyZWFtcy9teV91cHN0cmVhbS9zZXJ2ZXJzLzE5Mi4xNjguMS4xMDE6ODA4MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X DELETE \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers/192.168.1.101:8080</pre></div><div class='content'></div><h2>Exercise 3: Change Load Balancing Method</h2>
+<div class='content'><p><strong>Task</strong>: Change the load balancing method of the upstream group <code>my_upstream</code> to <code>ip_hash</code>.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQQVRDSCAtZCAneyJtZXRob2QiOiAiaXBfaGFzaCJ9JyBcCiAgICAgaHR0cDovL2xvY2FsaG9zdDo4MDgwL2FwaS82L2h0dHAvdXBzdHJlYW1zL215X3Vwc3RyZWFt"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X PATCH -d '{&quot;method&quot;: &quot;ip_hash&quot;}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream</pre></div><div class='content'></div><h2>Exercise 4: Modify Server Weight</h2>
+<div class='content'><p><strong>Task</strong>: Change the weight of the server <code>192.168.1.100:80</code> in the upstream group <code>my_upstream</code> to <code>5</code>.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQQVRDSCAtZCAneyJ3ZWlnaHQiOiA1fScgXAogICAgIGh0dHA6Ly9sb2NhbGhvc3Q6ODA4MC9hcGkvNi9odHRwL3Vwc3RyZWFtcy9teV91cHN0cmVhbS9zZXJ2ZXJzLzE5Mi4xNjguMS4xMDA6ODA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X PATCH -d '{&quot;weight&quot;: 5}' \
+     http://localhost:8080/api/6/http/upstreams/my_upstream/servers/192.168.1.100:80</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of dynamic configuration in NGINX Plus, including how to use the NGINX Plus API to manage upstream groups and servers dynamically. We also provided practical examples and exercises to help you get hands-on experience with dynamic configuration. This knowledge is crucial for maintaining high availability and minimizing downtime in production environments.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-application-health-monitoring' title="Application Health Monitoring">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS and Security Policies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/04-04-cors-politicas-seguridad" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/04-04-cors-politicas-seguridad" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/04-04-cors-security-policies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rest_api/04-04-cors-security-policies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/04-04-cors-security-policies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-rate-limiting-throttling' title="Rate Limiting and Throttling">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">CORS and Security Policies</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-postman-api-testing' title="Postman for API Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Cross-Origin Resource Sharing (CORS) is a security feature implemented by web browsers to control how resources on a web page can be requested from another domain outside the domain from which the resource originated. This mechanism is crucial for securing web applications and ensuring that only authorized domains can access your API.</p>
+<p>In this section, we will cover:</p>
+<ul>
+<li>What CORS is and why it is important.</li>
+<li>How to implement CORS in your RESTful API.</li>
+<li>Common security policies related to CORS.</li>
+<li>Practical examples and exercises.</li>
+</ul>
+</div><h1>What is CORS?</h1>
+<div class='content'><p>CORS stands for Cross-Origin Resource Sharing. It is a security feature that allows or restricts resources on a web server to be requested from another domain outside the domain from which the resource originated. This is essential for preventing malicious websites from accessing sensitive data from another site.</p>
+</div><h2>Key Concepts of CORS</h2>
+<div class='content'><ol>
+<li><strong>Origin</strong>: The combination of the scheme (protocol), hostname, and port of a URL.</li>
+<li><strong>Same-Origin Policy</strong>: A security measure that restricts how a document or script loaded from one origin can interact with resources from another origin.</li>
+<li><strong>Preflight Request</strong>: An initial request made by the browser using the <code>OPTIONS</code> method to determine if the actual request is safe to send.</li>
+</ol>
+</div><h2>Why is CORS Important?</h2>
+<div class='content'><p>CORS is important because it:</p>
+<ul>
+<li>Prevents unauthorized access to resources.</li>
+<li>Protects sensitive data from being exposed to malicious websites.</li>
+<li>Ensures that only trusted domains can interact with your API.</li>
+</ul>
+</div><h1>Implementing CORS in RESTful APIs</h1>
+<div class='content'><p>To implement CORS in your RESTful API, you need to configure your server to include specific HTTP headers that indicate which origins are allowed to access your resources.</p>
+</div><h2>Example: Enabling CORS in a Node.js/Express Application</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgY29ycyA9IHJlcXVpcmUoJ2NvcnMnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRW5hYmxlIENPUlMgZm9yIGFsbCByb3V0ZXMKYXBwLnVzZShjb3JzKCkpOwoKLy8gRW5hYmxlIENPUlMgZm9yIHNwZWNpZmljIHJvdXRlcwphcHAuZ2V0KCcvYXBpL2RhdGEnLCBjb3JzKCksIChyZXEsIHJlcykgPT4gewogIHJlcy5qc29uKHsgbWVzc2FnZTogJ1RoaXMgaXMgQ09SUy1lbmFibGVkIGZvciBhbGwgb3JpZ2lucyEnIH0pOwp9KTsKCi8vIEVuYWJsZSBDT1JTIGZvciBhIHNwZWNpZmljIG9yaWdpbgpjb25zdCBjb3JzT3B0aW9ucyA9IHsKICBvcmlnaW46ICdodHRwOi8vZXhhbXBsZS5jb20nLAogIG9wdGlvbnNTdWNjZXNzU3RhdHVzOiAyMDAKfTsKCmFwcC5nZXQoJy9hcGkvc3BlY2lmaWMnLCBjb3JzKGNvcnNPcHRpb25zKSwgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLmpzb24oeyBtZXNzYWdlOiAnVGhpcyBpcyBDT1JTLWVuYWJsZWQgZm9yIGh0dHA6Ly9leGFtcGxlLmNvbSBvbmx5IScgfSk7Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIHBvcnQgMzAwMCcpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const cors = require('cors');
+const app = express();
+
+// Enable CORS for all routes
+app.use(cors());
+
+// Enable CORS for specific routes
+app.get('/api/data', cors(), (req, res) =&gt; {
+  res.json({ message: 'This is CORS-enabled for all origins!' });
+});
+
+// Enable CORS for a specific origin
+const corsOptions = {
+  origin: 'http://example.com',
+  optionsSuccessStatus: 200
+};
+
+app.get('/api/specific', cors(corsOptions), (req, res) =&gt; {
+  res.json({ message: 'This is CORS-enabled for http://example.com only!' });
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>app.use(cors())</code>: Enables CORS for all routes and all origins.</li>
+<li><code>corsOptions</code>: Specifies the allowed origin (<code>http://example.com</code>) and other options.</li>
+<li><code>app.get('/api/specific', cors(corsOptions), ...)</code>: Enables CORS for a specific route and origin.</li>
+</ul>
+</div><h1>Common Security Policies Related to CORS</h1>
+<div class='content'></div><h2>1. Allowing Specific Origins</h2>
+<div class='content'><p>To enhance security, you should only allow trusted origins to access your API. This can be done by specifying the <code>origin</code> option in the CORS configuration.</p>
+</div><h2>2. Preflight Requests</h2>
+<div class='content'><p>Preflight requests are automatically handled by the browser and are used to check if the actual request is safe to send. You can configure your server to handle these requests by responding to <code>OPTIONS</code> requests.</p>
+</div><h2>3. Allowing Specific Methods and Headers</h2>
+<div class='content'><p>You can restrict which HTTP methods and headers are allowed by specifying the <code>methods</code> and <code>allowedHeaders</code> options in the CORS configuration.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgY29yc09wdGlvbnMgPSB7CiAgb3JpZ2luOiAnaHR0cDovL2V4YW1wbGUuY29tJywKICBtZXRob2RzOiAnR0VULFBPU1QnLAogIGFsbG93ZWRIZWFkZXJzOiAnQ29udGVudC1UeXBlLEF1dGhvcml6YXRpb24nCn07CgphcHAudXNlKGNvcnMoY29yc09wdGlvbnMpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const corsOptions = {
+  origin: 'http://example.com',
+  methods: 'GET,POST',
+  allowedHeaders: 'Content-Type,Authorization'
+};
+
+app.use(cors(corsOptions));</pre></div><div class='content'></div><h2>4. Credentials</h2>
+<div class='content'><p>If your API requires credentials (such as cookies or HTTP authentication), you need to set the <code>credentials</code> option to <code>true</code>.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgY29yc09wdGlvbnMgPSB7CiAgb3JpZ2luOiAnaHR0cDovL2V4YW1wbGUuY29tJywKICBjcmVkZW50aWFsczogdHJ1ZQp9OwoKYXBwLnVzZShjb3JzKGNvcnNPcHRpb25zKSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const corsOptions = {
+  origin: 'http://example.com',
+  credentials: true
+};
+
+app.use(cors(corsOptions));</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Enable CORS for All Origins</h2>
+<div class='content'><ol>
+<li>Create a simple Express server.</li>
+<li>Enable CORS for all origins.</li>
+<li>Create a route that returns a JSON response.</li>
+</ol>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgY29ycyA9IHJlcXVpcmUoJ2NvcnMnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLnVzZShjb3JzKCkpOwoKYXBwLmdldCgnL2FwaS9kYXRhJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLmpzb24oeyBtZXNzYWdlOiAnQ09SUyBlbmFibGVkIGZvciBhbGwgb3JpZ2lucyEnIH0pOwp9KTsKCmFwcC5saXN0ZW4oMzAwMCwgKCkgPT4gewogIGNvbnNvbGUubG9nKCdTZXJ2ZXIgcnVubmluZyBvbiBwb3J0IDMwMDAnKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const cors = require('cors');
+const app = express();
+
+app.use(cors());
+
+app.get('/api/data', (req, res) =&gt; {
+  res.json({ message: 'CORS enabled for all origins!' });
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h2>Exercise 2: Enable CORS for a Specific Origin</h2>
+<div class='content'><ol>
+<li>Modify the previous server to allow CORS only for <code>http://example.com</code>.</li>
+<li>Create a route that returns a JSON response.</li>
+</ol>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgY29ycyA9IHJlcXVpcmUoJ2NvcnMnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKY29uc3QgY29yc09wdGlvbnMgPSB7CiAgb3JpZ2luOiAnaHR0cDovL2V4YW1wbGUuY29tJwp9OwoKYXBwLnVzZShjb3JzKGNvcnNPcHRpb25zKSk7CgphcHAuZ2V0KCcvYXBpL2RhdGEnLCAocmVxLCByZXMpID0+IHsKICByZXMuanNvbih7IG1lc3NhZ2U6ICdDT1JTIGVuYWJsZWQgZm9yIGh0dHA6Ly9leGFtcGxlLmNvbSBvbmx5IScgfSk7Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIHBvcnQgMzAwMCcpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const cors = require('cors');
+const app = express();
+
+const corsOptions = {
+  origin: 'http://example.com'
+};
+
+app.use(cors(corsOptions));
+
+app.get('/api/data', (req, res) =&gt; {
+  res.json({ message: 'CORS enabled for http://example.com only!' });
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Allowing all origins without considering security implications.
+<ul>
+<li><strong>Tip</strong>: Always restrict CORS to trusted origins in production environments.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Forgetting to handle preflight requests.
+<ul>
+<li><strong>Tip</strong>: Ensure your server responds to <code>OPTIONS</code> requests appropriately.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Not specifying allowed methods and headers.
+<ul>
+<li><strong>Tip</strong>: Restrict methods and headers to only those necessary for your API.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of CORS and how to implement it in your RESTful API. We discussed common security policies related to CORS and provided practical examples and exercises to reinforce the concepts. By understanding and properly configuring CORS, you can enhance the security of your API and ensure that only authorized domains can access your resources.</p>
+<p>Next, we will explore tools and frameworks that can help you in developing and testing your RESTful APIs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-rate-limiting-throttling' title="Rate Limiting and Throttling">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-postman-api-testing' title="Postman for API Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

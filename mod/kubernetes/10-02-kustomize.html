@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kustomize</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/10-02-kustomize" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/10-02-kustomize" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/10-02-kustomize" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/10-02-kustomize" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/10-02-kustomize" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-helm' title="Helm">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kustomize</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-kubeadm' title="Kubeadm">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Kustomize is a tool for customizing Kubernetes configurations. It allows you to manage and deploy Kubernetes resources in a more flexible and reusable way. Unlike Helm, which uses templating, Kustomize works by overlaying patches on top of base configurations, making it a more declarative approach to configuration management.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Base and Overlays</h2>
+<div class='content'><ul>
+<li><strong>Base</strong>: The base configuration is the original set of Kubernetes manifests that define your application.</li>
+<li><strong>Overlay</strong>: Overlays are modifications or customizations applied to the base configuration. They allow you to create different environments (e.g., development, staging, production) without duplicating the base configuration.</li>
+</ul>
+</div><h2>2. Resources</h2>
+<div class='content'><ul>
+<li><strong>Resources</strong>: These are the Kubernetes manifests (YAML files) that define your application components, such as Deployments, Services, ConfigMaps, etc.</li>
+</ul>
+</div><h2>3. Patches</h2>
+<div class='content'><ul>
+<li><strong>Patches</strong>: Patches are used to modify the base resources. They can be strategic merge patches, JSON patches, or replacement patches.</li>
+</ul>
+</div><h2>4. Kustomization File</h2>
+<div class='content'><ul>
+<li><strong>kustomization.yaml</strong>: This file defines the resources, patches, and other configurations for Kustomize. It is the entry point for Kustomize to understand how to build the final set of manifests.</li>
+</ul>
+</div><h1>Setting Up Kustomize</h1>
+<div class='content'></div><h2>Installation</h2>
+<div class='content'><p>Kustomize can be installed as a standalone tool or as part of <code>kubectl</code>.</p>
+<h4>Standalone Installation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEb3dubG9hZCB0aGUgbGF0ZXN0IHJlbGVhc2UKY3VybCAtcyAiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy9rdWJlcm5ldGVzLXNpZ3Mva3VzdG9taXplL3JlbGVhc2VzL2xhdGVzdCIgfCBncmVwIGJyb3dzZXJfZG93bmxvYWRfdXJsIHwgZ3JlcCBrdXN0b21pemUgfCBjdXQgLWQgJyInIC1mIDQgfCB4YXJncyBjdXJsIC1PIC1MCgojIE1ha2UgdGhlIGJpbmFyeSBleGVjdXRhYmxlCmNobW9kICt4IGt1c3RvbWl6ZQoKIyBNb3ZlIHRoZSBiaW5hcnkgdG8geW91ciBQQVRICnN1ZG8gbXYga3VzdG9taXplIC91c3IvbG9jYWwvYmluLw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Download the latest release
+curl -s &quot;https://api.github.com/repos/kubernetes-sigs/kustomize/releases/latest&quot; | grep browser_download_url | grep kustomize | cut -d '&quot;' -f 4 | xargs curl -O -L
+
+# Make the binary executable
+chmod +x kustomize
+
+# Move the binary to your PATH
+sudo mv kustomize /usr/local/bin/</pre></div><div class='content'><h4>Using kubectl</h4>
+<p>Kustomize is integrated into <code>kubectl</code> starting from version 1.14.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBrdXN0b21pemUgPGRpcmVjdG9yeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl kustomize &lt;directory&gt;</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'></div><h2>Directory Structure</h2>
+<div class='content'><p>Let's create a simple example to demonstrate how Kustomize works. We'll deploy a web application with different configurations for development and production environments.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXktYXBwLwrilJzilIDilIAgYmFzZQrilIIgICDilJzilIDilIAgZGVwbG95bWVudC55YW1sCuKUgiAgIOKUnOKUgOKUgCBzZXJ2aWNlLnlhbWwK4pSCICAg4pSU4pSA4pSAIGt1c3RvbWl6YXRpb24ueWFtbArilJzilIDilIAgb3ZlcmxheXMKICAgIOKUnOKUgOKUgCBkZXZlbG9wbWVudAogICAg4pSCICAg4pSc4pSA4pSAIGt1c3RvbWl6YXRpb24ueWFtbAogICAg4pSCICAg4pSU4pSA4pSAIHBhdGNoLnlhbWwKICAgIOKUlOKUgOKUgCBwcm9kdWN0aW9uCiAgICAgICAg4pSc4pSA4pSAIGt1c3RvbWl6YXRpb24ueWFtbAogICAgICAgIOKUlOKUgOKUgCBwYXRjaC55YW1s"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>my-app/
+├── base
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── kustomization.yaml
+├── overlays
+    ├── development
+    │   ├── kustomization.yaml
+    │   └── patch.yaml
+    └── production
+        ├── kustomization.yaml
+        └── patch.yaml</pre></div><div class='content'></div><h2>Base Configuration</h2>
+<div class='content'><h4>deployment.yaml</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAxCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBteS1hcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwCiAgICAgICAgaW1hZ2U6IG15LWFwcDpsYXRlc3QKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:latest
+        ports:
+        - containerPort: 80</pre></div><div class='content'><h4>service.yaml</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAKc3BlYzoKICBzZWxlY3RvcjoKICAgIGFwcDogbXktYXBwCiAgcG9ydHM6CiAgLSBwcm90b2NvbDogVENQCiAgICBwb3J0OiA4MAogICAgdGFyZ2V0UG9ydDogODA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-app
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80</pre></div><div class='content'><h4>kustomization.yaml</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2VzOgotIGRlcGxveW1lbnQueWFtbAotIHNlcnZpY2UueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resources:
+- deployment.yaml
+- service.yaml</pre></div><div class='content'></div><h2>Overlay Configuration</h2>
+<div class='content'><h4>Development Overlay</h4>
+<h5>patch.yaml</h5>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAyCiAgdGVtcGxhdGU6CiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcAogICAgICAgIGltYWdlOiBteS1hcHA6ZGV2"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:dev</pre></div><div class='content'><h5>kustomization.yaml</h5>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2VzOgotIC4uLy4uL2Jhc2UKcGF0Y2hlc1N0cmF0ZWdpY01lcmdlOgotIHBhdGNoLnlhbWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resources:
+- ../../base
+patchesStrategicMerge:
+- patch.yaml</pre></div><div class='content'><h4>Production Overlay</h4>
+<h5>patch.yaml</h5>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAzCiAgdGVtcGxhdGU6CiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcAogICAgICAgIGltYWdlOiBteS1hcHA6cHJvZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:prod</pre></div><div class='content'><h5>kustomization.yaml</h5>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2VzOgotIC4uLy4uL2Jhc2UKcGF0Y2hlc1N0cmF0ZWdpY01lcmdlOgotIHBhdGNoLnlhbWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resources:
+- ../../base
+patchesStrategicMerge:
+- patch.yaml</pre></div><div class='content'></div><h2>Applying the Configuration</h2>
+<div class='content'><p>To apply the development configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtayBvdmVybGF5cy9kZXZlbG9wbWVudA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -k overlays/development</pre></div><div class='content'><p>To apply the production configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtayBvdmVybGF5cy9wcm9kdWN0aW9u"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -k overlays/production</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a New Overlay</h2>
+<div class='content'><ol>
+<li>Create a new overlay for a staging environment.</li>
+<li>Modify the <code>replicas</code> to 4 and use the image <code>my-app:staging</code>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Create the directory structure:
+<pre><code>my-app/
+├── overlays
+    ├── staging
+        ├── kustomization.yaml
+        └── patch.yaml
+</code></pre>
+</li>
+<li>Create <code>patch.yaml</code>:
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 4
+  template:
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:staging
+</code></pre>
+</li>
+<li>Create <code>kustomization.yaml</code>:
+<pre><code class="language-yaml">resources:
+- ../../base
+patchesStrategicMerge:
+- patch.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Add a ConfigMap</h2>
+<div class='content'><ol>
+<li>Add a ConfigMap to the base configuration.</li>
+<li>Modify the overlays to include environment-specific configurations.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Create <code>configmap.yaml</code> in the base directory:
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-app-config
+data:
+  key: value
+</code></pre>
+</li>
+<li>Update <code>kustomization.yaml</code> in the base directory:
+<pre><code class="language-yaml">resources:
+- deployment.yaml
+- service.yaml
+- configmap.yaml
+</code></pre>
+</li>
+<li>Modify the overlays to include environment-specific configurations by creating patches for the ConfigMap.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Kustomize provides a powerful and flexible way to manage Kubernetes configurations. By using bases and overlays, you can easily customize and manage different environments without duplicating your configuration files. This approach promotes reusability and maintainability, making it easier to manage complex Kubernetes deployments.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-helm' title="Helm">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-kubeadm' title="Kubeadm">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

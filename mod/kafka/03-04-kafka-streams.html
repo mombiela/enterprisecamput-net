@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Streams</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/03-04-kafka-streams" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/03-04-kafka-streams" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/03-04-kafka-streams" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/03-04-kafka-streams" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/03-04-kafka-streams" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-kafka-connect' title="Kafka Connect">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka Streams</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-configuring-kafka' title="Configuring Kafka">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Kafka Streams is a powerful library for building real-time, scalable, and fault-tolerant stream processing applications on top of Apache Kafka. It allows you to process data in real-time, transforming and enriching it as it flows through your system.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Stream Processing</h2>
+<div class='content'><p>Stream processing involves continuously processing data as it arrives. Unlike batch processing, which processes data in chunks, stream processing handles data in real-time, providing immediate insights and actions.</p>
+</div><h2>2. Kafka Streams API</h2>
+<div class='content'><p>The Kafka Streams API is a Java library that provides a simple and powerful way to process data streams. It abstracts the complexities of distributed stream processing, allowing developers to focus on the business logic.</p>
+</div><h2>3. Streams and Tables</h2>
+<div class='content'><ul>
+<li><strong>Streams</strong>: Represent an unbounded, continuously updating dataset. Each record in a stream is immutable.</li>
+<li><strong>Tables</strong>: Represent a snapshot of the latest value for each key. Tables are mutable and can be updated.</li>
+</ul>
+</div><h2>4. Topology</h2>
+<div class='content'><p>A topology is a directed graph of stream processing nodes. Each node represents a processing step, such as filtering, mapping, or joining streams.</p>
+</div><h2>5. State Stores</h2>
+<div class='content'><p>State stores are used to maintain state information across processing steps. They enable stateful operations like aggregations and joins.</p>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's build a simple Kafka Streams application that processes a stream of user clicks and counts the number of clicks per user.</p>
+</div><h2>Step 1: Set Up Dependencies</h2>
+<div class='content'><p>Add the following dependencies to your <code>pom.xml</code> file if you're using Maven:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY2llcz4KICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPm9yZy5hcGFjaGUua2Fma2E8L2dyb3VwSWQ+CiAgICAgICAgPGFydGlmYWN0SWQ+a2Fma2Etc3RyZWFtczwvYXJ0aWZhY3RJZD4KICAgICAgICA8dmVyc2lvbj4yLjguMDwvdmVyc2lvbj4KICAgIDwvZGVwZW5kZW5jeT4KICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPm9yZy5hcGFjaGUua2Fma2E8L2dyb3VwSWQ+CiAgICAgICAgPGFydGlmYWN0SWQ+a2Fma2EtY2xpZW50czwvYXJ0aWZhY3RJZD4KICAgICAgICA8dmVyc2lvbj4yLjguMDwvdmVyc2lvbj4KICAgIDwvZGVwZW5kZW5jeT4KPC9kZXBlbmRlbmNpZXM+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
+        &lt;artifactId&gt;kafka-streams&lt;/artifactId&gt;
+        &lt;version&gt;2.8.0&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.kafka&lt;/groupId&gt;
+        &lt;artifactId&gt;kafka-clients&lt;/artifactId&gt;
+        &lt;version&gt;2.8.0&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre></div><div class='content'></div><h2>Step 2: Define the Stream Processing Topology</h2>
+<div class='content'><p>Create a Java class to define the stream processing topology:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUua2Fma2EuY29tbW9uLnNlcmlhbGl6YXRpb24uU2VyZGVzOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5zdHJlYW1zLkthZmthU3RyZWFtczsKaW1wb3J0IG9yZy5hcGFjaGUua2Fma2Euc3RyZWFtcy5TdHJlYW1zQnVpbGRlcjsKaW1wb3J0IG9yZy5hcGFjaGUua2Fma2Euc3RyZWFtcy5TdHJlYW1zQ29uZmlnOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5zdHJlYW1zLmtzdHJlYW0uS1N0cmVhbTsKaW1wb3J0IG9yZy5hcGFjaGUua2Fma2Euc3RyZWFtcy5rc3RyZWFtLktUYWJsZTsKCmltcG9ydCBqYXZhLnV0aWwuUHJvcGVydGllczsKCnB1YmxpYyBjbGFzcyBVc2VyQ2xpY2tzU3RyZWFtIHsKCiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgUHJvcGVydGllcyBwcm9wcyA9IG5ldyBQcm9wZXJ0aWVzKCk7CiAgICAgICAgcHJvcHMucHV0KFN0cmVhbXNDb25maWcuQVBQTElDQVRJT05fSURfQ09ORklHLCAidXNlci1jbGlja3MtYXBwIik7CiAgICAgICAgcHJvcHMucHV0KFN0cmVhbXNDb25maWcuQk9PVFNUUkFQX1NFUlZFUlNfQ09ORklHLCAibG9jYWxob3N0OjkwOTIiKTsKICAgICAgICBwcm9wcy5wdXQoU3RyZWFtc0NvbmZpZy5ERUZBVUxUX0tFWV9TRVJERV9DTEFTU19DT05GSUcsIFNlcmRlcy5TdHJpbmcoKS5nZXRDbGFzcygpLmdldE5hbWUoKSk7CiAgICAgICAgcHJvcHMucHV0KFN0cmVhbXNDb25maWcuREVGQVVMVF9WQUxVRV9TRVJERV9DTEFTU19DT05GSUcsIFNlcmRlcy5TdHJpbmcoKS5nZXRDbGFzcygpLmdldE5hbWUoKSk7CgogICAgICAgIFN0cmVhbXNCdWlsZGVyIGJ1aWxkZXIgPSBuZXcgU3RyZWFtc0J1aWxkZXIoKTsKCiAgICAgICAgLy8gRGVmaW5lIHRoZSBpbnB1dCBzdHJlYW0KICAgICAgICBLU3RyZWFtPFN0cmluZywgU3RyaW5nPiBjbGlja3MgPSBidWlsZGVyLnN0cmVhbSgidXNlci1jbGlja3MiKTsKCiAgICAgICAgLy8gQ291bnQgY2xpY2tzIHBlciB1c2VyCiAgICAgICAgS1RhYmxlPFN0cmluZywgTG9uZz4gY2xpY2tDb3VudHMgPSBjbGlja3MKICAgICAgICAgICAgICAgIC5ncm91cEJ5KChrZXksIHZhbHVlKSAtPiB2YWx1ZSkKICAgICAgICAgICAgICAgIC5jb3VudCgpOwoKICAgICAgICAvLyBXcml0ZSB0aGUgcmVzdWx0cyB0byBhbiBvdXRwdXQgdG9waWMKICAgICAgICBjbGlja0NvdW50cy50b1N0cmVhbSgpLnRvKCJ1c2VyLWNsaWNrLWNvdW50cyIpOwoKICAgICAgICBLYWZrYVN0cmVhbXMgc3RyZWFtcyA9IG5ldyBLYWZrYVN0cmVhbXMoYnVpbGRlci5idWlsZCgpLCBwcm9wcyk7CiAgICAgICAgc3RyZWFtcy5zdGFydCgpOwoKICAgICAgICAvLyBBZGQgc2h1dGRvd24gaG9vayB0byBncmFjZWZ1bGx5IGNsb3NlIHRoZSBzdHJlYW1zIGFwcGxpY2F0aW9uCiAgICAgICAgUnVudGltZS5nZXRSdW50aW1lKCkuYWRkU2h1dGRvd25Ib29rKG5ldyBUaHJlYWQoc3RyZWFtczo6Y2xvc2UpKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.kafka.common.serialization.Serdes;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.kstream.KStream;
+import org.apache.kafka.streams.kstream.KTable;
+
+import java.util.Properties;
+
+public class UserClicksStream {
+
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, &quot;user-clicks-app&quot;);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, &quot;localhost:9092&quot;);
+        props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+        props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+
+        StreamsBuilder builder = new StreamsBuilder();
+
+        // Define the input stream
+        KStream&lt;String, String&gt; clicks = builder.stream(&quot;user-clicks&quot;);
+
+        // Count clicks per user
+        KTable&lt;String, Long&gt; clickCounts = clicks
+                .groupBy((key, value) -&gt; value)
+                .count();
+
+        // Write the results to an output topic
+        clickCounts.toStream().to(&quot;user-click-counts&quot;);
+
+        KafkaStreams streams = new KafkaStreams(builder.build(), props);
+        streams.start();
+
+        // Add shutdown hook to gracefully close the streams application
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+    }
+}</pre></div><div class='content'></div><h2>Step 3: Explanation</h2>
+<div class='content'><ul>
+<li><strong>Properties Configuration</strong>: Set up the necessary properties for the Kafka Streams application, including the application ID and bootstrap servers.</li>
+<li><strong>StreamsBuilder</strong>: Used to construct the stream processing topology.</li>
+<li><strong>KStream</strong>: Represents the input stream of user clicks.</li>
+<li><strong>GroupBy and Count</strong>: Group the clicks by user and count the number of clicks per user.</li>
+<li><strong>Output Stream</strong>: Write the results to an output topic named <code>user-click-counts</code>.</li>
+<li><strong>KafkaStreams</strong>: Create and start the Kafka Streams application.</li>
+</ul>
+</div><h2>Step 4: Running the Application</h2>
+<div class='content'><ol>
+<li>Ensure Kafka and Zookeeper are running.</li>
+<li>Create the input (<code>user-clicks</code>) and output (<code>user-click-counts</code>) topics.</li>
+<li>Run the <code>UserClicksStream</code> application.</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Filter Clicks by User</h2>
+<div class='content'><p>Modify the example to filter out clicks from a specific user (e.g., &quot;user123&quot;) before counting the clicks.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("S1N0cmVhbTxTdHJpbmcsIFN0cmluZz4gY2xpY2tzID0gYnVpbGRlci5zdHJlYW0oInVzZXItY2xpY2tzIik7CgovLyBGaWx0ZXIgb3V0IGNsaWNrcyBmcm9tICJ1c2VyMTIzIgpLU3RyZWFtPFN0cmluZywgU3RyaW5nPiBmaWx0ZXJlZENsaWNrcyA9IGNsaWNrcy5maWx0ZXIoKGtleSwgdmFsdWUpIC0+ICF2YWx1ZS5lcXVhbHMoInVzZXIxMjMiKSk7CgpLVGFibGU8U3RyaW5nLCBMb25nPiBjbGlja0NvdW50cyA9IGZpbHRlcmVkQ2xpY2tzCiAgICAgICAgLmdyb3VwQnkoKGtleSwgdmFsdWUpIC0+IHZhbHVlKQogICAgICAgIC5jb3VudCgpOwoKY2xpY2tDb3VudHMudG9TdHJlYW0oKS50bygidXNlci1jbGljay1jb3VudHMiKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>KStream&lt;String, String&gt; clicks = builder.stream(&quot;user-clicks&quot;);
+
+// Filter out clicks from &quot;user123&quot;
+KStream&lt;String, String&gt; filteredClicks = clicks.filter((key, value) -&gt; !value.equals(&quot;user123&quot;));
+
+KTable&lt;String, Long&gt; clickCounts = filteredClicks
+        .groupBy((key, value) -&gt; value)
+        .count();
+
+clickCounts.toStream().to(&quot;user-click-counts&quot;);</pre></div><div class='content'></div><h2>Exercise 2: Join Two Streams</h2>
+<div class='content'><p>Create a new stream that joins the user clicks stream with another stream of user details to enrich the click data with user information.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("S1N0cmVhbTxTdHJpbmcsIFN0cmluZz4gY2xpY2tzID0gYnVpbGRlci5zdHJlYW0oInVzZXItY2xpY2tzIik7CktTdHJlYW08U3RyaW5nLCBTdHJpbmc+IHVzZXJEZXRhaWxzID0gYnVpbGRlci5zdHJlYW0oInVzZXItZGV0YWlscyIpOwoKS1N0cmVhbTxTdHJpbmcsIFN0cmluZz4gZW5yaWNoZWRDbGlja3MgPSBjbGlja3Muam9pbih1c2VyRGV0YWlscywKICAgICAgICAoY2xpY2tWYWx1ZSwgdXNlckRldGFpbHNWYWx1ZSkgLT4gY2xpY2tWYWx1ZSArICIsICIgKyB1c2VyRGV0YWlsc1ZhbHVlKTsKCmVucmljaGVkQ2xpY2tzLnRvKCJlbnJpY2hlZC11c2VyLWNsaWNrcyIpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>KStream&lt;String, String&gt; clicks = builder.stream(&quot;user-clicks&quot;);
+KStream&lt;String, String&gt; userDetails = builder.stream(&quot;user-details&quot;);
+
+KStream&lt;String, String&gt; enrichedClicks = clicks.join(userDetails,
+        (clickValue, userDetailsValue) -&gt; clickValue + &quot;, &quot; + userDetailsValue);
+
+enrichedClicks.to(&quot;enriched-user-clicks&quot;);</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Serialization Issues</strong>: Ensure that the key and value serializers/deserializers are correctly configured.</li>
+<li><strong>State Store Management</strong>: Properly manage state stores to avoid memory issues.</li>
+<li><strong>Graceful Shutdown</strong>: Always add a shutdown hook to gracefully close the Kafka Streams application.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Kafka Streams, including key concepts, a practical example, and exercises to reinforce the learned concepts. Kafka Streams is a powerful tool for real-time stream processing, and mastering it can significantly enhance your ability to build scalable and fault-tolerant data processing applications. In the next module, we will delve into Kafka Configuration and Management, where we will learn how to configure and manage Kafka clusters effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-kafka-connect' title="Kafka Connect">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-configuring-kafka' title="Configuring Kafka">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

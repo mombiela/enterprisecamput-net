@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debugging PL/SQL Code</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/05-03-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/05-03-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/05-03-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/05-03-debugging" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/05-03-debugging" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-best-practices' title="Best Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Debugging PL/SQL Code</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-profiling-tuning' title="Profiling and Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Debugging is a crucial part of the development process, allowing you to identify and fix errors in your code. In this section, we will cover various techniques and tools available for debugging PL/SQL code.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Understanding Errors and Warnings</strong>:</p>
+<ul>
+<li>Syntax Errors</li>
+<li>Runtime Errors</li>
+<li>Logical Errors</li>
+<li>Warnings</li>
+</ul>
+</li>
+<li>
+<p><strong>Debugging Tools</strong>:</p>
+<ul>
+<li>DBMS_OUTPUT Package</li>
+<li>DBMS_DEBUG Package</li>
+<li>Oracle SQL Developer Debugger</li>
+<li>PL/SQL Profiler</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Debugging Techniques</strong>:</p>
+<ul>
+<li>Using <code>DBMS_OUTPUT.PUT_LINE</code></li>
+<li>Exception Handling</li>
+<li>Using Breakpoints</li>
+<li>Step-by-Step Execution</li>
+</ul>
+</li>
+</ol>
+</div><h1>Understanding Errors and Warnings</h1>
+<div class='content'></div><h2>Syntax Errors</h2>
+<div class='content'><p>Syntax errors occur when the code does not conform to the PL/SQL language rules. These are usually caught at compile time.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdIZWxsbyBXb3JsZCcpCkVORDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    dbms_output.put_line('Hello World')
+END;</pre></div><div class='content'><p><em>Error</em>: Missing semicolon after <code>dbms_output.put_line('Hello World')</code>.</p>
+</div><h2>Runtime Errors</h2>
+<div class='content'><p>Runtime errors occur during the execution of the code. These are often due to invalid operations, such as division by zero or accessing a null value.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSAwOwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIHJlc3VsdCA6PSBudW0xIC8gbnVtMjsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKHJlc3VsdCk7CkVORDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 0;
+    result NUMBER;
+BEGIN
+    result := num1 / num2;
+    dbms_output.put_line(result);
+END;</pre></div><div class='content'><p><em>Error</em>: ORA-01476: divisor is equal to zero.</p>
+</div><h2>Logical Errors</h2>
+<div class='content'><p>Logical errors are mistakes in the code logic that produce incorrect results. These are the hardest to detect because the code runs without any errors but does not produce the expected output.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSA1OwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIHJlc3VsdCA6PSBudW0xICogbnVtMjsgLS0gSW50ZW5kZWQgdG8gZGl2aWRlLCBidXQgbWlzdGFrZW5seSBtdWx0aXBsaWVkCiAgICBkYm1zX291dHB1dC5wdXRfbGluZShyZXN1bHQpOwpFTkQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 5;
+    result NUMBER;
+BEGIN
+    result := num1 * num2; -- Intended to divide, but mistakenly multiplied
+    dbms_output.put_line(result);
+END;</pre></div><div class='content'><p><em>Error</em>: The result is 50 instead of 2.</p>
+</div><h2>Warnings</h2>
+<div class='content'><p>Warnings are not errors but indicate potential issues in the code that might lead to problems.</p>
+</div><h1>Debugging Tools</h1>
+<div class='content'></div><h2>DBMS_OUTPUT Package</h2>
+<div class='content'><p>The <code>DBMS_OUTPUT</code> package is commonly used for debugging by printing messages to the console.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdEZWJ1Z2dpbmcgbWVzc2FnZTogU3RhcnQgb2YgdGhlIGJsb2NrJyk7CiAgICAtLSBZb3VyIGNvZGUgaGVyZQogICAgZGJtc19vdXRwdXQucHV0X2xpbmUoJ0RlYnVnZ2luZyBtZXNzYWdlOiBFbmQgb2YgdGhlIGJsb2NrJyk7CkVORDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    dbms_output.put_line('Debugging message: Start of the block');
+    -- Your code here
+    dbms_output.put_line('Debugging message: End of the block');
+END;</pre></div><div class='content'></div><h2>DBMS_DEBUG Package</h2>
+<div class='content'><p>The <code>DBMS_DEBUG</code> package provides a set of procedures and functions to debug PL/SQL code. It is more advanced and allows for setting breakpoints, stepping through code, and inspecting variables.</p>
+</div><h2>Oracle SQL Developer Debugger</h2>
+<div class='content'><p>Oracle SQL Developer provides a graphical debugger that allows you to set breakpoints, step through code, and inspect variable values.</p>
+</div><h2>PL/SQL Profiler</h2>
+<div class='content'><p>The PL/SQL Profiler helps in identifying performance bottlenecks by providing detailed execution statistics.</p>
+</div><h1>Common Debugging Techniques</h1>
+<div class='content'></div><h2>Using `DBMS_OUTPUT.PUT_LINE`</h2>
+<div class='content'><p>This is the simplest and most commonly used method for debugging.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSA1OwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdCZWZvcmUgY2FsY3VsYXRpb24nKTsKICAgIHJlc3VsdCA6PSBudW0xIC8gbnVtMjsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdSZXN1bHQ6ICcgfHwgcmVzdWx0KTsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdBZnRlciBjYWxjdWxhdGlvbicpOwpFTkQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 5;
+    result NUMBER;
+BEGIN
+    dbms_output.put_line('Before calculation');
+    result := num1 / num2;
+    dbms_output.put_line('Result: ' || result);
+    dbms_output.put_line('After calculation');
+END;</pre></div><div class='content'></div><h2>Exception Handling</h2>
+<div class='content'><p>Using exception handling to catch and debug runtime errors.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSAwOwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIEJFR0lOCiAgICAgICAgcmVzdWx0IDo9IG51bTEgLyBudW0yOwogICAgRVhDRVBUSU9OCiAgICAgICAgV0hFTiBaRVJPX0RJVklERSBUSEVOCiAgICAgICAgICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdFcnJvcjogRGl2aXNpb24gYnkgemVybycpOwogICAgRU5EOwpFTkQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 0;
+    result NUMBER;
+BEGIN
+    BEGIN
+        result := num1 / num2;
+    EXCEPTION
+        WHEN ZERO_DIVIDE THEN
+            dbms_output.put_line('Error: Division by zero');
+    END;
+END;</pre></div><div class='content'></div><h2>Using Breakpoints</h2>
+<div class='content'><p>Setting breakpoints in Oracle SQL Developer to pause execution at specific points and inspect variable values.</p>
+</div><h2>Step-by-Step Execution</h2>
+<div class='content'><p>Executing the code step-by-step to understand the flow and identify where the error occurs.</p>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise 1: Debugging with `DBMS_OUTPUT.PUT_LINE`</h2>
+<div class='content'><ol>
+<li>Write a PL/SQL block that calculates the factorial of a number.</li>
+<li>Use <code>DBMS_OUTPUT.PUT_LINE</code> to print intermediate results for debugging.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtIE5VTUJFUiA6PSA1OwogICAgZmFjdG9yaWFsIE5VTUJFUiA6PSAxOwpCRUdJTgogICAgRk9SIGkgSU4gUkVWRVJTRSAxLi5udW0gTE9PUAogICAgICAgIGZhY3RvcmlhbCA6PSBmYWN0b3JpYWwgKiBpOwogICAgICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdJbnRlcm1lZGlhdGUgZmFjdG9yaWFsIHZhbHVlOiAnIHx8IGZhY3RvcmlhbCk7CiAgICBFTkQgTE9PUDsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdGaW5hbCBmYWN0b3JpYWwgdmFsdWU6ICcgfHwgZmFjdG9yaWFsKTsKRU5EOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num NUMBER := 5;
+    factorial NUMBER := 1;
+BEGIN
+    FOR i IN REVERSE 1..num LOOP
+        factorial := factorial * i;
+        dbms_output.put_line('Intermediate factorial value: ' || factorial);
+    END LOOP;
+    dbms_output.put_line('Final factorial value: ' || factorial);
+END;</pre></div><div class='content'></div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtIE5VTUJFUiA6PSA1OwogICAgZmFjdG9yaWFsIE5VTUJFUiA6PSAxOwpCRUdJTgogICAgRk9SIGkgSU4gUkVWRVJTRSAxLi5udW0gTE9PUAogICAgICAgIGZhY3RvcmlhbCA6PSBmYWN0b3JpYWwgKiBpOwogICAgICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdJbnRlcm1lZGlhdGUgZmFjdG9yaWFsIHZhbHVlOiAnIHx8IGZhY3RvcmlhbCk7CiAgICBFTkQgTE9PUDsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdGaW5hbCBmYWN0b3JpYWwgdmFsdWU6ICcgfHwgZmFjdG9yaWFsKTsKRU5EOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num NUMBER := 5;
+    factorial NUMBER := 1;
+BEGIN
+    FOR i IN REVERSE 1..num LOOP
+        factorial := factorial * i;
+        dbms_output.put_line('Intermediate factorial value: ' || factorial);
+    END LOOP;
+    dbms_output.put_line('Final factorial value: ' || factorial);
+END;</pre></div><div class='content'></div><h2>Exercise 2: Handling Exceptions</h2>
+<div class='content'><ol>
+<li>Write a PL/SQL block that attempts to divide two numbers.</li>
+<li>Use exception handling to catch and print a message for division by zero.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSAwOwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIEJFR0lOCiAgICAgICAgcmVzdWx0IDo9IG51bTEgLyBudW0yOwogICAgRVhDRVBUSU9OCiAgICAgICAgV0hFTiBaRVJPX0RJVklERSBUSEVOCiAgICAgICAgICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdFcnJvcjogRGl2aXNpb24gYnkgemVybycpOwogICAgRU5EOwpFTkQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 0;
+    result NUMBER;
+BEGIN
+    BEGIN
+        result := num1 / num2;
+    EXCEPTION
+        WHEN ZERO_DIVIDE THEN
+            dbms_output.put_line('Error: Division by zero');
+    END;
+END;</pre></div><div class='content'></div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSAwOwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIEJFR0lOCiAgICAgICAgcmVzdWx0IDo9IG51bTEgLyBudW0yOwogICAgRVhDRVBUSU9OCiAgICAgICAgV0hFTiBaRVJPX0RJVklERSBUSEVOCiAgICAgICAgICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdFcnJvcjogRGl2aXNpb24gYnkgemVybycpOwogICAgRU5EOwpFTkQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 0;
+    result NUMBER;
+BEGIN
+    BEGIN
+        result := num1 / num2;
+    EXCEPTION
+        WHEN ZERO_DIVIDE THEN
+            dbms_output.put_line('Error: Division by zero');
+    END;
+END;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of debugging PL/SQL code, including understanding different types of errors, using various debugging tools, and applying common debugging techniques. By mastering these skills, you will be better equipped to identify and resolve issues in your PL/SQL programs, leading to more robust and reliable code.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-best-practices' title="Best Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-profiling-tuning' title="Profiling and Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

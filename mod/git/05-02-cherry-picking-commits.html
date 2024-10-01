@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherry-Picking Commits</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/git/05-02-cherry-picking-commits" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/git/05-02-cherry-picking-commits" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/git/05-02-cherry-picking-commits" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/git/05-02-cherry-picking-commits" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/git/05-02-cherry-picking-commits" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-rebasing' title="Rebasing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Cherry-Picking Commits</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-stashing-changes' title="Stashing Changes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Cherry-picking in Git allows you to apply the changes introduced by some existing commits onto your current branch. This can be particularly useful when you want to incorporate specific changes from one branch into another without merging the entire branch.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Commit Hash</strong>: A unique identifier for each commit.</li>
+<li><strong>Current Branch</strong>: The branch you are currently working on.</li>
+<li><strong>Source Branch</strong>: The branch from which you want to cherry-pick commits.</li>
+</ul>
+</div><h1>When to Use Cherry-Picking</h1>
+<div class='content'><ul>
+<li>To apply a bug fix from one branch to another.</li>
+<li>To selectively apply features or changes without merging the entire branch.</li>
+<li>To backport changes to an older release branch.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Identifying the Commit to Cherry-Pick</h2>
+<div class='content'><p>First, you need to identify the commit hash of the commit you want to cherry-pick. You can do this by viewing the commit history of the source branch.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGxvZyA8c291cmNlLWJyYW5jaD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git log &lt;source-branch&gt;</pre></div><div class='content'><p>Example output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29tbWl0IDFhMmIzYzRkNWU2ZjdnOGg5aTBqCkF1dGhvcjogSm9obiBEb2UgPGpvaG4uZG9lQGV4YW1wbGUuY29tPgpEYXRlOiAgIE1vbiBPY3QgNCAxMDowMDowMCAyMDIzIC0wNDAwCgogICAgRml4IGlzc3VlIHdpdGggdXNlciBhdXRoZW50aWNhdGlvbg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>commit 1a2b3c4d5e6f7g8h9i0j
+Author: John Doe &lt;john.doe@example.com&gt;
+Date:   Mon Oct 4 10:00:00 2023 -0400
+
+    Fix issue with user authentication</pre></div><div class='content'><p>In this example, the commit hash is <code>1a2b3c4d5e6f7g8h9i0j</code>.</p>
+</div><h2>2. Switching to the Target Branch</h2>
+<div class='content'><p>Switch to the branch where you want to apply the commit.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGNoZWNrb3V0IDx0YXJnZXQtYnJhbmNoPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git checkout &lt;target-branch&gt;</pre></div><div class='content'></div><h2>3. Cherry-Picking the Commit</h2>
+<div class='content'><p>Use the <code>git cherry-pick</code> command followed by the commit hash.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGNoZXJyeS1waWNrIDFhMmIzYzRkNWU2ZjdnOGg5aTBq"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git cherry-pick 1a2b3c4d5e6f7g8h9i0j</pre></div><div class='content'></div><h2>4. Resolving Conflicts (if any)</h2>
+<div class='content'><p>If there are conflicts, Git will pause the cherry-pick process and allow you to resolve them. After resolving the conflicts, you need to continue the cherry-pick process.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZXNvbHZlIGNvbmZsaWN0cyBpbiB5b3VyIGVkaXRvciwgdGhlbjoKZ2l0IGFkZCA8cmVzb2x2ZWQtZmlsZXM+CmdpdCBjaGVycnktcGljayAtLWNvbnRpbnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Resolve conflicts in your editor, then:
+git add &lt;resolved-files&gt;
+git cherry-pick --continue</pre></div><div class='content'><p>If you want to abort the cherry-pick process, you can use:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGNoZXJyeS1waWNrIC0tYWJvcnQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git cherry-pick --abort</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's say you have a bug fix in the <code>feature-branch</code> that you want to apply to the <code>main</code> branch.</p>
+<ol>
+<li>
+<p>Identify the commit hash in <code>feature-branch</code>:</p>
+<pre><code class="language-bash">git log feature-branch
+</code></pre>
+<p>Assume the commit hash is <code>abc123</code>.</p>
+</li>
+<li>
+<p>Switch to the <code>main</code> branch:</p>
+<pre><code class="language-bash">git checkout main
+</code></pre>
+</li>
+<li>
+<p>Cherry-pick the commit:</p>
+<pre><code class="language-bash">git cherry-pick abc123
+</code></pre>
+</li>
+<li>
+<p>If there are conflicts, resolve them and continue:</p>
+<pre><code class="language-bash"># Resolve conflicts in your editor, then:
+git add .
+git cherry-pick --continue
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Conflicts</strong>: Cherry-picking can lead to conflicts, especially if the codebase has diverged significantly. Always review and test the changes after cherry-picking.</li>
+<li><strong>Multiple Commits</strong>: You can cherry-pick multiple commits by specifying a range of commits or using multiple commit hashes.</li>
+<li><strong>Avoid Overuse</strong>: Cherry-picking should be used sparingly. Overuse can lead to a fragmented commit history and make it harder to track changes.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Cherry-Picking</h2>
+<div class='content'><ol>
+<li>Create a new branch <code>feature-branch</code> from <code>main</code>.</li>
+<li>Make a commit in <code>feature-branch</code>.</li>
+<li>Switch back to <code>main</code> and cherry-pick the commit from <code>feature-branch</code>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdGVwIDE6IENyZWF0ZSBhIG5ldyBicmFuY2ggYW5kIHN3aXRjaCB0byBpdApnaXQgY2hlY2tvdXQgLWIgZmVhdHVyZS1icmFuY2gKCiMgU3RlcCAyOiBNYWtlIGEgY29tbWl0CmVjaG8gIkZlYXR1cmUgd29yayIgPiBmZWF0dXJlLnR4dApnaXQgYWRkIGZlYXR1cmUudHh0CmdpdCBjb21taXQgLW0gIkFkZCBmZWF0dXJlIHdvcmsiCgojIFN0ZXAgMzogU3dpdGNoIGJhY2sgdG8gbWFpbgpnaXQgY2hlY2tvdXQgbWFpbgoKIyBTdGVwIDQ6IENoZXJyeS1waWNrIHRoZSBjb21taXQKZ2l0IGNoZXJyeS1waWNrIDxjb21taXQtaGFzaD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Step 1: Create a new branch and switch to it
+git checkout -b feature-branch
+
+# Step 2: Make a commit
+echo &quot;Feature work&quot; &gt; feature.txt
+git add feature.txt
+git commit -m &quot;Add feature work&quot;
+
+# Step 3: Switch back to main
+git checkout main
+
+# Step 4: Cherry-pick the commit
+git cherry-pick &lt;commit-hash&gt;</pre></div><div class='content'></div><h2>Exercise 2: Resolving Conflicts</h2>
+<div class='content'><ol>
+<li>Create a conflict by making changes to the same file in both <code>main</code> and <code>feature-branch</code>.</li>
+<li>Cherry-pick the commit from <code>feature-branch</code> to <code>main</code> and resolve the conflict.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdGVwIDE6IENyZWF0ZSBhIGNvbmZsaWN0CiMgSW4gbWFpbiBicmFuY2gKZWNobyAiTWFpbiBicmFuY2ggd29yayIgPiBjb25mbGljdC50eHQKZ2l0IGFkZCBjb25mbGljdC50eHQKZ2l0IGNvbW1pdCAtbSAiQWRkIG1haW4gYnJhbmNoIHdvcmsiCgojIEluIGZlYXR1cmUtYnJhbmNoCmdpdCBjaGVja291dCBmZWF0dXJlLWJyYW5jaAplY2hvICJGZWF0dXJlIGJyYW5jaCB3b3JrIiA+IGNvbmZsaWN0LnR4dApnaXQgYWRkIGNvbmZsaWN0LnR4dApnaXQgY29tbWl0IC1tICJBZGQgZmVhdHVyZSBicmFuY2ggd29yayIKCiMgU3RlcCAyOiBDaGVycnktcGljayBhbmQgcmVzb2x2ZSBjb25mbGljdApnaXQgY2hlY2tvdXQgbWFpbgpnaXQgY2hlcnJ5LXBpY2sgPGNvbW1pdC1oYXNoPgoKIyBSZXNvbHZlIGNvbmZsaWN0IGluIGNvbmZsaWN0LnR4dAojIEFkZCByZXNvbHZlZCBmaWxlCmdpdCBhZGQgY29uZmxpY3QudHh0CmdpdCBjaGVycnktcGljayAtLWNvbnRpbnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Step 1: Create a conflict
+# In main branch
+echo &quot;Main branch work&quot; &gt; conflict.txt
+git add conflict.txt
+git commit -m &quot;Add main branch work&quot;
+
+# In feature-branch
+git checkout feature-branch
+echo &quot;Feature branch work&quot; &gt; conflict.txt
+git add conflict.txt
+git commit -m &quot;Add feature branch work&quot;
+
+# Step 2: Cherry-pick and resolve conflict
+git checkout main
+git cherry-pick &lt;commit-hash&gt;
+
+# Resolve conflict in conflict.txt
+# Add resolved file
+git add conflict.txt
+git cherry-pick --continue</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Cherry-picking is a powerful tool in Git that allows you to selectively apply changes from one branch to another. While it can be very useful, it should be used judiciously to avoid complicating your commit history. Practice cherry-picking with the exercises provided to become more comfortable with this feature.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-rebasing' title="Rebasing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-stashing-changes' title="Stashing Changes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connecting to a Database</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/08-01-connecting-to-a-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/08-01-connecting-to-a-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/08-01-connecting-to-a-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/go/08-01-connecting-to-a-database" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/go/08-01-connecting-to-a-database" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-working-with-templates' title="Working with Templates">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Connecting to a Database</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-crud-operations' title="CRUD Operations">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to connect a Go application to a database. We will cover the following topics:</p>
+<ol>
+<li>Introduction to database connectivity in Go</li>
+<li>Setting up a database</li>
+<li>Using the <code>database/sql</code> package</li>
+<li>Connecting to a database</li>
+<li>Practical example: Connecting to a PostgreSQL database</li>
+<li>Exercises</li>
+</ol>
+</div><h1>1. Introduction to Database Connectivity in Go</h1>
+<div class='content'><p>Go provides a powerful standard library package, <code>database/sql</code>, which offers a generic interface around SQL (or SQL-like) databases. This package allows you to interact with various databases using a consistent API.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Driver</strong>: A driver is a Go package that implements the <code>database/sql</code> interfaces for a specific database.</li>
+<li><strong>DSN (Data Source Name)</strong>: A string that contains the information needed to connect to the database, such as the username, password, host, and database name.</li>
+</ul>
+</div><h1>2. Setting Up a Database</h1>
+<div class='content'><p>Before connecting to a database, you need to have a database set up. For this example, we will use PostgreSQL. Ensure you have PostgreSQL installed and running on your machine.</p>
+</div><h2>Steps to Set Up PostgreSQL:</h2>
+<div class='content'><ol>
+<li><strong>Install PostgreSQL</strong>: Follow the installation instructions for your operating system from the <a href="https://www.postgresql.org/download/">official PostgreSQL website</a>.</li>
+<li><strong>Create a Database</strong>: Use the following commands to create a new database and user.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBPcGVuIFBvc3RncmVTUUwgaW50ZXJhY3RpdmUgdGVybWluYWwKcHNxbCAtVSBwb3N0Z3JlcwoKIyBDcmVhdGUgYSBuZXcgZGF0YWJhc2UKQ1JFQVRFIERBVEFCQVNFIG15ZGI7CgojIENyZWF0ZSBhIG5ldyB1c2VyCkNSRUFURSBVU0VSIG15dXNlciBXSVRIIEVOQ1JZUFRFRCBQQVNTV09SRCAnbXlwYXNzd29yZCc7CgojIEdyYW50IHByaXZpbGVnZXMgdG8gdGhlIHVzZXIKR1JBTlQgQUxMIFBSSVZJTEVHRVMgT04gREFUQUJBU0UgbXlkYiBUTyBteXVzZXI7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Open PostgreSQL interactive terminal
+psql -U postgres
+
+# Create a new database
+CREATE DATABASE mydb;
+
+# Create a new user
+CREATE USER myuser WITH ENCRYPTED PASSWORD 'mypassword';
+
+# Grant privileges to the user
+GRANT ALL PRIVILEGES ON DATABASE mydb TO myuser;</pre></div><div class='content'></div><h1>3. Using the `database/sql` Package</h1>
+<div class='content'><p>The <code>database/sql</code> package provides the core functionality for database interactions. To use it, you need to import the package and a driver package for your specific database.</p>
+</div><h2>Importing Packages:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICgKICAgICJkYXRhYmFzZS9zcWwiCiAgICBfICJnaXRodWIuY29tL2xpYi9wcSIgLy8gUG9zdGdyZVNRTCBkcml2ZXIKKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import (
+    &quot;database/sql&quot;
+    _ &quot;github.com/lib/pq&quot; // PostgreSQL driver
+)</pre></div><div class='content'></div><h1>4. Connecting to a Database</h1>
+<div class='content'><p>To connect to a database, you need to use the <code>sql.Open</code> function, which requires the driver name and the DSN.</p>
+</div><h2>Example DSN for PostgreSQL:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZHNuIDo9ICJ1c2VyPW15dXNlciBwYXNzd29yZD1teXBhc3N3b3JkIGRibmFtZT1teWRiIHNzbG1vZGU9ZGlzYWJsZSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dsn := &quot;user=myuser password=mypassword dbname=mydb sslmode=disable&quot;</pre></div><div class='content'></div><h2>Connecting to the Database:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIsIGVyciA6PSBzcWwuT3BlbigicG9zdGdyZXMiLCBkc24pCmlmIGVyciAhPSBuaWwgewogICAgbG9nLkZhdGFsKGVycikKfQpkZWZlciBkYi5DbG9zZSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db, err := sql.Open(&quot;postgres&quot;, dsn)
+if err != nil {
+    log.Fatal(err)
+}
+defer db.Close()</pre></div><div class='content'></div><h1>5. Practical Example: Connecting to a PostgreSQL Database</h1>
+<div class='content'><p>Let's put everything together in a complete example.</p>
+</div><h2>Example Code:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJmbXQiCiAgICAibG9nIgoKICAgIF8gImdpdGh1Yi5jb20vbGliL3BxIgopCgpmdW5jIG1haW4oKSB7CiAgICAvLyBEZWZpbmUgdGhlIERTTiAoRGF0YSBTb3VyY2UgTmFtZSkKICAgIGRzbiA6PSAidXNlcj1teXVzZXIgcGFzc3dvcmQ9bXlwYXNzd29yZCBkYm5hbWU9bXlkYiBzc2xtb2RlPWRpc2FibGUiCgogICAgLy8gT3BlbiBhIGNvbm5lY3Rpb24gdG8gdGhlIGRhdGFiYXNlCiAgICBkYiwgZXJyIDo9IHNxbC5PcGVuKCJwb3N0Z3JlcyIsIGRzbikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBkZWZlciBkYi5DbG9zZSgpCgogICAgLy8gVmVyaWZ5IHRoZSBjb25uZWN0aW9uCiAgICBlcnIgPSBkYi5QaW5nKCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CgogICAgZm10LlByaW50bG4oIlN1Y2Nlc3NmdWxseSBjb25uZWN0ZWQgdG8gdGhlIGRhdGFiYXNlISIpCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+
+    _ &quot;github.com/lib/pq&quot;
+)
+
+func main() {
+    // Define the DSN (Data Source Name)
+    dsn := &quot;user=myuser password=mypassword dbname=mydb sslmode=disable&quot;
+
+    // Open a connection to the database
+    db, err := sql.Open(&quot;postgres&quot;, dsn)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    // Verify the connection
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(&quot;Successfully connected to the database!&quot;)
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>Import Statements</strong>: We import the <code>database/sql</code> package and the PostgreSQL driver package.</li>
+<li><strong>DSN</strong>: We define the DSN with the necessary connection details.</li>
+<li><strong>sql.Open</strong>: We open a connection to the database using the <code>sql.Open</code> function.</li>
+<li><strong>db.Ping</strong>: We verify the connection using the <code>db.Ping</code> method.</li>
+<li><strong>defer db.Close</strong>: We ensure the database connection is closed when the function exits.</li>
+</ul>
+</div><h1>6. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Connect to a MySQL Database</h2>
+<div class='content'><ol>
+<li>Install MySQL and create a database and user.</li>
+<li>Modify the example code to connect to the MySQL database using the <code>github.com/go-sql-driver/mysql</code> driver.</li>
+</ol>
+</div><h2>Exercise 2: Handle Connection Errors</h2>
+<div class='content'><ol>
+<li>Modify the example code to handle different types of connection errors (e.g., incorrect password, database not found).</li>
+<li>Print user-friendly error messages for each type of error.</li>
+</ol>
+</div><h2>Exercise 3: Environment Variables for DSN</h2>
+<div class='content'><ol>
+<li>Modify the example code to read the DSN components (user, password, dbname) from environment variables.</li>
+<li>Use the <code>os</code> package to read environment variables.</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Solution 1: Connect to a MySQL Database</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICgKICAgICJkYXRhYmFzZS9zcWwiCiAgICAiZm10IgogICAgImxvZyIKCiAgICBfICJnaXRodWIuY29tL2dvLXNxbC1kcml2ZXIvbXlzcWwiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRzbiA6PSAibXl1c2VyOm15cGFzc3dvcmRAdGNwKDEyNy4wLjAuMTozMzA2KS9teWRiIgogICAgZGIsIGVyciA6PSBzcWwuT3BlbigibXlzcWwiLCBkc24pCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgZGVmZXIgZGIuQ2xvc2UoKQoKICAgIGVyciA9IGRiLlBpbmcoKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgbG9nLkZhdGFsKGVycikKICAgIH0KCiAgICBmbXQuUHJpbnRsbigiU3VjY2Vzc2Z1bGx5IGNvbm5lY3RlZCB0byB0aGUgTXlTUUwgZGF0YWJhc2UhIikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+
+    _ &quot;github.com/go-sql-driver/mysql&quot;
+)
+
+func main() {
+    dsn := &quot;myuser:mypassword@tcp(127.0.0.1:3306)/mydb&quot;
+    db, err := sql.Open(&quot;mysql&quot;, dsn)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(&quot;Successfully connected to the MySQL database!&quot;)
+}</pre></div><div class='content'><h4>Solution 2: Handle Connection Errors</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICgKICAgICJkYXRhYmFzZS9zcWwiCiAgICAiZm10IgogICAgImxvZyIKCiAgICBfICJnaXRodWIuY29tL2xpYi9wcSIKKQoKZnVuYyBtYWluKCkgewogICAgZHNuIDo9ICJ1c2VyPW15dXNlciBwYXNzd29yZD1teXBhc3N3b3JkIGRibmFtZT1teWRiIHNzbG1vZGU9ZGlzYWJsZSIKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInBvc3RncmVzIiwgZHNuKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgbG9nLkZhdGFsKCJFcnJvciBvcGVuaW5nIGRhdGFiYXNlIGNvbm5lY3Rpb246IiwgZXJyKQogICAgfQogICAgZGVmZXIgZGIuQ2xvc2UoKQoKICAgIGVyciA9IGRiLlBpbmcoKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgaWYgZXJyLkVycm9yKCkgPT0gInBxOiBwYXNzd29yZCBhdXRoZW50aWNhdGlvbiBmYWlsZWQgZm9yIHVzZXIgXCJteXVzZXJcIiIgewogICAgICAgICAgICBsb2cuRmF0YWwoIkluY29ycmVjdCBwYXNzd29yZCIpCiAgICAgICAgfSBlbHNlIGlmIGVyci5FcnJvcigpID09ICJwcTogZGF0YWJhc2UgXCJteWRiXCIgZG9lcyBub3QgZXhpc3QiIHsKICAgICAgICAgICAgbG9nLkZhdGFsKCJEYXRhYmFzZSBub3QgZm91bmQiKQogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGxvZy5GYXRhbCgiRXJyb3IgY29ubmVjdGluZyB0byB0aGUgZGF0YWJhc2U6IiwgZXJyKQogICAgICAgIH0KICAgIH0KCiAgICBmbXQuUHJpbnRsbigiU3VjY2Vzc2Z1bGx5IGNvbm5lY3RlZCB0byB0aGUgZGF0YWJhc2UhIikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+
+    _ &quot;github.com/lib/pq&quot;
+)
+
+func main() {
+    dsn := &quot;user=myuser password=mypassword dbname=mydb sslmode=disable&quot;
+    db, err := sql.Open(&quot;postgres&quot;, dsn)
+    if err != nil {
+        log.Fatal(&quot;Error opening database connection:&quot;, err)
+    }
+    defer db.Close()
+
+    err = db.Ping()
+    if err != nil {
+        if err.Error() == &quot;pq: password authentication failed for user \&quot;myuser\&quot;&quot; {
+            log.Fatal(&quot;Incorrect password&quot;)
+        } else if err.Error() == &quot;pq: database \&quot;mydb\&quot; does not exist&quot; {
+            log.Fatal(&quot;Database not found&quot;)
+        } else {
+            log.Fatal(&quot;Error connecting to the database:&quot;, err)
+        }
+    }
+
+    fmt.Println(&quot;Successfully connected to the database!&quot;)
+}</pre></div><div class='content'><h4>Solution 3: Environment Variables for DSN</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICgKICAgICJkYXRhYmFzZS9zcWwiCiAgICAiZm10IgogICAgImxvZyIKICAgICJvcyIKCiAgICBfICJnaXRodWIuY29tL2xpYi9wcSIKKQoKZnVuYyBtYWluKCkgewogICAgdXNlciA6PSBvcy5HZXRlbnYoIkRCX1VTRVIiKQogICAgcGFzc3dvcmQgOj0gb3MuR2V0ZW52KCJEQl9QQVNTV09SRCIpCiAgICBkYm5hbWUgOj0gb3MuR2V0ZW52KCJEQl9OQU1FIikKICAgIGRzbiA6PSBmbXQuU3ByaW50ZigidXNlcj0lcyBwYXNzd29yZD0lcyBkYm5hbWU9JXMgc3NsbW9kZT1kaXNhYmxlIiwgdXNlciwgcGFzc3dvcmQsIGRibmFtZSkKCiAgICBkYiwgZXJyIDo9IHNxbC5PcGVuKCJwb3N0Z3JlcyIsIGRzbikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBkZWZlciBkYi5DbG9zZSgpCgogICAgZXJyID0gZGIuUGluZygpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQoKICAgIGZtdC5QcmludGxuKCJTdWNjZXNzZnVsbHkgY29ubmVjdGVkIHRvIHRoZSBkYXRhYmFzZSEiKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    &quot;log&quot;
+    &quot;os&quot;
+
+    _ &quot;github.com/lib/pq&quot;
+)
+
+func main() {
+    user := os.Getenv(&quot;DB_USER&quot;)
+    password := os.Getenv(&quot;DB_PASSWORD&quot;)
+    dbname := os.Getenv(&quot;DB_NAME&quot;)
+    dsn := fmt.Sprintf(&quot;user=%s password=%s dbname=%s sslmode=disable&quot;, user, password, dbname)
+
+    db, err := sql.Open(&quot;postgres&quot;, dsn)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    fmt.Println(&quot;Successfully connected to the database!&quot;)
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to connect a Go application to a database using the <code>database/sql</code> package. We covered setting up a database, using the <code>sql.Open</code> function, and verifying the connection. We also provided practical examples and exercises to reinforce the concepts. In the next section, we will explore CRUD operations to interact with the database.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-working-with-templates' title="Working with Templates">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-crud-operations' title="CRUD Operations">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

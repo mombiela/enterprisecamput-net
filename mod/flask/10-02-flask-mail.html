@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Flask-Mail for Email</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/10-02-flask-mail" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/10-02-flask-mail" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/10-02-flask-mail" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/10-02-flask-mail" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/10-02-flask-mail" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-popular-extensions' title="Popular Flask Extensions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Flask-Mail for Email</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-flask-admin' title="Using Flask-Admin for Admin Interfaces">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Flask-Mail is an extension for Flask that makes it easy to send emails from your Flask application. This module will guide you through the process of setting up Flask-Mail, configuring it, and sending emails.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Flask-Mail</strong>: An extension that integrates email sending capabilities into your Flask application.</li>
+<li><strong>SMTP Server</strong>: A server that handles the sending of emails.</li>
+<li><strong>Email Configuration</strong>: Setting up the necessary configurations to connect to an SMTP server.</li>
+<li><strong>Email Templates</strong>: Using Jinja2 templates to create dynamic email content.</li>
+</ol>
+</div><h1>Setting Up Flask-Mail</h1>
+<div class='content'></div><h2>Step 1: Install Flask-Mail</h2>
+<div class='content'><p>First, you need to install Flask-Mail. You can do this using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stTWFpbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-Mail</pre></div><div class='content'></div><h2>Step 2: Configure Flask-Mail</h2>
+<div class='content'><p>Next, you need to configure Flask-Mail in your Flask application. Add the following configuration settings to your <code>config.py</code> or directly in your application setup:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBjb25maWcucHkKTUFJTF9TRVJWRVIgPSAnc210cC5leGFtcGxlLmNvbScKTUFJTF9QT1JUID0gNTg3Ck1BSUxfVVNFX1RMUyA9IFRydWUKTUFJTF9VU0VfU1NMID0gRmFsc2UKTUFJTF9VU0VSTkFNRSA9ICd5b3VyLWVtYWlsQGV4YW1wbGUuY29tJwpNQUlMX1BBU1NXT1JEID0gJ3lvdXItZW1haWwtcGFzc3dvcmQnCk1BSUxfREVGQVVMVF9TRU5ERVIgPSAneW91ci1lbWFpbEBleGFtcGxlLmNvbSc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># config.py
+MAIL_SERVER = 'smtp.example.com'
+MAIL_PORT = 587
+MAIL_USE_TLS = True
+MAIL_USE_SSL = False
+MAIL_USERNAME = 'your-email@example.com'
+MAIL_PASSWORD = 'your-email-password'
+MAIL_DEFAULT_SENDER = 'your-email@example.com'</pre></div><div class='content'></div><h2>Step 3: Initialize Flask-Mail</h2>
+<div class='content'><p>Now, initialize Flask-Mail in your Flask application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFza19tYWlsIGltcG9ydCBNYWlsCgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZy5mcm9tX3B5ZmlsZSgnY29uZmlnLnB5JykKCm1haWwgPSBNYWlsKGFwcCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask import Flask
+from flask_mail import Mail
+
+app = Flask(__name__)
+app.config.from_pyfile('config.py')
+
+mail = Mail(app)</pre></div><div class='content'></div><h1>Sending Emails</h1>
+<div class='content'></div><h2>Basic Email Sending</h2>
+<div class='content'><p>To send a basic email, you can use the <code>Message</code> class from Flask-Mail and the <code>send</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFza19tYWlsIGltcG9ydCBNZXNzYWdlCgpAYXBwLnJvdXRlKCcvc2VuZC1lbWFpbCcpCmRlZiBzZW5kX2VtYWlsKCk6CiAgICBtc2cgPSBNZXNzYWdlKCdIZWxsbyBmcm9tIEZsYXNrLU1haWwnLAogICAgICAgICAgICAgICAgICByZWNpcGllbnRzPVsncmVjaXBpZW50QGV4YW1wbGUuY29tJ10pCiAgICBtc2cuYm9keSA9ICdUaGlzIGlzIGEgdGVzdCBlbWFpbCBzZW50IGZyb20gYSBGbGFzayBhcHBsaWNhdGlvbiEnCiAgICBtYWlsLnNlbmQobXNnKQogICAgcmV0dXJuICdFbWFpbCBzZW50ISc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask_mail import Message
+
+@app.route('/send-email')
+def send_email():
+    msg = Message('Hello from Flask-Mail',
+                  recipients=['recipient@example.com'])
+    msg.body = 'This is a test email sent from a Flask application!'
+    mail.send(msg)
+    return 'Email sent!'</pre></div><div class='content'></div><h2>Using Email Templates</h2>
+<div class='content'><p>You can use Jinja2 templates to create dynamic email content. First, create an email template in your <code>templates</code> directory:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvZW1haWwuaHRtbCAtLT4KPCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT57eyBzdWJqZWN0IH19PC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxwPnt7IGJvZHkgfX08L3A+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/email.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{{ subject }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;p&gt;{{ body }}&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><p>Then, render the template and send the email:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFzayBpbXBvcnQgcmVuZGVyX3RlbXBsYXRlCgpAYXBwLnJvdXRlKCcvc2VuZC1lbWFpbCcpCmRlZiBzZW5kX2VtYWlsKCk6CiAgICBzdWJqZWN0ID0gJ0hlbGxvIGZyb20gRmxhc2stTWFpbCcKICAgIHJlY2lwaWVudHMgPSBbJ3JlY2lwaWVudEBleGFtcGxlLmNvbSddCiAgICBib2R5ID0gJ1RoaXMgaXMgYSB0ZXN0IGVtYWlsIHNlbnQgZnJvbSBhIEZsYXNrIGFwcGxpY2F0aW9uIScKICAgIAogICAgbXNnID0gTWVzc2FnZShzdWJqZWN0LCByZWNpcGllbnRzPXJlY2lwaWVudHMpCiAgICBtc2cuaHRtbCA9IHJlbmRlcl90ZW1wbGF0ZSgnZW1haWwuaHRtbCcsIHN1YmplY3Q9c3ViamVjdCwgYm9keT1ib2R5KQogICAgbWFpbC5zZW5kKG1zZykKICAgIHJldHVybiAnRW1haWwgc2VudCEn"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask import render_template
+
+@app.route('/send-email')
+def send_email():
+    subject = 'Hello from Flask-Mail'
+    recipients = ['recipient@example.com']
+    body = 'This is a test email sent from a Flask application!'
+    
+    msg = Message(subject, recipients=recipients)
+    msg.html = render_template('email.html', subject=subject, body=body)
+    mail.send(msg)
+    return 'Email sent!'</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Send a Welcome Email</h2>
+<div class='content'><p>Create a route that sends a welcome email to a new user when they register.</p>
+<ol>
+<li>
+<p><strong>Create a registration form</strong>:</p>
+<pre><code class="language-python"># forms.py
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Email
+
+class RegistrationForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Register')
+</code></pre>
+</li>
+<li>
+<p><strong>Create a registration route</strong>:</p>
+<pre><code class="language-python"># app.py
+from flask import render_template, redirect, url_for, flash
+from forms import RegistrationForm
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        send_welcome_email(email)
+        flash('Registration successful! A welcome email has been sent.', 'success')
+        return redirect(url_for('index'))
+    return render_template('register.html', form=form)
+</code></pre>
+</li>
+<li>
+<p><strong>Create the <code>send_welcome_email</code> function</strong>:</p>
+<pre><code class="language-python"># app.py
+def send_welcome_email(email):
+    subject = 'Welcome to Our Service'
+    body = 'Thank you for registering with our service!'
+
+    msg = Message(subject, recipients=[email])
+    msg.html = render_template('email.html', subject=subject, body=body)
+    mail.send(msg)
+</code></pre>
+</li>
+<li>
+<p><strong>Create the registration template</strong>:</p>
+<pre><code class="language-html">&lt;!-- templates/register.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Register&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot;&gt;
+        {{ form.hidden_tag() }}
+        {{ form.email.label }} {{ form.email() }}&lt;br&gt;
+        {{ form.submit() }}
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>The solution involves integrating the form, route, and email sending function as shown in the steps above. Ensure that the email template is correctly placed in the <code>templates</code> directory.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect SMTP Configuration</strong>: Ensure that your SMTP server settings are correct. Double-check the server address, port, and authentication details.</li>
+<li><strong>Email Blocking</strong>: Some email providers may block emails sent from untrusted sources. Use a reputable SMTP service.</li>
+<li><strong>Testing</strong>: Use a testing email account to avoid spamming real users during development.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to set up and use Flask-Mail to send emails from your Flask application. You configured the necessary settings, sent basic emails, and used templates to create dynamic email content. You also completed a practical exercise to reinforce these concepts. In the next module, you will explore using Flask-Admin for creating admin interfaces.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-popular-extensions' title="Popular Flask Extensions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-flask-admin' title="Using Flask-Admin for Admin Interfaces">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

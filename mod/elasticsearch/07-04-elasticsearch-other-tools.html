@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch with Other Tools</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/07-04-elasticsearch-other-tools" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/07-04-elasticsearch-other-tools" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/07-04-elasticsearch-other-tools" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/07-04-elasticsearch-other-tools" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/07-04-elasticsearch-other-tools" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-elasticsearch-beats' title="Elasticsearch with Beats">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Elasticsearch with Other Tools</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-custom-plugins' title="Custom Plugins">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how Elasticsearch can be integrated with various other tools to enhance its functionality and provide a more comprehensive data management and analysis solution. We will cover the following tools:</p>
+<ol>
+<li><strong>Apache Kafka</strong></li>
+<li><strong>Hadoop</strong></li>
+<li><strong>Spark</strong></li>
+<li><strong>Rivers (Deprecated)</strong></li>
+<li><strong>Elasticsearch-Hadoop Connector</strong></li>
+</ol>
+</div><h1>1. Apache Kafka</h1>
+<div class='content'></div><h2>What is Apache Kafka?</h2>
+<div class='content'><p>Apache Kafka is a distributed streaming platform that can publish, subscribe to, store, and process streams of records in real-time.</p>
+</div><h2>Integrating Elasticsearch with Kafka</h2>
+<div class='content'><p>Elasticsearch can be integrated with Kafka to index and search real-time data streams. This is typically done using Kafka Connect and the Elasticsearch Sink Connector.</p>
+</div><h2>Example: Setting Up Kafka Connect with Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Kafka Connect</strong>:</p>
+<pre><code class="language-bash">bin/confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the Elasticsearch Sink Connector</strong>:
+Create a configuration file <code>elasticsearch-sink.properties</code>:</p>
+<pre><code class="language-properties">name=elasticsearch-sink
+connector.class=io.confluent.connect.elasticsearch.ElasticsearchSinkConnector
+tasks.max=1
+topics=your-topic
+key.ignore=true
+connection.url=http://localhost:9200
+</code></pre>
+</li>
+<li>
+<p><strong>Start the Connector</strong>:</p>
+<pre><code class="language-bash">bin/connect-standalone.sh config/connect-standalone.properties config/elasticsearch-sink.properties
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Task</strong>: Set up a Kafka topic and use Kafka Connect to stream data into an Elasticsearch index.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>
+<p>Create a Kafka topic:</p>
+<pre><code class="language-bash">bin/kafka-topics.sh --create --topic your-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+</code></pre>
+</li>
+<li>
+<p>Produce some messages to the topic:</p>
+<pre><code class="language-bash">bin/kafka-console-producer.sh --topic your-topic --bootstrap-server localhost:9092
+&gt; {&quot;name&quot;: &quot;John Doe&quot;, &quot;age&quot;: 30}
+&gt; {&quot;name&quot;: &quot;Jane Doe&quot;, &quot;age&quot;: 25}
+</code></pre>
+</li>
+<li>
+<p>Verify the data in Elasticsearch:</p>
+<pre><code class="language-bash">curl -X GET &quot;localhost:9200/your-topic/_search?pretty&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>2. Hadoop</h1>
+<div class='content'></div><h2>What is Hadoop?</h2>
+<div class='content'><p>Hadoop is an open-source framework for distributed storage and processing of large data sets using the MapReduce programming model.</p>
+</div><h2>Integrating Elasticsearch with Hadoop</h2>
+<div class='content'><p>Elasticsearch-Hadoop (ES-Hadoop) is a connector that allows Hadoop and its ecosystem (e.g., Hive, Pig, Spark) to interact with Elasticsearch.</p>
+</div><h2>Example: Using ES-Hadoop with Hive</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add ES-Hadoop JAR to Hive</strong>:</p>
+<pre><code class="language-bash">ADD JAR /path/to/elasticsearch-hadoop.jar;
+</code></pre>
+</li>
+<li>
+<p><strong>Create an External Table in Hive</strong>:</p>
+<pre><code class="language-sql">CREATE EXTERNAL TABLE es_table (
+  name STRING,
+  age INT
+)
+STORED BY 'org.elasticsearch.hadoop.hive.EsStorageHandler'
+TBLPROPERTIES('es.resource' = 'index/type', 'es.nodes' = 'localhost:9200');
+</code></pre>
+</li>
+<li>
+<p><strong>Query the Data</strong>:</p>
+<pre><code class="language-sql">SELECT * FROM es_table;
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Task</strong>: Create a Hive table that reads data from an Elasticsearch index.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Add the ES-Hadoop JAR to Hive.</li>
+<li>Create the external table as shown above.</li>
+<li>Insert some data into the Elasticsearch index and query it from Hive.</li>
+</ol>
+</div><h1>3. Spark</h1>
+<div class='content'></div><h2>What is Spark?</h2>
+<div class='content'><p>Apache Spark is an open-source unified analytics engine for large-scale data processing, with built-in modules for streaming, SQL, machine learning, and graph processing.</p>
+</div><h2>Integrating Elasticsearch with Spark</h2>
+<div class='content'><p>Elasticsearch can be integrated with Spark using the Elasticsearch-Spark connector, which allows Spark to read from and write to Elasticsearch.</p>
+</div><h2>Example: Using Elasticsearch-Spark Connector</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add the Connector Dependency</strong>:</p>
+<pre><code class="language-scala">libraryDependencies += &quot;org.elasticsearch&quot; %% &quot;elasticsearch-spark-20&quot; % &quot;7.10.0&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Read Data from Elasticsearch</strong>:</p>
+<pre><code class="language-scala">import org.apache.spark.sql.SparkSession
+import org.elasticsearch.spark.sql._
+
+val spark = SparkSession.builder()
+  .appName(&quot;ElasticsearchSparkExample&quot;)
+  .config(&quot;spark.es.nodes&quot;, &quot;localhost&quot;)
+  .getOrCreate()
+
+val df = spark.read.format(&quot;es&quot;).load(&quot;index/type&quot;)
+df.show()
+</code></pre>
+</li>
+<li>
+<p><strong>Write Data to Elasticsearch</strong>:</p>
+<pre><code class="language-scala">df.write.format(&quot;es&quot;).save(&quot;index/type&quot;)
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Task</strong>: Read data from an Elasticsearch index into a Spark DataFrame and perform a simple transformation.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Set up the Spark session with the Elasticsearch configuration.</li>
+<li>Read the data from Elasticsearch.</li>
+<li>Perform a transformation (e.g., filter the data) and write it back to Elasticsearch.</li>
+</ol>
+</div><h1>4. Rivers (Deprecated)</h1>
+<div class='content'></div><h2>What were Rivers?</h2>
+<div class='content'><p>Rivers were a feature in Elasticsearch that allowed data to be automatically indexed from an external source. They have been deprecated and removed in favor of other ingestion methods like Logstash and Beats.</p>
+</div><h2>Alternatives to Rivers</h2>
+<div class='content'><ul>
+<li><strong>Logstash</strong>: A data processing pipeline that ingests data from multiple sources, transforms it, and sends it to Elasticsearch.</li>
+<li><strong>Beats</strong>: Lightweight data shippers that send data from edge machines to Logstash or Elasticsearch.</li>
+</ul>
+</div><h1>5. Elasticsearch-Hadoop Connector</h1>
+<div class='content'></div><h2>What is the Elasticsearch-Hadoop Connector?</h2>
+<div class='content'><p>The Elasticsearch-Hadoop connector allows Hadoop and its ecosystem to interact with Elasticsearch, enabling data transfer between Hadoop and Elasticsearch.</p>
+</div><h2>Example: Using the Connector with Pig</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Register the Connector</strong>:</p>
+<pre><code class="language-pig">REGISTER /path/to/elasticsearch-hadoop.jar;
+</code></pre>
+</li>
+<li>
+<p><strong>Load Data from Elasticsearch</strong>:</p>
+<pre><code class="language-pig">data = LOAD 'index/type' USING org.elasticsearch.hadoop.pig.EsStorage();
+</code></pre>
+</li>
+<li>
+<p><strong>Store Data to Elasticsearch</strong>:</p>
+<pre><code class="language-pig">STORE data INTO 'index/type' USING org.elasticsearch.hadoop.pig.EsStorage();
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Task</strong>: Use Pig to load data from an Elasticsearch index, perform a transformation, and store the result back to Elasticsearch.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Register the Elasticsearch-Hadoop JAR in Pig.</li>
+<li>Load the data from Elasticsearch.</li>
+<li>Perform a transformation (e.g., filter the data) and store it back to Elasticsearch.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored how Elasticsearch can be integrated with various other tools such as Apache Kafka, Hadoop, Spark, and the Elasticsearch-Hadoop connector. These integrations allow for enhanced data processing, real-time indexing, and seamless interaction between different data platforms. By leveraging these tools, you can build a robust and scalable data management and analysis ecosystem.</p>
+<p>Next, we will delve into advanced topics in Elasticsearch, including custom plugins, machine learning, graph exploration, and geo-search.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-elasticsearch-beats' title="Elasticsearch with Beats">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-custom-plugins' title="Custom Plugins">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

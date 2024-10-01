@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Health Monitoring</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/07-03-application-health-monitoring" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/07-03-application-health-monitoring" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/07-03-application-health-monitoring" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/07-03-application-health-monitoring" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/07-03-application-health-monitoring" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-advanced-load-balancing' title="Advanced Load Balancing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Application Health Monitoring</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-dynamic-configuration' title="Dynamic Configuration">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to monitor the health of applications using NGINX Plus. Application health monitoring is crucial for maintaining the reliability and performance of your web services. NGINX Plus offers advanced features that allow you to monitor the status of your applications and take action when issues arise.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Health Checks</strong>: Regularly checking the status of backend servers to ensure they are operational.</li>
+<li><strong>Active Health Checks</strong>: Proactively sending requests to backend servers to verify their health.</li>
+<li><strong>Passive Health Checks</strong>: Monitoring the responses from backend servers to determine their health.</li>
+<li><strong>Status API</strong>: An API provided by NGINX Plus to retrieve detailed metrics and status information.</li>
+</ol>
+</div><h1>Active Health Checks</h1>
+<div class='content'><p>Active health checks involve NGINX Plus sending requests to backend servers at regular intervals to verify their health. If a server fails to respond correctly, it is marked as unhealthy and removed from the load balancing pool.</p>
+</div><h2>Configuration Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICB6b25lIGJhY2tlbmQgNjRrOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CgogICAgICAgICMgQWN0aXZlIGhlYWx0aCBjaGVjayBjb25maWd1cmF0aW9uCiAgICAgICAgaGVhbHRoX2NoZWNrIGludGVydmFsPTVzIGZhaWxzPTMgcGFzc2VzPTI7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        zone backend 64k;
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Active health check configuration
+        health_check interval=5s fails=3 passes=2;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>interval=5s</code>: NGINX Plus will send a health check request every 5 seconds.</li>
+<li><code>fails=3</code>: A server will be marked as unhealthy after 3 consecutive failed health checks.</li>
+<li><code>passes=2</code>: A server will be marked as healthy after 2 consecutive successful health checks.</li>
+</ul>
+</div><h1>Passive Health Checks</h1>
+<div class='content'><p>Passive health checks monitor the responses from backend servers during normal traffic. If a server returns an error response, it is marked as unhealthy.</p>
+</div><h2>Configuration Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICB6b25lIGJhY2tlbmQgNjRrOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CgogICAgICAgICMgUGFzc2l2ZSBoZWFsdGggY2hlY2sgY29uZmlndXJhdGlvbgogICAgICAgIHByb3h5X25leHRfdXBzdHJlYW0gZXJyb3IgdGltZW91dCBodHRwXzUwMCBodHRwXzUwMiBodHRwXzUwMyBodHRwXzUwNDsKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        zone backend 64k;
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Passive health check configuration
+        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>proxy_next_upstream</code>: Specifies the conditions under which NGINX Plus will consider a server unhealthy and try the next server in the upstream group.</li>
+</ul>
+</div><h1>Status API</h1>
+<div class='content'><p>NGINX Plus provides a Status API that offers detailed metrics and status information about the server and upstream groups.</p>
+</div><h2>Configuration Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDgwOwoKICAgICAgICBsb2NhdGlvbiAvc3RhdHVzIHsKICAgICAgICAgICAgYXBpOwogICAgICAgICAgICBhbGxvdyAxMjcuMC4wLjE7CiAgICAgICAgICAgIGRlbnkgYWxsOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 8080;
+
+        location /status {
+            api;
+            allow 127.0.0.1;
+            deny all;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>api</code>: Enables the Status API.</li>
+<li><code>allow 127.0.0.1</code>: Allows access to the Status API from localhost.</li>
+<li><code>deny all</code>: Denies access to the Status API from all other IP addresses.</li>
+</ul>
+</div><h2>Accessing the Status API</h2>
+<div class='content'><p>You can access the Status API by navigating to <code>http://localhost:8080/status</code> in your web browser or using a tool like <code>curl</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCBodHRwOi8vbG9jYWxob3N0OjgwODAvc3RhdHVz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl http://localhost:8080/status</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Configure an upstream group with two backend servers.</li>
+<li>Set up active health checks with an interval of 10 seconds, marking a server as unhealthy after 2 failed checks and healthy after 1 successful check.</li>
+<li>Enable passive health checks to mark a server as unhealthy if it returns a 500, 502, 503, or 504 error.</li>
+<li>Configure the Status API to be accessible only from localhost.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICB6b25lIGJhY2tlbmQgNjRrOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CgogICAgICAgICMgQWN0aXZlIGhlYWx0aCBjaGVjayBjb25maWd1cmF0aW9uCiAgICAgICAgaGVhbHRoX2NoZWNrIGludGVydmFsPTEwcyBmYWlscz0yIHBhc3Nlcz0xOwoKICAgICAgICAjIFBhc3NpdmUgaGVhbHRoIGNoZWNrIGNvbmZpZ3VyYXRpb24KICAgICAgICBwcm94eV9uZXh0X3Vwc3RyZWFtIGVycm9yIHRpbWVvdXQgaHR0cF81MDAgaHR0cF81MDIgaHR0cF81MDMgaHR0cF81MDQ7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kOwogICAgICAgIH0KICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDgwOwoKICAgICAgICBsb2NhdGlvbiAvc3RhdHVzIHsKICAgICAgICAgICAgYXBpOwogICAgICAgICAgICBhbGxvdyAxMjcuMC4wLjE7CiAgICAgICAgICAgIGRlbnkgYWxsOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        zone backend 64k;
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Active health check configuration
+        health_check interval=10s fails=2 passes=1;
+
+        # Passive health check configuration
+        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+
+    server {
+        listen 8080;
+
+        location /status {
+            api;
+            allow 127.0.0.1;
+            deny all;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Interval Settings</strong>: Setting the interval too low can cause unnecessary load on your backend servers. Adjust the interval based on your application's needs.</li>
+<li><strong>Ignoring Passive Health Checks</strong>: Relying solely on active health checks can miss issues that occur during normal traffic. Combining both active and passive checks provides a more comprehensive monitoring solution.</li>
+<li><strong>Status API Security</strong>: Always restrict access to the Status API to prevent unauthorized access to sensitive information.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essential aspects of application health monitoring using NGINX Plus. We explored active and passive health checks, configured the Status API, and provided practical examples and exercises. Understanding and implementing these monitoring techniques will help ensure the reliability and performance of your web services. In the next section, we will delve into dynamic configuration with NGINX Plus.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-advanced-load-balancing' title="Advanced Load Balancing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-dynamic-configuration' title="Dynamic Configuration">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

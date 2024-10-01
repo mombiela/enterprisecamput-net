@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Room for Database Management</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/androidstudio/04-02-using-room-for-database-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/androidstudio/04-02-using-room-for-database-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/androidstudio/04-02-using-room-for-database-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/androidstudio/04-02-using-room-for-database-management" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/androidstudio/04-02-using-room-for-database-management" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-data-persistence-with-sqlite' title="Data Persistence with SQLite">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Room for Database Management</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-advanced-ui-components' title="Advanced UI Components">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to use Room, a part of the Android Jetpack suite, for database management in Android applications. Room provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Room Components</strong>:</p>
+<ul>
+<li><strong>Entity</strong>: Represents a table within the database.</li>
+<li><strong>DAO (Data Access Object)</strong>: Contains methods used for accessing the database.</li>
+<li><strong>Database</strong>: Holds the database and serves as the main access point for the underlying connection to your app's persisted data.</li>
+</ul>
+</li>
+<li>
+<p><strong>Annotations</strong>:</p>
+<ul>
+<li><code>@Entity</code>: Marks a class as an entity.</li>
+<li><code>@PrimaryKey</code>: Marks a field as the primary key.</li>
+<li><code>@Dao</code>: Marks an interface as a Data Access Object.</li>
+<li><code>@Query</code>: Specifies a method as a query method.</li>
+<li><code>@Insert</code>, <code>@Update</code>, <code>@Delete</code>: Marks methods for inserting, updating, and deleting data.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Adding Room Dependencies</h2>
+<div class='content'><p>First, add the Room dependencies to your <code>build.gradle</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uICJhbmRyb2lkeC5yb29tOnJvb20tcnVudGltZToyLjMuMCIKICAgIGFubm90YXRpb25Qcm9jZXNzb3IgImFuZHJvaWR4LnJvb206cm9vbS1jb21waWxlcjoyLjMuMCIKICAgIC8vIEZvciBLb3RsaW4gdXNlIGthcHQgaW5zdGVhZCBvZiBhbm5vdGF0aW9uUHJvY2Vzc29yCiAgICBrYXB0ICJhbmRyb2lkeC5yb29tOnJvb20tY29tcGlsZXI6Mi4zLjAiCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies {
+    implementation &quot;androidx.room:room-runtime:2.3.0&quot;
+    annotationProcessor &quot;androidx.room:room-compiler:2.3.0&quot;
+    // For Kotlin use kapt instead of annotationProcessor
+    kapt &quot;androidx.room:room-compiler:2.3.0&quot;
+}</pre></div><div class='content'></div><h2>2. Creating an Entity</h2>
+<div class='content'><p>Create a data class annotated with <code>@Entity</code> to represent a table in the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QEVudGl0eSh0YWJsZU5hbWUgPSAidXNlcnMiKQpkYXRhIGNsYXNzIFVzZXIoCiAgICBAUHJpbWFyeUtleShhdXRvR2VuZXJhdGUgPSB0cnVlKSB2YWwgaWQ6IEludCwKICAgIEBDb2x1bW5JbmZvKG5hbWUgPSAiZmlyc3RfbmFtZSIpIHZhbCBmaXJzdE5hbWU6IFN0cmluZywKICAgIEBDb2x1bW5JbmZvKG5hbWUgPSAibGFzdF9uYW1lIikgdmFsIGxhc3ROYW1lOiBTdHJpbmcKKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Entity(tableName = &quot;users&quot;)
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = &quot;first_name&quot;) val firstName: String,
+    @ColumnInfo(name = &quot;last_name&quot;) val lastName: String
+)</pre></div><div class='content'></div><h2>3. Defining a DAO</h2>
+<div class='content'><p>Create an interface annotated with <code>@Dao</code> to define methods for accessing the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QERhbwppbnRlcmZhY2UgVXNlckRhbyB7CiAgICBAUXVlcnkoIlNFTEVDVCAqIEZST00gdXNlcnMiKQogICAgZnVuIGdldEFsbFVzZXJzKCk6IExpc3Q8VXNlcj4KCiAgICBASW5zZXJ0CiAgICBmdW4gaW5zZXJ0VXNlcih1c2VyOiBVc2VyKQoKICAgIEBVcGRhdGUKICAgIGZ1biB1cGRhdGVVc2VyKHVzZXI6IFVzZXIpCgogICAgQERlbGV0ZQogICAgZnVuIGRlbGV0ZVVzZXIodXNlcjogVXNlcikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Dao
+interface UserDao {
+    @Query(&quot;SELECT * FROM users&quot;)
+    fun getAllUsers(): List&lt;User&gt;
+
+    @Insert
+    fun insertUser(user: User)
+
+    @Update
+    fun updateUser(user: User)
+
+    @Delete
+    fun deleteUser(user: User)
+}</pre></div><div class='content'></div><h2>4. Creating the Database</h2>
+<div class='content'><p>Create an abstract class annotated with <code>@Database</code> to represent the database and include the entities and DAOs:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QERhdGFiYXNlKGVudGl0aWVzID0gW1VzZXI6OmNsYXNzXSwgdmVyc2lvbiA9IDEpCmFic3RyYWN0IGNsYXNzIEFwcERhdGFiYXNlIDogUm9vbURhdGFiYXNlKCkgewogICAgYWJzdHJhY3QgZnVuIHVzZXJEYW8oKTogVXNlckRhbwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}</pre></div><div class='content'></div><h2>5. Building the Database</h2>
+<div class='content'><p>Build the database instance in your application class or a singleton:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRiID0gUm9vbS5kYXRhYmFzZUJ1aWxkZXIoCiAgICBhcHBsaWNhdGlvbkNvbnRleHQsCiAgICBBcHBEYXRhYmFzZTo6Y2xhc3MuamF2YSwgImRhdGFiYXNlLW5hbWUiCikuYnVpbGQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val db = Room.databaseBuilder(
+    applicationContext,
+    AppDatabase::class.java, &quot;database-name&quot;
+).build()</pre></div><div class='content'></div><h2>6. Using the Database</h2>
+<div class='content'><p>Use the DAO methods to interact with the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHVzZXJEYW8gPSBkYi51c2VyRGFvKCkKCi8vIEluc2VydCBhIG5ldyB1c2VyCnZhbCBuZXdVc2VyID0gVXNlcigwLCAiSm9obiIsICJEb2UiKQp1c2VyRGFvLmluc2VydFVzZXIobmV3VXNlcikKCi8vIEdldCBhbGwgdXNlcnMKdmFsIHVzZXJzID0gdXNlckRhby5nZXRBbGxVc2VycygpCgovLyBVcGRhdGUgYSB1c2VyCnZhbCB1cGRhdGVkVXNlciA9IHVzZXJzWzBdLmNvcHkoZmlyc3ROYW1lID0gIkphbmUiKQp1c2VyRGFvLnVwZGF0ZVVzZXIodXBkYXRlZFVzZXIpCgovLyBEZWxldGUgYSB1c2VyCnVzZXJEYW8uZGVsZXRlVXNlcih1cGRhdGVkVXNlcik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val userDao = db.userDao()
+
+// Insert a new user
+val newUser = User(0, &quot;John&quot;, &quot;Doe&quot;)
+userDao.insertUser(newUser)
+
+// Get all users
+val users = userDao.getAllUsers()
+
+// Update a user
+val updatedUser = users[0].copy(firstName = &quot;Jane&quot;)
+userDao.updateUser(updatedUser)
+
+// Delete a user
+userDao.deleteUser(updatedUser)</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement a Simple User Management App</h2>
+<div class='content'><ol>
+<li><strong>Create the Entity</strong>: Define a <code>User</code> entity with fields for ID, first name, and last name.</li>
+<li><strong>Define the DAO</strong>: Create a <code>UserDao</code> interface with methods to insert, update, delete, and query users.</li>
+<li><strong>Create the Database</strong>: Define an <code>AppDatabase</code> class that includes the <code>User</code> entity and <code>UserDao</code>.</li>
+<li><strong>Build the Database</strong>: Initialize the database in your application class.</li>
+<li><strong>Use the DAO</strong>: Implement a simple UI to add, update, delete, and display users using the DAO methods.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Entity</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QEVudGl0eSh0YWJsZU5hbWUgPSAidXNlcnMiKQpkYXRhIGNsYXNzIFVzZXIoCiAgICBAUHJpbWFyeUtleShhdXRvR2VuZXJhdGUgPSB0cnVlKSB2YWwgaWQ6IEludCwKICAgIEBDb2x1bW5JbmZvKG5hbWUgPSAiZmlyc3RfbmFtZSIpIHZhbCBmaXJzdE5hbWU6IFN0cmluZywKICAgIEBDb2x1bW5JbmZvKG5hbWUgPSAibGFzdF9uYW1lIikgdmFsIGxhc3ROYW1lOiBTdHJpbmcKKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Entity(tableName = &quot;users&quot;)
+data class User(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    @ColumnInfo(name = &quot;first_name&quot;) val firstName: String,
+    @ColumnInfo(name = &quot;last_name&quot;) val lastName: String
+)</pre></div><div class='content'><ol start="2">
+<li><strong>DAO</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QERhbwppbnRlcmZhY2UgVXNlckRhbyB7CiAgICBAUXVlcnkoIlNFTEVDVCAqIEZST00gdXNlcnMiKQogICAgZnVuIGdldEFsbFVzZXJzKCk6IExpc3Q8VXNlcj4KCiAgICBASW5zZXJ0CiAgICBmdW4gaW5zZXJ0VXNlcih1c2VyOiBVc2VyKQoKICAgIEBVcGRhdGUKICAgIGZ1biB1cGRhdGVVc2VyKHVzZXI6IFVzZXIpCgogICAgQERlbGV0ZQogICAgZnVuIGRlbGV0ZVVzZXIodXNlcjogVXNlcikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Dao
+interface UserDao {
+    @Query(&quot;SELECT * FROM users&quot;)
+    fun getAllUsers(): List&lt;User&gt;
+
+    @Insert
+    fun insertUser(user: User)
+
+    @Update
+    fun updateUser(user: User)
+
+    @Delete
+    fun deleteUser(user: User)
+}</pre></div><div class='content'><ol start="3">
+<li><strong>Database</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QERhdGFiYXNlKGVudGl0aWVzID0gW1VzZXI6OmNsYXNzXSwgdmVyc2lvbiA9IDEpCmFic3RyYWN0IGNsYXNzIEFwcERhdGFiYXNlIDogUm9vbURhdGFiYXNlKCkgewogICAgYWJzdHJhY3QgZnVuIHVzZXJEYW8oKTogVXNlckRhbwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Build the Database</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRiID0gUm9vbS5kYXRhYmFzZUJ1aWxkZXIoCiAgICBhcHBsaWNhdGlvbkNvbnRleHQsCiAgICBBcHBEYXRhYmFzZTo6Y2xhc3MuamF2YSwgImRhdGFiYXNlLW5hbWUiCikuYnVpbGQoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val db = Room.databaseBuilder(
+    applicationContext,
+    AppDatabase::class.java, &quot;database-name&quot;
+).build()</pre></div><div class='content'><ol start="5">
+<li><strong>Use the DAO</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHVzZXJEYW8gPSBkYi51c2VyRGFvKCkKCi8vIEluc2VydCBhIG5ldyB1c2VyCnZhbCBuZXdVc2VyID0gVXNlcigwLCAiSm9obiIsICJEb2UiKQp1c2VyRGFvLmluc2VydFVzZXIobmV3VXNlcikKCi8vIEdldCBhbGwgdXNlcnMKdmFsIHVzZXJzID0gdXNlckRhby5nZXRBbGxVc2VycygpCgovLyBVcGRhdGUgYSB1c2VyCnZhbCB1cGRhdGVkVXNlciA9IHVzZXJzWzBdLmNvcHkoZmlyc3ROYW1lID0gIkphbmUiKQp1c2VyRGFvLnVwZGF0ZVVzZXIodXBkYXRlZFVzZXIpCgovLyBEZWxldGUgYSB1c2VyCnVzZXJEYW8uZGVsZXRlVXNlcih1cGRhdGVkVXNlcik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val userDao = db.userDao()
+
+// Insert a new user
+val newUser = User(0, &quot;John&quot;, &quot;Doe&quot;)
+userDao.insertUser(newUser)
+
+// Get all users
+val users = userDao.getAllUsers()
+
+// Update a user
+val updatedUser = users[0].copy(firstName = &quot;Jane&quot;)
+userDao.updateUser(updatedUser)
+
+// Delete a user
+userDao.deleteUser(updatedUser)</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Using <code>@PrimaryKey</code></strong>: Ensure that your entity class has a field annotated with <code>@PrimaryKey</code>.</li>
+<li><strong>Database Versioning</strong>: Always increment the database version when making schema changes.</li>
+<li><strong>Threading</strong>: Room does not allow database operations on the main thread. Use <code>AsyncTask</code> or Kotlin coroutines for database operations.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to use Room for database management in Android applications. We covered the key components of Room, including entities, DAOs, and the database class. We also walked through a practical example of creating a simple user management app. Understanding Room is crucial for efficient and effective database management in Android development. In the next section, we will explore advanced UI components to enhance the user experience in your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-data-persistence-with-sqlite' title="Data Persistence with SQLite">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-advanced-ui-components' title="Advanced UI Components">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logging with Elasticsearch, Fluentd, and Kibana (EFK)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-02-logging-efk" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-02-logging-efk" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/07-02-logging-efk" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Logging with Elasticsearch, Fluentd, and Kibana (EFK)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to set up and use the EFK stack (Elasticsearch, Fluentd, and Kibana) for logging in Kubernetes. The EFK stack is a popular choice for centralized logging, allowing you to collect, store, and visualize logs from your Kubernetes cluster.</p>
+</div><h1>Overview of EFK Stack</h1>
+<div class='content'></div><h2>Elasticsearch</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: A distributed search and analytics engine used for storing and querying log data.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Scalability: Can handle large volumes of data.</li>
+<li>Full-text search: Allows complex queries on log data.</li>
+<li>Real-time analytics: Provides near real-time insights.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Fluentd</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: An open-source data collector that helps unify data collection and consumption.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Flexible: Supports various input and output plugins.</li>
+<li>Reliable: Ensures data is delivered even in case of failures.</li>
+<li>Lightweight: Minimal resource usage.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Kibana</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: A data visualization and exploration tool used for visualizing Elasticsearch data.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Interactive: Allows creating dynamic dashboards.</li>
+<li>User-friendly: Intuitive interface for exploring data.</li>
+<li>Real-time: Provides real-time data visualization.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up EFK Stack in Kubernetes</h1>
+<div class='content'></div><h2>Step 1: Deploy Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a namespace for logging</strong>:</p>
+<pre><code class="language-sh">kubectl create namespace logging
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Elasticsearch</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: logging
+spec:
+  serviceName: &quot;elasticsearch&quot;
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
+        env:
+        - name: discovery.type
+          value: single-node
+</code></pre>
+</li>
+<li>
+<p><strong>Create a service for Elasticsearch</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: logging
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+  selector:
+    app: elasticsearch
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Deploy Fluentd</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a ConfigMap for Fluentd configuration</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: logging
+data:
+  fluent.conf: |
+    &lt;source&gt;
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      tag kubernetes.*
+      &lt;parse&gt;
+        @type json
+        time_key time
+        time_format %Y-%m-%dT%H:%M:%S.%N%z
+      &lt;/parse&gt;
+    &lt;/source&gt;
+    &lt;match kubernetes.**&gt;
+      @type elasticsearch
+      host elasticsearch.logging.svc.cluster.local
+      port 9200
+      logstash_format true
+      logstash_prefix kubernetes
+      logstash_dateformat %Y.%m.%d
+    &lt;/match&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Fluentd as a DaemonSet</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluent/fluentd:v1.11.2
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: config-volume
+          mountPath: /fluentd/etc
+          subPath: fluent.conf
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: config-volume
+        configMap:
+          name: fluentd-config
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 3: Deploy Kibana</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy Kibana</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.1
+        ports:
+        - containerPort: 5601
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: &quot;http://elasticsearch.logging.svc.cluster.local:9200&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a service for Kibana</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  ports:
+  - port: 5601
+    targetPort: 5601
+  selector:
+    app: kibana
+</code></pre>
+</li>
+</ol>
+</div><h1>Accessing Kibana</h1>
+<div class='content'><ul>
+<li><strong>Port-forward the Kibana service</strong>:
+<pre><code class="language-sh">kubectl port-forward service/kibana 5601:5601 -n logging
+</code></pre>
+</li>
+<li><strong>Open Kibana in your browser</strong>: Navigate to <code>http://localhost:5601</code>.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Set Up EFK Stack</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Deploy the EFK stack in your Kubernetes cluster and visualize logs.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Follow the steps outlined above to deploy Elasticsearch, Fluentd, and Kibana.</li>
+<li>Generate some logs by deploying a sample application.</li>
+<li>Access Kibana and create a dashboard to visualize the logs.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy a sample application</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+      - name: sample-app
+        image: busybox
+        command: ['sh', '-c', 'while true; do echo &quot;Hello, Kubernetes!&quot;; sleep 5; done']
+</code></pre>
+</li>
+<li>
+<p><strong>Check logs in Kibana</strong>:</p>
+<ul>
+<li>Access Kibana using the port-forward command.</li>
+<li>Navigate to the &quot;Discover&quot; tab and search for logs from the <code>sample-app</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Elasticsearch not starting</strong>: Ensure you have sufficient resources and the correct image version.</li>
+<li><strong>Fluentd not collecting logs</strong>: Verify the Fluentd configuration and ensure the paths are correct.</li>
+<li><strong>Kibana not connecting to Elasticsearch</strong>: Check the <code>ELASTICSEARCH_HOSTS</code> environment variable and network connectivity.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the setup and usage of the EFK stack for logging in Kubernetes. You learned how to deploy Elasticsearch, Fluentd, and Kibana, and how to visualize logs from your Kubernetes cluster. This knowledge is crucial for monitoring and troubleshooting applications running in Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Shaking</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/webpack/03-03-tree-shaking" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/webpack/03-03-tree-shaking" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/webpack/03-03-tree-shaking" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/webpack/03-03-tree-shaking" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/webpack/03-03-tree-shaking" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-caching' title="Caching">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Tree Shaking</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-lazy-loading' title="Lazy Loading">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Tree shaking is a term commonly used in the JavaScript ecosystem to describe the process of eliminating dead code from your bundle. This is particularly important in modern web development to ensure that your application is as efficient and lightweight as possible. In this section, we will explore what tree shaking is, how it works in Webpack, and how to configure it for your projects.</p>
+</div><h1>What is Tree Shaking?</h1>
+<div class='content'><p>Tree shaking is a form of dead code elimination. It relies on the static structure of ES6 module syntax (import and export) to detect and remove unused code. This helps in reducing the final bundle size, leading to faster load times and better performance.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Dead Code Elimination</strong>: Removing code that is never used.</li>
+<li><strong>ES6 Modules</strong>: Using <code>import</code> and <code>export</code> statements to define module boundaries.</li>
+<li><strong>Static Analysis</strong>: Analyzing code at compile time to determine which parts are unused.</li>
+</ul>
+</div><h1>How Tree Shaking Works in Webpack</h1>
+<div class='content'><p>Webpack performs tree shaking by analyzing the dependency graph of your application. It looks at the <code>import</code> and <code>export</code> statements to determine which modules and functions are actually used and which can be safely removed.</p>
+</div><h2>Steps Involved:</h2>
+<div class='content'><ol>
+<li><strong>Parsing</strong>: Webpack parses the code to build a dependency graph.</li>
+<li><strong>Marking</strong>: It marks the used and unused exports.</li>
+<li><strong>Pruning</strong>: It removes the unused code from the final bundle.</li>
+</ol>
+</div><h1>Configuring Tree Shaking in Webpack</h1>
+<div class='content'><p>To enable tree shaking in Webpack, you need to ensure that your project is using ES6 module syntax and that Webpack is configured correctly.</p>
+</div><h2>Step-by-Step Configuration:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Ensure ES6 Module Syntax</strong>:</p>
+<ul>
+<li>Use <code>import</code> and <code>export</code> statements in your JavaScript files.</li>
+</ul>
+</li>
+<li>
+<p><strong>Set Webpack Mode to Production</strong>:</p>
+<ul>
+<li>Tree shaking is enabled by default in production mode.</li>
+</ul>
+<pre><code class="language-javascript">// webpack.config.js
+module.exports = {
+  mode: 'production',
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Use <code>sideEffects</code> Property</strong>:</p>
+<ul>
+<li>Add the <code>sideEffects</code> property in your <code>package.json</code> to indicate which files are safe to prune.</li>
+</ul>
+<pre><code class="language-json">// package.json
+{
+  &quot;name&quot;: &quot;your-project&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;sideEffects&quot;: false
+}
+</code></pre>
+<ul>
+<li>If some files have side effects, list them explicitly:</li>
+</ul>
+<pre><code class="language-json">{
+  &quot;sideEffects&quot;: [&quot;./src/some-file-with-side-effects.js&quot;]
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Example Configuration:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIG1vZGU6ICdwcm9kdWN0aW9uJywKICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICBvdXRwdXQ6IHsKICAgIGZpbGVuYW1lOiAnYnVuZGxlLmpzJywKICAgIHBhdGg6IHBhdGgucmVzb2x2ZShfX2Rpcm5hbWUsICdkaXN0JyksCiAgfSwKICBtb2R1bGU6IHsKICAgIHJ1bGVzOiBbCiAgICAgIHsKICAgICAgICB0ZXN0OiAvXC5qcyQvLAogICAgICAgIGV4Y2x1ZGU6IC9ub2RlX21vZHVsZXMvLAogICAgICAgIHVzZTogewogICAgICAgICAgbG9hZGVyOiAnYmFiZWwtbG9hZGVyJywKICAgICAgICAgIG9wdGlvbnM6IHsKICAgICAgICAgICAgcHJlc2V0czogWydAYmFiZWwvcHJlc2V0LWVudiddLAogICAgICAgICAgfSwKICAgICAgICB9LAogICAgICB9LAogICAgXSwKICB9LAogIG9wdGltaXphdGlvbjogewogICAgdXNlZEV4cG9ydHM6IHRydWUsCiAgfSwKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
+  },
+  optimization: {
+    usedExports: true,
+  },
+};</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's consider a simple example to demonstrate tree shaking.</p>
+</div><h2>Source Files:</h2>
+<div class='content'><p><strong>math.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXhwb3J0IGZ1bmN0aW9uIGFkZChhLCBiKSB7CiAgcmV0dXJuIGEgKyBiOwp9CgpleHBvcnQgZnVuY3Rpb24gc3VidHJhY3QoYSwgYikgewogIHJldHVybiBhIC0gYjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}</pre></div><div class='content'><p><strong>index.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgYWRkIH0gZnJvbSAnLi9tYXRoJzsKCmNvbnNvbGUubG9nKGFkZCgyLCAzKSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { add } from './math';
+
+console.log(add(2, 3));</pre></div><div class='content'><p>In this example, the <code>subtract</code> function is never used. With tree shaking enabled, Webpack will remove the <code>subtract</code> function from the final bundle.</p>
+</div><h2>Build and Analyze:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Build the Project</strong>:</p>
+<pre><code class="language-bash">npx webpack --config webpack.config.js
+</code></pre>
+</li>
+<li>
+<p><strong>Analyze the Output</strong>:</p>
+<ul>
+<li>Check the <code>dist/bundle.js</code> file to ensure that the <code>subtract</code> function is not included.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'></div><h2>Common Mistakes:</h2>
+<div class='content'><ul>
+<li><strong>Using CommonJS Syntax</strong>: Tree shaking does not work with CommonJS (<code>require</code> and <code>module.exports</code>).</li>
+<li><strong>Incorrect <code>sideEffects</code> Configuration</strong>: Not properly configuring the <code>sideEffects</code> property can lead to unexpected results.</li>
+</ul>
+</div><h2>Tips:</h2>
+<div class='content'><ul>
+<li><strong>Use ES6 Modules</strong>: Always use <code>import</code> and <code>export</code> for module definitions.</li>
+<li><strong>Analyze Bundle</strong>: Use tools like <code>webpack-bundle-analyzer</code> to visualize and verify the contents of your bundle.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Tree Shaking</h2>
+<div class='content'><ol>
+<li>Create a new project with two JavaScript files: <code>math.js</code> and <code>index.js</code>.</li>
+<li>Implement two functions in <code>math.js</code> and use only one in <code>index.js</code>.</li>
+<li>Configure Webpack for tree shaking and build the project.</li>
+<li>Verify that the unused function is not included in the final bundle.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>math.js</strong>:</p>
+<pre><code class="language-javascript">export function multiply(a, b) {
+  return a * b;
+}
+
+export function divide(a, b) {
+  return a / b;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>index.js</strong>:</p>
+<pre><code class="language-javascript">import { multiply } from './math';
+
+console.log(multiply(4, 5));
+</code></pre>
+</li>
+<li>
+<p><strong>webpack.config.js</strong>:</p>
+<pre><code class="language-javascript">const path = require('path');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
+        },
+      },
+    ],
+  },
+  optimization: {
+    usedExports: true,
+  },
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Build and Verify</strong>:</p>
+<pre><code class="language-bash">npx webpack --config webpack.config.js
+</code></pre>
+<ul>
+<li>Check the <code>dist/bundle.js</code> file to ensure that the <code>divide</code> function is not included.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Tree shaking is a powerful technique to optimize your JavaScript bundles by removing unused code. By leveraging ES6 module syntax and configuring Webpack correctly, you can significantly reduce your bundle size and improve the performance of your web applications. In the next section, we will explore another advanced configuration topic: Lazy Loading.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-caching' title="Caching">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-lazy-loading' title="Lazy Loading">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implicit and Explicit Cursors</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/03-02-implicit-explicit-cursors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/03-02-implicit-explicit-cursors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/03-02-implicit-explicit-cursors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/03-02-implicit-explicit-cursors" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/03-02-implicit-explicit-cursors" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-sql-statements' title="SQL Statements in PL/SQL">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Implicit and Explicit Cursors</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-bulk-collect' title="Bulk Collect">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In PL/SQL, cursors are used to handle the result set of a query. They allow you to fetch and process rows returned by a SELECT statement. There are two types of cursors in PL/SQL: implicit cursors and explicit cursors.</p>
+</div><h1>Implicit Cursors</h1>
+<div class='content'><p>Implicit cursors are automatically created by Oracle whenever an SQL statement is executed. They are simple to use and are suitable for single-row queries.</p>
+</div><h2>Key Points:</h2>
+<div class='content'><ul>
+<li>Automatically managed by Oracle.</li>
+<li>Used for single-row queries.</li>
+<li>No need to declare or open the cursor explicitly.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogIHZfZW1wbG95ZWVfbmFtZSBWQVJDSEFSMig1MCk7CkJFR0lOCiAgU0VMRUNUIGZpcnN0X25hbWUgSU5UTyB2X2VtcGxveWVlX25hbWUKICBGUk9NIGVtcGxveWVlcwogIFdIRVJFIGVtcGxveWVlX2lkID0gMTAwOwoKICBEQk1TX09VVFBVVC5QVVRfTElORSgnRW1wbG95ZWUgTmFtZTogJyB8fCB2X2VtcGxveWVlX25hbWUpOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+  v_employee_name VARCHAR2(50);
+BEGIN
+  SELECT first_name INTO v_employee_name
+  FROM employees
+  WHERE employee_id = 100;
+
+  DBMS_OUTPUT.PUT_LINE('Employee Name: ' || v_employee_name);
+END;
+/</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>The <code>SELECT INTO</code> statement automatically creates an implicit cursor.</li>
+<li>The result of the query is stored in the variable <code>v_employee_name</code>.</li>
+<li>The <code>DBMS_OUTPUT.PUT_LINE</code> procedure is used to display the result.</li>
+</ul>
+</div><h2>Common Mistakes:</h2>
+<div class='content'><ul>
+<li><strong>No Data Found Exception</strong>: If the query returns no rows, a <code>NO_DATA_FOUND</code> exception is raised.</li>
+<li><strong>Too Many Rows Exception</strong>: If the query returns more than one row, a <code>TOO_MANY_ROWS</code> exception is raised.</li>
+</ul>
+</div><h1>Explicit Cursors</h1>
+<div class='content'><p>Explicit cursors are defined and controlled by the programmer. They are used for multi-row queries and provide more control over the context area.</p>
+</div><h2>Key Points:</h2>
+<div class='content'><ul>
+<li>Must be declared, opened, fetched, and closed explicitly.</li>
+<li>Suitable for multi-row queries.</li>
+<li>Provides more control over the query processing.</li>
+</ul>
+</div><h2>Steps to Use Explicit Cursors:</h2>
+<div class='content'><ol>
+<li><strong>Declare the Cursor</strong>: Define the cursor with a SELECT statement.</li>
+<li><strong>Open the Cursor</strong>: Allocate memory for the cursor and execute the query.</li>
+<li><strong>Fetch the Data</strong>: Retrieve the rows one by one.</li>
+<li><strong>Close the Cursor</strong>: Release the memory associated with the cursor.</li>
+</ol>
+</div><h2>Example:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogIENVUlNPUiBlbXBfY3Vyc29yIElTCiAgICBTRUxFQ1QgZmlyc3RfbmFtZSwgbGFzdF9uYW1lCiAgICBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZGVwYXJ0bWVudF9pZCA9IDEwOwoKICB2X2ZpcnN0X25hbWUgZW1wbG95ZWVzLmZpcnN0X25hbWUlVFlQRTsKICB2X2xhc3RfbmFtZSBlbXBsb3llZXMubGFzdF9uYW1lJVRZUEU7CkJFR0lOCiAgT1BFTiBlbXBfY3Vyc29yOwoKICBMT09QCiAgICBGRVRDSCBlbXBfY3Vyc29yIElOVE8gdl9maXJzdF9uYW1lLCB2X2xhc3RfbmFtZTsKICAgIEVYSVQgV0hFTiBlbXBfY3Vyc29yJU5PVEZPVU5EOwoKICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdFbXBsb3llZTogJyB8fCB2X2ZpcnN0X25hbWUgfHwgJyAnIHx8IHZfbGFzdF9uYW1lKTsKICBFTkQgTE9PUDsKCiAgQ0xPU0UgZW1wX2N1cnNvcjsKRU5EOwov"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+  CURSOR emp_cursor IS
+    SELECT first_name, last_name
+    FROM employees
+    WHERE department_id = 10;
+
+  v_first_name employees.first_name%TYPE;
+  v_last_name employees.last_name%TYPE;
+BEGIN
+  OPEN emp_cursor;
+
+  LOOP
+    FETCH emp_cursor INTO v_first_name, v_last_name;
+    EXIT WHEN emp_cursor%NOTFOUND;
+
+    DBMS_OUTPUT.PUT_LINE('Employee: ' || v_first_name || ' ' || v_last_name);
+  END LOOP;
+
+  CLOSE emp_cursor;
+END;
+/</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>Declare the Cursor</strong>: The cursor <code>emp_cursor</code> is declared with a SELECT statement.</li>
+<li><strong>Open the Cursor</strong>: The cursor is opened using the <code>OPEN</code> statement.</li>
+<li><strong>Fetch the Data</strong>: The <code>FETCH</code> statement retrieves rows into the variables <code>v_first_name</code> and <code>v_last_name</code>.</li>
+<li><strong>Close the Cursor</strong>: The cursor is closed using the <code>CLOSE</code> statement.</li>
+</ul>
+</div><h2>Common Mistakes:</h2>
+<div class='content'><ul>
+<li><strong>Not Closing the Cursor</strong>: Always close the cursor to free up resources.</li>
+<li><strong>Fetching After Cursor is Closed</strong>: Ensure that fetch operations are performed only when the cursor is open.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise:</h2>
+<div class='content'><p>Write a PL/SQL block that uses an explicit cursor to fetch and display the names of all employees in the 'Sales' department.</p>
+</div><h2>Solution:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogIENVUlNPUiBzYWxlc19jdXJzb3IgSVMKICAgIFNFTEVDVCBmaXJzdF9uYW1lLCBsYXN0X25hbWUKICAgIEZST00gZW1wbG95ZWVzCiAgICBXSEVSRSBkZXBhcnRtZW50X25hbWUgPSAnU2FsZXMnOwoKICB2X2ZpcnN0X25hbWUgZW1wbG95ZWVzLmZpcnN0X25hbWUlVFlQRTsKICB2X2xhc3RfbmFtZSBlbXBsb3llZXMubGFzdF9uYW1lJVRZUEU7CkJFR0lOCiAgT1BFTiBzYWxlc19jdXJzb3I7CgogIExPT1AKICAgIEZFVENIIHNhbGVzX2N1cnNvciBJTlRPIHZfZmlyc3RfbmFtZSwgdl9sYXN0X25hbWU7CiAgICBFWElUIFdIRU4gc2FsZXNfY3Vyc29yJU5PVEZPVU5EOwoKICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdFbXBsb3llZTogJyB8fCB2X2ZpcnN0X25hbWUgfHwgJyAnIHx8IHZfbGFzdF9uYW1lKTsKICBFTkQgTE9PUDsKCiAgQ0xPU0Ugc2FsZXNfY3Vyc29yOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+  CURSOR sales_cursor IS
+    SELECT first_name, last_name
+    FROM employees
+    WHERE department_name = 'Sales';
+
+  v_first_name employees.first_name%TYPE;
+  v_last_name employees.last_name%TYPE;
+BEGIN
+  OPEN sales_cursor;
+
+  LOOP
+    FETCH sales_cursor INTO v_first_name, v_last_name;
+    EXIT WHEN sales_cursor%NOTFOUND;
+
+    DBMS_OUTPUT.PUT_LINE('Employee: ' || v_first_name || ' ' || v_last_name);
+  END LOOP;
+
+  CLOSE sales_cursor;
+END;
+/</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>The cursor <code>sales_cursor</code> is declared to select employees from the 'Sales' department.</li>
+<li>The cursor is opened, and rows are fetched in a loop.</li>
+<li>The loop exits when there are no more rows to fetch.</li>
+<li>The cursor is closed after processing all rows.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of implicit and explicit cursors in PL/SQL. Implicit cursors are automatically managed by Oracle and are suitable for single-row queries, while explicit cursors provide more control and are used for multi-row queries. Understanding how to use both types of cursors effectively is crucial for efficient PL/SQL programming. In the next section, we will delve deeper into bulk operations with cursors to handle large datasets efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-sql-statements' title="SQL Statements in PL/SQL">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-bulk-collect' title="Bulk Collect">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

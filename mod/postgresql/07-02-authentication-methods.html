@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Methods</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/07-02-authentication-methods" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/07-02-authentication-methods" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/07-02-authentication-methods" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/07-02-authentication-methods" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/07-02-authentication-methods" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-user-roles-and-permissions' title="User Roles and Permissions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Authentication Methods</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-data-encryption' title="Data Encryption">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the various authentication methods available in PostgreSQL. Authentication is a critical aspect of database security, ensuring that only authorized users can access the database. PostgreSQL supports several authentication methods, each suited for different use cases and security requirements.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Authentication vs. Authorization</strong>:</p>
+<ul>
+<li><strong>Authentication</strong>: Verifying the identity of a user.</li>
+<li><strong>Authorization</strong>: Determining what an authenticated user is allowed to do.</li>
+</ul>
+</li>
+<li>
+<p><strong>pg_hba.conf</strong>:</p>
+<ul>
+<li>The primary configuration file for client authentication in PostgreSQL.</li>
+<li>Located in the data directory of the PostgreSQL installation.</li>
+<li>Controls which hosts are allowed to connect, which users can connect, and which authentication methods are used.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Authentication Methods</h1>
+<div class='content'></div><h2>1. Trust</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Allows any user who can connect to the PostgreSQL server to log in without a password.</li>
+<li><strong>Use Case</strong>: Suitable for development environments where security is not a concern.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            trust
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Password</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Requires the user to provide a password for authentication.</li>
+<li><strong>Types</strong>:
+<ul>
+<li><strong>md5</strong>: Stores passwords as MD5 hashes.</li>
+<li><strong>scram-sha-256</strong>: Uses SCRAM-SHA-256 for password storage and authentication (more secure than MD5).</li>
+</ul>
+</li>
+<li><strong>Use Case</strong>: Suitable for environments where password-based authentication is required.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            md5
+host    all             all             127.0.0.1/32            scram-sha-256
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Peer</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses the operating system's user credentials for authentication.</li>
+<li><strong>Use Case</strong>: Suitable for local connections where the database user matches the operating system user.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">local   all             all                                     peer
+</code></pre>
+</li>
+</ul>
+</div><h2>4. Ident</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses an external ident server to authenticate users.</li>
+<li><strong>Use Case</strong>: Suitable for environments where an ident server is available and trusted.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            ident
+</code></pre>
+</li>
+</ul>
+</div><h2>5. LDAP</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses an LDAP server for authentication.</li>
+<li><strong>Use Case</strong>: Suitable for environments with centralized user management via LDAP.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            ldap ldapserver=ldap.example.com ldapbasedn=&quot;dc=example,dc=com&quot;
+</code></pre>
+</li>
+</ul>
+</div><h2>6. GSSAPI</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses Kerberos for authentication.</li>
+<li><strong>Use Case</strong>: Suitable for environments with Kerberos infrastructure.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            gss
+</code></pre>
+</li>
+</ul>
+</div><h2>7. SSPI</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses Windows SSPI for authentication.</li>
+<li><strong>Use Case</strong>: Suitable for Windows environments with Active Directory.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            sspi
+</code></pre>
+</li>
+</ul>
+</div><h2>8. Certificate</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Uses SSL client certificates for authentication.</li>
+<li><strong>Use Case</strong>: Suitable for environments requiring strong authentication via certificates.</li>
+<li><strong>Configuration</strong>:
+<pre><code class="language-plaintext">hostssl all             all             127.0.0.1/32            cert
+</code></pre>
+</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's configure PostgreSQL to use <code>md5</code> password authentication for all users connecting from the local machine.</p>
+<ol>
+<li>
+<p><strong>Edit <code>pg_hba.conf</code></strong>:</p>
+<ul>
+<li>Open the <code>pg_hba.conf</code> file located in the PostgreSQL data directory.</li>
+<li>Add the following line:
+<pre><code class="language-plaintext">host    all             all             127.0.0.1/32            md5
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Reload PostgreSQL Configuration</strong>:</p>
+<ul>
+<li>After editing <code>pg_hba.conf</code>, reload the PostgreSQL configuration to apply the changes:
+<pre><code class="language-bash">sudo systemctl reload postgresql
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a User with a Password</strong>:</p>
+<ul>
+<li>Connect to the PostgreSQL server and create a user with a password:
+<pre><code class="language-sql">CREATE USER myuser WITH PASSWORD 'mypassword';
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Test the Connection</strong>:</p>
+<ul>
+<li>Use a PostgreSQL client to connect to the server using the new user credentials:
+<pre><code class="language-bash">psql -h 127.0.0.1 -U myuser -W
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Configure Peer Authentication</h2>
+<div class='content'><ol>
+<li>Edit the <code>pg_hba.conf</code> file to use <code>peer</code> authentication for local connections.</li>
+<li>Reload the PostgreSQL configuration.</li>
+<li>Create a PostgreSQL user that matches your operating system username.</li>
+<li>Test the connection using the <code>psql</code> command without providing a password.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Edit <code>pg_hba.conf</code>:
+<pre><code class="language-plaintext">local   all             all                                     peer
+</code></pre>
+</li>
+<li>Reload configuration:
+<pre><code class="language-bash">sudo systemctl reload postgresql
+</code></pre>
+</li>
+<li>Create a user:
+<pre><code class="language-sql">CREATE USER myosuser;
+</code></pre>
+</li>
+<li>Test the connection:
+<pre><code class="language-bash">psql -U myosuser
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Configure LDAP Authentication</h2>
+<div class='content'><ol>
+<li>Edit the <code>pg_hba.conf</code> file to use <code>ldap</code> authentication for connections from a specific IP range.</li>
+<li>Reload the PostgreSQL configuration.</li>
+<li>Test the connection using a PostgreSQL client.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Edit <code>pg_hba.conf</code>:
+<pre><code class="language-plaintext">host    all             all             192.168.1.0/24          ldap ldapserver=ldap.example.com ldapbasedn=&quot;dc=example,dc=com&quot;
+</code></pre>
+</li>
+<li>Reload configuration:
+<pre><code class="language-bash">sudo systemctl reload postgresql
+</code></pre>
+</li>
+<li>Test the connection (assuming LDAP server is properly configured).</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the various authentication methods available in PostgreSQL, including trust, password, peer, ident, LDAP, GSSAPI, SSPI, and certificate-based authentication. We also provided practical examples and exercises to help you configure and test these authentication methods. Understanding and properly configuring authentication is crucial for securing your PostgreSQL database.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-user-roles-and-permissions' title="User Roles and Permissions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-data-encryption' title="Data Encryption">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

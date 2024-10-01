@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploying to Heroku</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/11-03-deploying-heroku" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/11-03-deploying-heroku" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/11-03-deploying-heroku" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/11-03-deploying-heroku" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/11-03-deploying-heroku" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-using-pm2' title="Using PM2 for Process Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deploying to Heroku</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-ci-cd' title="Continuous Integration and Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to deploy a Node.js application to Heroku, a popular cloud platform that allows developers to build, run, and operate applications entirely in the cloud. By the end of this module, you will be able to deploy your Node.js applications to Heroku and make them accessible over the internet.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before we start, ensure you have the following:</p>
+<ul>
+<li>A Node.js application ready for deployment.</li>
+<li>A Heroku account. If you don't have one, you can sign up at <a href="https://signup.heroku.com/">Heroku</a>.</li>
+<li>Git installed on your local machine. You can download it from <a href="https://git-scm.com/">Git</a>.</li>
+</ul>
+</div><h1>Steps to Deploy a Node.js Application to Heroku</h1>
+<div class='content'></div><h2>1. Install the Heroku CLI</h2>
+<div class='content'><p>The Heroku Command Line Interface (CLI) is essential for managing and scaling your applications. Install it by following the instructions for your operating system from the <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI</a> documentation.</p>
+</div><h2>2. Log in to Heroku</h2>
+<div class='content'><p>Open your terminal and log in to your Heroku account using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ2lu"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku login</pre></div><div class='content'><p>This command will open a web browser where you can enter your Heroku credentials.</p>
+</div><h2>3. Prepare Your Application</h2>
+<div class='content'><p>Ensure your Node.js application has a <code>package.json</code> file and a <code>Procfile</code>. The <code>Procfile</code> tells Heroku how to run your application.</p>
+<h4>Example <code>Procfile</code>:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBub2RlIGluZGV4Lmpz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: node index.js</pre></div><div class='content'><p>This example assumes your main application file is <code>index.js</code>.</p>
+</div><h2>4. Initialize a Git Repository</h2>
+<div class='content'><p>If your project is not already a Git repository, initialize it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git init</pre></div><div class='content'><p>Add all your files to the repository and commit them:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkluaXRpYWwgY29tbWl0Ig=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git add .
+git commit -m &quot;Initial commit&quot;</pre></div><div class='content'></div><h2>5. Create a New Heroku Application</h2>
+<div class='content'><p>Create a new application on Heroku using the Heroku CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNyZWF0ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku create</pre></div><div class='content'><p>This command will create a new application and set up a remote repository named <code>heroku</code>.</p>
+</div><h2>6. Deploy Your Application</h2>
+<div class='content'><p>Push your code to the Heroku remote repository to deploy your application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IHB1c2ggaGVyb2t1IG1hc3Rlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git push heroku master</pre></div><div class='content'><p>Heroku will automatically detect your Node.js application, install dependencies, and start your application using the <code>Procfile</code>.</p>
+</div><h2>7. Open Your Application</h2>
+<div class='content'><p>Once the deployment is complete, you can open your application in the browser:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IG9wZW4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku open</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's go through a practical example of deploying a simple Node.js application to Heroku.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Simple Node.js Application</strong>:
+Create a new directory for your project and navigate into it:</p>
+<pre><code class="language-sh">mkdir my-heroku-app
+cd my-heroku-app
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize a Node.js Project</strong>:</p>
+<pre><code class="language-sh">npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Simple Server</strong>:
+Create a file named <code>index.js</code> with the following content:</p>
+<pre><code class="language-javascript">const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) =&gt; {
+  res.send('Hello, Heroku!');
+});
+
+app.listen(PORT, () =&gt; {
+  console.log(`Server is running on port ${PORT}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Install Express</strong>:</p>
+<pre><code class="language-sh">npm install express
+</code></pre>
+</li>
+<li>
+<p><strong>Create a <code>Procfile</code></strong>:</p>
+<pre><code class="language-plaintext">web: node index.js
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize a Git Repository and Commit Your Code</strong>:</p>
+<pre><code class="language-sh">git init
+git add .
+git commit -m &quot;Initial commit&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a New Heroku Application</strong>:</p>
+<pre><code class="language-sh">heroku create
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Your Application</strong>:</p>
+<pre><code class="language-sh">git push heroku master
+</code></pre>
+</li>
+<li>
+<p><strong>Open Your Application</strong>:</p>
+<pre><code class="language-sh">heroku open
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Missing <code>Procfile</code></strong>: Ensure you have a <code>Procfile</code> in the root directory of your project. Without it, Heroku won't know how to start your application.</li>
+<li><strong>Port Configuration</strong>: Always use <code>process.env.PORT</code> to set the port in your application. Heroku dynamically assigns a port for your application.</li>
+<li><strong>Environment Variables</strong>: Use Heroku's config vars to manage environment variables. You can set them using the Heroku CLI:
+<pre><code class="language-sh">heroku config:set KEY=VALUE
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to deploy a Node.js application to Heroku. We walked through the steps of installing the Heroku CLI, preparing your application, creating a new Heroku application, and deploying it. We also provided a practical example to help you understand the process better. With this knowledge, you can now deploy your Node.js applications to Heroku and make them accessible to users worldwide.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-using-pm2' title="Using PM2 for Process Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-ci-cd' title="Continuous Integration and Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

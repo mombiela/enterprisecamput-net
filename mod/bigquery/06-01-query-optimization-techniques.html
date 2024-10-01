@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Optimization Techniques</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/06-01-query-optimization-techniques" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/06-01-query-optimization-techniques" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/06-01-query-optimization-techniques" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bigquery/06-01-query-optimization-techniques" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/06-01-query-optimization-techniques" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-managing-datasets-tables' title="Managing Datasets and Tables">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Query Optimization Techniques</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-query-execution-plans' title="Understanding Query Execution Plans">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore various techniques to optimize your queries in BigQuery. Optimizing queries is crucial for improving performance, reducing costs, and ensuring efficient use of resources. We will cover the following key concepts:</p>
+<ol>
+<li><strong>Understanding Query Execution Plans</strong></li>
+<li><strong>Using Appropriate Data Types</strong></li>
+<li>**Avoiding SELECT ***</li>
+<li><strong>Filtering Early</strong></li>
+<li><strong>Using Partitioning and Clustering</strong></li>
+<li><strong>Optimizing Joins</strong></li>
+<li><strong>Using Materialized Views</strong></li>
+<li><strong>Caching Results</strong></li>
+</ol>
+</div><h1>1. Understanding Query Execution Plans</h1>
+<div class='content'><p>Before diving into optimization techniques, it's essential to understand how BigQuery executes queries. The query execution plan provides insights into how BigQuery processes your query, including the steps involved and the resources used.</p>
+</div><h2>Example: Viewing Query Execution Plan</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgbmFtZSwgYWdlIEZST00gYG15X2RhdGFzZXQubXlfdGFibGVgIFdIRVJFIGFnZSA+IDMwOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT name, age FROM `my_dataset.my_table` WHERE age &gt; 30;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: The <code>EXPLAIN</code> statement provides a detailed execution plan for the query, showing how BigQuery will process it.</li>
+</ul>
+</div><h1>2. Using Appropriate Data Types</h1>
+<div class='content'><p>Choosing the right data types for your columns can significantly impact query performance. Use the most efficient data types that suit your data.</p>
+</div><h2>Example: Efficient Data Types</h2>
+<div class='content'><ul>
+<li>Use <code>INT64</code> for integer values instead of <code>FLOAT64</code> if you don't need decimal precision.</li>
+<li>Use <code>STRING</code> for text data, but consider <code>BYTES</code> if you are dealing with binary data.</li>
+</ul>
+</div><h1>3. Avoiding SELECT *</h1>
+<div class='content'><p>Using <code>SELECT *</code> retrieves all columns from a table, which can be inefficient if you only need a few columns. Always specify the columns you need.</p>
+</div><h2>Example: Specifying Columns</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5lZmZpY2llbnQKU0VMRUNUICogRlJPTSBgbXlfZGF0YXNldC5teV90YWJsZWA7CgotLSBFZmZpY2llbnQKU0VMRUNUIG5hbWUsIGFnZSBGUk9NIGBteV9kYXRhc2V0Lm15X3RhYmxlYDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Inefficient
+SELECT * FROM `my_dataset.my_table`;
+
+-- Efficient
+SELECT name, age FROM `my_dataset.my_table`;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: The second query is more efficient as it only retrieves the <code>name</code> and <code>age</code> columns.</li>
+</ul>
+</div><h1>4. Filtering Early</h1>
+<div class='content'><p>Apply filters as early as possible in your query to reduce the amount of data processed.</p>
+</div><h2>Example: Early Filtering</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5lZmZpY2llbnQKU0VMRUNUIG5hbWUsIGFnZSBGUk9NIGBteV9kYXRhc2V0Lm15X3RhYmxlYApXSEVSRSBhZ2UgPiAzMDsKCi0tIEVmZmljaWVudApXSVRIIGZpbHRlcmVkX2RhdGEgQVMgKAogIFNFTEVDVCBuYW1lLCBhZ2UgRlJPTSBgbXlfZGF0YXNldC5teV90YWJsZWAgV0hFUkUgYWdlID4gMzAKKQpTRUxFQ1QgKiBGUk9NIGZpbHRlcmVkX2RhdGE7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Inefficient
+SELECT name, age FROM `my_dataset.my_table`
+WHERE age &gt; 30;
+
+-- Efficient
+WITH filtered_data AS (
+  SELECT name, age FROM `my_dataset.my_table` WHERE age &gt; 30
+)
+SELECT * FROM filtered_data;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: The <code>WITH</code> clause (Common Table Expression) filters the data early, reducing the amount of data processed in subsequent steps.</li>
+</ul>
+</div><h1>5. Using Partitioning and Clustering</h1>
+<div class='content'><p>Partitioning and clustering can significantly improve query performance by reducing the amount of data scanned.</p>
+</div><h2>Example: Partitioning</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGBteV9kYXRhc2V0LnBhcnRpdGlvbmVkX3RhYmxlYApQQVJUSVRJT04gQlkgREFURSh0aW1lc3RhbXBfY29sdW1uKQpBUyBTRUxFQ1QgKiBGUk9NIGBteV9kYXRhc2V0Lm15X3RhYmxlYDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE `my_dataset.partitioned_table`
+PARTITION BY DATE(timestamp_column)
+AS SELECT * FROM `my_dataset.my_table`;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This creates a partitioned table based on the <code>timestamp_column</code>, which can improve query performance for time-based queries.</li>
+</ul>
+</div><h2>Example: Clustering</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGBteV9kYXRhc2V0LmNsdXN0ZXJlZF90YWJsZWAKQ0xVU1RFUiBCWSBuYW1lCkFTIFNFTEVDVCAqIEZST00gYG15X2RhdGFzZXQubXlfdGFibGVgOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE `my_dataset.clustered_table`
+CLUSTER BY name
+AS SELECT * FROM `my_dataset.my_table`;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This creates a clustered table based on the <code>name</code> column, which can improve query performance for queries that filter or group by <code>name</code>.</li>
+</ul>
+</div><h1>6. Optimizing Joins</h1>
+<div class='content'><p>Joins can be resource-intensive. Optimize joins by ensuring that the join keys are indexed and by using the appropriate join type.</p>
+</div><h2>Example: Optimized Join</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGEubmFtZSwgYi5zYWxhcnkKRlJPTSBgbXlfZGF0YXNldC50YWJsZV9hYCBhCkpPSU4gYG15X2RhdGFzZXQudGFibGVfYmAgYgpPTiBhLmlkID0gYi5pZDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT a.name, b.salary
+FROM `my_dataset.table_a` a
+JOIN `my_dataset.table_b` b
+ON a.id = b.id;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: Ensure that the <code>id</code> columns in both tables are indexed to improve join performance.</li>
+</ul>
+</div><h1>7. Using Materialized Views</h1>
+<div class='content'><p>Materialized views store the results of a query, which can be reused to improve performance for repetitive queries.</p>
+</div><h2>Example: Creating a Materialized View</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE1BVEVSSUFMSVpFRCBWSUVXIGBteV9kYXRhc2V0Lm15X21hdGVyaWFsaXplZF92aWV3YApBUyBTRUxFQ1QgbmFtZSwgQVZHKHNhbGFyeSkgQVMgYXZnX3NhbGFyeQpGUk9NIGBteV9kYXRhc2V0Lm15X3RhYmxlYApHUk9VUCBCWSBuYW1lOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE MATERIALIZED VIEW `my_dataset.my_materialized_view`
+AS SELECT name, AVG(salary) AS avg_salary
+FROM `my_dataset.my_table`
+GROUP BY name;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This materialized view stores the average salary for each name, which can be reused in future queries.</li>
+</ul>
+</div><h1>8. Caching Results</h1>
+<div class='content'><p>BigQuery caches query results for 24 hours. Reusing cached results can save time and reduce costs.</p>
+</div><h2>Example: Reusing Cached Results</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUsIGFnZSBGUk9NIGBteV9kYXRhc2V0Lm15X3RhYmxlYApXSEVSRSBhZ2UgPiAzMDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name, age FROM `my_dataset.my_table`
+WHERE age &gt; 30;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: If this query is run multiple times within 24 hours, BigQuery will use the cached results, improving performance.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Optimize the Following Query</h2>
+<div class='content'><p>Given the following query, apply the optimization techniques discussed:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBgbXlfZGF0YXNldC5teV90YWJsZWAKV0hFUkUgYWdlID4gMzAKT1JERVIgQlkgbmFtZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM `my_dataset.my_table`
+WHERE age &gt; 30
+ORDER BY name;</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBmaWx0ZXJlZF9kYXRhIEFTICgKICBTRUxFQ1QgbmFtZSwgYWdlIEZST00gYG15X2RhdGFzZXQubXlfdGFibGVgIFdIRVJFIGFnZSA+IDMwCikKU0VMRUNUICogRlJPTSBmaWx0ZXJlZF9kYXRhCk9SREVSIEJZIG5hbWU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH filtered_data AS (
+  SELECT name, age FROM `my_dataset.my_table` WHERE age &gt; 30
+)
+SELECT * FROM filtered_data
+ORDER BY name;</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: The query is optimized by filtering the data early using a Common Table Expression (CTE) and specifying the required columns.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered various query optimization techniques in BigQuery, including understanding query execution plans, using appropriate data types, avoiding <code>SELECT *</code>, filtering early, using partitioning and clustering, optimizing joins, using materialized views, and caching results. By applying these techniques, you can significantly improve the performance and efficiency of your queries in BigQuery.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-managing-datasets-tables' title="Managing Datasets and Tables">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-query-execution-plans' title="Understanding Query Execution Plans">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

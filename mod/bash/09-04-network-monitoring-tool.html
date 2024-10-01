@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 4: Network Monitoring Tool</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/09-04-network-monitoring-tool" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/09-04-network-monitoring-tool" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/09-04-network-monitoring-tool" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bash/09-04-network-monitoring-tool" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/09-04-network-monitoring-tool" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-automated-backup-system' title="Project 3: Automated Backup System">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Project 4: Network Monitoring Tool</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'><p>In this project, we will create a network monitoring tool using Bash. This tool will help you monitor network activity, check connectivity, and log network statistics. By the end of this project, you will have a functional script that can be used to monitor network performance and troubleshoot network issues.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the basics of network monitoring.</li>
+<li>Learn how to use common network monitoring commands in Bash.</li>
+<li>Create a script to monitor network activity and log the results.</li>
+<li>Implement error handling and logging.</li>
+</ul>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>Network Monitoring</strong>: The process of observing network traffic and performance.</li>
+<li><strong>Ping</strong>: A command to check the connectivity between two nodes.</li>
+<li><strong>Traceroute</strong>: A command to trace the path packets take to reach a destination.</li>
+<li><strong>Netstat</strong>: A command to display network connections, routing tables, and interface statistics.</li>
+<li><strong>Logging</strong>: Recording the output of commands to a file for later analysis.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>Step 1: Setting Up the Script</h2>
+<div class='content'><p>Create a new Bash script file named <code>network_monitor.sh</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKIyBuZXR3b3JrX21vbml0b3Iuc2ggLSBBIHNpbXBsZSBuZXR3b3JrIG1vbml0b3JpbmcgdG9vbAoKIyBFbnN1cmUgdGhlIHNjcmlwdCBpcyBleGVjdXRlZCB3aXRoIHJvb3QgcHJpdmlsZWdlcwppZiBbWyAkRVVJRCAtbmUgMCBdXTsgdGhlbgogICBlY2hvICJUaGlzIHNjcmlwdCBtdXN0IGJlIHJ1biBhcyByb290IiAKICAgZXhpdCAxCmZpCgojIExvZyBmaWxlIGxvY2F0aW9uCkxPR19GSUxFPSIvdmFyL2xvZy9uZXR3b3JrX21vbml0b3IubG9nIgoKIyBGdW5jdGlvbiB0byBsb2cgbWVzc2FnZXMKbG9nX21lc3NhZ2UoKSB7CiAgICBsb2NhbCBNRVNTQUdFPSQxCiAgICBlY2hvICIkKGRhdGUgKyclWS0lbS0lZCAlSDolTTolUycpIC0gJE1FU1NBR0UiIHwgdGVlIC1hICRMT0dfRklMRQp9Cgpsb2dfbWVzc2FnZSAiTmV0d29yayBtb25pdG9yaW5nIHNjcmlwdCBzdGFydGVkLiI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+# network_monitor.sh - A simple network monitoring tool
+
+# Ensure the script is executed with root privileges
+if [[ $EUID -ne 0 ]]; then
+   echo &quot;This script must be run as root&quot; 
+   exit 1
+fi
+
+# Log file location
+LOG_FILE=&quot;/var/log/network_monitor.log&quot;
+
+# Function to log messages
+log_message() {
+    local MESSAGE=$1
+    echo &quot;$(date +'%Y-%m-%d %H:%M:%S') - $MESSAGE&quot; | tee -a $LOG_FILE
+}
+
+log_message &quot;Network monitoring script started.&quot;</pre></div><div class='content'></div><h2>Step 2: Checking Connectivity with Ping</h2>
+<div class='content'><p>Add a function to check connectivity to a list of hosts using the <code>ping</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMaXN0IG9mIGhvc3RzIHRvIG1vbml0b3IKSE9TVFM9KCJnb29nbGUuY29tIiAiZ2l0aHViLmNvbSIgInN0YWNrb3ZlcmZsb3cuY29tIikKCiMgRnVuY3Rpb24gdG8gY2hlY2sgY29ubmVjdGl2aXR5CmNoZWNrX2Nvbm5lY3Rpdml0eSgpIHsKICAgIGZvciBIT1NUIGluICIke0hPU1RTW0BdfSI7IGRvCiAgICAgICAgaWYgcGluZyAtYyAxICRIT1NUICY+IC9kZXYvbnVsbDsgdGhlbgogICAgICAgICAgICBsb2dfbWVzc2FnZSAiUGluZyB0byAkSE9TVCBzdWNjZXNzZnVsLiIKICAgICAgICBlbHNlCiAgICAgICAgICAgIGxvZ19tZXNzYWdlICJQaW5nIHRvICRIT1NUIGZhaWxlZC4iCiAgICAgICAgZmkKICAgIGRvbmUKfQoKY2hlY2tfY29ubmVjdGl2aXR5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># List of hosts to monitor
+HOSTS=(&quot;google.com&quot; &quot;github.com&quot; &quot;stackoverflow.com&quot;)
+
+# Function to check connectivity
+check_connectivity() {
+    for HOST in &quot;${HOSTS[@]}&quot;; do
+        if ping -c 1 $HOST &amp;&gt; /dev/null; then
+            log_message &quot;Ping to $HOST successful.&quot;
+        else
+            log_message &quot;Ping to $HOST failed.&quot;
+        fi
+    done
+}
+
+check_connectivity</pre></div><div class='content'></div><h2>Step 3: Tracing the Route with Traceroute</h2>
+<div class='content'><p>Add a function to trace the route to a host using the <code>traceroute</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jdGlvbiB0byB0cmFjZSByb3V0ZQp0cmFjZV9yb3V0ZSgpIHsKICAgIGxvY2FsIEhPU1Q9JDEKICAgIGxvZ19tZXNzYWdlICJUcmFjaW5nIHJvdXRlIHRvICRIT1NUIgogICAgdHJhY2Vyb3V0ZSAkSE9TVCB8IHRlZSAtYSAkTE9HX0ZJTEUKfQoKIyBUcmFjZSByb3V0ZSB0byB0aGUgZmlyc3QgaG9zdCBpbiB0aGUgbGlzdAp0cmFjZV9yb3V0ZSAke0hPU1RTWzBdfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Function to trace route
+trace_route() {
+    local HOST=$1
+    log_message &quot;Tracing route to $HOST&quot;
+    traceroute $HOST | tee -a $LOG_FILE
+}
+
+# Trace route to the first host in the list
+trace_route ${HOSTS[0]}</pre></div><div class='content'></div><h2>Step 4: Displaying Network Statistics with Netstat</h2>
+<div class='content'><p>Add a function to display network statistics using the <code>netstat</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jdGlvbiB0byBkaXNwbGF5IG5ldHdvcmsgc3RhdGlzdGljcwpkaXNwbGF5X25ldHN0YXQoKSB7CiAgICBsb2dfbWVzc2FnZSAiRGlzcGxheWluZyBuZXR3b3JrIHN0YXRpc3RpY3MiCiAgICBuZXRzdGF0IC10dWxuIHwgdGVlIC1hICRMT0dfRklMRQp9CgpkaXNwbGF5X25ldHN0YXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Function to display network statistics
+display_netstat() {
+    log_message &quot;Displaying network statistics&quot;
+    netstat -tuln | tee -a $LOG_FILE
+}
+
+display_netstat</pre></div><div class='content'></div><h2>Step 5: Scheduling the Script</h2>
+<div class='content'><p>To run the script at regular intervals, you can use <code>cron</code>. Edit the crontab file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBjcm9udGFiIC1l"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo crontab -e</pre></div><div class='content'><p>Add the following line to run the script every 5 minutes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ki81ICogKiAqICogL3BhdGgvdG8vbmV0d29ya19tb25pdG9yLnNo"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>*/5 * * * * /path/to/network_monitor.sh</pre></div><div class='content'></div><h2>Step 6: Error Handling and Logging</h2>
+<div class='content'><p>Ensure that all commands are logged and errors are handled gracefully:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jdGlvbiB0byBjaGVjayBjb25uZWN0aXZpdHkgd2l0aCBlcnJvciBoYW5kbGluZwpjaGVja19jb25uZWN0aXZpdHkoKSB7CiAgICBmb3IgSE9TVCBpbiAiJHtIT1NUU1tAXX0iOyBkbwogICAgICAgIGlmIHBpbmcgLWMgMSAkSE9TVCAmPiAvZGV2L251bGw7IHRoZW4KICAgICAgICAgICAgbG9nX21lc3NhZ2UgIlBpbmcgdG8gJEhPU1Qgc3VjY2Vzc2Z1bC4iCiAgICAgICAgZWxzZQogICAgICAgICAgICBsb2dfbWVzc2FnZSAiUGluZyB0byAkSE9TVCBmYWlsZWQuIgogICAgICAgIGZpCiAgICBkb25lCn0KCiMgRnVuY3Rpb24gdG8gdHJhY2Ugcm91dGUgd2l0aCBlcnJvciBoYW5kbGluZwp0cmFjZV9yb3V0ZSgpIHsKICAgIGxvY2FsIEhPU1Q9JDEKICAgIGxvZ19tZXNzYWdlICJUcmFjaW5nIHJvdXRlIHRvICRIT1NUIgogICAgaWYgdHJhY2Vyb3V0ZSAkSE9TVCAmPiAvZGV2L251bGw7IHRoZW4KICAgICAgICB0cmFjZXJvdXRlICRIT1NUIHwgdGVlIC1hICRMT0dfRklMRQogICAgZWxzZQogICAgICAgIGxvZ19tZXNzYWdlICJUcmFjZXJvdXRlIHRvICRIT1NUIGZhaWxlZC4iCiAgICBmaQp9CgojIEZ1bmN0aW9uIHRvIGRpc3BsYXkgbmV0d29yayBzdGF0aXN0aWNzIHdpdGggZXJyb3IgaGFuZGxpbmcKZGlzcGxheV9uZXRzdGF0KCkgewogICAgbG9nX21lc3NhZ2UgIkRpc3BsYXlpbmcgbmV0d29yayBzdGF0aXN0aWNzIgogICAgaWYgbmV0c3RhdCAtdHVsbiAmPiAvZGV2L251bGw7IHRoZW4KICAgICAgICBuZXRzdGF0IC10dWxuIHwgdGVlIC1hICRMT0dfRklMRQogICAgZWxzZQogICAgICAgIGxvZ19tZXNzYWdlICJGYWlsZWQgdG8gZGlzcGxheSBuZXR3b3JrIHN0YXRpc3RpY3MuIgogICAgZmkKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Function to check connectivity with error handling
+check_connectivity() {
+    for HOST in &quot;${HOSTS[@]}&quot;; do
+        if ping -c 1 $HOST &amp;&gt; /dev/null; then
+            log_message &quot;Ping to $HOST successful.&quot;
+        else
+            log_message &quot;Ping to $HOST failed.&quot;
+        fi
+    done
+}
+
+# Function to trace route with error handling
+trace_route() {
+    local HOST=$1
+    log_message &quot;Tracing route to $HOST&quot;
+    if traceroute $HOST &amp;&gt; /dev/null; then
+        traceroute $HOST | tee -a $LOG_FILE
+    else
+        log_message &quot;Traceroute to $HOST failed.&quot;
+    fi
+}
+
+# Function to display network statistics with error handling
+display_netstat() {
+    log_message &quot;Displaying network statistics&quot;
+    if netstat -tuln &amp;&gt; /dev/null; then
+        netstat -tuln | tee -a $LOG_FILE
+    else
+        log_message &quot;Failed to display network statistics.&quot;
+    fi
+}</pre></div><div class='content'></div><h2>Complete Script</h2>
+<div class='content'><p>Here is the complete <code>network_monitor.sh</code> script:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKIyBuZXR3b3JrX21vbml0b3Iuc2ggLSBBIHNpbXBsZSBuZXR3b3JrIG1vbml0b3JpbmcgdG9vbAoKIyBFbnN1cmUgdGhlIHNjcmlwdCBpcyBleGVjdXRlZCB3aXRoIHJvb3QgcHJpdmlsZWdlcwppZiBbWyAkRVVJRCAtbmUgMCBdXTsgdGhlbgogICBlY2hvICJUaGlzIHNjcmlwdCBtdXN0IGJlIHJ1biBhcyByb290IiAKICAgZXhpdCAxCmZpCgojIExvZyBmaWxlIGxvY2F0aW9uCkxPR19GSUxFPSIvdmFyL2xvZy9uZXR3b3JrX21vbml0b3IubG9nIgoKIyBGdW5jdGlvbiB0byBsb2cgbWVzc2FnZXMKbG9nX21lc3NhZ2UoKSB7CiAgICBsb2NhbCBNRVNTQUdFPSQxCiAgICBlY2hvICIkKGRhdGUgKyclWS0lbS0lZCAlSDolTTolUycpIC0gJE1FU1NBR0UiIHwgdGVlIC1hICRMT0dfRklMRQp9Cgpsb2dfbWVzc2FnZSAiTmV0d29yayBtb25pdG9yaW5nIHNjcmlwdCBzdGFydGVkLiIKCiMgTGlzdCBvZiBob3N0cyB0byBtb25pdG9yCkhPU1RTPSgiZ29vZ2xlLmNvbSIgImdpdGh1Yi5jb20iICJzdGFja292ZXJmbG93LmNvbSIpCgojIEZ1bmN0aW9uIHRvIGNoZWNrIGNvbm5lY3Rpdml0eQpjaGVja19jb25uZWN0aXZpdHkoKSB7CiAgICBmb3IgSE9TVCBpbiAiJHtIT1NUU1tAXX0iOyBkbwogICAgICAgIGlmIHBpbmcgLWMgMSAkSE9TVCAmPiAvZGV2L251bGw7IHRoZW4KICAgICAgICAgICAgbG9nX21lc3NhZ2UgIlBpbmcgdG8gJEhPU1Qgc3VjY2Vzc2Z1bC4iCiAgICAgICAgZWxzZQogICAgICAgICAgICBsb2dfbWVzc2FnZSAiUGluZyB0byAkSE9TVCBmYWlsZWQuIgogICAgICAgIGZpCiAgICBkb25lCn0KCiMgRnVuY3Rpb24gdG8gdHJhY2Ugcm91dGUKdHJhY2Vfcm91dGUoKSB7CiAgICBsb2NhbCBIT1NUPSQxCiAgICBsb2dfbWVzc2FnZSAiVHJhY2luZyByb3V0ZSB0byAkSE9TVCIKICAgIGlmIHRyYWNlcm91dGUgJEhPU1QgJj4gL2Rldi9udWxsOyB0aGVuCiAgICAgICAgdHJhY2Vyb3V0ZSAkSE9TVCB8IHRlZSAtYSAkTE9HX0ZJTEUKICAgIGVsc2UKICAgICAgICBsb2dfbWVzc2FnZSAiVHJhY2Vyb3V0ZSB0byAkSE9TVCBmYWlsZWQuIgogICAgZmkKfQoKIyBGdW5jdGlvbiB0byBkaXNwbGF5IG5ldHdvcmsgc3RhdGlzdGljcwpkaXNwbGF5X25ldHN0YXQoKSB7CiAgICBsb2dfbWVzc2FnZSAiRGlzcGxheWluZyBuZXR3b3JrIHN0YXRpc3RpY3MiCiAgICBpZiBuZXRzdGF0IC10dWxuICY+IC9kZXYvbnVsbDsgdGhlbgogICAgICAgIG5ldHN0YXQgLXR1bG4gfCB0ZWUgLWEgJExPR19GSUxFCiAgICBlbHNlCiAgICAgICAgbG9nX21lc3NhZ2UgIkZhaWxlZCB0byBkaXNwbGF5IG5ldHdvcmsgc3RhdGlzdGljcy4iCiAgICBmaQp9CgojIFJ1biB0aGUgZnVuY3Rpb25zCmNoZWNrX2Nvbm5lY3Rpdml0eQp0cmFjZV9yb3V0ZSAke0hPU1RTWzBdfQpkaXNwbGF5X25ldHN0YXQKCmxvZ19tZXNzYWdlICJOZXR3b3JrIG1vbml0b3Jpbmcgc2NyaXB0IGNvbXBsZXRlZC4i"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+# network_monitor.sh - A simple network monitoring tool
+
+# Ensure the script is executed with root privileges
+if [[ $EUID -ne 0 ]]; then
+   echo &quot;This script must be run as root&quot; 
+   exit 1
+fi
+
+# Log file location
+LOG_FILE=&quot;/var/log/network_monitor.log&quot;
+
+# Function to log messages
+log_message() {
+    local MESSAGE=$1
+    echo &quot;$(date +'%Y-%m-%d %H:%M:%S') - $MESSAGE&quot; | tee -a $LOG_FILE
+}
+
+log_message &quot;Network monitoring script started.&quot;
+
+# List of hosts to monitor
+HOSTS=(&quot;google.com&quot; &quot;github.com&quot; &quot;stackoverflow.com&quot;)
+
+# Function to check connectivity
+check_connectivity() {
+    for HOST in &quot;${HOSTS[@]}&quot;; do
+        if ping -c 1 $HOST &amp;&gt; /dev/null; then
+            log_message &quot;Ping to $HOST successful.&quot;
+        else
+            log_message &quot;Ping to $HOST failed.&quot;
+        fi
+    done
+}
+
+# Function to trace route
+trace_route() {
+    local HOST=$1
+    log_message &quot;Tracing route to $HOST&quot;
+    if traceroute $HOST &amp;&gt; /dev/null; then
+        traceroute $HOST | tee -a $LOG_FILE
+    else
+        log_message &quot;Traceroute to $HOST failed.&quot;
+    fi
+}
+
+# Function to display network statistics
+display_netstat() {
+    log_message &quot;Displaying network statistics&quot;
+    if netstat -tuln &amp;&gt; /dev/null; then
+        netstat -tuln | tee -a $LOG_FILE
+    else
+        log_message &quot;Failed to display network statistics.&quot;
+    fi
+}
+
+# Run the functions
+check_connectivity
+trace_route ${HOSTS[0]}
+display_netstat
+
+log_message &quot;Network monitoring script completed.&quot;</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this project, you learned how to create a network monitoring tool using Bash. You covered:</p>
+<ul>
+<li>Checking connectivity with <code>ping</code>.</li>
+<li>Tracing routes with <code>traceroute</code>.</li>
+<li>Displaying network statistics with <code>netstat</code>.</li>
+<li>Logging the output to a file.</li>
+<li>Scheduling the script to run at regular intervals using <code>cron</code>.</li>
+</ul>
+<p>This tool can be expanded with additional features such as monitoring specific ports, alerting on failures, and more. Use this as a foundation to build more complex network monitoring solutions.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-automated-backup-system' title="Project 3: Automated Backup System">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

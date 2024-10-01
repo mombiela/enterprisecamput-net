@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Type Providers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/09-02-type-providers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/09-02-type-providers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/09-02-type-providers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fsharp/09-02-type-providers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/09-02-type-providers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-metaprogramming' title="Metaprogramming with F#">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Type Providers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-domain-driven-design' title="Domain-Driven Design">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Type Providers</h1>
+<div class='content'><p>Type Providers are a powerful feature in F# that allow you to access and manipulate data from various sources in a type-safe manner. They provide a way to generate types, properties, and methods based on external data sources, such as databases, web services, or files, at compile time. This enables you to work with external data as if it were native F# types, with full IntelliSense support and compile-time checking.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Type Safety</strong>: Ensures that the data you work with matches the expected types, reducing runtime errors.</li>
+<li><strong>IntelliSense Support</strong>: Provides auto-completion and documentation for external data sources within your IDE.</li>
+<li><strong>Compile-Time Checking</strong>: Errors are caught at compile time, making your code more robust and reliable.</li>
+<li><strong>Data Source Integration</strong>: Seamlessly integrates with various data sources like JSON, XML, SQL databases, and more.</li>
+</ul>
+</div><h1>Setting Up Type Providers</h1>
+<div class='content'><p>To use Type Providers in F#, you need to install the necessary NuGet packages. For example, to work with JSON data, you can use the <code>FSharp.Data</code> package.</p>
+</div><h2>Installing FSharp.Data</h2>
+<div class='content'><ol>
+<li>Open your F# project in your preferred IDE (e.g., Visual Studio, JetBrains Rider).</li>
+<li>Open the NuGet Package Manager.</li>
+<li>Search for <code>FSharp.Data</code> and install it.</li>
+</ol>
+<p>Alternatively, you can use the .NET CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG90bmV0IGFkZCBwYWNrYWdlIEZTaGFycC5EYXRh"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dotnet add package FSharp.Data</pre></div><div class='content'></div><h1>Using Type Providers</h1>
+<div class='content'></div><h2>Example: JSON Type Provider</h2>
+<div class='content'><p>Let's start with a simple example of using a JSON Type Provider to work with JSON data.</p>
+<ol>
+<li>
+<p><strong>Add the necessary open statements</strong>:</p>
+<pre><code class="language-fsharp">open FSharp.Data
+</code></pre>
+</li>
+<li>
+<p><strong>Define the JSON data</strong>:</p>
+<pre><code class="language-fsharp">let jsonData = &quot;&quot;&quot;
+{
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;age&quot;: 30,
+    &quot;isStudent&quot;: false
+}
+&quot;&quot;&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a type provider for the JSON data</strong>:</p>
+<pre><code class="language-fsharp">type Person = JsonProvider&lt;&quot;&quot;&quot;{
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;age&quot;: 30,
+    &quot;isStudent&quot;: false
+}&quot;&quot;&quot;&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Parse the JSON data</strong>:</p>
+<pre><code class="language-fsharp">let person = Person.Parse(jsonData)
+</code></pre>
+</li>
+<li>
+<p><strong>Access the data</strong>:</p>
+<pre><code class="language-fsharp">printfn &quot;Name: %s&quot; person.Name
+printfn &quot;Age: %d&quot; person.Age
+printfn &quot;Is Student: %b&quot; person.IsStudent
+</code></pre>
+</li>
+</ol>
+</div><h2>Example: SQL Type Provider</h2>
+<div class='content'><p>Next, let's look at an example of using a SQL Type Provider to work with a SQL database.</p>
+<ol>
+<li>
+<p><strong>Add the necessary open statements</strong>:</p>
+<pre><code class="language-fsharp">open FSharp.Data.Sql
+</code></pre>
+</li>
+<li>
+<p><strong>Define the connection string</strong>:</p>
+<pre><code class="language-fsharp">let connectionString = &quot;Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a type provider for the SQL database</strong>:</p>
+<pre><code class="language-fsharp">type Sql = SqlDataProvider&lt;Common.DatabaseProviderTypes.MSSQLSERVER, connectionString&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Access the data</strong>:</p>
+<pre><code class="language-fsharp">let ctx = Sql.GetDataContext()
+let customers = ctx.Dbo.Customers |&gt; Seq.toList
+
+customers |&gt; List.iter (fun customer -&gt;
+    printfn &quot;Customer ID: %d, Name: %s&quot; customer.CustomerId customer.Name
+)
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Working with JSON Data</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Task</strong>: Use the JSON Type Provider to parse and access the following JSON data:</p>
+<pre><code class="language-json">{
+    &quot;title&quot;: &quot;F# Programming&quot;,
+    &quot;author&quot;: &quot;Jane Smith&quot;,
+    &quot;publishedYear&quot;: 2021,
+    &quot;isAvailable&quot;: true
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Solution</strong>:</p>
+<pre><code class="language-fsharp">open FSharp.Data
+
+let bookJson = &quot;&quot;&quot;
+{
+    &quot;title&quot;: &quot;F# Programming&quot;,
+    &quot;author&quot;: &quot;Jane Smith&quot;,
+    &quot;publishedYear&quot;: 2021,
+    &quot;isAvailable&quot;: true
+}
+&quot;&quot;&quot;
+
+type Book = JsonProvider&lt;&quot;&quot;&quot;{
+    &quot;title&quot;: &quot;F# Programming&quot;,
+    &quot;author&quot;: &quot;Jane Smith&quot;,
+    &quot;publishedYear&quot;: 2021,
+    &quot;isAvailable&quot;: true
+}&quot;&quot;&quot;&gt;
+
+let book = Book.Parse(bookJson)
+
+printfn &quot;Title: %s&quot; book.Title
+printfn &quot;Author: %s&quot; book.Author
+printfn &quot;Published Year: %d&quot; book.PublishedYear
+printfn &quot;Is Available: %b&quot; book.IsAvailable
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Working with SQL Data</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Task</strong>: Use the SQL Type Provider to connect to a database and retrieve data from a table named <code>Products</code> with columns <code>ProductId</code>, <code>ProductName</code>, and <code>Price</code>.</p>
+</li>
+<li>
+<p><strong>Solution</strong>:</p>
+<pre><code class="language-fsharp">open FSharp.Data.Sql
+
+let connectionString = &quot;Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;&quot;
+
+type Sql = SqlDataProvider&lt;Common.DatabaseProviderTypes.MSSQLSERVER, connectionString&gt;
+
+let ctx = Sql.GetDataContext()
+let products = ctx.Dbo.Products |&gt; Seq.toList
+
+products |&gt; List.iter (fun product -&gt;
+    printfn &quot;Product ID: %d, Name: %s, Price: %f&quot; product.ProductId product.ProductName product.Price
+)
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Connection Strings</strong>: Ensure your connection strings are correct and secure.</li>
+<li><strong>Data Mismatch</strong>: Make sure the data structure in your type provider matches the actual data source.</li>
+<li><strong>Handling Null Values</strong>: Be cautious with null values and handle them appropriately in your code.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Type Providers in F# offer a robust way to interact with external data sources in a type-safe and efficient manner. By leveraging Type Providers, you can reduce runtime errors, improve code readability, and enhance productivity. In this section, we covered the basics of setting up and using Type Providers with JSON and SQL data. In the next module, we will explore more advanced topics and practical applications of Type Providers.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-metaprogramming' title="Metaprogramming with F#">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-domain-driven-design' title="Domain-Driven Design">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

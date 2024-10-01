@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Database Design</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/10-01-e-commerce-database-design" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/10-01-e-commerce-database-design" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/10-01-e-commerce-database-design" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/10-01-e-commerce-database-design" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/10-01-e-commerce-database-design" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-plpgsql-and-other-procedural-languages' title="PL/pgSQL and Other Procedural Languages">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">E-commerce Database Design</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-data-warehousing-with-postgresql' title="Data Warehousing with PostgreSQL">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Designing a database for an e-commerce application involves understanding the various entities and their relationships within the system. This module will guide you through the process of creating a robust and scalable database design for an e-commerce platform.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Entities and Relationships</strong>: Identify the main entities (e.g., Users, Products, Orders) and their relationships.</li>
+<li><strong>Normalization</strong>: Apply normalization principles to reduce redundancy and improve data integrity.</li>
+<li><strong>Indexes</strong>: Use indexes to optimize query performance.</li>
+<li><strong>Constraints</strong>: Implement constraints to enforce data integrity.</li>
+</ol>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>Step 1: Identify Entities</h2>
+<div class='content'><p>The first step is to identify the main entities in the e-commerce system. Common entities include:</p>
+<ul>
+<li><strong>Users</strong>: Customers who use the platform.</li>
+<li><strong>Products</strong>: Items available for purchase.</li>
+<li><strong>Orders</strong>: Transactions made by users.</li>
+<li><strong>Categories</strong>: Groupings of products.</li>
+<li><strong>Reviews</strong>: Feedback provided by users on products.</li>
+</ul>
+</div><h2>Step 2: Define Relationships</h2>
+<div class='content'><p>Next, define the relationships between these entities:</p>
+<ul>
+<li><strong>Users and Orders</strong>: One-to-Many (One user can place multiple orders).</li>
+<li><strong>Orders and Products</strong>: Many-to-Many (One order can contain multiple products, and one product can be in multiple orders).</li>
+<li><strong>Products and Categories</strong>: Many-to-Many (One product can belong to multiple categories, and one category can contain multiple products).</li>
+<li><strong>Users and Reviews</strong>: One-to-Many (One user can write multiple reviews).</li>
+<li><strong>Products and Reviews</strong>: One-to-Many (One product can have multiple reviews).</li>
+</ul>
+</div><h2>Step 3: Create Tables</h2>
+<div class='content'><p>Based on the identified entities and relationships, create the necessary tables.</p>
+<h4>Users Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFVzZXJzICgKICAgIHVzZXJfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgdXNlcm5hbWUgVkFSQ0hBUig1MCkgTk9UIE5VTEwgVU5JUVVFLAogICAgZW1haWwgVkFSQ0hBUigxMDApIE5PVCBOVUxMIFVOSVFVRSwKICAgIHBhc3N3b3JkIFZBUkNIQVIoMjU1KSBOT1QgTlVMTCwKICAgIGNyZWF0ZWRfYXQgVElNRVNUQU1QIERFRkFVTFQgQ1VSUkVOVF9USU1FU1RBTVAKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Products Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFByb2R1Y3RzICgKICAgIHByb2R1Y3RfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgbmFtZSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBkZXNjcmlwdGlvbiBURVhULAogICAgcHJpY2UgREVDSU1BTCgxMCwgMikgTk9UIE5VTEwsCiAgICBzdG9jayBJTlQgTk9UIE5VTEwsCiAgICBjcmVhdGVkX2F0IFRJTUVTVEFNUCBERUZBVUxUIENVUlJFTlRfVElNRVNUQU1QCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    stock INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Orders Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIE9yZGVycyAoCiAgICBvcmRlcl9pZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICB1c2VyX2lkIElOVCBOT1QgTlVMTCwKICAgIG9yZGVyX2RhdGUgVElNRVNUQU1QIERFRkFVTFQgQ1VSUkVOVF9USU1FU1RBTVAsCiAgICB0b3RhbCBERUNJTUFMKDEwLCAyKSBOT1QgTlVMTCwKICAgIEZPUkVJR04gS0VZICh1c2VyX2lkKSBSRUZFUkVOQ0VTIFVzZXJzKHVzZXJfaWQpCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Orders (
+    order_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    total DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);</pre></div><div class='content'><h4>OrderItems Table (to handle Many-to-Many relationship between Orders and Products)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIE9yZGVySXRlbXMgKAogICAgb3JkZXJfaWQgSU5UIE5PVCBOVUxMLAogICAgcHJvZHVjdF9pZCBJTlQgTk9UIE5VTEwsCiAgICBxdWFudGl0eSBJTlQgTk9UIE5VTEwsCiAgICBwcmljZSBERUNJTUFMKDEwLCAyKSBOT1QgTlVMTCwKICAgIFBSSU1BUlkgS0VZIChvcmRlcl9pZCwgcHJvZHVjdF9pZCksCiAgICBGT1JFSUdOIEtFWSAob3JkZXJfaWQpIFJFRkVSRU5DRVMgT3JkZXJzKG9yZGVyX2lkKSwKICAgIEZPUkVJR04gS0VZIChwcm9kdWN0X2lkKSBSRUZFUkVOQ0VTIFByb2R1Y3RzKHByb2R1Y3RfaWQpCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE OrderItems (
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (order_id, product_id),
+    FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);</pre></div><div class='content'><h4>Categories Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIENhdGVnb3JpZXMgKAogICAgY2F0ZWdvcnlfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgbmFtZSBWQVJDSEFSKDUwKSBOT1QgTlVMTCBVTklRVUUKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Categories (
+    category_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
+);</pre></div><div class='content'><h4>ProductCategories Table (to handle Many-to-Many relationship between Products and Categories)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFByb2R1Y3RDYXRlZ29yaWVzICgKICAgIHByb2R1Y3RfaWQgSU5UIE5PVCBOVUxMLAogICAgY2F0ZWdvcnlfaWQgSU5UIE5PVCBOVUxMLAogICAgUFJJTUFSWSBLRVkgKHByb2R1Y3RfaWQsIGNhdGVnb3J5X2lkKSwKICAgIEZPUkVJR04gS0VZIChwcm9kdWN0X2lkKSBSRUZFUkVOQ0VTIFByb2R1Y3RzKHByb2R1Y3RfaWQpLAogICAgRk9SRUlHTiBLRVkgKGNhdGVnb3J5X2lkKSBSRUZFUkVOQ0VTIENhdGVnb3JpZXMoY2F0ZWdvcnlfaWQpCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE ProductCategories (
+    product_id INT NOT NULL,
+    category_id INT NOT NULL,
+    PRIMARY KEY (product_id, category_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id),
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);</pre></div><div class='content'><h4>Reviews Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFJldmlld3MgKAogICAgcmV2aWV3X2lkIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIHVzZXJfaWQgSU5UIE5PVCBOVUxMLAogICAgcHJvZHVjdF9pZCBJTlQgTk9UIE5VTEwsCiAgICByYXRpbmcgSU5UIENIRUNLIChyYXRpbmcgPj0gMSBBTkQgcmF0aW5nIDw9IDUpLAogICAgY29tbWVudCBURVhULAogICAgY3JlYXRlZF9hdCBUSU1FU1RBTVAgREVGQVVMVCBDVVJSRU5UX1RJTUVTVEFNUCwKICAgIEZPUkVJR04gS0VZICh1c2VyX2lkKSBSRUZFUkVOQ0VTIFVzZXJzKHVzZXJfaWQpLAogICAgRk9SRUlHTiBLRVkgKHByb2R1Y3RfaWQpIFJFRkVSRU5DRVMgUHJvZHVjdHMocHJvZHVjdF9pZCkKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Reviews (
+    review_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    rating INT CHECK (rating &gt;= 1 AND rating &lt;= 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);</pre></div><div class='content'></div><h2>Step 4: Indexes and Constraints</h2>
+<div class='content'><h4>Indexes</h4>
+<p>Indexes can significantly improve the performance of your queries. Here are some examples:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF91c2Vyc19lbWFpbCBPTiBVc2VycyhlbWFpbCk7CkNSRUFURSBJTkRFWCBpZHhfcHJvZHVjdHNfbmFtZSBPTiBQcm9kdWN0cyhuYW1lKTsKQ1JFQVRFIElOREVYIGlkeF9vcmRlcnNfdXNlcl9pZCBPTiBPcmRlcnModXNlcl9pZCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_users_email ON Users(email);
+CREATE INDEX idx_products_name ON Products(name);
+CREATE INDEX idx_orders_user_id ON Orders(user_id);</pre></div><div class='content'><h4>Constraints</h4>
+<p>Constraints ensure data integrity. Here are some examples:</p>
+<ul>
+<li><strong>Unique Constraints</strong>: Ensure that certain columns have unique values.</li>
+<li><strong>Foreign Key Constraints</strong>: Ensure that a value in one table corresponds to a valid value in another table.</li>
+</ul>
+</div><h2>Step 5: Sample Data Insertion</h2>
+<div class='content'><p>To test the database design, insert some sample data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5zZXJ0IFVzZXJzCklOU0VSVCBJTlRPIFVzZXJzICh1c2VybmFtZSwgZW1haWwsIHBhc3N3b3JkKSBWQUxVRVMKKCdqb2huX2RvZScsICdqb2huQGV4YW1wbGUuY29tJywgJ3Bhc3N3b3JkMTIzJyksCignamFuZV9kb2UnLCAnamFuZUBleGFtcGxlLmNvbScsICdwYXNzd29yZDQ1NicpOwoKLS0gSW5zZXJ0IENhdGVnb3JpZXMKSU5TRVJUIElOVE8gQ2F0ZWdvcmllcyAobmFtZSkgVkFMVUVTCignRWxlY3Ryb25pY3MnKSwKKCdCb29rcycpLAooJ0Nsb3RoaW5nJyk7CgotLSBJbnNlcnQgUHJvZHVjdHMKSU5TRVJUIElOVE8gUHJvZHVjdHMgKG5hbWUsIGRlc2NyaXB0aW9uLCBwcmljZSwgc3RvY2spIFZBTFVFUwooJ0xhcHRvcCcsICdBIGhpZ2gtcGVyZm9ybWFuY2UgbGFwdG9wJywgOTk5Ljk5LCAxMCksCignU21hcnRwaG9uZScsICdBIGxhdGVzdCBtb2RlbCBzbWFydHBob25lJywgNjk5Ljk5LCAyMCksCignVC1zaGlydCcsICdBIGNvbWZvcnRhYmxlIGNvdHRvbiB0LXNoaXJ0JywgMTkuOTksIDUwKTsKCi0tIEluc2VydCBPcmRlcnMKSU5TRVJUIElOVE8gT3JkZXJzICh1c2VyX2lkLCB0b3RhbCkgVkFMVUVTCigxLCAxMDE5Ljk4KSwKKDIsIDcxOS45OCk7CgotLSBJbnNlcnQgT3JkZXJJdGVtcwpJTlNFUlQgSU5UTyBPcmRlckl0ZW1zIChvcmRlcl9pZCwgcHJvZHVjdF9pZCwgcXVhbnRpdHksIHByaWNlKSBWQUxVRVMKKDEsIDEsIDEsIDk5OS45OSksCigxLCAzLCAxLCAxOS45OSksCigyLCAyLCAxLCA2OTkuOTkpOwoKLS0gSW5zZXJ0IFJldmlld3MKSU5TRVJUIElOVE8gUmV2aWV3cyAodXNlcl9pZCwgcHJvZHVjdF9pZCwgcmF0aW5nLCBjb21tZW50KSBWQUxVRVMKKDEsIDEsIDUsICdFeGNlbGxlbnQgbGFwdG9wIScpLAooMiwgMiwgNCwgJ0dyZWF0IHNtYXJ0cGhvbmUsIGJ1dCBhIGJpdCBleHBlbnNpdmUuJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Insert Users
+INSERT INTO Users (username, email, password) VALUES
+('john_doe', 'john@example.com', 'password123'),
+('jane_doe', 'jane@example.com', 'password456');
+
+-- Insert Categories
+INSERT INTO Categories (name) VALUES
+('Electronics'),
+('Books'),
+('Clothing');
+
+-- Insert Products
+INSERT INTO Products (name, description, price, stock) VALUES
+('Laptop', 'A high-performance laptop', 999.99, 10),
+('Smartphone', 'A latest model smartphone', 699.99, 20),
+('T-shirt', 'A comfortable cotton t-shirt', 19.99, 50);
+
+-- Insert Orders
+INSERT INTO Orders (user_id, total) VALUES
+(1, 1019.98),
+(2, 719.98);
+
+-- Insert OrderItems
+INSERT INTO OrderItems (order_id, product_id, quantity, price) VALUES
+(1, 1, 1, 999.99),
+(1, 3, 1, 19.99),
+(2, 2, 1, 699.99);
+
+-- Insert Reviews
+INSERT INTO Reviews (user_id, product_id, rating, comment) VALUES
+(1, 1, 5, 'Excellent laptop!'),
+(2, 2, 4, 'Great smartphone, but a bit expensive.');</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li><strong>Create a new table</strong>: Add a <code>ShippingAddresses</code> table to store users' shipping addresses.</li>
+<li><strong>Insert sample data</strong>: Insert sample data into the <code>ShippingAddresses</code> table.</li>
+<li><strong>Query data</strong>: Write a query to retrieve all orders along with the user's shipping address.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Create ShippingAddresses Table</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFNoaXBwaW5nQWRkcmVzc2VzICgKICAgIGFkZHJlc3NfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgdXNlcl9pZCBJTlQgTk9UIE5VTEwsCiAgICBhZGRyZXNzX2xpbmUxIFZBUkNIQVIoMjU1KSBOT1QgTlVMTCwKICAgIGFkZHJlc3NfbGluZTIgVkFSQ0hBUigyNTUpLAogICAgY2l0eSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBzdGF0ZSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBwb3N0YWxfY29kZSBWQVJDSEFSKDIwKSBOT1QgTlVMTCwKICAgIGNvdW50cnkgVkFSQ0hBUigxMDApIE5PVCBOVUxMLAogICAgRk9SRUlHTiBLRVkgKHVzZXJfaWQpIFJFRkVSRU5DRVMgVXNlcnModXNlcl9pZCkKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE ShippingAddresses (
+    address_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    address_line1 VARCHAR(255) NOT NULL,
+    address_line2 VARCHAR(255),
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(20) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);</pre></div><div class='content'><h4>Insert Sample Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gU2hpcHBpbmdBZGRyZXNzZXMgKHVzZXJfaWQsIGFkZHJlc3NfbGluZTEsIGFkZHJlc3NfbGluZTIsIGNpdHksIHN0YXRlLCBwb3N0YWxfY29kZSwgY291bnRyeSkgVkFMVUVTCigxLCAnMTIzIE1haW4gU3QnLCAnQXB0IDRCJywgJ05ldyBZb3JrJywgJ05ZJywgJzEwMDAxJywgJ1VTQScpLAooMiwgJzQ1NiBFbG0gU3QnLCBOVUxMLCAnTG9zIEFuZ2VsZXMnLCAnQ0EnLCAnOTAwMDEnLCAnVVNBJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO ShippingAddresses (user_id, address_line1, address_line2, city, state, postal_code, country) VALUES
+(1, '123 Main St', 'Apt 4B', 'New York', 'NY', '10001', 'USA'),
+(2, '456 Elm St', NULL, 'Los Angeles', 'CA', '90001', 'USA');</pre></div><div class='content'><h4>Query Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgT3JkZXJzLm9yZGVyX2lkLAogICAgT3JkZXJzLm9yZGVyX2RhdGUsCiAgICBPcmRlcnMudG90YWwsCiAgICBVc2Vycy51c2VybmFtZSwKICAgIFNoaXBwaW5nQWRkcmVzc2VzLmFkZHJlc3NfbGluZTEsCiAgICBTaGlwcGluZ0FkZHJlc3Nlcy5hZGRyZXNzX2xpbmUyLAogICAgU2hpcHBpbmdBZGRyZXNzZXMuY2l0eSwKICAgIFNoaXBwaW5nQWRkcmVzc2VzLnN0YXRlLAogICAgU2hpcHBpbmdBZGRyZXNzZXMucG9zdGFsX2NvZGUsCiAgICBTaGlwcGluZ0FkZHJlc3Nlcy5jb3VudHJ5CkZST00gCiAgICBPcmRlcnMKSk9JTiAKICAgIFVzZXJzIE9OIE9yZGVycy51c2VyX2lkID0gVXNlcnMudXNlcl9pZApKT0lOIAogICAgU2hpcHBpbmdBZGRyZXNzZXMgT04gVXNlcnMudXNlcl9pZCA9IFNoaXBwaW5nQWRkcmVzc2VzLnVzZXJfaWQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    Orders.order_id,
+    Orders.order_date,
+    Orders.total,
+    Users.username,
+    ShippingAddresses.address_line1,
+    ShippingAddresses.address_line2,
+    ShippingAddresses.city,
+    ShippingAddresses.state,
+    ShippingAddresses.postal_code,
+    ShippingAddresses.country
+FROM 
+    Orders
+JOIN 
+    Users ON Orders.user_id = Users.user_id
+JOIN 
+    ShippingAddresses ON Users.user_id = ShippingAddresses.user_id;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this module, we covered the essential steps to design a database for an e-commerce application. We identified key entities, defined their relationships, created tables, and implemented indexes and constraints. Additionally, we provided practical exercises to reinforce the concepts learned. This foundation will help you build a scalable and efficient e-commerce database.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-plpgsql-and-other-procedural-languages' title="PL/pgSQL and Other Procedural Languages">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-data-warehousing-with-postgresql' title="Data Warehousing with PostgreSQL">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorted Sets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/02-05-sorted-sets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/02-05-sorted-sets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/02-05-sorted-sets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/02-05-sorted-sets" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/02-05-sorted-sets" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-hashes' title="Hashes">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Sorted Sets</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-basic-commands' title="Basic Commands">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Sorted Sets</h1>
+<div class='content'><p>Sorted Sets in Redis are a powerful data structure that combines the unique elements of a Set with the ability to associate each element with a score, which is used to sort the elements. This makes Sorted Sets ideal for use cases where you need to maintain a sorted list of elements, such as leaderboards, priority queues, and more.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Unique Elements</strong>: Each element in a Sorted Set is unique.</li>
+<li><strong>Scores</strong>: Each element is associated with a score, which is a floating-point number.</li>
+<li><strong>Sorted Order</strong>: Elements are sorted by their scores in ascending order.</li>
+</ul>
+</div><h2>Basic Commands</h2>
+<div class='content'><p>Here are some of the basic commands used to work with Sorted Sets in Redis:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ZADD</code></td>
+<td>Add one or more members to a Sorted Set, or update the score if it already exists.</td>
+</tr>
+<tr>
+<td><code>ZRANGE</code></td>
+<td>Return a range of members in a Sorted Set, by index.</td>
+</tr>
+<tr>
+<td><code>ZREM</code></td>
+<td>Remove one or more members from a Sorted Set.</td>
+</tr>
+<tr>
+<td><code>ZSCORE</code></td>
+<td>Get the score associated with the given member in a Sorted Set.</td>
+</tr>
+<tr>
+<td><code>ZCARD</code></td>
+<td>Get the number of members in a Sorted Set.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Adding Elements to a Sorted Set</h2>
+<div class='content'><p>To add elements to a Sorted Set, you use the <code>ZADD</code> command. Each element is added with a score.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WkFERCBsZWFkZXJib2FyZCAxMDAgIkFsaWNlIgpaQUREIGxlYWRlcmJvYXJkIDIwMCAiQm9iIgpaQUREIGxlYWRlcmJvYXJkIDE1MCAiQ2hhcmxpZSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZADD leaderboard 100 &quot;Alice&quot;
+ZADD leaderboard 200 &quot;Bob&quot;
+ZADD leaderboard 150 &quot;Charlie&quot;</pre></div><div class='content'><p>In this example, we add three members to a Sorted Set named <code>leaderboard</code> with their respective scores.</p>
+</div><h2>Retrieving Elements by Score</h2>
+<div class='content'><p>To retrieve elements within a specific score range, you can use the <code>ZRANGE</code> command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WlJBTkdFIGxlYWRlcmJvYXJkIDAgLTEgV0lUSFNDT1JFUw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZRANGE leaderboard 0 -1 WITHSCORES</pre></div><div class='content'><p>This command retrieves all elements in the <code>leaderboard</code> Sorted Set along with their scores, sorted in ascending order.</p>
+</div><h2>Removing Elements</h2>
+<div class='content'><p>To remove elements from a Sorted Set, you use the <code>ZREM</code> command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WlJFTSBsZWFkZXJib2FyZCAiQWxpY2Ui"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZREM leaderboard &quot;Alice&quot;</pre></div><div class='content'><p>This command removes the member &quot;Alice&quot; from the <code>leaderboard</code> Sorted Set.</p>
+</div><h2>Getting the Score of an Element</h2>
+<div class='content'><p>To get the score associated with a specific member, you use the <code>ZSCORE</code> command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WlNDT1JFIGxlYWRlcmJvYXJkICJCb2Ii"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZSCORE leaderboard &quot;Bob&quot;</pre></div><div class='content'><p>This command returns the score of the member &quot;Bob&quot; in the <code>leaderboard</code> Sorted Set.</p>
+</div><h2>Counting Elements</h2>
+<div class='content'><p>To get the number of elements in a Sorted Set, you use the <code>ZCARD</code> command.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WkNBUkQgbGVhZGVyYm9hcmQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZCARD leaderboard</pre></div><div class='content'><p>This command returns the number of members in the <code>leaderboard</code> Sorted Set.</p>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Adding and Retrieving Elements</h2>
+<div class='content'><ol>
+<li>
+<p>Add the following members to a Sorted Set named <code>students</code> with their respective scores:</p>
+<ul>
+<li>&quot;John&quot; with a score of 85</li>
+<li>&quot;Jane&quot; with a score of 90</li>
+<li>&quot;Doe&quot; with a score of 75</li>
+</ul>
+</li>
+<li>
+<p>Retrieve all members in the <code>students</code> Sorted Set along with their scores.</p>
+</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WkFERCBzdHVkZW50cyA4NSAiSm9obiIKWkFERCBzdHVkZW50cyA5MCAiSmFuZSIKWkFERCBzdHVkZW50cyA3NSAiRG9lIgoKWlJBTkdFIHN0dWRlbnRzIDAgLTEgV0lUSFNDT1JFUw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZADD students 85 &quot;John&quot;
+ZADD students 90 &quot;Jane&quot;
+ZADD students 75 &quot;Doe&quot;
+
+ZRANGE students 0 -1 WITHSCORES</pre></div><div class='content'></div><h2>Exercise 2: Removing and Counting Elements</h2>
+<div class='content'><ol>
+<li>Remove the member &quot;Doe&quot; from the <code>students</code> Sorted Set.</li>
+<li>Get the number of members in the <code>students</code> Sorted Set.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WlJFTSBzdHVkZW50cyAiRG9lIgoKWkNBUkQgc3R1ZGVudHM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ZREM students &quot;Doe&quot;
+
+ZCARD students</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Mistake</strong>: Forgetting to include the score when adding elements with <code>ZADD</code>.</p>
+<ul>
+<li><strong>Tip</strong>: Always ensure you provide a score for each element when using <code>ZADD</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake</strong>: Using the wrong index range in <code>ZRANGE</code>.</p>
+<ul>
+<li><strong>Tip</strong>: Remember that Redis uses zero-based indexing. Use <code>0</code> for the first element and <code>-1</code> for the last element.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Sorted Sets are a versatile and powerful data structure in Redis, allowing you to maintain a sorted collection of unique elements with associated scores. By mastering the basic commands and understanding how to manipulate Sorted Sets, you can effectively use them in various applications such as leaderboards, priority queues, and more. In the next module, we will explore more Redis data structures and their use cases.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-hashes' title="Hashes">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-basic-commands' title="Basic Commands">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

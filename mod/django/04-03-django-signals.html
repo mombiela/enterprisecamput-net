@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Signals</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/04-03-django-signals" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/04-03-django-signals" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/04-03-django-signals" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/django/04-03-django-signals" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/django/04-03-django-signals" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-custom-user-models' title="Custom User Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Django Signals</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-testing-in-django' title="Testing in Django">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Django Signals</h1>
+<div class='content'><p>Django signals are a powerful feature that allows decoupled applications to get notified when certain actions occur elsewhere in the framework. They provide a way to execute some code when a specific event happens, such as saving a model instance or user login.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Signal</strong>: A signal is a message that is sent when a specific event occurs.</li>
+<li><strong>Sender</strong>: The sender is the entity that sends the signal.</li>
+<li><strong>Receiver</strong>: The receiver is a function or method that gets called when the signal is sent.</li>
+<li><strong>Dispatcher</strong>: The dispatcher is responsible for connecting senders to receivers and sending signals.</li>
+</ol>
+</div><h2>Commonly Used Signals</h2>
+<div class='content'><ul>
+<li><code>pre_save</code> and <code>post_save</code>: Sent before or after a model's <code>save()</code> method is called.</li>
+<li><code>pre_delete</code> and <code>post_delete</code>: Sent before or after a model's <code>delete()</code> method is called.</li>
+<li><code>m2m_changed</code>: Sent when a ManyToManyField is changed.</li>
+<li><code>request_started</code> and <code>request_finished</code>: Sent when a request starts or finishes.</li>
+<li><code>user_logged_in</code> and <code>user_logged_out</code>: Sent when a user logs in or out.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a practical example to understand how Django signals work. We will create a signal that logs a message every time a new user is created.</p>
+</div><h2>Step-by-Step Implementation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Django Project and App</strong></p>
+<p>First, create a new Django project and app if you haven't already:</p>
+<pre><code class="language-bash">django-admin startproject myproject
+cd myproject
+python manage.py startapp myapp
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Signal Receiver</strong></p>
+<p>In your <code>myapp</code> directory, create a new file called <code>signals.py</code> and define a receiver function:</p>
+<pre><code class="language-python"># myapp/signals.py
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+import logging
+
+logger = logging.getLogger(__name__)
+
+@receiver(post_save, sender=User)
+def user_created(sender, instance, created, **kwargs):
+    if created:
+        logger.info(f'New user created: {instance.username}')
+</code></pre>
+</li>
+<li>
+<p><strong>Connect the Signal</strong></p>
+<p>You need to ensure that the signal is connected when the app is ready. Modify the <code>apps.py</code> file in your <code>myapp</code> directory:</p>
+<pre><code class="language-python"># myapp/apps.py
+from django.apps import AppConfig
+
+class MyappConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'myapp'
+
+    def ready(self):
+        import myapp.signals
+</code></pre>
+</li>
+<li>
+<p><strong>Update <code>__init__.py</code></strong></p>
+<p>Ensure that the <code>ready</code> method is called by updating the <code>__init__.py</code> file in your <code>myapp</code> directory:</p>
+<pre><code class="language-python"># myapp/__init__.py
+default_app_config = 'myapp.apps.MyappConfig'
+</code></pre>
+</li>
+<li>
+<p><strong>Test the Signal</strong></p>
+<p>Create a new user to test if the signal works:</p>
+<pre><code class="language-python">from django.contrib.auth.models import User
+
+user = User.objects.create_user(username='testuser', password='password')
+</code></pre>
+<p>Check your logs to see if the message &quot;New user created: testuser&quot; is logged.</p>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Logging User Deletion</h2>
+<div class='content'><p><strong>Task</strong>: Create a signal that logs a message every time a user is deleted.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>
+<p><strong>Define the Signal Receiver</strong></p>
+<pre><code class="language-python"># myapp/signals.py
+from django.db.models.signals import post_delete
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+import logging
+
+logger = logging.getLogger(__name__)
+
+@receiver(post_delete, sender=User)
+def user_deleted(sender, instance, **kwargs):
+    logger.info(f'User deleted: {instance.username}')
+</code></pre>
+</li>
+<li>
+<p><strong>Connect the Signal</strong></p>
+<p>Ensure the signal is connected in <code>apps.py</code>:</p>
+<pre><code class="language-python"># myapp/apps.py
+class MyappConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'myapp'
+
+    def ready(self):
+        import myapp.signals
+</code></pre>
+</li>
+<li>
+<p><strong>Test the Signal</strong></p>
+<p>Delete a user to test if the signal works:</p>
+<pre><code class="language-python">user = User.objects.get(username='testuser')
+user.delete()
+</code></pre>
+<p>Check your logs to see if the message &quot;User deleted: testuser&quot; is logged.</p>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Not Importing Signals</strong>: Ensure that your signals are imported in the <code>ready</code> method of your app's <code>AppConfig</code>.</li>
+<li><strong>Incorrect Signal Connection</strong>: Double-check that the signal is connected to the correct sender.</li>
+<li><strong>Logging Configuration</strong>: Ensure that your logging configuration is set up correctly to capture the log messages.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned about Django signals, their key concepts, and how to implement them in a Django project. We also covered practical examples and exercises to reinforce the concepts. Understanding signals is crucial for creating decoupled and maintainable Django applications. In the next section, we will dive into testing in Django, which is essential for ensuring the reliability and stability of your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-custom-user-models' title="Custom User Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-testing-in-django' title="Testing in Django">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

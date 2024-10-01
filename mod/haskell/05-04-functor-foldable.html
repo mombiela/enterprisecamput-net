@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functor and Foldable</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/05-04-functor-foldable" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/05-04-functor-foldable" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/05-04-functor-foldable" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/haskell/05-04-functor-foldable" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/05-04-functor-foldable" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-monad-transformers' title="Monad Transformers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Functor and Foldable</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-basic-io' title="Basic I/O">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore two important type classes in Haskell: <code>Functor</code> and <code>Foldable</code>. These type classes provide powerful abstractions for working with data structures in a functional way.</p>
+</div><h1>Functor</h1>
+<div class='content'></div><h2>What is a Functor?</h2>
+<div class='content'><p>A <code>Functor</code> is a type class that represents types that can be mapped over. In other words, a <code>Functor</code> is a container that you can apply a function to each element inside it.</p>
+</div><h2>Functor Type Class</h2>
+<div class='content'><p>The <code>Functor</code> type class is defined as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRnVuY3RvciBmIHdoZXJlCiAgICBmbWFwIDo6IChhIC0+IGIpIC0+IGYgYSAtPiBmIGI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Functor f where
+    fmap :: (a -&gt; b) -&gt; f a -&gt; f b</pre></div><div class='content'><ul>
+<li><code>fmap</code> is a function that takes a function <code>(a -&gt; b)</code> and a functor <code>f a</code>, and returns a new functor <code>f b</code> with the function applied to each element.</li>
+</ul>
+</div><h2>Example: Functor Instance for List</h2>
+<div class='content'><p>Lists are a common example of a <code>Functor</code>. Here’s how the <code>Functor</code> instance for lists is defined:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgRnVuY3RvciBbXSB3aGVyZQogICAgZm1hcCA9IG1hcA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Functor [] where
+    fmap = map</pre></div><div class='content'></div><h2>Using `fmap`</h2>
+<div class='content'><p>Here’s an example of using <code>fmap</code> with a list:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5lIGEgZnVuY3Rpb24gdG8gZG91YmxlIGEgbnVtYmVyCmRvdWJsZSA6OiBJbnQgLT4gSW50CmRvdWJsZSB4ID0geCAqIDIKCi0tIFVzZSBmbWFwIHRvIGFwcGx5IHRoZSBmdW5jdGlvbiB0byBlYWNoIGVsZW1lbnQgaW4gdGhlIGxpc3QKZG91YmxlZExpc3QgPSBmbWFwIGRvdWJsZSBbMSwgMiwgMywgNCwgNV0KLS0gUmVzdWx0OiBbMiwgNCwgNiwgOCwgMTBd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Define a function to double a number
+double :: Int -&gt; Int
+double x = x * 2
+
+-- Use fmap to apply the function to each element in the list
+doubledList = fmap double [1, 2, 3, 4, 5]
+-- Result: [2, 4, 6, 8, 10]</pre></div><div class='content'></div><h2>Practical Exercise: Functor</h2>
+<div class='content'><p><strong>Exercise:</strong> Implement a <code>Functor</code> instance for a custom data type <code>Maybe</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBNYXliZSBhID0gTm90aGluZyB8IEp1c3QgYQoKaW5zdGFuY2UgRnVuY3RvciBNYXliZSB3aGVyZQogICAgZm1hcCBfIE5vdGhpbmcgID0gTm90aGluZwogICAgZm1hcCBmIChKdXN0IHgpID0gSnVzdCAoZiB4KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Maybe a = Nothing | Just a
+
+instance Functor Maybe where
+    fmap _ Nothing  = Nothing
+    fmap f (Just x) = Just (f x)</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5lIGEgZnVuY3Rpb24gdG8gaW5jcmVtZW50IGEgbnVtYmVyCmluY3JlbWVudCA6OiBJbnQgLT4gSW50CmluY3JlbWVudCB4ID0geCArIDEKCi0tIFVzZSBmbWFwIHRvIGFwcGx5IHRoZSBmdW5jdGlvbiB0byBhIE1heWJlIHZhbHVlCmluY3JlbWVudGVkTWF5YmUgPSBmbWFwIGluY3JlbWVudCAoSnVzdCA1KQotLSBSZXN1bHQ6IEp1c3QgNgoKaW5jcmVtZW50ZWROb3RoaW5nID0gZm1hcCBpbmNyZW1lbnQgTm90aGluZwotLSBSZXN1bHQ6IE5vdGhpbmc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Define a function to increment a number
+increment :: Int -&gt; Int
+increment x = x + 1
+
+-- Use fmap to apply the function to a Maybe value
+incrementedMaybe = fmap increment (Just 5)
+-- Result: Just 6
+
+incrementedNothing = fmap increment Nothing
+-- Result: Nothing</pre></div><div class='content'></div><h1>Foldable</h1>
+<div class='content'></div><h2>What is Foldable?</h2>
+<div class='content'><p><code>Foldable</code> is a type class that represents data structures that can be folded to a summary value. Folding is a way to reduce a data structure to a single value by iteratively applying a function.</p>
+</div><h2>Foldable Type Class</h2>
+<div class='content'><p>The <code>Foldable</code> type class is defined as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRm9sZGFibGUgdCB3aGVyZQogICAgZm9sZHIgOjogKGEgLT4gYiAtPiBiKSAtPiBiIC0+IHQgYSAtPiBi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Foldable t where
+    foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b</pre></div><div class='content'><ul>
+<li><code>foldr</code> is a function that takes a binary function <code>(a -&gt; b -&gt; b)</code>, an initial accumulator value <code>b</code>, and a foldable structure <code>t a</code>, and reduces it to a single value <code>b</code>.</li>
+</ul>
+</div><h2>Example: Foldable Instance for List</h2>
+<div class='content'><p>Lists are also a common example of a <code>Foldable</code>. Here’s how the <code>Foldable</code> instance for lists is defined:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgRm9sZGFibGUgW10gd2hlcmUKICAgIGZvbGRyID0gZm9sZHI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Foldable [] where
+    foldr = foldr</pre></div><div class='content'></div><h2>Using `foldr`</h2>
+<div class='content'><p>Here’s an example of using <code>foldr</code> with a list:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5lIGEgZnVuY3Rpb24gdG8gc3VtIHR3byBudW1iZXJzCnN1bScgOjogSW50IC0+IEludCAtPiBJbnQKc3VtJyB4IHkgPSB4ICsgeQoKLS0gVXNlIGZvbGRyIHRvIHN1bSBhbGwgZWxlbWVudHMgaW4gdGhlIGxpc3QKc3VtTGlzdCA9IGZvbGRyIHN1bScgMCBbMSwgMiwgMywgNCwgNV0KLS0gUmVzdWx0OiAxNQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Define a function to sum two numbers
+sum' :: Int -&gt; Int -&gt; Int
+sum' x y = x + y
+
+-- Use foldr to sum all elements in the list
+sumList = foldr sum' 0 [1, 2, 3, 4, 5]
+-- Result: 15</pre></div><div class='content'></div><h2>Practical Exercise: Foldable</h2>
+<div class='content'><p><strong>Exercise:</strong> Implement a <code>Foldable</code> instance for a custom data type <code>Tree</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBUcmVlIGEgPSBFbXB0eSB8IE5vZGUgYSAoVHJlZSBhKSAoVHJlZSBhKQoKaW5zdGFuY2UgRm9sZGFibGUgVHJlZSB3aGVyZQogICAgZm9sZHIgXyB6IEVtcHR5ID0gegogICAgZm9sZHIgZiB6IChOb2RlIHggbGVmdCByaWdodCkgPSBmb2xkciBmIChmIHggKGZvbGRyIGYgeiByaWdodCkpIGxlZnQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Tree a = Empty | Node a (Tree a) (Tree a)
+
+instance Foldable Tree where
+    foldr _ z Empty = z
+    foldr f z (Node x left right) = foldr f (f x (foldr f z right)) left</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5lIGEgZnVuY3Rpb24gdG8gbXVsdGlwbHkgdHdvIG51bWJlcnMKbXVsdGlwbHkgOjogSW50IC0+IEludCAtPiBJbnQKbXVsdGlwbHkgeCB5ID0geCAqIHkKCi0tIENyZWF0ZSBhIHNhbXBsZSB0cmVlCnNhbXBsZVRyZWUgPSBOb2RlIDEgKE5vZGUgMiBFbXB0eSBFbXB0eSkgKE5vZGUgMyBFbXB0eSBFbXB0eSkKCi0tIFVzZSBmb2xkciB0byBtdWx0aXBseSBhbGwgZWxlbWVudHMgaW4gdGhlIHRyZWUKcHJvZHVjdFRyZWUgPSBmb2xkciBtdWx0aXBseSAxIHNhbXBsZVRyZWUKLS0gUmVzdWx0OiA2"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Define a function to multiply two numbers
+multiply :: Int -&gt; Int -&gt; Int
+multiply x y = x * y
+
+-- Create a sample tree
+sampleTree = Node 1 (Node 2 Empty Empty) (Node 3 Empty Empty)
+
+-- Use foldr to multiply all elements in the tree
+productTree = foldr multiply 1 sampleTree
+-- Result: 6</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the <code>Functor</code> and <code>Foldable</code> type classes in Haskell. We learned how to use <code>fmap</code> to apply functions to elements inside functors and how to use <code>foldr</code> to reduce foldable structures to a single value. We also implemented custom instances for <code>Maybe</code> and <code>Tree</code> data types to reinforce these concepts.</p>
+<p>Next, we will delve into more advanced functional programming concepts, such as Monads, in the following module.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-monad-transformers' title="Monad Transformers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-basic-io' title="Basic I/O">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

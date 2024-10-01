@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unions in C</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/c/07-03-unions-in-c" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/c/07-03-unions-in-c" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/c/07-03-unions-in-c" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/c/07-03-unions-in-c" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/c/07-03-unions-in-c" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-nested-structures' title="Nested Structures">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Unions in C</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-bit-fields' title="Bit Fields">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Unions</h1>
+<div class='content'><p>In C, a union is a user-defined data type similar to a structure. However, unlike structures, which allocate separate memory for each member, a union allocates a single shared memory space for all its members. This means that at any given time, a union can store only one of its members, and the size of the union is determined by the size of its largest member.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Memory Sharing</strong>: All members of a union share the same memory location.</li>
+<li><strong>Size</strong>: The size of a union is equal to the size of its largest member.</li>
+<li><strong>Access</strong>: Only one member can be accessed at a time.</li>
+</ul>
+</div><h2>Syntax</h2>
+<div class='content'><p>The syntax for defining a union is similar to that of a structure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5pb24gVW5pb25OYW1lIHsKICAgIGRhdGFUeXBlMSBtZW1iZXIxOwogICAgZGF0YVR5cGUyIG1lbWJlcjI7CiAgICAuLi4KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>union UnionName {
+    dataType1 member1;
+    dataType2 member2;
+    ...
+};</pre></div><div class='content'></div><h2>Example</h2>
+<div class='content'><p>Here is a simple example of a union in C:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+Cgp1bmlvbiBEYXRhIHsKICAgIGludCBpOwogICAgZmxvYXQgZjsKICAgIGNoYXIgc3RyWzIwXTsKfTsKCmludCBtYWluKCkgewogICAgdW5pb24gRGF0YSBkYXRhOwoKICAgIGRhdGEuaSA9IDEwOwogICAgcHJpbnRmKCJkYXRhLmk6ICVkXG4iLCBkYXRhLmkpOwoKICAgIGRhdGEuZiA9IDIyMC41OwogICAgcHJpbnRmKCJkYXRhLmY6ICVmXG4iLCBkYXRhLmYpOwoKICAgIHN0cmNweShkYXRhLnN0ciwgIkMgUHJvZ3JhbW1pbmciKTsKICAgIHByaW50ZigiZGF0YS5zdHI6ICVzXG4iLCBkYXRhLnN0cik7CgogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+union Data {
+    int i;
+    float f;
+    char str[20];
+};
+
+int main() {
+    union Data data;
+
+    data.i = 10;
+    printf(&quot;data.i: %d\n&quot;, data.i);
+
+    data.f = 220.5;
+    printf(&quot;data.f: %f\n&quot;, data.f);
+
+    strcpy(data.str, &quot;C Programming&quot;);
+    printf(&quot;data.str: %s\n&quot;, data.str);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Definition</strong>: The union <code>Data</code> is defined with three members: an integer <code>i</code>, a float <code>f</code>, and a character array <code>str</code>.</li>
+<li><strong>Initialization and Access</strong>:
+<ul>
+<li>The integer member <code>i</code> is assigned the value <code>10</code> and printed.</li>
+<li>The float member <code>f</code> is assigned the value <code>220.5</code> and printed.</li>
+<li>The string member <code>str</code> is assigned the value <code>&quot;C Programming&quot;</code> and printed.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Memory Layout</h2>
+<div class='content'><p>To understand how memory is shared in a union, consider the following:</p>
+<ul>
+<li>If <code>i</code> is 4 bytes, <code>f</code> is 4 bytes, and <code>str</code> is 20 bytes, the size of the union will be 20 bytes (the size of the largest member).</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'><p>Let's look at a more practical example where a union can be useful:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+Cgp1bmlvbiBOdW1iZXIgewogICAgaW50IGludFZhbHVlOwogICAgZmxvYXQgZmxvYXRWYWx1ZTsKfTsKCnZvaWQgcHJpbnROdW1iZXIodW5pb24gTnVtYmVyIG51bSwgaW50IGlzSW50KSB7CiAgICBpZiAoaXNJbnQpIHsKICAgICAgICBwcmludGYoIkludGVnZXI6ICVkXG4iLCBudW0uaW50VmFsdWUpOwogICAgfSBlbHNlIHsKICAgICAgICBwcmludGYoIkZsb2F0OiAlZlxuIiwgbnVtLmZsb2F0VmFsdWUpOwogICAgfQp9CgppbnQgbWFpbigpIHsKICAgIHVuaW9uIE51bWJlciBudW07CgogICAgbnVtLmludFZhbHVlID0gNTsKICAgIHByaW50TnVtYmVyKG51bSwgMSk7CgogICAgbnVtLmZsb2F0VmFsdWUgPSAzLjE0OwogICAgcHJpbnROdW1iZXIobnVtLCAwKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+union Number {
+    int intValue;
+    float floatValue;
+};
+
+void printNumber(union Number num, int isInt) {
+    if (isInt) {
+        printf(&quot;Integer: %d\n&quot;, num.intValue);
+    } else {
+        printf(&quot;Float: %f\n&quot;, num.floatValue);
+    }
+}
+
+int main() {
+    union Number num;
+
+    num.intValue = 5;
+    printNumber(num, 1);
+
+    num.floatValue = 3.14;
+    printNumber(num, 0);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Definition</strong>: The union <code>Number</code> is defined with two members: an integer <code>intValue</code> and a float <code>floatValue</code>.</li>
+<li><strong>Function</strong>: The function <code>printNumber</code> takes a union <code>Number</code> and a flag <code>isInt</code> to determine which member to print.</li>
+<li><strong>Usage</strong>:
+<ul>
+<li>The integer member <code>intValue</code> is assigned the value <code>5</code> and printed.</li>
+<li>The float member <code>floatValue</code> is assigned the value <code>3.14</code> and printed.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes</h1>
+<div class='content'><ul>
+<li><strong>Overwriting Values</strong>: Since all members share the same memory, assigning a value to one member will overwrite the value of the other members.</li>
+<li><strong>Incorrect Size Calculation</strong>: Remember that the size of a union is determined by its largest member, not the sum of all members.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1</h2>
+<div class='content'><p>Define a union <code>Measurement</code> that can store either an integer <code>length</code> in centimeters or a float <code>weight</code> in kilograms. Write a program to demonstrate the use of this union.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+Cgp1bmlvbiBNZWFzdXJlbWVudCB7CiAgICBpbnQgbGVuZ3RoOwogICAgZmxvYXQgd2VpZ2h0Owp9OwoKaW50IG1haW4oKSB7CiAgICB1bmlvbiBNZWFzdXJlbWVudCBtOwoKICAgIG0ubGVuZ3RoID0gMTAwOwogICAgcHJpbnRmKCJMZW5ndGg6ICVkIGNtXG4iLCBtLmxlbmd0aCk7CgogICAgbS53ZWlnaHQgPSA3NS41OwogICAgcHJpbnRmKCJXZWlnaHQ6ICUuMmYga2dcbiIsIG0ud2VpZ2h0KTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+union Measurement {
+    int length;
+    float weight;
+};
+
+int main() {
+    union Measurement m;
+
+    m.length = 100;
+    printf(&quot;Length: %d cm\n&quot;, m.length);
+
+    m.weight = 75.5;
+    printf(&quot;Weight: %.2f kg\n&quot;, m.weight);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Exercise 2</h2>
+<div class='content'><p>Create a union <code>Value</code> that can store an integer, a float, or a character. Write a function to print the value based on a type indicator.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+Cgp1bmlvbiBWYWx1ZSB7CiAgICBpbnQgaTsKICAgIGZsb2F0IGY7CiAgICBjaGFyIGM7Cn07Cgp2b2lkIHByaW50VmFsdWUodW5pb24gVmFsdWUgdiwgY2hhciB0eXBlKSB7CiAgICBzd2l0Y2ggKHR5cGUpIHsKICAgICAgICBjYXNlICdpJzoKICAgICAgICAgICAgcHJpbnRmKCJJbnRlZ2VyOiAlZFxuIiwgdi5pKTsKICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgY2FzZSAnZic6CiAgICAgICAgICAgIHByaW50ZigiRmxvYXQ6ICVmXG4iLCB2LmYpOwogICAgICAgICAgICBicmVhazsKICAgICAgICBjYXNlICdjJzoKICAgICAgICAgICAgcHJpbnRmKCJDaGFyYWN0ZXI6ICVjXG4iLCB2LmMpOwogICAgICAgICAgICBicmVhazsKICAgICAgICBkZWZhdWx0OgogICAgICAgICAgICBwcmludGYoIlVua25vd24gdHlwZVxuIik7CiAgICB9Cn0KCmludCBtYWluKCkgewogICAgdW5pb24gVmFsdWUgdjsKCiAgICB2LmkgPSA0MjsKICAgIHByaW50VmFsdWUodiwgJ2knKTsKCiAgICB2LmYgPSAzLjE0OwogICAgcHJpbnRWYWx1ZSh2LCAnZicpOwoKICAgIHYuYyA9ICdBJzsKICAgIHByaW50VmFsdWUodiwgJ2MnKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+union Value {
+    int i;
+    float f;
+    char c;
+};
+
+void printValue(union Value v, char type) {
+    switch (type) {
+        case 'i':
+            printf(&quot;Integer: %d\n&quot;, v.i);
+            break;
+        case 'f':
+            printf(&quot;Float: %f\n&quot;, v.f);
+            break;
+        case 'c':
+            printf(&quot;Character: %c\n&quot;, v.c);
+            break;
+        default:
+            printf(&quot;Unknown type\n&quot;);
+    }
+}
+
+int main() {
+    union Value v;
+
+    v.i = 42;
+    printValue(v, 'i');
+
+    v.f = 3.14;
+    printValue(v, 'f');
+
+    v.c = 'A';
+    printValue(v, 'c');
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Unions in C are a powerful feature that allows efficient use of memory by sharing the same memory location among different data types. They are particularly useful in situations where a variable may hold one of several types of values at different times. Understanding how to define and use unions, as well as being aware of their memory-sharing behavior, is crucial for effective C programming.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-nested-structures' title="Nested Structures">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-bit-fields' title="Bit Fields">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

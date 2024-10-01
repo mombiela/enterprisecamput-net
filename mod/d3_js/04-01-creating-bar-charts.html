@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating Bar Charts</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/04-01-creating-bar-charts" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/04-01-creating-bar-charts" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/04-01-creating-bar-charts" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/d3_js/04-01-creating-bar-charts" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/04-01-creating-bar-charts" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-time-logarithmic-scales' title="Time and Logarithmic Scales">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creating Bar Charts</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-creating-line-charts' title="Creating Line Charts">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to create bar charts using D3.js. Bar charts are one of the most common types of visualizations and are used to compare different categories of data. We will cover the following topics:</p>
+<ol>
+<li><strong>Setting Up the SVG Container</strong></li>
+<li><strong>Binding Data to Elements</strong></li>
+<li><strong>Creating the Bars</strong></li>
+<li><strong>Adding Axes</strong></li>
+<li><strong>Styling the Chart</strong></li>
+</ol>
+</div><h1>1. Setting Up the SVG Container</h1>
+<div class='content'><p>First, we need to set up an SVG container where our bar chart will be drawn. The SVG container is essentially a canvas where we can place our graphical elements.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+QmFyIENoYXJ0IHdpdGggRDMuanM8L3RpdGxlPgogICAgPHNjcmlwdCBzcmM9Imh0dHBzOi8vZDNqcy5vcmcvZDMudjcubWluLmpzIj48L3NjcmlwdD4KICAgIDxzdHlsZT4KICAgICAgICAuYmFyIHsKICAgICAgICAgICAgZmlsbDogc3RlZWxibHVlOwogICAgICAgIH0KICAgICAgICAuYmFyOmhvdmVyIHsKICAgICAgICAgICAgZmlsbDogb3JhbmdlOwogICAgICAgIH0KICAgICAgICAuYXhpcy1sYWJlbCB7CiAgICAgICAgICAgIGZvbnQtc2l6ZTogMTJweDsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCI+PC9zdmc+CiAgICA8c2NyaXB0PgogICAgICAgIC8vIEphdmFTY3JpcHQgY29kZSB3aWxsIGdvIGhlcmUKICAgIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Bar Chart with D3.js&lt;/title&gt;
+    &lt;script src=&quot;https://d3js.org/d3.v7.min.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis-label {
+            font-size: 12px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;svg width=&quot;600&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;
+    &lt;script&gt;
+        // JavaScript code will go here
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>2. Binding Data to Elements</h1>
+<div class='content'><p>Next, we need to bind our data to the SVG elements. For this example, let's use a simple dataset representing the sales of different products.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZGF0YSA9IFsKICAgIHsgcHJvZHVjdDogJ0EnLCBzYWxlczogMzAgfSwKICAgIHsgcHJvZHVjdDogJ0InLCBzYWxlczogODAgfSwKICAgIHsgcHJvZHVjdDogJ0MnLCBzYWxlczogNDUgfSwKICAgIHsgcHJvZHVjdDogJ0QnLCBzYWxlczogNjAgfSwKICAgIHsgcHJvZHVjdDogJ0UnLCBzYWxlczogMjAgfSwKICAgIHsgcHJvZHVjdDogJ0YnLCBzYWxlczogOTAgfSwKICAgIHsgcHJvZHVjdDogJ0cnLCBzYWxlczogNTUgfQpdOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const data = [
+    { product: 'A', sales: 30 },
+    { product: 'B', sales: 80 },
+    { product: 'C', sales: 45 },
+    { product: 'D', sales: 60 },
+    { product: 'E', sales: 20 },
+    { product: 'F', sales: 90 },
+    { product: 'G', sales: 55 }
+];</pre></div><div class='content'></div><h1>3. Creating the Bars</h1>
+<div class='content'><p>We will now create the bars for our bar chart. Each bar will represent a product, and its height will correspond to the sales value.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc3ZnID0gZDMuc2VsZWN0KCJzdmciKTsKY29uc3QgbWFyZ2luID0geyB0b3A6IDIwLCByaWdodDogMzAsIGJvdHRvbTogNDAsIGxlZnQ6IDQwIH07CmNvbnN0IHdpZHRoID0gK3N2Zy5hdHRyKCJ3aWR0aCIpIC0gbWFyZ2luLmxlZnQgLSBtYXJnaW4ucmlnaHQ7CmNvbnN0IGhlaWdodCA9ICtzdmcuYXR0cigiaGVpZ2h0IikgLSBtYXJnaW4udG9wIC0gbWFyZ2luLmJvdHRvbTsKCmNvbnN0IHggPSBkMy5zY2FsZUJhbmQoKQogICAgLmRvbWFpbihkYXRhLm1hcChkID0+IGQucHJvZHVjdCkpCiAgICAucmFuZ2UoWzAsIHdpZHRoXSkKICAgIC5wYWRkaW5nKDAuMSk7Cgpjb25zdCB5ID0gZDMuc2NhbGVMaW5lYXIoKQogICAgLmRvbWFpbihbMCwgZDMubWF4KGRhdGEsIGQgPT4gZC5zYWxlcyldKQogICAgLm5pY2UoKQogICAgLnJhbmdlKFtoZWlnaHQsIDBdKTsKCmNvbnN0IGcgPSBzdmcuYXBwZW5kKCJnIikKICAgIC5hdHRyKCJ0cmFuc2Zvcm0iLCBgdHJhbnNsYXRlKCR7bWFyZ2luLmxlZnR9LCR7bWFyZ2luLnRvcH0pYCk7CgpnLnNlbGVjdEFsbCgiLmJhciIpCiAgICAuZGF0YShkYXRhKQogICAgLmVudGVyKCkuYXBwZW5kKCJyZWN0IikKICAgIC5hdHRyKCJjbGFzcyIsICJiYXIiKQogICAgLmF0dHIoIngiLCBkID0+IHgoZC5wcm9kdWN0KSkKICAgIC5hdHRyKCJ5IiwgZCA9PiB5KGQuc2FsZXMpKQogICAgLmF0dHIoIndpZHRoIiwgeC5iYW5kd2lkdGgoKSkKICAgIC5hdHRyKCJoZWlnaHQiLCBkID0+IGhlaWdodCAtIHkoZC5zYWxlcykpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const svg = d3.select(&quot;svg&quot;);
+const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+const width = +svg.attr(&quot;width&quot;) - margin.left - margin.right;
+const height = +svg.attr(&quot;height&quot;) - margin.top - margin.bottom;
+
+const x = d3.scaleBand()
+    .domain(data.map(d =&gt; d.product))
+    .range([0, width])
+    .padding(0.1);
+
+const y = d3.scaleLinear()
+    .domain([0, d3.max(data, d =&gt; d.sales)])
+    .nice()
+    .range([height, 0]);
+
+const g = svg.append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`);
+
+g.selectAll(&quot;.bar&quot;)
+    .data(data)
+    .enter().append(&quot;rect&quot;)
+    .attr(&quot;class&quot;, &quot;bar&quot;)
+    .attr(&quot;x&quot;, d =&gt; x(d.product))
+    .attr(&quot;y&quot;, d =&gt; y(d.sales))
+    .attr(&quot;width&quot;, x.bandwidth())
+    .attr(&quot;height&quot;, d =&gt; height - y(d.sales));</pre></div><div class='content'></div><h1>4. Adding Axes</h1>
+<div class='content'><p>To make our bar chart more informative, we will add axes to it.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zy5hcHBlbmQoImciKQogICAgLmF0dHIoImNsYXNzIiwgInggYXhpcyIpCiAgICAuYXR0cigidHJhbnNmb3JtIiwgYHRyYW5zbGF0ZSgwLCR7aGVpZ2h0fSlgKQogICAgLmNhbGwoZDMuYXhpc0JvdHRvbSh4KSkKICAgIC5hcHBlbmQoInRleHQiKQogICAgLmF0dHIoInkiLCBtYXJnaW4uYm90dG9tIC0gMTApCiAgICAuYXR0cigieCIsIHdpZHRoIC8gMikKICAgIC5hdHRyKCJ0ZXh0LWFuY2hvciIsICJtaWRkbGUiKQogICAgLmF0dHIoImNsYXNzIiwgImF4aXMtbGFiZWwiKQogICAgLnRleHQoIlByb2R1Y3QiKTsKCmcuYXBwZW5kKCJnIikKICAgIC5hdHRyKCJjbGFzcyIsICJ5IGF4aXMiKQogICAgLmNhbGwoZDMuYXhpc0xlZnQoeSkpCiAgICAuYXBwZW5kKCJ0ZXh0IikKICAgIC5hdHRyKCJ0cmFuc2Zvcm0iLCAicm90YXRlKC05MCkiKQogICAgLmF0dHIoInkiLCAtbWFyZ2luLmxlZnQgKyAxMCkKICAgIC5hdHRyKCJ4IiwgLWhlaWdodCAvIDIpCiAgICAuYXR0cigiZHkiLCAiMC43MWVtIikKICAgIC5hdHRyKCJ0ZXh0LWFuY2hvciIsICJtaWRkbGUiKQogICAgLmF0dHIoImNsYXNzIiwgImF4aXMtbGFiZWwiKQogICAgLnRleHQoIlNhbGVzIik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>g.append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;x axis&quot;)
+    .attr(&quot;transform&quot;, `translate(0,${height})`)
+    .call(d3.axisBottom(x))
+    .append(&quot;text&quot;)
+    .attr(&quot;y&quot;, margin.bottom - 10)
+    .attr(&quot;x&quot;, width / 2)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .attr(&quot;class&quot;, &quot;axis-label&quot;)
+    .text(&quot;Product&quot;);
+
+g.append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;y axis&quot;)
+    .call(d3.axisLeft(y))
+    .append(&quot;text&quot;)
+    .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+    .attr(&quot;y&quot;, -margin.left + 10)
+    .attr(&quot;x&quot;, -height / 2)
+    .attr(&quot;dy&quot;, &quot;0.71em&quot;)
+    .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+    .attr(&quot;class&quot;, &quot;axis-label&quot;)
+    .text(&quot;Sales&quot;);</pre></div><div class='content'></div><h1>5. Styling the Chart</h1>
+<div class='content'><p>Finally, we can add some CSS to style our bar chart. This includes setting the color of the bars and adding hover effects.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LmJhciB7CiAgICBmaWxsOiBzdGVlbGJsdWU7Cn0KCi5iYXI6aG92ZXIgewogICAgZmlsbDogb3JhbmdlOwp9CgouYXhpcy1sYWJlbCB7CiAgICBmb250LXNpemU6IDEycHg7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.bar {
+    fill: steelblue;
+}
+
+.bar:hover {
+    fill: orange;
+}
+
+.axis-label {
+    font-size: 12px;
+}</pre></div><div class='content'></div><h1>Complete Code</h1>
+<div class='content'><p>Here is the complete code for creating a bar chart with D3.js:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+QmFyIENoYXJ0IHdpdGggRDMuanM8L3RpdGxlPgogICAgPHNjcmlwdCBzcmM9Imh0dHBzOi8vZDNqcy5vcmcvZDMudjcubWluLmpzIj48L3NjcmlwdD4KICAgIDxzdHlsZT4KICAgICAgICAuYmFyIHsKICAgICAgICAgICAgZmlsbDogc3RlZWxibHVlOwogICAgICAgIH0KICAgICAgICAuYmFyOmhvdmVyIHsKICAgICAgICAgICAgZmlsbDogb3JhbmdlOwogICAgICAgIH0KICAgICAgICAuYXhpcy1sYWJlbCB7CiAgICAgICAgICAgIGZvbnQtc2l6ZTogMTJweDsKICAgICAgICB9CiAgICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCI+PC9zdmc+CiAgICA8c2NyaXB0PgogICAgICAgIGNvbnN0IGRhdGEgPSBbCiAgICAgICAgICAgIHsgcHJvZHVjdDogJ0EnLCBzYWxlczogMzAgfSwKICAgICAgICAgICAgeyBwcm9kdWN0OiAnQicsIHNhbGVzOiA4MCB9LAogICAgICAgICAgICB7IHByb2R1Y3Q6ICdDJywgc2FsZXM6IDQ1IH0sCiAgICAgICAgICAgIHsgcHJvZHVjdDogJ0QnLCBzYWxlczogNjAgfSwKICAgICAgICAgICAgeyBwcm9kdWN0OiAnRScsIHNhbGVzOiAyMCB9LAogICAgICAgICAgICB7IHByb2R1Y3Q6ICdGJywgc2FsZXM6IDkwIH0sCiAgICAgICAgICAgIHsgcHJvZHVjdDogJ0cnLCBzYWxlczogNTUgfQogICAgICAgIF07CgogICAgICAgIGNvbnN0IHN2ZyA9IGQzLnNlbGVjdCgic3ZnIik7CiAgICAgICAgY29uc3QgbWFyZ2luID0geyB0b3A6IDIwLCByaWdodDogMzAsIGJvdHRvbTogNDAsIGxlZnQ6IDQwIH07CiAgICAgICAgY29uc3Qgd2lkdGggPSArc3ZnLmF0dHIoIndpZHRoIikgLSBtYXJnaW4ubGVmdCAtIG1hcmdpbi5yaWdodDsKICAgICAgICBjb25zdCBoZWlnaHQgPSArc3ZnLmF0dHIoImhlaWdodCIpIC0gbWFyZ2luLnRvcCAtIG1hcmdpbi5ib3R0b207CgogICAgICAgIGNvbnN0IHggPSBkMy5zY2FsZUJhbmQoKQogICAgICAgICAgICAuZG9tYWluKGRhdGEubWFwKGQgPT4gZC5wcm9kdWN0KSkKICAgICAgICAgICAgLnJhbmdlKFswLCB3aWR0aF0pCiAgICAgICAgICAgIC5wYWRkaW5nKDAuMSk7CgogICAgICAgIGNvbnN0IHkgPSBkMy5zY2FsZUxpbmVhcigpCiAgICAgICAgICAgIC5kb21haW4oWzAsIGQzLm1heChkYXRhLCBkID0+IGQuc2FsZXMpXSkKICAgICAgICAgICAgLm5pY2UoKQogICAgICAgICAgICAucmFuZ2UoW2hlaWdodCwgMF0pOwoKICAgICAgICBjb25zdCBnID0gc3ZnLmFwcGVuZCgiZyIpCiAgICAgICAgICAgIC5hdHRyKCJ0cmFuc2Zvcm0iLCBgdHJhbnNsYXRlKCR7bWFyZ2luLmxlZnR9LCR7bWFyZ2luLnRvcH0pYCk7CgogICAgICAgIGcuc2VsZWN0QWxsKCIuYmFyIikKICAgICAgICAgICAgLmRhdGEoZGF0YSkKICAgICAgICAgICAgLmVudGVyKCkuYXBwZW5kKCJyZWN0IikKICAgICAgICAgICAgLmF0dHIoImNsYXNzIiwgImJhciIpCiAgICAgICAgICAgIC5hdHRyKCJ4IiwgZCA9PiB4KGQucHJvZHVjdCkpCiAgICAgICAgICAgIC5hdHRyKCJ5IiwgZCA9PiB5KGQuc2FsZXMpKQogICAgICAgICAgICAuYXR0cigid2lkdGgiLCB4LmJhbmR3aWR0aCgpKQogICAgICAgICAgICAuYXR0cigiaGVpZ2h0IiwgZCA9PiBoZWlnaHQgLSB5KGQuc2FsZXMpKTsKCiAgICAgICAgZy5hcHBlbmQoImciKQogICAgICAgICAgICAuYXR0cigiY2xhc3MiLCAieCBheGlzIikKICAgICAgICAgICAgLmF0dHIoInRyYW5zZm9ybSIsIGB0cmFuc2xhdGUoMCwke2hlaWdodH0pYCkKICAgICAgICAgICAgLmNhbGwoZDMuYXhpc0JvdHRvbSh4KSkKICAgICAgICAgICAgLmFwcGVuZCgidGV4dCIpCiAgICAgICAgICAgIC5hdHRyKCJ5IiwgbWFyZ2luLmJvdHRvbSAtIDEwKQogICAgICAgICAgICAuYXR0cigieCIsIHdpZHRoIC8gMikKICAgICAgICAgICAgLmF0dHIoInRleHQtYW5jaG9yIiwgIm1pZGRsZSIpCiAgICAgICAgICAgIC5hdHRyKCJjbGFzcyIsICJheGlzLWxhYmVsIikKICAgICAgICAgICAgLnRleHQoIlByb2R1Y3QiKTsKCiAgICAgICAgZy5hcHBlbmQoImciKQogICAgICAgICAgICAuYXR0cigiY2xhc3MiLCAieSBheGlzIikKICAgICAgICAgICAgLmNhbGwoZDMuYXhpc0xlZnQoeSkpCiAgICAgICAgICAgIC5hcHBlbmQoInRleHQiKQogICAgICAgICAgICAuYXR0cigidHJhbnNmb3JtIiwgInJvdGF0ZSgtOTApIikKICAgICAgICAgICAgLmF0dHIoInkiLCAtbWFyZ2luLmxlZnQgKyAxMCkKICAgICAgICAgICAgLmF0dHIoIngiLCAtaGVpZ2h0IC8gMikKICAgICAgICAgICAgLmF0dHIoImR5IiwgIjAuNzFlbSIpCiAgICAgICAgICAgIC5hdHRyKCJ0ZXh0LWFuY2hvciIsICJtaWRkbGUiKQogICAgICAgICAgICAuYXR0cigiY2xhc3MiLCAiYXhpcy1sYWJlbCIpCiAgICAgICAgICAgIC50ZXh0KCJTYWxlcyIpOwogICAgPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Bar Chart with D3.js&lt;/title&gt;
+    &lt;script src=&quot;https://d3js.org/d3.v7.min.js&quot;&gt;&lt;/script&gt;
+    &lt;style&gt;
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis-label {
+            font-size: 12px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;svg width=&quot;600&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;
+    &lt;script&gt;
+        const data = [
+            { product: 'A', sales: 30 },
+            { product: 'B', sales: 80 },
+            { product: 'C', sales: 45 },
+            { product: 'D', sales: 60 },
+            { product: 'E', sales: 20 },
+            { product: 'F', sales: 90 },
+            { product: 'G', sales: 55 }
+        ];
+
+        const svg = d3.select(&quot;svg&quot;);
+        const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+        const width = +svg.attr(&quot;width&quot;) - margin.left - margin.right;
+        const height = +svg.attr(&quot;height&quot;) - margin.top - margin.bottom;
+
+        const x = d3.scaleBand()
+            .domain(data.map(d =&gt; d.product))
+            .range([0, width])
+            .padding(0.1);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(data, d =&gt; d.sales)])
+            .nice()
+            .range([height, 0]);
+
+        const g = svg.append(&quot;g&quot;)
+            .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`);
+
+        g.selectAll(&quot;.bar&quot;)
+            .data(data)
+            .enter().append(&quot;rect&quot;)
+            .attr(&quot;class&quot;, &quot;bar&quot;)
+            .attr(&quot;x&quot;, d =&gt; x(d.product))
+            .attr(&quot;y&quot;, d =&gt; y(d.sales))
+            .attr(&quot;width&quot;, x.bandwidth())
+            .attr(&quot;height&quot;, d =&gt; height - y(d.sales));
+
+        g.append(&quot;g&quot;)
+            .attr(&quot;class&quot;, &quot;x axis&quot;)
+            .attr(&quot;transform&quot;, `translate(0,${height})`)
+            .call(d3.axisBottom(x))
+            .append(&quot;text&quot;)
+            .attr(&quot;y&quot;, margin.bottom - 10)
+            .attr(&quot;x&quot;, width / 2)
+            .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+            .attr(&quot;class&quot;, &quot;axis-label&quot;)
+            .text(&quot;Product&quot;);
+
+        g.append(&quot;g&quot;)
+            .attr(&quot;class&quot;, &quot;y axis&quot;)
+            .call(d3.axisLeft(y))
+            .append(&quot;text&quot;)
+            .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+            .attr(&quot;y&quot;, -margin.left + 10)
+            .attr(&quot;x&quot;, -height / 2)
+            .attr(&quot;dy&quot;, &quot;0.71em&quot;)
+            .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+            .attr(&quot;class&quot;, &quot;axis-label&quot;)
+            .text(&quot;Sales&quot;);
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned how to create a basic bar chart using D3.js. We covered setting up the SVG container, binding data to elements, creating the bars, adding axes, and styling the chart. This foundational knowledge will help you create more complex visualizations as you progress through the course. In the next section, we will explore how to create line charts.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-time-logarithmic-scales' title="Time and Logarithmic Scales">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-creating-line-charts' title="Creating Line Charts">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

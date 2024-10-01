@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Parameterized Tests</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/junit/04-04-custom-parameterized-tests" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/junit/04-04-custom-parameterized-tests" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/junit/04-04-custom-parameterized-tests" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/junit/04-04-custom-parameterized-tests" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/junit/04-04-custom-parameterized-tests" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-using-parameterizedtest' title="Using @ParameterizedTest">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Custom Parameterized Tests</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-test-suites' title="Introduction to Test Suites">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to create custom parameterized tests in JUnit. Parameterized tests allow you to run the same test multiple times with different inputs, which is particularly useful for testing edge cases and ensuring your code works correctly with a variety of data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Parameterized Tests</strong>: Tests that run multiple times with different sets of parameters.</li>
+<li><strong>Custom Parameter Providers</strong>: Classes or methods that supply custom parameters to the tests.</li>
+<li><strong>Annotations</strong>: Special markers in the code that indicate how the test should be parameterized.</li>
+</ol>
+</div><h1>Creating Custom Parameterized Tests</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li><strong>Define the Test Class</strong>: Create a test class that will contain the parameterized test methods.</li>
+<li><strong>Use @ParameterizedTest Annotation</strong>: Annotate the test method with <code>@ParameterizedTest</code>.</li>
+<li><strong>Provide Custom Parameters</strong>: Use <code>@MethodSource</code> or <code>@ArgumentsSource</code> to supply custom parameters.</li>
+<li><strong>Write the Test Method</strong>: Implement the test logic that will run with each set of parameters.</li>
+</ol>
+</div><h2>Example: Custom Parameterized Test with @MethodSource</h2>
+<div class='content'><p>Let's create a custom parameterized test that checks if a number is even.</p>
+<h4>Step 1: Define the Test Class</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIucGFyYW1zLlBhcmFtZXRlcml6ZWRUZXN0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIucGFyYW1zLnByb3ZpZGVyLk1ldGhvZFNvdXJjZTsKaW1wb3J0IGphdmEudXRpbC5zdHJlYW0uU3RyZWFtOwoKcHVibGljIGNsYXNzIEN1c3RvbVBhcmFtZXRlcml6ZWRUZXN0IHsKCiAgICAvLyBTdGVwIDI6IFByb3ZpZGUgQ3VzdG9tIFBhcmFtZXRlcnMKICAgIHN0YXRpYyBTdHJlYW08SW50ZWdlcj4gbnVtYmVyUHJvdmlkZXIoKSB7CiAgICAgICAgcmV0dXJuIFN0cmVhbS5vZigyLCA0LCA2LCA4LCAxMCk7CiAgICB9CgogICAgLy8gU3RlcCAzOiBVc2UgQFBhcmFtZXRlcml6ZWRUZXN0IEFubm90YXRpb24KICAgIEBQYXJhbWV0ZXJpemVkVGVzdAogICAgQE1ldGhvZFNvdXJjZSgibnVtYmVyUHJvdmlkZXIiKQogICAgdm9pZCB0ZXN0SXNFdmVuKGludCBudW1iZXIpIHsKICAgICAgICAvLyBTdGVwIDQ6IFdyaXRlIHRoZSBUZXN0IE1ldGhvZAogICAgICAgIGFzc2VydFRydWUoaXNFdmVuKG51bWJlcikpOwogICAgfQoKICAgIC8vIEhlbHBlciBtZXRob2QgdG8gY2hlY2sgaWYgYSBudW1iZXIgaXMgZXZlbgogICAgYm9vbGVhbiBpc0V2ZW4oaW50IG51bWJlcikgewogICAgICAgIHJldHVybiBudW1iZXIgJSAyID09IDA7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
+
+public class CustomParameterizedTest {
+
+    // Step 2: Provide Custom Parameters
+    static Stream&lt;Integer&gt; numberProvider() {
+        return Stream.of(2, 4, 6, 8, 10);
+    }
+
+    // Step 3: Use @ParameterizedTest Annotation
+    @ParameterizedTest
+    @MethodSource(&quot;numberProvider&quot;)
+    void testIsEven(int number) {
+        // Step 4: Write the Test Method
+        assertTrue(isEven(number));
+    }
+
+    // Helper method to check if a number is even
+    boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+}</pre></div><div class='content'></div><h2>Example: Custom Parameterized Test with @ArgumentsSource</h2>
+<div class='content'><p>For more complex scenarios, you can create a custom <code>ArgumentsProvider</code>.</p>
+<h4>Step 1: Define the Test Class</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uRXh0ZW5zaW9uQ29udGV4dDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5QYXJhbWV0ZXJpemVkVGVzdDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5wcm92aWRlci5Bcmd1bWVudHM7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5wYXJhbXMucHJvdmlkZXIuQXJndW1lbnRzUHJvdmlkZXI7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5wYXJhbXMucHJvdmlkZXIuQXJndW1lbnRzU291cmNlOwoKaW1wb3J0IGphdmEudXRpbC5zdHJlYW0uU3RyZWFtOwoKcHVibGljIGNsYXNzIEN1c3RvbVBhcmFtZXRlcml6ZWRUZXN0IHsKCiAgICAvLyBDdXN0b20gQXJndW1lbnRzUHJvdmlkZXIKICAgIHN0YXRpYyBjbGFzcyBDdXN0b21Bcmd1bWVudHNQcm92aWRlciBpbXBsZW1lbnRzIEFyZ3VtZW50c1Byb3ZpZGVyIHsKICAgICAgICBAT3ZlcnJpZGUKICAgICAgICBwdWJsaWMgU3RyZWFtPD8gZXh0ZW5kcyBBcmd1bWVudHM+IHByb3ZpZGVBcmd1bWVudHMoRXh0ZW5zaW9uQ29udGV4dCBjb250ZXh0KSB7CiAgICAgICAgICAgIHJldHVybiBTdHJlYW0ub2YoCiAgICAgICAgICAgICAgICBBcmd1bWVudHMub2YoMiwgdHJ1ZSksCiAgICAgICAgICAgICAgICBBcmd1bWVudHMub2YoMywgZmFsc2UpLAogICAgICAgICAgICAgICAgQXJndW1lbnRzLm9mKDQsIHRydWUpLAogICAgICAgICAgICAgICAgQXJndW1lbnRzLm9mKDUsIGZhbHNlKQogICAgICAgICAgICApOwogICAgICAgIH0KICAgIH0KCiAgICAvLyBTdGVwIDM6IFVzZSBAUGFyYW1ldGVyaXplZFRlc3QgQW5ub3RhdGlvbgogICAgQFBhcmFtZXRlcml6ZWRUZXN0CiAgICBAQXJndW1lbnRzU291cmNlKEN1c3RvbUFyZ3VtZW50c1Byb3ZpZGVyLmNsYXNzKQogICAgdm9pZCB0ZXN0SXNFdmVuKGludCBudW1iZXIsIGJvb2xlYW4gZXhwZWN0ZWQpIHsKICAgICAgICAvLyBTdGVwIDQ6IFdyaXRlIHRoZSBUZXN0IE1ldGhvZAogICAgICAgIGFzc2VydEVxdWFscyhleHBlY3RlZCwgaXNFdmVuKG51bWJlcikpOwogICAgfQoKICAgIC8vIEhlbHBlciBtZXRob2QgdG8gY2hlY2sgaWYgYSBudW1iZXIgaXMgZXZlbgogICAgYm9vbGVhbiBpc0V2ZW4oaW50IG51bWJlcikgewogICAgICAgIHJldHVybiBudW1iZXIgJSAyID09IDA7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+public class CustomParameterizedTest {
+
+    // Custom ArgumentsProvider
+    static class CustomArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream&lt;? extends Arguments&gt; provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of(2, true),
+                Arguments.of(3, false),
+                Arguments.of(4, true),
+                Arguments.of(5, false)
+            );
+        }
+    }
+
+    // Step 3: Use @ParameterizedTest Annotation
+    @ParameterizedTest
+    @ArgumentsSource(CustomArgumentsProvider.class)
+    void testIsEven(int number, boolean expected) {
+        // Step 4: Write the Test Method
+        assertEquals(expected, isEven(number));
+    }
+
+    // Helper method to check if a number is even
+    boolean isEven(int number) {
+        return number % 2 == 0;
+    }
+}</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Custom Parameterized Test with @MethodSource</h2>
+<div class='content'><p><strong>Task</strong>: Create a parameterized test that checks if a string is a palindrome.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5QYXJhbWV0ZXJpemVkVGVzdDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5wcm92aWRlci5NZXRob2RTb3VyY2U7CmltcG9ydCBqYXZhLnV0aWwuc3RyZWFtLlN0cmVhbTsKCnB1YmxpYyBjbGFzcyBQYWxpbmRyb21lVGVzdCB7CgogICAgc3RhdGljIFN0cmVhbTxTdHJpbmc+IHBhbGluZHJvbWVQcm92aWRlcigpIHsKICAgICAgICByZXR1cm4gU3RyZWFtLm9mKCJtYWRhbSIsICJyYWNlY2FyIiwgImxldmVsIiwgImhlbGxvIiwgIndvcmxkIik7CiAgICB9CgogICAgQFBhcmFtZXRlcml6ZWRUZXN0CiAgICBATWV0aG9kU291cmNlKCJwYWxpbmRyb21lUHJvdmlkZXIiKQogICAgdm9pZCB0ZXN0SXNQYWxpbmRyb21lKFN0cmluZyB3b3JkKSB7CiAgICAgICAgYXNzZXJ0RXF1YWxzKGlzUGFsaW5kcm9tZSh3b3JkKSwgd29yZC5lcXVhbHMobmV3IFN0cmluZ0J1aWxkZXIod29yZCkucmV2ZXJzZSgpLnRvU3RyaW5nKCkpKTsKICAgIH0KCiAgICBib29sZWFuIGlzUGFsaW5kcm9tZShTdHJpbmcgd29yZCkgewogICAgICAgIHJldHVybiB3b3JkLmVxdWFscyhuZXcgU3RyaW5nQnVpbGRlcih3b3JkKS5yZXZlcnNlKCkudG9TdHJpbmcoKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
+
+public class PalindromeTest {
+
+    static Stream&lt;String&gt; palindromeProvider() {
+        return Stream.of(&quot;madam&quot;, &quot;racecar&quot;, &quot;level&quot;, &quot;hello&quot;, &quot;world&quot;);
+    }
+
+    @ParameterizedTest
+    @MethodSource(&quot;palindromeProvider&quot;)
+    void testIsPalindrome(String word) {
+        assertEquals(isPalindrome(word), word.equals(new StringBuilder(word).reverse().toString()));
+    }
+
+    boolean isPalindrome(String word) {
+        return word.equals(new StringBuilder(word).reverse().toString());
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Custom Parameterized Test with @ArgumentsSource</h2>
+<div class='content'><p><strong>Task</strong>: Create a parameterized test that checks if a number is prime.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uRXh0ZW5zaW9uQ29udGV4dDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5QYXJhbWV0ZXJpemVkVGVzdDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLnBhcmFtcy5wcm92aWRlci5Bcmd1bWVudHM7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5wYXJhbXMucHJvdmlkZXIuQXJndW1lbnRzUHJvdmlkZXI7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5wYXJhbXMucHJvdmlkZXIuQXJndW1lbnRzU291cmNlOwoKaW1wb3J0IGphdmEudXRpbC5zdHJlYW0uU3RyZWFtOwoKcHVibGljIGNsYXNzIFByaW1lVGVzdCB7CgogICAgc3RhdGljIGNsYXNzIFByaW1lQXJndW1lbnRzUHJvdmlkZXIgaW1wbGVtZW50cyBBcmd1bWVudHNQcm92aWRlciB7CiAgICAgICAgQE92ZXJyaWRlCiAgICAgICAgcHVibGljIFN0cmVhbTw/IGV4dGVuZHMgQXJndW1lbnRzPiBwcm92aWRlQXJndW1lbnRzKEV4dGVuc2lvbkNvbnRleHQgY29udGV4dCkgewogICAgICAgICAgICByZXR1cm4gU3RyZWFtLm9mKAogICAgICAgICAgICAgICAgQXJndW1lbnRzLm9mKDIsIHRydWUpLAogICAgICAgICAgICAgICAgQXJndW1lbnRzLm9mKDMsIHRydWUpLAogICAgICAgICAgICAgICAgQXJndW1lbnRzLm9mKDQsIGZhbHNlKSwKICAgICAgICAgICAgICAgIEFyZ3VtZW50cy5vZig1LCB0cnVlKSwKICAgICAgICAgICAgICAgIEFyZ3VtZW50cy5vZig2LCBmYWxzZSkKICAgICAgICAgICAgKTsKICAgICAgICB9CiAgICB9CgogICAgQFBhcmFtZXRlcml6ZWRUZXN0CiAgICBAQXJndW1lbnRzU291cmNlKFByaW1lQXJndW1lbnRzUHJvdmlkZXIuY2xhc3MpCiAgICB2b2lkIHRlc3RJc1ByaW1lKGludCBudW1iZXIsIGJvb2xlYW4gZXhwZWN0ZWQpIHsKICAgICAgICBhc3NlcnRFcXVhbHMoZXhwZWN0ZWQsIGlzUHJpbWUobnVtYmVyKSk7CiAgICB9CgogICAgYm9vbGVhbiBpc1ByaW1lKGludCBudW1iZXIpIHsKICAgICAgICBpZiAobnVtYmVyIDw9IDEpIHJldHVybiBmYWxzZTsKICAgICAgICBmb3IgKGludCBpID0gMjsgaSA8IG51bWJlcjsgaSsrKSB7CiAgICAgICAgICAgIGlmIChudW1iZXIgJSBpID09IDApIHJldHVybiBmYWxzZTsKICAgICAgICB9CiAgICAgICAgcmV0dXJuIHRydWU7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.ArgumentsProvider;
+import org.junit.jupiter.params.provider.ArgumentsSource;
+
+import java.util.stream.Stream;
+
+public class PrimeTest {
+
+    static class PrimeArgumentsProvider implements ArgumentsProvider {
+        @Override
+        public Stream&lt;? extends Arguments&gt; provideArguments(ExtensionContext context) {
+            return Stream.of(
+                Arguments.of(2, true),
+                Arguments.of(3, true),
+                Arguments.of(4, false),
+                Arguments.of(5, true),
+                Arguments.of(6, false)
+            );
+        }
+    }
+
+    @ParameterizedTest
+    @ArgumentsSource(PrimeArgumentsProvider.class)
+    void testIsPrime(int number, boolean expected) {
+        assertEquals(expected, isPrime(number));
+    }
+
+    boolean isPrime(int number) {
+        if (number &lt;= 1) return false;
+        for (int i = 2; i &lt; number; i++) {
+            if (number % i == 0) return false;
+        }
+        return true;
+    }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Forgetting to annotate the test method with <code>@ParameterizedTest</code>.
+<ul>
+<li><strong>Tip</strong>: Always double-check that your test method is properly annotated.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Providing an incorrect method name in <code>@MethodSource</code>.
+<ul>
+<li><strong>Tip</strong>: Ensure the method name in <code>@MethodSource</code> matches the actual method name that provides the parameters.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Not handling edge cases in custom parameter providers.
+<ul>
+<li><strong>Tip</strong>: Include a variety of test cases, including edge cases, to ensure comprehensive testing.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to create custom parameterized tests in JUnit using <code>@MethodSource</code> and <code>@ArgumentsSource</code>. We explored practical examples and exercises to reinforce the concepts. Custom parameterized tests are a powerful tool for ensuring your code works correctly with a variety of inputs, making your tests more robust and comprehensive.</p>
+<p>Next, we will move on to <strong>Module 5: Test Suites</strong>, where we will learn how to group and run multiple tests together.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-using-parameterizedtest' title="Using @ParameterizedTest">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-test-suites' title="Introduction to Test Suites">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

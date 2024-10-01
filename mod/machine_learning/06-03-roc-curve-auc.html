@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROC Curve and AUC</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/06-03-curva-roc-auc" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/06-03-curva-roc-auc" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/06-03-roc-curve-auc" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/machine_learning/06-03-roc-curve-auc" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/06-03-roc-curve-auc" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-cross-validation' title="Cross-Validation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">ROC Curve and AUC</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-overfitting-underfitting' title="Overfitting and Underfitting">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore the concepts of the ROC (Receiver Operating Characteristic) curve and AUC (Area Under the Curve). These are crucial tools for evaluating the performance of classification models, especially when dealing with imbalanced datasets.</p>
+</div><h1>What is an ROC Curve?</h1>
+<div class='content'><p>The ROC curve is a graphical representation of a classifier's performance across all classification thresholds. It plots the True Positive Rate (TPR) against the False Positive Rate (FPR) at various threshold settings.</p>
+</div><h2>Key Terms:</h2>
+<div class='content'><ul>
+<li><strong>True Positive Rate (TPR)</strong>: Also known as Sensitivity or Recall, it is the ratio of correctly predicted positive observations to all actual positives.
+\[
+\text{TPR} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\]</li>
+<li><strong>False Positive Rate (FPR)</strong>: The ratio of incorrectly predicted positive observations to all actual negatives.
+\[
+\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
+\]</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>Consider a binary classification problem where we predict whether an email is spam or not. The confusion matrix might look like this:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Predicted Spam</th>
+<th>Predicted Not Spam</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Actual Spam</strong></td>
+<td>TP = 50</td>
+<td>FN = 10</td>
+</tr>
+<tr>
+<td><strong>Actual Not Spam</strong></td>
+<td>FP = 5</td>
+<td>TN = 100</td>
+</tr>
+</tbody>
+</table>
+<p>Using the formulas:</p>
+<ul>
+<li>TPR = \( \frac{50}{50 + 10} = 0.833 \)</li>
+<li>FPR = \( \frac{5}{5 + 100} = 0.047 \)</li>
+</ul>
+<p>By calculating TPR and FPR at various thresholds, we can plot the ROC curve.</p>
+</div><h1>Plotting the ROC Curve</h1>
+<div class='content'><p>Here is a Python example using the <code>sklearn</code> library to plot an ROC curve:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IHJvY19jdXJ2ZSwgYXVjCmZyb20gc2tsZWFybi5tb2RlbF9zZWxlY3Rpb24gaW1wb3J0IHRyYWluX3Rlc3Rfc3BsaXQKZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBtYWtlX2NsYXNzaWZpY2F0aW9uCmZyb20gc2tsZWFybi5saW5lYXJfbW9kZWwgaW1wb3J0IExvZ2lzdGljUmVncmVzc2lvbgoKIyBHZW5lcmF0ZSBhIGJpbmFyeSBjbGFzc2lmaWNhdGlvbiBkYXRhc2V0ClgsIHkgPSBtYWtlX2NsYXNzaWZpY2F0aW9uKG5fc2FtcGxlcz0xMDAwLCBuX2ZlYXR1cmVzPTIwLCByYW5kb21fc3RhdGU9NDIpCgojIFNwbGl0IHRoZSBkYXRhc2V0IGludG8gdHJhaW5pbmcgYW5kIHRlc3Rpbmcgc2V0cwpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBUcmFpbiBhIGxvZ2lzdGljIHJlZ3Jlc3Npb24gbW9kZWwKbW9kZWwgPSBMb2dpc3RpY1JlZ3Jlc3Npb24oKQptb2RlbC5maXQoWF90cmFpbiwgeV90cmFpbikKCiMgUHJlZGljdCBwcm9iYWJpbGl0aWVzCnlfcHJvYiA9IG1vZGVsLnByZWRpY3RfcHJvYmEoWF90ZXN0KVs6LCAxXQoKIyBDb21wdXRlIFJPQyBjdXJ2ZSBhbmQgQVVDCmZwciwgdHByLCB0aHJlc2hvbGRzID0gcm9jX2N1cnZlKHlfdGVzdCwgeV9wcm9iKQpyb2NfYXVjID0gYXVjKGZwciwgdHByKQoKIyBQbG90IFJPQyBjdXJ2ZQpwbHQuZmlndXJlKCkKcGx0LnBsb3QoZnByLCB0cHIsIGNvbG9yPSdkYXJrb3JhbmdlJywgbHc9MiwgbGFiZWw9J1JPQyBjdXJ2ZSAoYXJlYSA9ICUwLjJmKScgJSByb2NfYXVjKQpwbHQucGxvdChbMCwgMV0sIFswLCAxXSwgY29sb3I9J25hdnknLCBsdz0yLCBsaW5lc3R5bGU9Jy0tJykKcGx0LnhsaW0oWzAuMCwgMS4wXSkKcGx0LnlsaW0oWzAuMCwgMS4wNV0pCnBsdC54bGFiZWwoJ0ZhbHNlIFBvc2l0aXZlIFJhdGUnKQpwbHQueWxhYmVsKCdUcnVlIFBvc2l0aXZlIFJhdGUnKQpwbHQudGl0bGUoJ1JlY2VpdmVyIE9wZXJhdGluZyBDaGFyYWN0ZXJpc3RpYycpCnBsdC5sZWdlbmQobG9jPSJsb3dlciByaWdodCIpCnBsdC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
+
+# Generate a binary classification dataset
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Train a logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Predict probabilities
+y_prob = model.predict_proba(X_test)[:, 1]
+
+# Compute ROC curve and AUC
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+# Plot ROC curve
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc=&quot;lower right&quot;)
+plt.show()</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong><code>roc_curve</code></strong>: Computes the TPR and FPR for different threshold values.</li>
+<li><strong><code>auc</code></strong>: Computes the area under the ROC curve.</li>
+</ul>
+</div><h1>What is AUC?</h1>
+<div class='content'><p>The AUC (Area Under the Curve) is a single scalar value that summarizes the performance of a classifier. It represents the probability that a randomly chosen positive instance is ranked higher than a randomly chosen negative instance.</p>
+</div><h2>Interpretation:</h2>
+<div class='content'><ul>
+<li><strong>AUC = 1</strong>: Perfect classifier.</li>
+<li><strong>AUC = 0.5</strong>: Classifier with no discriminative power (random guessing).</li>
+<li><strong>AUC &lt; 0.5</strong>: Classifier performing worse than random guessing.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>From the previous example, the AUC value is calculated and displayed on the ROC curve plot.</p>
+</div><h1>Practical Exercise</h1>
+<h2>Exercise:</h2>
+<div class='content'><ol>
+<li>Use the provided dataset to train a logistic regression model.</li>
+<li>Plot the ROC curve and calculate the AUC.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdGVwIDE6IEdlbmVyYXRlIGFuZCBzcGxpdCB0aGUgZGF0YXNldApYLCB5ID0gbWFrZV9jbGFzc2lmaWNhdGlvbihuX3NhbXBsZXM9MTAwMCwgbl9mZWF0dXJlcz0yMCwgcmFuZG9tX3N0YXRlPTQyKQpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBTdGVwIDI6IFRyYWluIHRoZSBsb2dpc3RpYyByZWdyZXNzaW9uIG1vZGVsCm1vZGVsID0gTG9naXN0aWNSZWdyZXNzaW9uKCkKbW9kZWwuZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIFN0ZXAgMzogUHJlZGljdCBwcm9iYWJpbGl0aWVzCnlfcHJvYiA9IG1vZGVsLnByZWRpY3RfcHJvYmEoWF90ZXN0KVs6LCAxXQoKIyBTdGVwIDQ6IENvbXB1dGUgUk9DIGN1cnZlIGFuZCBBVUMKZnByLCB0cHIsIHRocmVzaG9sZHMgPSByb2NfY3VydmUoeV90ZXN0LCB5X3Byb2IpCnJvY19hdWMgPSBhdWMoZnByLCB0cHIpCgojIFN0ZXAgNTogUGxvdCBST0MgY3VydmUKcGx0LmZpZ3VyZSgpCnBsdC5wbG90KGZwciwgdHByLCBjb2xvcj0nZGFya29yYW5nZScsIGx3PTIsIGxhYmVsPSdST0MgY3VydmUgKGFyZWEgPSAlMC4yZiknICUgcm9jX2F1YykKcGx0LnBsb3QoWzAsIDFdLCBbMCwgMV0sIGNvbG9yPSduYXZ5JywgbHc9MiwgbGluZXN0eWxlPSctLScpCnBsdC54bGltKFswLjAsIDEuMF0pCnBsdC55bGltKFswLjAsIDEuMDVdKQpwbHQueGxhYmVsKCdGYWxzZSBQb3NpdGl2ZSBSYXRlJykKcGx0LnlsYWJlbCgnVHJ1ZSBQb3NpdGl2ZSBSYXRlJykKcGx0LnRpdGxlKCdSZWNlaXZlciBPcGVyYXRpbmcgQ2hhcmFjdGVyaXN0aWMnKQpwbHQubGVnZW5kKGxvYz0ibG93ZXIgcmlnaHQiKQpwbHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Step 1: Generate and split the dataset
+X, y = make_classification(n_samples=1000, n_features=20, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Step 2: Train the logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Step 3: Predict probabilities
+y_prob = model.predict_proba(X_test)[:, 1]
+
+# Step 4: Compute ROC curve and AUC
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = auc(fpr, tpr)
+
+# Step 5: Plot ROC curve
+plt.figure()
+plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver Operating Characteristic')
+plt.legend(loc=&quot;lower right&quot;)
+plt.show()</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Misinterpreting the ROC Curve</strong>: Remember that the ROC curve is not affected by the class distribution, unlike precision-recall curves.</li>
+<li><strong>Threshold Selection</strong>: The choice of threshold can significantly impact the TPR and FPR. It's essential to choose a threshold that balances the trade-offs for your specific application.</li>
+<li><strong>AUC Interpretation</strong>: AUC values close to 0.5 indicate poor model performance, while values close to 1 indicate excellent performance.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the ROC curve and AUC, essential tools for evaluating classification models. We learned how to plot the ROC curve, interpret it, and calculate the AUC. These metrics provide a comprehensive understanding of a model's performance, especially in scenarios with imbalanced datasets. In the next section, we will delve into overfitting and underfitting, crucial concepts for model evaluation and improvement.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-cross-validation' title="Cross-Validation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-overfitting-underfitting' title="Overfitting and Underfitting">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

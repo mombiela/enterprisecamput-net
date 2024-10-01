@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploads</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/03-05-file-uploads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/03-05-file-uploads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/03-05-file-uploads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/django/03-05-file-uploads" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/django/03-05-file-uploads" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-middleware' title="Middleware">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">File Uploads</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-advanced-querying' title="Advanced Querying with Django ORM">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to handle file uploads in Django. File uploads are a common feature in web applications, and Django provides a straightforward way to manage them. We will go through the following key concepts:</p>
+<ol>
+<li>Setting up the media directory</li>
+<li>Creating a model to handle file uploads</li>
+<li>Creating a form to upload files</li>
+<li>Handling file uploads in views</li>
+<li>Displaying uploaded files</li>
+</ol>
+</div><h1>1. Setting Up the Media Directory</h1>
+<div class='content'><p>First, we need to configure Django to handle media files. Media files are user-uploaded files, such as images, documents, etc.</p>
+</div><h2>Step-by-Step:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Update <code>settings.py</code>:</strong></p>
+<pre><code class="language-python"># settings.py
+
+import os
+
+# Add these lines at the end of the file
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+</code></pre>
+</li>
+<li>
+<p><strong>Update <code>urls.py</code>:</strong></p>
+<pre><code class="language-python"># urls.py
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    # Your URL patterns here
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+</code></pre>
+</li>
+</ol>
+</div><h1>2. Creating a Model to Handle File Uploads</h1>
+<div class='content'><p>Next, we will create a model to store the uploaded files.</p>
+</div><h2>Step-by-Step:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new app (if you don't have one already):</strong></p>
+<pre><code class="language-bash">python manage.py startapp fileupload
+</code></pre>
+</li>
+<li>
+<p><strong>Define the model in <code>models.py</code>:</strong></p>
+<pre><code class="language-python"># fileupload/models.py
+
+from django.db import models
+
+class Document(models.Model):
+    title = models.CharField(max_length=100)
+    uploaded_file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+</code></pre>
+</li>
+<li>
+<p><strong>Run migrations:</strong></p>
+<pre><code class="language-bash">python manage.py makemigrations
+python manage.py migrate
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Creating a Form to Upload Files</h1>
+<div class='content'><p>We will create a form to allow users to upload files.</p>
+</div><h2>Step-by-Step:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a form in <code>forms.py</code>:</strong></p>
+<pre><code class="language-python"># fileupload/forms.py
+
+from django import forms
+from .models import Document
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ('title', 'uploaded_file',)
+</code></pre>
+</li>
+</ol>
+</div><h1>4. Handling File Uploads in Views</h1>
+<div class='content'><p>We will create a view to handle the file upload process.</p>
+</div><h2>Step-by-Step:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a view in <code>views.py</code>:</strong></p>
+<pre><code class="language-python"># fileupload/views.py
+
+from django.shortcuts import render, redirect
+from .forms import DocumentForm
+from .models import Document
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('fileupload:upload_file')
+    else:
+        form = DocumentForm()
+    documents = Document.objects.all()
+    return render(request, 'fileupload/upload.html', {
+        'form': form,
+        'documents': documents
+    })
+</code></pre>
+</li>
+<li>
+<p><strong>Update <code>urls.py</code> in the <code>fileupload</code> app:</strong></p>
+<pre><code class="language-python"># fileupload/urls.py
+
+from django.urls import path
+from . import views
+
+app_name = 'fileupload'
+
+urlpatterns = [
+    path('upload/', views.upload_file, name='upload_file'),
+]
+</code></pre>
+</li>
+</ol>
+</div><h1>5. Displaying Uploaded Files</h1>
+<div class='content'><p>Finally, we will create a template to display the uploaded files.</p>
+</div><h2>Step-by-Step:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a template <code>upload.html</code>:</strong></p>
+<pre><code class="language-html">&lt;!-- fileupload/templates/fileupload/upload.html --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;File Upload&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Upload a new document&lt;/h1&gt;
+    &lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+        {% csrf_token %}
+        {{ form.as_p }}
+        &lt;button type=&quot;submit&quot;&gt;Upload&lt;/button&gt;
+    &lt;/form&gt;
+
+    &lt;h2&gt;Uploaded documents&lt;/h2&gt;
+    &lt;ul&gt;
+        {% for document in documents %}
+            &lt;li&gt;&lt;a href=&quot;{{ document.uploaded_file.url }}&quot;&gt;{{ document.title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task:</h2>
+<div class='content'><ol>
+<li>Create a new Django project and app.</li>
+<li>Set up the media directory.</li>
+<li>Create a model to handle file uploads.</li>
+<li>Create a form and view to handle file uploads.</li>
+<li>Create a template to display the uploaded files.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><p>Follow the steps outlined above to complete the exercise. Ensure that you have configured the media settings correctly and that your form and view are handling file uploads as expected.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to add <code>enctype=&quot;multipart/form-data&quot;</code> in the form:</strong> This is necessary for file uploads.</li>
+<li><strong>Not configuring <code>MEDIA_URL</code> and <code>MEDIA_ROOT</code> correctly:</strong> Ensure these settings are correctly set in <code>settings.py</code>.</li>
+<li><strong>Not handling file uploads in the view properly:</strong> Make sure to use <code>request.FILES</code> to access the uploaded files.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to handle file uploads in Django. We covered setting up the media directory, creating a model, form, and view to handle file uploads, and displaying the uploaded files. This knowledge is essential for building web applications that allow users to upload and manage files. In the next module, we will dive into more advanced topics in Django.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-middleware' title="Middleware">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-advanced-querying' title="Advanced Querying with Django ORM">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

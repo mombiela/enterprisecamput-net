@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a GAN for Image Generation</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/07-04-creacion-gan-generacion-imagenes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/07-04-creacion-gan-generacion-imagenes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/07-04-creating-gan-image-generation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/deep_learning/07-04-creating-gan-image-generation" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/07-04-creating-gan-image-generation" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-anomaly-detection-autoencoders' title="Anomaly Detection with Autoencoders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creating a GAN for Image Generation</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-ethics-deep-learning' title="Ethics in Deep Learning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the creation of a Generative Adversarial Network (GAN) for image generation. GANs are a class of machine learning frameworks designed by Ian Goodfellow and his colleagues in 2014. They consist of two neural networks, the generator and the discriminator, which compete against each other in a game-theoretic scenario.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Overview of GANs</h2>
+<div class='content'><ul>
+<li><strong>Generator</strong>: Creates fake data (images) from random noise.</li>
+<li><strong>Discriminator</strong>: Evaluates the authenticity of the data, distinguishing between real and fake images.</li>
+<li><strong>Adversarial Process</strong>: The generator and discriminator are trained simultaneously. The generator aims to produce realistic images to fool the discriminator, while the discriminator aims to correctly identify real vs. fake images.</li>
+</ul>
+</div><h2>2. GAN Architecture</h2>
+<div class='content'><ul>
+<li><strong>Generator Network</strong>: Typically a deep neural network that takes a random noise vector as input and generates an image.</li>
+<li><strong>Discriminator Network</strong>: Another deep neural network that takes an image as input and outputs a probability indicating whether the image is real or fake.</li>
+</ul>
+</div><h2>3. Loss Functions</h2>
+<div class='content'><ul>
+<li><strong>Generator Loss</strong>: Measures how well the generator fools the discriminator.</li>
+<li><strong>Discriminator Loss</strong>: Measures how well the discriminator distinguishes between real and fake images.</li>
+</ul>
+</div><h1>Practical Example: Creating a GAN for Image Generation</h1>
+<div class='content'></div><h2>Step 1: Import Libraries</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmxheWVycyBpbXBvcnQgRGVuc2UsIFJlc2hhcGUsIEZsYXR0ZW4sIENvbnYyRCwgQ29udjJEVHJhbnNwb3NlLCBMZWFreVJlTFUsIERyb3BvdXQKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbAppbXBvcnQgbnVtcHkgYXMgbnAKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.layers import Dense, Reshape, Flatten, Conv2D, Conv2DTranspose, LeakyReLU, Dropout
+from tensorflow.keras.models import Sequential
+import numpy as np
+import matplotlib.pyplot as plt</pre></div><div class='content'></div><h2>Step 2: Define the Generator</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2dlbmVyYXRvcigpOgogICAgbW9kZWwgPSBTZXF1ZW50aWFsKCkKICAgIG1vZGVsLmFkZChEZW5zZSgyNTYsIGlucHV0X2RpbT0xMDApKQogICAgbW9kZWwuYWRkKExlYWt5UmVMVShhbHBoYT0wLjIpKQogICAgbW9kZWwuYWRkKERlbnNlKDUxMikpCiAgICBtb2RlbC5hZGQoTGVha3lSZUxVKGFscGhhPTAuMikpCiAgICBtb2RlbC5hZGQoRGVuc2UoMTAyNCkpCiAgICBtb2RlbC5hZGQoTGVha3lSZUxVKGFscGhhPTAuMikpCiAgICBtb2RlbC5hZGQoRGVuc2UoMjggKiAyOCAqIDEsIGFjdGl2YXRpb249J3RhbmgnKSkKICAgIG1vZGVsLmFkZChSZXNoYXBlKCgyOCwgMjgsIDEpKSkKICAgIHJldHVybiBtb2RlbAoKZ2VuZXJhdG9yID0gYnVpbGRfZ2VuZXJhdG9yKCkKZ2VuZXJhdG9yLnN1bW1hcnkoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_generator():
+    model = Sequential()
+    model.add(Dense(256, input_dim=100))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(512))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(1024))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(28 * 28 * 1, activation='tanh'))
+    model.add(Reshape((28, 28, 1)))
+    return model
+
+generator = build_generator()
+generator.summary()</pre></div><div class='content'></div><h2>Step 3: Define the Discriminator</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2Rpc2NyaW1pbmF0b3IoKToKICAgIG1vZGVsID0gU2VxdWVudGlhbCgpCiAgICBtb2RlbC5hZGQoRmxhdHRlbihpbnB1dF9zaGFwZT0oMjgsIDI4LCAxKSkpCiAgICBtb2RlbC5hZGQoRGVuc2UoNTEyKSkKICAgIG1vZGVsLmFkZChMZWFreVJlTFUoYWxwaGE9MC4yKSkKICAgIG1vZGVsLmFkZChEcm9wb3V0KDAuMykpCiAgICBtb2RlbC5hZGQoRGVuc2UoMjU2KSkKICAgIG1vZGVsLmFkZChMZWFreVJlTFUoYWxwaGE9MC4yKSkKICAgIG1vZGVsLmFkZChEcm9wb3V0KDAuMykpCiAgICBtb2RlbC5hZGQoRGVuc2UoMSwgYWN0aXZhdGlvbj0nc2lnbW9pZCcpKQogICAgcmV0dXJuIG1vZGVsCgpkaXNjcmltaW5hdG9yID0gYnVpbGRfZGlzY3JpbWluYXRvcigpCmRpc2NyaW1pbmF0b3Iuc3VtbWFyeSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_discriminator():
+    model = Sequential()
+    model.add(Flatten(input_shape=(28, 28, 1)))
+    model.add(Dense(512))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dropout(0.3))
+    model.add(Dense(256))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dropout(0.3))
+    model.add(Dense(1, activation='sigmoid'))
+    return model
+
+discriminator = build_discriminator()
+discriminator.summary()</pre></div><div class='content'></div><h2>Step 4: Compile the Discriminator</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzY3JpbWluYXRvci5jb21waWxlKGxvc3M9J2JpbmFyeV9jcm9zc2VudHJvcHknLCBvcHRpbWl6ZXI9J2FkYW0nLCBtZXRyaWNzPVsnYWNjdXJhY3knXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>discriminator.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])</pre></div><div class='content'></div><h2>Step 5: Build and Compile the GAN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2dhbihnZW5lcmF0b3IsIGRpc2NyaW1pbmF0b3IpOgogICAgbW9kZWwgPSBTZXF1ZW50aWFsKCkKICAgIG1vZGVsLmFkZChnZW5lcmF0b3IpCiAgICBtb2RlbC5hZGQoZGlzY3JpbWluYXRvcikKICAgIHJldHVybiBtb2RlbAoKZGlzY3JpbWluYXRvci50cmFpbmFibGUgPSBGYWxzZQpnYW4gPSBidWlsZF9nYW4oZ2VuZXJhdG9yLCBkaXNjcmltaW5hdG9yKQpnYW4uY29tcGlsZShsb3NzPSdiaW5hcnlfY3Jvc3NlbnRyb3B5Jywgb3B0aW1pemVyPSdhZGFtJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_gan(generator, discriminator):
+    model = Sequential()
+    model.add(generator)
+    model.add(discriminator)
+    return model
+
+discriminator.trainable = False
+gan = build_gan(generator, discriminator)
+gan.compile(loss='binary_crossentropy', optimizer='adam')</pre></div><div class='content'></div><h2>Step 6: Training the GAN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHRyYWluX2dhbihnYW4sIGdlbmVyYXRvciwgZGlzY3JpbWluYXRvciwgZXBvY2hzLCBiYXRjaF9zaXplLCBub2lzZV9kaW0pOgogICAgKFhfdHJhaW4sIF8pLCAoXywgXykgPSB0Zi5rZXJhcy5kYXRhc2V0cy5tbmlzdC5sb2FkX2RhdGEoKQogICAgWF90cmFpbiA9IFhfdHJhaW4gLyAxMjcuNSAtIDEuMAogICAgWF90cmFpbiA9IG5wLmV4cGFuZF9kaW1zKFhfdHJhaW4sIGF4aXM9MykKICAgIAogICAgdmFsaWQgPSBucC5vbmVzKChiYXRjaF9zaXplLCAxKSkKICAgIGZha2UgPSBucC56ZXJvcygoYmF0Y2hfc2l6ZSwgMSkpCiAgICAKICAgIGZvciBlcG9jaCBpbiByYW5nZShlcG9jaHMpOgogICAgICAgIGlkeCA9IG5wLnJhbmRvbS5yYW5kaW50KDAsIFhfdHJhaW4uc2hhcGVbMF0sIGJhdGNoX3NpemUpCiAgICAgICAgcmVhbF9pbWdzID0gWF90cmFpbltpZHhdCiAgICAgICAgCiAgICAgICAgbm9pc2UgPSBucC5yYW5kb20ubm9ybWFsKDAsIDEsIChiYXRjaF9zaXplLCBub2lzZV9kaW0pKQogICAgICAgIGdlbl9pbWdzID0gZ2VuZXJhdG9yLnByZWRpY3Qobm9pc2UpCiAgICAgICAgCiAgICAgICAgZF9sb3NzX3JlYWwgPSBkaXNjcmltaW5hdG9yLnRyYWluX29uX2JhdGNoKHJlYWxfaW1ncywgdmFsaWQpCiAgICAgICAgZF9sb3NzX2Zha2UgPSBkaXNjcmltaW5hdG9yLnRyYWluX29uX2JhdGNoKGdlbl9pbWdzLCBmYWtlKQogICAgICAgIGRfbG9zcyA9IDAuNSAqIG5wLmFkZChkX2xvc3NfcmVhbCwgZF9sb3NzX2Zha2UpCiAgICAgICAgCiAgICAgICAgbm9pc2UgPSBucC5yYW5kb20ubm9ybWFsKDAsIDEsIChiYXRjaF9zaXplLCBub2lzZV9kaW0pKQogICAgICAgIGdfbG9zcyA9IGdhbi50cmFpbl9vbl9iYXRjaChub2lzZSwgdmFsaWQpCiAgICAgICAgCiAgICAgICAgcHJpbnQoZiJ7ZXBvY2h9IFtEIGxvc3M6IHtkX2xvc3NbMF19IHwgRCBhY2N1cmFjeTogezEwMCpkX2xvc3NbMV19XSBbRyBsb3NzOiB7Z19sb3NzfV0iKQogICAgICAgIAogICAgICAgIGlmIGVwb2NoICUgMTAwID09IDA6CiAgICAgICAgICAgIHNhdmVfaW1ncyhnZW5lcmF0b3IsIGVwb2NoKQoKZGVmIHNhdmVfaW1ncyhnZW5lcmF0b3IsIGVwb2NoLCBub2lzZV9kaW09MTAwLCBleGFtcGxlcz0xMCk6CiAgICBub2lzZSA9IG5wLnJhbmRvbS5ub3JtYWwoMCwgMSwgKGV4YW1wbGVzLCBub2lzZV9kaW0pKQogICAgZ2VuX2ltZ3MgPSBnZW5lcmF0b3IucHJlZGljdChub2lzZSkKICAgIGdlbl9pbWdzID0gMC41ICogZ2VuX2ltZ3MgKyAwLjUKICAgIAogICAgZmlnLCBheHMgPSBwbHQuc3VicGxvdHMoMSwgZXhhbXBsZXMsIGZpZ3NpemU9KDIwLCA0KSkKICAgIGZvciBpIGluIHJhbmdlKGV4YW1wbGVzKToKICAgICAgICBheHNbaV0uaW1zaG93KGdlbl9pbWdzW2ksIDosIDosIDBdLCBjbWFwPSdncmF5JykKICAgICAgICBheHNbaV0uYXhpcygnb2ZmJykKICAgIHBsdC5zaG93KCkKCnRyYWluX2dhbihnYW4sIGdlbmVyYXRvciwgZGlzY3JpbWluYXRvciwgZXBvY2hzPTEwMDAwLCBiYXRjaF9zaXplPTY0LCBub2lzZV9kaW09MTAwKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def train_gan(gan, generator, discriminator, epochs, batch_size, noise_dim):
+    (X_train, _), (_, _) = tf.keras.datasets.mnist.load_data()
+    X_train = X_train / 127.5 - 1.0
+    X_train = np.expand_dims(X_train, axis=3)
+    
+    valid = np.ones((batch_size, 1))
+    fake = np.zeros((batch_size, 1))
+    
+    for epoch in range(epochs):
+        idx = np.random.randint(0, X_train.shape[0], batch_size)
+        real_imgs = X_train[idx]
+        
+        noise = np.random.normal(0, 1, (batch_size, noise_dim))
+        gen_imgs = generator.predict(noise)
+        
+        d_loss_real = discriminator.train_on_batch(real_imgs, valid)
+        d_loss_fake = discriminator.train_on_batch(gen_imgs, fake)
+        d_loss = 0.5 * np.add(d_loss_real, d_loss_fake)
+        
+        noise = np.random.normal(0, 1, (batch_size, noise_dim))
+        g_loss = gan.train_on_batch(noise, valid)
+        
+        print(f&quot;{epoch} [D loss: {d_loss[0]} | D accuracy: {100*d_loss[1]}] [G loss: {g_loss}]&quot;)
+        
+        if epoch % 100 == 0:
+            save_imgs(generator, epoch)
+
+def save_imgs(generator, epoch, noise_dim=100, examples=10):
+    noise = np.random.normal(0, 1, (examples, noise_dim))
+    gen_imgs = generator.predict(noise)
+    gen_imgs = 0.5 * gen_imgs + 0.5
+    
+    fig, axs = plt.subplots(1, examples, figsize=(20, 4))
+    for i in range(examples):
+        axs[i].imshow(gen_imgs[i, :, :, 0], cmap='gray')
+        axs[i].axis('off')
+    plt.show()
+
+train_gan(gan, generator, discriminator, epochs=10000, batch_size=64, noise_dim=100)</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Modify the Generator</h2>
+<div class='content'><p>Modify the generator to include additional layers and different activation functions. Observe how these changes affect the quality of generated images.</p>
+</div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGJ1aWxkX2dlbmVyYXRvcl92MigpOgogICAgbW9kZWwgPSBTZXF1ZW50aWFsKCkKICAgIG1vZGVsLmFkZChEZW5zZSgxMjgsIGlucHV0X2RpbT0xMDApKQogICAgbW9kZWwuYWRkKExlYWt5UmVMVShhbHBoYT0wLjIpKQogICAgbW9kZWwuYWRkKERlbnNlKDI1NikpCiAgICBtb2RlbC5hZGQoTGVha3lSZUxVKGFscGhhPTAuMikpCiAgICBtb2RlbC5hZGQoRGVuc2UoNTEyKSkKICAgIG1vZGVsLmFkZChMZWFreVJlTFUoYWxwaGE9MC4yKSkKICAgIG1vZGVsLmFkZChEZW5zZSgxMDI0KSkKICAgIG1vZGVsLmFkZChMZWFreVJlTFUoYWxwaGE9MC4yKSkKICAgIG1vZGVsLmFkZChEZW5zZSgyOCAqIDI4ICogMSwgYWN0aXZhdGlvbj0ndGFuaCcpKQogICAgbW9kZWwuYWRkKFJlc2hhcGUoKDI4LCAyOCwgMSkpKQogICAgcmV0dXJuIG1vZGVsCgpnZW5lcmF0b3JfdjIgPSBidWlsZF9nZW5lcmF0b3JfdjIoKQpnZW5lcmF0b3JfdjIuc3VtbWFyeSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def build_generator_v2():
+    model = Sequential()
+    model.add(Dense(128, input_dim=100))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(256))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(512))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(1024))
+    model.add(LeakyReLU(alpha=0.2))
+    model.add(Dense(28 * 28 * 1, activation='tanh'))
+    model.add(Reshape((28, 28, 1)))
+    return model
+
+generator_v2 = build_generator_v2()
+generator_v2.summary()</pre></div><div class='content'></div><h2>Exercise 2: Implement a Different Loss Function</h2>
+<div class='content'><p>Implement a different loss function for the GAN and compare the results with the original binary cross-entropy loss.</p>
+</div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2FuLmNvbXBpbGUobG9zcz0nbWVhbl9zcXVhcmVkX2Vycm9yJywgb3B0aW1pemVyPSdhZGFtJykKdHJhaW5fZ2FuKGdhbiwgZ2VuZXJhdG9yLCBkaXNjcmltaW5hdG9yLCBlcG9jaHM9MTAwMDAsIGJhdGNoX3NpemU9NjQsIG5vaXNlX2RpbT0xMDAp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gan.compile(loss='mean_squared_error', optimizer='adam')
+train_gan(gan, generator, discriminator, epochs=10000, batch_size=64, noise_dim=100)</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Overfitting the Discriminator</strong>: Ensure that the discriminator does not become too powerful compared to the generator. This can be mitigated by alternating the training steps or adjusting the learning rates.</li>
+<li><strong>Mode Collapse</strong>: This occurs when the generator produces limited varieties of images. Experiment with different architectures and training techniques to avoid this issue.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have covered the basics of creating a GAN for image generation, including defining the generator and discriminator, compiling the GAN, and training it. We also explored practical exercises to deepen your understanding. In the next module, we will discuss ethical considerations and the future of deep learning.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-anomaly-detection-autoencoders' title="Anomaly Detection with Autoencoders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-ethics-deep-learning' title="Ethics in Deep Learning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Native Code</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apache_cordova/04-02-using-native-code" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apache_cordova/04-02-using-native-code" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apache_cordova/04-02-using-native-code" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apache_cordova/04-02-using-native-code" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apache_cordova/04-02-using-native-code" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-custom-plugins-development' title="Custom Plugins Development">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Native Code</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-performance-optimization' title="Performance Optimization">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this module, we will explore how to extend the functionality of your Apache Cordova applications by integrating native code. This is particularly useful when you need to access device features that are not available through existing Cordova plugins or when you need to optimize performance for specific tasks.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Understanding Native Code Integration</strong>:</p>
+<ul>
+<li>Native code refers to code written in the native programming languages of the target platforms (e.g., Java/Kotlin for Android, Swift/Objective-C for iOS).</li>
+<li>Cordova allows you to call native code from JavaScript, enabling you to leverage platform-specific features.</li>
+</ul>
+</li>
+<li>
+<p><strong>When to Use Native Code</strong>:</p>
+<ul>
+<li>When existing plugins do not provide the required functionality.</li>
+<li>When performance optimization is necessary.</li>
+<li>When you need to access new or experimental features of the platform.</li>
+</ul>
+</li>
+<li>
+<p><strong>Basic Workflow</strong>:</p>
+<ul>
+<li>Create a custom plugin.</li>
+<li>Write the native code for each platform.</li>
+<li>Expose the native functionality to JavaScript.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Creating a Custom Plugin</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create the Plugin Structure</strong>:</p>
+<ul>
+<li>Use the Cordova CLI to create a new plugin.</li>
+</ul>
+<pre><code class="language-bash">cordova plugin create com.example.myplugin MyPlugin
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Plugin Interface</strong>:</p>
+<ul>
+<li>Edit the <code>plugin.xml</code> file to define the plugin's interface and specify the native code files for each platform.</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementing Native Code for Android</strong>:</p>
+<ul>
+<li>Navigate to the <code>src/android</code> directory and create a Java class for your plugin.</li>
+<li>Example: <code>MyPlugin.java</code></li>
+</ul>
+<pre><code class="language-java">package com.example.myplugin;
+
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class MyPlugin extends CordovaPlugin {
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (action.equals(&quot;coolMethod&quot;)) {
+            String message = args.getString(0);
+            this.coolMethod(message, callbackContext);
+            return true;
+        }
+        return false;
+    }
+
+    private void coolMethod(String message, CallbackContext callbackContext) {
+        if (message != null &amp;&amp; message.length() &gt; 0) {
+            callbackContext.success(&quot;Hello, &quot; + message);
+        } else {
+            callbackContext.error(&quot;Expected one non-empty string argument.&quot;);
+        }
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Implementing Native Code for iOS</strong>:</p>
+<ul>
+<li>Navigate to the <code>src/ios</code> directory and create an Objective-C or Swift class for your plugin.</li>
+<li>Example: <code>MyPlugin.m</code></li>
+</ul>
+<pre><code class="language-objective-c">#import &lt;Cordova/CDV.h&gt;
+
+@interface MyPlugin : CDVPlugin
+- (void)coolMethod:(CDVInvokedUrlCommand*)command;
+@end
+
+@implementation MyPlugin
+
+- (void)coolMethod:(CDVInvokedUrlCommand*)command {
+    NSString* message = [command.arguments objectAtIndex:0];
+    CDVPluginResult* pluginResult = nil;
+
+    if (message != nil &amp;&amp; [message length] &gt; 0) {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:[NSString stringWithFormat:@&quot;Hello, %@&quot;, message]];
+    } else {
+        pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@&quot;Expected one non-empty string argument.&quot;];
+    }
+
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+@end
+</code></pre>
+</li>
+<li>
+<p><strong>Exposing Native Functionality to JavaScript</strong>:</p>
+<ul>
+<li>Create a JavaScript interface to call the native methods.</li>
+<li>Example: <code>www/MyPlugin.js</code></li>
+</ul>
+<pre><code class="language-javascript">var exec = require('cordova/exec');
+
+var MyPlugin = {
+    coolMethod: function (message, successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'MyPlugin', 'coolMethod', [message]);
+    }
+};
+
+module.exports = MyPlugin;
+</code></pre>
+</li>
+<li>
+<p><strong>Using the Plugin in Your Cordova App</strong>:</p>
+<ul>
+<li>Add the plugin to your Cordova project.</li>
+</ul>
+<pre><code class="language-bash">cordova plugin add path/to/your/plugin
+</code></pre>
+<ul>
+<li>Call the plugin method from your JavaScript code.</li>
+</ul>
+<pre><code class="language-javascript">document.addEventListener('deviceready', function () {
+    MyPlugin.coolMethod('World', function (result) {
+        console.log(result); // &quot;Hello, World&quot;
+    }, function (error) {
+        console.error(error);
+    });
+}, false);
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create a Custom Plugin to Access Battery Level</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Objective</strong>: Create a custom Cordova plugin that retrieves the device's battery level.</p>
+</li>
+<li>
+<p><strong>Steps</strong>:</p>
+<ul>
+<li>Follow the steps outlined above to create a new plugin.</li>
+<li>Implement the native code to access the battery level for both Android and iOS.</li>
+<li>Expose the battery level functionality to JavaScript.</li>
+<li>Use the plugin in a Cordova app to display the battery level.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create the Plugin Structure</strong>:</p>
+<pre><code class="language-bash">cordova plugin create com.example.battery BatteryPlugin
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Plugin Interface</strong>:</p>
+<ul>
+<li>Edit <code>plugin.xml</code> to include the necessary files and permissions.</li>
+</ul>
+</li>
+<li>
+<p><strong>Implementing Native Code for Android</strong>:</p>
+<ul>
+<li><code>BatteryPlugin.java</code></li>
+</ul>
+<pre><code class="language-java">package com.example.battery;
+
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+
+public class BatteryPlugin extends CordovaPlugin {
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (action.equals(&quot;getBatteryLevel&quot;)) {
+            this.getBatteryLevel(callbackContext);
+            return true;
+        }
+        return false;
+    }
+
+    private void getBatteryLevel(CallbackContext callbackContext) {
+        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = cordova.getActivity().registerReceiver(null, ifilter);
+        int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+        int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+        float batteryPct = level / (float) scale * 100;
+        callbackContext.success((int) batteryPct);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Implementing Native Code for iOS</strong>:</p>
+<ul>
+<li><code>BatteryPlugin.m</code></li>
+</ul>
+<pre><code class="language-objective-c">#import &lt;Cordova/CDV.h&gt;
+
+@interface BatteryPlugin : CDVPlugin
+- (void)getBatteryLevel:(CDVInvokedUrlCommand*)command;
+@end
+
+@implementation BatteryPlugin
+
+- (void)getBatteryLevel:(CDVInvokedUrlCommand*)command {
+    UIDevice* device = [UIDevice currentDevice];
+    device.batteryMonitoringEnabled = YES;
+    float batteryLevel = device.batteryLevel * 100;
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsInt:(int)batteryLevel];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+@end
+</code></pre>
+</li>
+<li>
+<p><strong>Exposing Native Functionality to JavaScript</strong>:</p>
+<ul>
+<li><code>www/BatteryPlugin.js</code></li>
+</ul>
+<pre><code class="language-javascript">var exec = require('cordova/exec');
+
+var BatteryPlugin = {
+    getBatteryLevel: function (successCallback, errorCallback) {
+        exec(successCallback, errorCallback, 'BatteryPlugin', 'getBatteryLevel', []);
+    }
+};
+
+module.exports = BatteryPlugin;
+</code></pre>
+</li>
+<li>
+<p><strong>Using the Plugin in Your Cordova App</strong>:</p>
+<pre><code class="language-javascript">document.addEventListener('deviceready', function () {
+    BatteryPlugin.getBatteryLevel(function (level) {
+        console.log('Battery Level: ' + level + '%');
+    }, function (error) {
+        console.error(error);
+    });
+}, false);
+</code></pre>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this module, we learned how to extend the functionality of Apache Cordova applications by integrating native code. We covered the basic workflow of creating a custom plugin, implementing native code for both Android and iOS, and exposing the native functionality to JavaScript. By following the practical exercise, you should now be able to create your own custom plugins to access device-specific features and optimize performance.</p>
+<p>Next, we will explore performance optimization techniques to ensure your Cordova applications run smoothly and efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-custom-plugins-development' title="Custom Plugins Development">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-performance-optimization' title="Performance Optimization">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

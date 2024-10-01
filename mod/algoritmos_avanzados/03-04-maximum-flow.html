@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maximum Flow Algorithms</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/algoritmos_avanzados/03-04-flujo-maximo" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/algoritmos_avanzados/03-04-flux-maxim" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/algoritmos_avanzados/03-04-maximum-flow" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/algoritmos_avanzados/03-04-maximum-flow" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/algoritmos_avanzados/03-04-maximum-flow" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-shortest-paths' title="Shortest Path Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Maximum Flow Algorithms</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-graph-matching' title="Graph Matching Algorithms">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Maximum flow algorithms are used to find the maximum possible flow in a flow network. A flow network is a directed graph where each edge has a capacity and each edge receives a flow. The goal is to maximize the flow from a source node to a sink node while respecting the capacities of the edges.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Flow Network</strong>: A directed graph \( G = (V, E) \) where each edge \( (u, v) \in E \) has a non-negative capacity \( c(u, v) \).</li>
+<li><strong>Source (s)</strong>: The node where the flow originates.</li>
+<li><strong>Sink (t)</strong>: The node where the flow is collected.</li>
+<li><strong>Flow (f)</strong>: A function \( f: E \rightarrow \mathbb{R} \) that satisfies:
+<ul>
+<li>Capacity constraint: \( 0 \leq f(u, v) \leq c(u, v) \) for all \( (u, v) \in E \).</li>
+<li>Flow conservation: \( \sum_{v \in V} f(u, v) = \sum_{v \in V} f(v, u) \) for all \( u \in V \setminus {s, t} \).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ford-Fulkerson Algorithm</h1>
+<div class='content'><p>The Ford-Fulkerson method is a greedy approach to compute the maximum flow in a flow network. It repeatedly finds augmenting paths and increases the flow until no more augmenting paths can be found.</p>
+</div><h2>Steps of the Ford-Fulkerson Algorithm</h2>
+<div class='content'><ol>
+<li><strong>Initialize</strong>: Start with zero flow.</li>
+<li><strong>Find Augmenting Path</strong>: Use Depth-First Search (DFS) or Breadth-First Search (BFS) to find a path from the source \( s \) to the sink \( t \) where the residual capacity is positive.</li>
+<li><strong>Augment Flow</strong>: Increase the flow along the path found in step 2 by the minimum residual capacity of the edges in the path.</li>
+<li><strong>Update Residual Graph</strong>: Adjust the capacities of the edges in the residual graph.</li>
+<li><strong>Repeat</strong>: Repeat steps 2-4 until no more augmenting paths can be found.</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Consider the following flow network:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ICAgIHMKICAgLyBcCiAgMTAgIDUKIC8gICAgIFwKYS0tLTUtLS1iCiBcICAgICAvCiAgNSAgIDEwCiAgIFwgLwogICAgdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>    s
+   / \
+  10  5
+ /     \
+a---5---b
+ \     /
+  5   10
+   \ /
+    t</pre></div><div class='content'><ol>
+<li><strong>Initialize</strong>: Start with zero flow.</li>
+<li><strong>Find Augmenting Path</strong>: \( s \rightarrow a \rightarrow b \rightarrow t \) with a minimum capacity of 5.</li>
+<li><strong>Augment Flow</strong>: Increase the flow by 5.</li>
+<li><strong>Update Residual Graph</strong>: Adjust the capacities.</li>
+</ol>
+<p>The process continues until no more augmenting paths can be found.</p>
+</div><h2>Python Implementation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBjb2xsZWN0aW9ucyBpbXBvcnQgZGVmYXVsdGRpY3QKCmNsYXNzIEdyYXBoOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIHZlcnRpY2VzKToKICAgICAgICBzZWxmLmdyYXBoID0gZGVmYXVsdGRpY3QobGlzdCkKICAgICAgICBzZWxmLlJPVyA9IHZlcnRpY2VzCgogICAgZGVmIGFkZF9lZGdlKHNlbGYsIHUsIHYsIHcpOgogICAgICAgIHNlbGYuZ3JhcGhbdV0uYXBwZW5kKCh2LCB3KSkKCiAgICBkZWYgYmZzKHNlbGYsIHMsIHQsIHBhcmVudCk6CiAgICAgICAgdmlzaXRlZCA9IFtGYWxzZV0gKiBzZWxmLlJPVwogICAgICAgIHF1ZXVlID0gW10KICAgICAgICBxdWV1ZS5hcHBlbmQocykKICAgICAgICB2aXNpdGVkW3NdID0gVHJ1ZQoKICAgICAgICB3aGlsZSBxdWV1ZToKICAgICAgICAgICAgdSA9IHF1ZXVlLnBvcCgwKQoKICAgICAgICAgICAgZm9yIHYsIHcgaW4gc2VsZi5ncmFwaFt1XToKICAgICAgICAgICAgICAgIGlmIHZpc2l0ZWRbdl0gPT0gRmFsc2UgYW5kIHcgPiAwOgogICAgICAgICAgICAgICAgICAgIHF1ZXVlLmFwcGVuZCh2KQogICAgICAgICAgICAgICAgICAgIHZpc2l0ZWRbdl0gPSBUcnVlCiAgICAgICAgICAgICAgICAgICAgcGFyZW50W3ZdID0gdQogICAgICAgICAgICAgICAgICAgIGlmIHYgPT0gdDoKICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICByZXR1cm4gRmFsc2UKCiAgICBkZWYgZm9yZF9mdWxrZXJzb24oc2VsZiwgc291cmNlLCBzaW5rKToKICAgICAgICBwYXJlbnQgPSBbLTFdICogc2VsZi5ST1cKICAgICAgICBtYXhfZmxvdyA9IDAKCiAgICAgICAgd2hpbGUgc2VsZi5iZnMoc291cmNlLCBzaW5rLCBwYXJlbnQpOgogICAgICAgICAgICBwYXRoX2Zsb3cgPSBmbG9hdCgiSW5mIikKICAgICAgICAgICAgcyA9IHNpbmsKCiAgICAgICAgICAgIHdoaWxlIHMgIT0gc291cmNlOgogICAgICAgICAgICAgICAgZm9yIHYsIHcgaW4gc2VsZi5ncmFwaFtwYXJlbnRbc11dOgogICAgICAgICAgICAgICAgICAgIGlmIHYgPT0gczoKICAgICAgICAgICAgICAgICAgICAgICAgcGF0aF9mbG93ID0gbWluKHBhdGhfZmxvdywgdykKICAgICAgICAgICAgICAgIHMgPSBwYXJlbnRbc10KCiAgICAgICAgICAgIG1heF9mbG93ICs9IHBhdGhfZmxvdwoKICAgICAgICAgICAgdiA9IHNpbmsKICAgICAgICAgICAgd2hpbGUgdiAhPSBzb3VyY2U6CiAgICAgICAgICAgICAgICB1ID0gcGFyZW50W3ZdCiAgICAgICAgICAgICAgICBmb3IgaSwgKHZlcnRleCwgd2VpZ2h0KSBpbiBlbnVtZXJhdGUoc2VsZi5ncmFwaFt1XSk6CiAgICAgICAgICAgICAgICAgICAgaWYgdmVydGV4ID09IHY6CiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYuZ3JhcGhbdV1baV0gPSAodmVydGV4LCB3ZWlnaHQgLSBwYXRoX2Zsb3cpCiAgICAgICAgICAgICAgICBmb3IgaSwgKHZlcnRleCwgd2VpZ2h0KSBpbiBlbnVtZXJhdGUoc2VsZi5ncmFwaFt2XSk6CiAgICAgICAgICAgICAgICAgICAgaWYgdmVydGV4ID09IHU6CiAgICAgICAgICAgICAgICAgICAgICAgIHNlbGYuZ3JhcGhbdl1baV0gPSAodmVydGV4LCB3ZWlnaHQgKyBwYXRoX2Zsb3cpCiAgICAgICAgICAgICAgICB2ID0gcGFyZW50W3ZdCgogICAgICAgIHJldHVybiBtYXhfZmxvdwoKIyBFeGFtcGxlIHVzYWdlCmcgPSBHcmFwaCg0KQpnLmFkZF9lZGdlKDAsIDEsIDEwKQpnLmFkZF9lZGdlKDAsIDIsIDUpCmcuYWRkX2VkZ2UoMSwgMiwgNSkKZy5hZGRfZWRnZSgxLCAzLCAxMCkKZy5hZGRfZWRnZSgyLCAzLCAxMCkKCnNvdXJjZSA9IDAKc2luayA9IDMKCnByaW50KCJUaGUgbWF4aW11bSBwb3NzaWJsZSBmbG93IGlzICVkIiAlIGcuZm9yZF9mdWxrZXJzb24oc291cmNlLCBzaW5rKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from collections import defaultdict
+
+class Graph:
+    def __init__(self, vertices):
+        self.graph = defaultdict(list)
+        self.ROW = vertices
+
+    def add_edge(self, u, v, w):
+        self.graph[u].append((v, w))
+
+    def bfs(self, s, t, parent):
+        visited = [False] * self.ROW
+        queue = []
+        queue.append(s)
+        visited[s] = True
+
+        while queue:
+            u = queue.pop(0)
+
+            for v, w in self.graph[u]:
+                if visited[v] == False and w &gt; 0:
+                    queue.append(v)
+                    visited[v] = True
+                    parent[v] = u
+                    if v == t:
+                        return True
+        return False
+
+    def ford_fulkerson(self, source, sink):
+        parent = [-1] * self.ROW
+        max_flow = 0
+
+        while self.bfs(source, sink, parent):
+            path_flow = float(&quot;Inf&quot;)
+            s = sink
+
+            while s != source:
+                for v, w in self.graph[parent[s]]:
+                    if v == s:
+                        path_flow = min(path_flow, w)
+                s = parent[s]
+
+            max_flow += path_flow
+
+            v = sink
+            while v != source:
+                u = parent[v]
+                for i, (vertex, weight) in enumerate(self.graph[u]):
+                    if vertex == v:
+                        self.graph[u][i] = (vertex, weight - path_flow)
+                for i, (vertex, weight) in enumerate(self.graph[v]):
+                    if vertex == u:
+                        self.graph[v][i] = (vertex, weight + path_flow)
+                v = parent[v]
+
+        return max_flow
+
+# Example usage
+g = Graph(4)
+g.add_edge(0, 1, 10)
+g.add_edge(0, 2, 5)
+g.add_edge(1, 2, 5)
+g.add_edge(1, 3, 10)
+g.add_edge(2, 3, 10)
+
+source = 0
+sink = 3
+
+print(&quot;The maximum possible flow is %d&quot; % g.ford_fulkerson(source, sink))</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Graph Initialization</strong>: The graph is initialized with vertices and edges.</li>
+<li><strong>BFS Function</strong>: Finds an augmenting path using BFS.</li>
+<li><strong>Ford-Fulkerson Function</strong>: Implements the Ford-Fulkerson algorithm to find the maximum flow.</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1</h2>
+<div class='content'><p>Given the following flow network, find the maximum flow from source \( s \) to sink \( t \):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ICAgIHMKICAgLyBcCiAgMTUgIDEwCiAvICAgICBcCmEtLS01LS0tYgogXCAgICAgLwogIDEwICAxNQogICBcIC8KICAgIHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>    s
+   / \
+  15  10
+ /     \
+a---5---b
+ \     /
+  10  15
+   \ /
+    t</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Initialize</strong>: Start with zero flow.</li>
+<li><strong>Find Augmenting Path</strong>: \( s \rightarrow a \rightarrow t \) with a minimum capacity of 10.</li>
+<li><strong>Augment Flow</strong>: Increase the flow by 10.</li>
+<li><strong>Update Residual Graph</strong>: Adjust the capacities.</li>
+</ol>
+<p>Repeat the process until no more augmenting paths can be found. The maximum flow is 20.</p>
+</div><h2>Exercise 2</h2>
+<div class='content'><p>Implement the Ford-Fulkerson algorithm for the following graph and find the maximum flow:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ICAgIHMKICAgLyBcCiAgMjAgIDEwCiAvICAgICBcCmEtLS0xMC0tYgogXCAgICAgLwogIDUgICAxNQogICBcIC8KICAgIHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>    s
+   / \
+  20  10
+ /     \
+a---10--b
+ \     /
+  5   15
+   \ /
+    t</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZyA9IEdyYXBoKDQpCmcuYWRkX2VkZ2UoMCwgMSwgMjApCmcuYWRkX2VkZ2UoMCwgMiwgMTApCmcuYWRkX2VkZ2UoMSwgMiwgMTApCmcuYWRkX2VkZ2UoMSwgMywgMTUpCmcuYWRkX2VkZ2UoMiwgMywgMTUpCgpzb3VyY2UgPSAwCnNpbmsgPSAzCgpwcmludCgiVGhlIG1heGltdW0gcG9zc2libGUgZmxvdyBpcyAlZCIgJSBnLmZvcmRfZnVsa2Vyc29uKHNvdXJjZSwgc2luaykp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>g = Graph(4)
+g.add_edge(0, 1, 20)
+g.add_edge(0, 2, 10)
+g.add_edge(1, 2, 10)
+g.add_edge(1, 3, 15)
+g.add_edge(2, 3, 15)
+
+source = 0
+sink = 3
+
+print(&quot;The maximum possible flow is %d&quot; % g.ford_fulkerson(source, sink))</pre></div><div class='content'><p>The maximum possible flow is 25.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Not Updating Residual Graph Correctly</strong>: Ensure that the residual capacities are updated correctly after each augmentation.</li>
+<li><strong>Infinite Loop in BFS</strong>: Make sure to mark nodes as visited to avoid infinite loops.</li>
+<li><strong>Handling Edge Cases</strong>: Consider edge cases where there are no augmenting paths or where the capacities are zero.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Maximum flow algorithms are crucial for solving various network flow problems. The Ford-Fulkerson method, with its iterative approach to finding augmenting paths, provides a foundational technique for understanding and implementing these algorithms. By practicing with different flow networks, you can gain a deeper understanding of how to apply these concepts effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-shortest-paths' title="Shortest Path Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-graph-matching' title="Graph Matching Algorithms">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

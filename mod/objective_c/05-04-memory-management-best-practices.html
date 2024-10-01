@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Management Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/objective_c/05-04-memory-management-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/objective_c/05-04-memory-management-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/objective_c/05-04-memory-management-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/objective_c/05-04-memory-management-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/objective_c/05-04-memory-management-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-manual-retain-release' title="Manual Retain-Release">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Memory Management Best Practices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-protocols-and-delegates' title="Protocols and Delegates">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Memory management is a critical aspect of Objective-C programming, especially when developing applications that need to be efficient and responsive. This section will cover best practices to ensure that your applications manage memory effectively, avoiding common pitfalls such as memory leaks and retain cycles.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Automatic Reference Counting (ARC)</strong></li>
+<li><strong>Manual Retain-Release</strong></li>
+<li><strong>Retain Cycles</strong></li>
+<li><strong>Weak and Strong References</strong></li>
+<li><strong>Autorelease Pools</strong></li>
+</ol>
+</div><h1>Best Practices</h1>
+<div class='content'></div><h2>1. Use ARC Whenever Possible</h2>
+<div class='content'><p>Automatic Reference Counting (ARC) simplifies memory management by automatically handling the retain and release of objects. This reduces the likelihood of memory leaks and makes your code cleaner and easier to maintain.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBBUkMgaW4gYWN0aW9uCkBpbnRlcmZhY2UgTXlDbGFzcyA6IE5TT2JqZWN0CkBwcm9wZXJ0eSAobm9uYXRvbWljLCBzdHJvbmcpIE5TU3RyaW5nICpuYW1lOwpAZW5kCgpAaW1wbGVtZW50YXRpb24gTXlDbGFzcwpAZW5k"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of ARC in action
+@interface MyClass : NSObject
+@property (nonatomic, strong) NSString *name;
+@end
+
+@implementation MyClass
+@end</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>strong</code> keyword ensures that the <code>name</code> property retains the object, and ARC will automatically release it when it's no longer needed.</li>
+</ul>
+</div><h2>2. Avoid Retain Cycles</h2>
+<div class='content'><p>Retain cycles occur when two objects hold strong references to each other, preventing them from being deallocated. To avoid this, use <code>weak</code> references where appropriate.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBhdm9pZGluZyByZXRhaW4gY3ljbGVzCkBpbnRlcmZhY2UgTXlDbGFzcyA6IE5TT2JqZWN0CkBwcm9wZXJ0eSAobm9uYXRvbWljLCBzdHJvbmcpIE15Q2xhc3MgKnN0cm9uZ1JlZmVyZW5jZTsKQHByb3BlcnR5IChub25hdG9taWMsIHdlYWspIE15Q2xhc3MgKndlYWtSZWZlcmVuY2U7CkBlbmQKCkBpbXBsZW1lbnRhdGlvbiBNeUNsYXNzCkBlbmQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of avoiding retain cycles
+@interface MyClass : NSObject
+@property (nonatomic, strong) MyClass *strongReference;
+@property (nonatomic, weak) MyClass *weakReference;
+@end
+
+@implementation MyClass
+@end</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>weak</code> keyword is used to prevent a retain cycle by not retaining the referenced object.</li>
+</ul>
+</div><h2>3. Use `weak` and `strong` Appropriately</h2>
+<div class='content'><p>Understanding when to use <code>weak</code> and <code>strong</code> references is crucial. Use <code>strong</code> for objects that you want to own and <code>weak</code> for objects that you do not need to own.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiB1c2luZyB3ZWFrIGFuZCBzdHJvbmcgcmVmZXJlbmNlcwpAaW50ZXJmYWNlIE15Vmlld0NvbnRyb2xsZXIgOiBVSVZpZXdDb250cm9sbGVyCkBwcm9wZXJ0eSAobm9uYXRvbWljLCBzdHJvbmcpIFVJVmlldyAqbWFpblZpZXc7CkBwcm9wZXJ0eSAobm9uYXRvbWljLCB3ZWFrKSBpZDxTb21lRGVsZWdhdGU+IGRlbGVnYXRlOwpAZW5kCgpAaW1wbGVtZW50YXRpb24gTXlWaWV3Q29udHJvbGxlcgpAZW5k"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of using weak and strong references
+@interface MyViewController : UIViewController
+@property (nonatomic, strong) UIView *mainView;
+@property (nonatomic, weak) id&lt;SomeDelegate&gt; delegate;
+@end
+
+@implementation MyViewController
+@end</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>mainView</code> is a strong reference because the view controller owns it.</li>
+<li><code>delegate</code> is a weak reference to avoid retain cycles with the delegate object.</li>
+</ul>
+</div><h2>4. Use Autorelease Pools for Temporary Objects</h2>
+<div class='content'><p>Autorelease pools are useful for managing the memory of temporary objects, especially in loops or background threads.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiB1c2luZyBhdXRvcmVsZWFzZSBwb29sCmZvciAoaW50IGkgPSAwOyBpIDwgMTAwMDsgaSsrKSB7CiAgICBAYXV0b3JlbGVhc2Vwb29sIHsKICAgICAgICBOU1N0cmluZyAqdGVtcFN0cmluZyA9IFtOU1N0cmluZyBzdHJpbmdXaXRoRm9ybWF0OkAiTnVtYmVyICVkIiwgaV07CiAgICAgICAgLy8gRG8gc29tZXRoaW5nIHdpdGggdGVtcFN0cmluZwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of using autorelease pool
+for (int i = 0; i &lt; 1000; i++) {
+    @autoreleasepool {
+        NSString *tempString = [NSString stringWithFormat:@&quot;Number %d&quot;, i];
+        // Do something with tempString
+    }
+}</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>@autoreleasepool</code> block ensures that temporary objects are released promptly, preventing excessive memory usage.</li>
+</ul>
+</div><h2>5. Follow Naming Conventions</h2>
+<div class='content'><p>Objective-C has specific naming conventions that can help ARC manage memory more effectively. For example, methods that return new objects should start with <code>new</code>, <code>alloc</code>, <code>copy</code>, or <code>mutableCopy</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZSBvZiBmb2xsb3dpbmcgbmFtaW5nIGNvbnZlbnRpb25zCi0gKE5TU3RyaW5nICopbmV3U3RyaW5nIHsKICAgIHJldHVybiBbW05TU3RyaW5nIGFsbG9jXSBpbml0V2l0aFN0cmluZzpAIkhlbGxvIl07Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example of following naming conventions
+- (NSString *)newString {
+    return [[NSString alloc] initWithString:@&quot;Hello&quot;];
+}</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The method name <code>newString</code> indicates that the caller is responsible for releasing the returned object.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Fixing Retain Cycles</h2>
+<div class='content'><p>Given the following code, identify and fix the retain cycle:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBQZXJzb24gOiBOU09iamVjdApAcHJvcGVydHkgKG5vbmF0b21pYywgc3Ryb25nKSBOU1N0cmluZyAqbmFtZTsKQHByb3BlcnR5IChub25hdG9taWMsIHN0cm9uZykgUGVyc29uICpmcmllbmQ7CkBlbmQKCkBpbXBsZW1lbnRhdGlvbiBQZXJzb24KQGVuZAoKUGVyc29uICpwZXJzb24xID0gW1tQZXJzb24gYWxsb2NdIGluaXRdOwpQZXJzb24gKnBlcnNvbjIgPSBbW1BlcnNvbiBhbGxvY10gaW5pdF07CnBlcnNvbjEuZnJpZW5kID0gcGVyc29uMjsKcGVyc29uMi5mcmllbmQgPSBwZXJzb24xOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface Person : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) Person *friend;
+@end
+
+@implementation Person
+@end
+
+Person *person1 = [[Person alloc] init];
+Person *person2 = [[Person alloc] init];
+person1.friend = person2;
+person2.friend = person1;</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBQZXJzb24gOiBOU09iamVjdApAcHJvcGVydHkgKG5vbmF0b21pYywgc3Ryb25nKSBOU1N0cmluZyAqbmFtZTsKQHByb3BlcnR5IChub25hdG9taWMsIHdlYWspIFBlcnNvbiAqZnJpZW5kOyAvLyBDaGFuZ2Ugc3Ryb25nIHRvIHdlYWsKQGVuZAoKQGltcGxlbWVudGF0aW9uIFBlcnNvbgpAZW5kCgpQZXJzb24gKnBlcnNvbjEgPSBbW1BlcnNvbiBhbGxvY10gaW5pdF07ClBlcnNvbiAqcGVyc29uMiA9IFtbUGVyc29uIGFsbG9jXSBpbml0XTsKcGVyc29uMS5mcmllbmQgPSBwZXJzb24yOwpwZXJzb24yLmZyaWVuZCA9IHBlcnNvbjE7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface Person : NSObject
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, weak) Person *friend; // Change strong to weak
+@end
+
+@implementation Person
+@end
+
+Person *person1 = [[Person alloc] init];
+Person *person2 = [[Person alloc] init];
+person1.friend = person2;
+person2.friend = person1;</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>Changing the <code>friend</code> property to <code>weak</code> breaks the retain cycle, allowing both <code>person1</code> and <code>person2</code> to be deallocated when they are no longer needed.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered best practices for memory management in Objective-C, including the use of ARC, avoiding retain cycles, and using <code>weak</code> and <code>strong</code> references appropriately. By following these guidelines, you can ensure that your applications manage memory efficiently, reducing the risk of memory leaks and improving overall performance.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-manual-retain-release' title="Manual Retain-Release">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-protocols-and-delegates' title="Protocols and Delegates">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

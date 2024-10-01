@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Functions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/10-05-window-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/10-05-window-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/10-05-window-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/sql/10-05-window-functions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/10-05-window-functions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-common-table-expressions' title="Common Table Expressions (CTEs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Window Functions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-01-real-world-use-cases' title="Real-World Use Cases">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Window functions are a powerful feature in SQL that allow you to perform calculations across a set of table rows that are somehow related to the current row. Unlike aggregate functions, which return a single value for a group of rows, window functions return a value for each row in the result set.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Window Function Syntax</strong>:</p>
+<pre><code class="language-sql">function_name (expression) OVER (
+    [PARTITION BY partition_expression]
+    [ORDER BY sort_expression]
+    [frame_clause]
+)
+</code></pre>
+</li>
+<li>
+<p><strong>Components</strong>:</p>
+<ul>
+<li><strong>function_name</strong>: The name of the window function (e.g., <code>ROW_NUMBER</code>, <code>RANK</code>, <code>DENSE_RANK</code>, <code>NTILE</code>, <code>LAG</code>, <code>LEAD</code>, <code>FIRST_VALUE</code>, <code>LAST_VALUE</code>).</li>
+<li><strong>expression</strong>: The column or expression to be used in the function.</li>
+<li><strong>OVER</strong>: Specifies the window over which the function operates.</li>
+<li><strong>PARTITION BY</strong>: Divides the result set into partitions to which the window function is applied.</li>
+<li><strong>ORDER BY</strong>: Defines the order of rows within each partition.</li>
+<li><strong>frame_clause</strong>: Defines the subset of rows within the partition to be considered by the window function.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Window Functions</h1>
+<div class='content'></div><h2>1. ROW_NUMBER()</h2>
+<div class='content'><p>Assigns a unique sequential integer to rows within a partition of a result set.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgUk9XX05VTUJFUigpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50X2lkIE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyByb3dfbnVtCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS row_num
+FROM 
+    employees;</pre></div><div class='content'></div><h2>2. RANK()</h2>
+<div class='content'><p>Assigns a rank to each row within a partition of a result set, with gaps in the ranking for ties.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgUkFOSygpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50X2lkIE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyByYW5rCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rank
+FROM 
+    employees;</pre></div><div class='content'></div><h2>3. DENSE_RANK()</h2>
+<div class='content'><p>Similar to <code>RANK()</code>, but without gaps in the ranking for ties.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgREVOU0VfUkFOSygpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50X2lkIE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyBkZW5zZV9yYW5rCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    DENSE_RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS dense_rank
+FROM 
+    employees;</pre></div><div class='content'></div><h2>4. NTILE()</h2>
+<div class='content'><p>Distributes the rows in an ordered partition into a specified number of approximately equal groups.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgTlRJTEUoNCkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnRfaWQgT1JERVIgQlkgc2FsYXJ5IERFU0MpIEFTIHF1YXJ0aWxlCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    NTILE(4) OVER (PARTITION BY department_id ORDER BY salary DESC) AS quartile
+FROM 
+    employees;</pre></div><div class='content'></div><h2>5. LAG() and LEAD()</h2>
+<div class='content'><p>Accesses data from a previous or subsequent row in the same result set without the use of a self-join.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgTEFHKHNhbGFyeSwgMSkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnRfaWQgT1JERVIgQlkgc2FsYXJ5KSBBUyBwcmV2X3NhbGFyeSwKICAgIExFQUQoc2FsYXJ5LCAxKSBPVkVSIChQQVJUSVRJT04gQlkgZGVwYXJ0bWVudF9pZCBPUkRFUiBCWSBzYWxhcnkpIEFTIG5leHRfc2FsYXJ5CkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    LAG(salary, 1) OVER (PARTITION BY department_id ORDER BY salary) AS prev_salary,
+    LEAD(salary, 1) OVER (PARTITION BY department_id ORDER BY salary) AS next_salary
+FROM 
+    employees;</pre></div><div class='content'></div><h2>6. FIRST_VALUE() and LAST_VALUE()</h2>
+<div class='content'><p>Returns the first or last value in an ordered partition of a result set.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBzYWxhcnksIAogICAgRklSU1RfVkFMVUUoc2FsYXJ5KSBPVkVSIChQQVJUSVRJT04gQlkgZGVwYXJ0bWVudF9pZCBPUkRFUiBCWSBzYWxhcnkpIEFTIG1pbl9zYWxhcnksCiAgICBMQVNUX1ZBTFVFKHNhbGFyeSkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnRfaWQgT1JERVIgQlkgc2FsYXJ5KSBBUyBtYXhfc2FsYXJ5CkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    department_id, 
+    salary, 
+    FIRST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary) AS min_salary,
+    LAST_VALUE(salary) OVER (PARTITION BY department_id ORDER BY salary) AS max_salary
+FROM 
+    employees;</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Consider a table <code>sales</code> with the following structure:</p>
+<table>
+<thead>
+<tr>
+<th>sale_id</th>
+<th>employee_id</th>
+<th>sale_amount</th>
+<th>sale_date</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>101</td>
+<td>500</td>
+<td>2023-01-01</td>
+</tr>
+<tr>
+<td>2</td>
+<td>102</td>
+<td>700</td>
+<td>2023-01-02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>101</td>
+<td>300</td>
+<td>2023-01-03</td>
+</tr>
+<tr>
+<td>4</td>
+<td>103</td>
+<td>400</td>
+<td>2023-01-04</td>
+</tr>
+<tr>
+<td>5</td>
+<td>102</td>
+<td>600</td>
+<td>2023-01-05</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Example Query</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgc2FsZV9hbW91bnQsIAogICAgc2FsZV9kYXRlLCAKICAgIFNVTShzYWxlX2Ftb3VudCkgT1ZFUiAoUEFSVElUSU9OIEJZIGVtcGxveWVlX2lkIE9SREVSIEJZIHNhbGVfZGF0ZSkgQVMgcnVubmluZ190b3RhbApGUk9NIAogICAgc2FsZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    sale_amount, 
+    sale_date, 
+    SUM(sale_amount) OVER (PARTITION BY employee_id ORDER BY sale_date) AS running_total
+FROM 
+    sales;</pre></div><div class='content'></div><h2>Result</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>employee_id</th>
+<th>sale_amount</th>
+<th>sale_date</th>
+<th>running_total</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101</td>
+<td>500</td>
+<td>2023-01-01</td>
+<td>500</td>
+</tr>
+<tr>
+<td>101</td>
+<td>300</td>
+<td>2023-01-03</td>
+<td>800</td>
+</tr>
+<tr>
+<td>102</td>
+<td>700</td>
+<td>2023-01-02</td>
+<td>700</td>
+</tr>
+<tr>
+<td>102</td>
+<td>600</td>
+<td>2023-01-05</td>
+<td>1300</td>
+</tr>
+<tr>
+<td>103</td>
+<td>400</td>
+<td>2023-01-04</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Ranking Sales</h2>
+<div class='content'><p>Write a query to rank employees based on their total sales amount.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgU1VNKHNhbGVfYW1vdW50KSBBUyB0b3RhbF9zYWxlcywgCiAgICBSQU5LKCkgT1ZFUiAoT1JERVIgQlkgU1VNKHNhbGVfYW1vdW50KSBERVNDKSBBUyBzYWxlc19yYW5rCkZST00gCiAgICBzYWxlcwpHUk9VUCBCWSAKICAgIGVtcGxveWVlX2lkOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    SUM(sale_amount) AS total_sales, 
+    RANK() OVER (ORDER BY SUM(sale_amount) DESC) AS sales_rank
+FROM 
+    sales
+GROUP BY 
+    employee_id;</pre></div><div class='content'></div><h2>Exercise 2: Calculating Moving Average</h2>
+<div class='content'><p>Write a query to calculate the moving average of sales for each employee over the last 3 sales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgc2FsZV9hbW91bnQsIAogICAgc2FsZV9kYXRlLCAKICAgIEFWRyhzYWxlX2Ftb3VudCkgT1ZFUiAoUEFSVElUSU9OIEJZIGVtcGxveWVlX2lkIE9SREVSIEJZIHNhbGVfZGF0ZSBST1dTIEJFVFdFRU4gMiBQUkVDRURJTkcgQU5EIENVUlJFTlQgUk9XKSBBUyBtb3ZpbmdfYXZnCkZST00gCiAgICBzYWxlczs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    sale_amount, 
+    sale_date, 
+    AVG(sale_amount) OVER (PARTITION BY employee_id ORDER BY sale_date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS moving_avg
+FROM 
+    sales;</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Misunderstanding PARTITION BY</strong>: Ensure you understand how <code>PARTITION BY</code> divides the result set. It’s similar to <code>GROUP BY</code> but used within the window function context.</li>
+<li><strong>Incorrect Frame Specification</strong>: Be careful with the frame clause. Incorrectly specifying the frame can lead to unexpected results.</li>
+<li><strong>Performance Considerations</strong>: Window functions can be resource-intensive. Optimize your queries and use indexes where appropriate.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Window functions are a versatile and powerful tool in SQL, enabling complex calculations and data analysis within partitions of your data. By mastering window functions, you can perform advanced data manipulations and gain deeper insights from your datasets. In the next module, we will explore real-world use cases and best practices for applying SQL in various scenarios.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-common-table-expressions' title="Common Table Expressions (CTEs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-01-real-world-use-cases' title="Real-World Use Cases">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating RESTful Endpoints</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/07-02-creating-restful-endpoints" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/07-02-creating-restful-endpoints" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/07-02-creating-restful-endpoints" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/07-02-creating-restful-endpoints" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/07-02-creating-restful-endpoints" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-intro-restful-apis' title="Introduction to RESTful APIs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creating RESTful Endpoints</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-handling-json-data' title="Handling JSON Data">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into creating RESTful endpoints using Flask. RESTful APIs are a crucial part of modern web development, allowing different systems to communicate over HTTP. By the end of this section, you will be able to create, read, update, and delete resources using RESTful endpoints in Flask.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>REST (Representational State Transfer)</strong>: An architectural style for designing networked applications. It relies on a stateless, client-server, cacheable communications protocol -- the HTTP.</li>
+<li><strong>Endpoints</strong>: URLs that represent resources in a RESTful API.</li>
+<li><strong>HTTP Methods</strong>: Methods like GET, POST, PUT, DELETE that define the action to be performed on the resource.</li>
+</ol>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Setting Up the Project</h2>
+<div class='content'><p>First, ensure you have Flask installed. If not, you can install it using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2s="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask</pre></div><div class='content'><p>Create a new directory for your project and navigate into it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgZmxhc2tfcmVzdGZ1bF9hcGkKY2QgZmxhc2tfcmVzdGZ1bF9hcGk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir flask_restful_api
+cd flask_restful_api</pre></div><div class='content'><p>Create a virtual environment and activate it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uIC1tIHZlbnYgdmVudgpzb3VyY2UgdmVudi9iaW4vYWN0aXZhdGUgICMgT24gV2luZG93cyB1c2UgYHZlbnZcU2NyaXB0c1xhY3RpdmF0ZWA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python -m venv venv
+source venv/bin/activate  # On Windows use `venv\Scripts\activate`</pre></div><div class='content'></div><h2>2. Creating the Flask Application</h2>
+<div class='content'><p>Create a file named <code>app.py</code> and set up a basic Flask application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBpbmRleCgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBGbGFzayBSRVNUZnVsIEFQSSEiCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return &quot;Welcome to the Flask RESTful API!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p>Run the application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uIGFwcC5weQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python app.py</pre></div><div class='content'><p>You should see the message &quot;Welcome to the Flask RESTful API!&quot; when you navigate to <code>http://127.0.0.1:5000/</code>.</p>
+</div><h2>3. Defining a Resource</h2>
+<div class='content'><p>Let's define a simple resource, such as a list of books. We'll start by creating a list to store our books:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ym9va3MgPSBbCiAgICB7J2lkJzogMSwgJ3RpdGxlJzogJzE5ODQnLCAnYXV0aG9yJzogJ0dlb3JnZSBPcndlbGwnfSwKICAgIHsnaWQnOiAyLCAndGl0bGUnOiAnVG8gS2lsbCBhIE1vY2tpbmdiaXJkJywgJ2F1dGhvcic6ICdIYXJwZXIgTGVlJ30KXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>books = [
+    {'id': 1, 'title': '1984', 'author': 'George Orwell'},
+    {'id': 2, 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee'}
+]</pre></div><div class='content'></div><h2>4. Creating RESTful Endpoints</h2>
+<div class='content'><h4>a. GET Endpoint</h4>
+<p>To retrieve the list of books, we will create a GET endpoint:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzJywgbWV0aG9kcz1bJ0dFVCddKQpkZWYgZ2V0X2Jvb2tzKCk6CiAgICByZXR1cm4ganNvbmlmeSh7J2Jvb2tzJzogYm9va3N9KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books', methods=['GET'])
+def get_books():
+    return jsonify({'books': books})</pre></div><div class='content'><h4>b. POST Endpoint</h4>
+<p>To add a new book, we will create a POST endpoint:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGFkZF9ib29rKCk6CiAgICBuZXdfYm9vayA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgYm9va3MuYXBwZW5kKG5ld19ib29rKQogICAgcmV0dXJuIGpzb25pZnkobmV3X2Jvb2spLCAyMDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books', methods=['POST'])
+def add_book():
+    new_book = request.get_json()
+    books.append(new_book)
+    return jsonify(new_book), 201</pre></div><div class='content'><h4>c. PUT Endpoint</h4>
+<p>To update an existing book, we will create a PUT endpoint:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnUFVUJ10pCmRlZiB1cGRhdGVfYm9vayhib29rX2lkKToKICAgIGJvb2sgPSBuZXh0KChib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gPT0gYm9va19pZCksIE5vbmUpCiAgICBpZiBib29rIGlzIE5vbmU6CiAgICAgICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0Jvb2sgbm90IGZvdW5kJ30pLCA0MDQKCiAgICBkYXRhID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICBib29rLnVwZGF0ZShkYXRhKQogICAgcmV0dXJuIGpzb25pZnkoYm9vayk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books/&lt;int:book_id&gt;', methods=['PUT'])
+def update_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is None:
+        return jsonify({'message': 'Book not found'}), 404
+
+    data = request.get_json()
+    book.update(data)
+    return jsonify(book)</pre></div><div class='content'><h4>d. DELETE Endpoint</h4>
+<p>To delete a book, we will create a DELETE endpoint:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnREVMRVRFJ10pCmRlZiBkZWxldGVfYm9vayhib29rX2lkKToKICAgIGdsb2JhbCBib29rcwogICAgYm9va3MgPSBbYm9vayBmb3IgYm9vayBpbiBib29rcyBpZiBib29rWydpZCddICE9IGJvb2tfaWRdCiAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnQm9vayBkZWxldGVkJ30p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books/&lt;int:book_id&gt;', methods=['DELETE'])
+def delete_book(book_id):
+    global books
+    books = [book for book in books if book['id'] != book_id]
+    return jsonify({'message': 'Book deleted'})</pre></div><div class='content'></div><h2>5. Full Code Example</h2>
+<div class='content'><p>Here is the complete <code>app.py</code> file with all the endpoints:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKYm9va3MgPSBbCiAgICB7J2lkJzogMSwgJ3RpdGxlJzogJzE5ODQnLCAnYXV0aG9yJzogJ0dlb3JnZSBPcndlbGwnfSwKICAgIHsnaWQnOiAyLCAndGl0bGUnOiAnVG8gS2lsbCBhIE1vY2tpbmdiaXJkJywgJ2F1dGhvcic6ICdIYXJwZXIgTGVlJ30KXQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBpbmRleCgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBGbGFzayBSRVNUZnVsIEFQSSEiCgpAYXBwLnJvdXRlKCcvYm9va3MnLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBnZXRfYm9va3MoKToKICAgIHJldHVybiBqc29uaWZ5KHsnYm9va3MnOiBib29rc30pCgpAYXBwLnJvdXRlKCcvYm9va3MnLCBtZXRob2RzPVsnUE9TVCddKQpkZWYgYWRkX2Jvb2soKToKICAgIG5ld19ib29rID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICBib29rcy5hcHBlbmQobmV3X2Jvb2spCiAgICByZXR1cm4ganNvbmlmeShuZXdfYm9vayksIDIwMQoKQGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnUFVUJ10pCmRlZiB1cGRhdGVfYm9vayhib29rX2lkKToKICAgIGJvb2sgPSBuZXh0KChib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gPT0gYm9va19pZCksIE5vbmUpCiAgICBpZiBib29rIGlzIE5vbmU6CiAgICAgICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0Jvb2sgbm90IGZvdW5kJ30pLCA0MDQKCiAgICBkYXRhID0gcmVxdWVzdC5nZXRfanNvbigpCiAgICBib29rLnVwZGF0ZShkYXRhKQogICAgcmV0dXJuIGpzb25pZnkoYm9vaykKCkBhcHAucm91dGUoJy9ib29rcy88aW50OmJvb2tfaWQ+JywgbWV0aG9kcz1bJ0RFTEVURSddKQpkZWYgZGVsZXRlX2Jvb2soYm9va19pZCk6CiAgICBnbG9iYWwgYm9va3MKICAgIGJvb2tzID0gW2Jvb2sgZm9yIGJvb2sgaW4gYm9va3MgaWYgYm9va1snaWQnXSAhPSBib29rX2lkXQogICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ0Jvb2sgZGVsZXRlZCd9KQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+books = [
+    {'id': 1, 'title': '1984', 'author': 'George Orwell'},
+    {'id': 2, 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee'}
+]
+
+@app.route('/')
+def index():
+    return &quot;Welcome to the Flask RESTful API!&quot;
+
+@app.route('/books', methods=['GET'])
+def get_books():
+    return jsonify({'books': books})
+
+@app.route('/books', methods=['POST'])
+def add_book():
+    new_book = request.get_json()
+    books.append(new_book)
+    return jsonify(new_book), 201
+
+@app.route('/books/&lt;int:book_id&gt;', methods=['PUT'])
+def update_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is None:
+        return jsonify({'message': 'Book not found'}), 404
+
+    data = request.get_json()
+    book.update(data)
+    return jsonify(book)
+
+@app.route('/books/&lt;int:book_id&gt;', methods=['DELETE'])
+def delete_book(book_id):
+    global books
+    books = [book for book in books if book['id'] != book_id]
+    return jsonify({'message': 'Book deleted'})
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>6. Testing the Endpoints</h2>
+<div class='content'><p>You can use tools like Postman or curl to test the endpoints:</p>
+<ul>
+<li><strong>GET</strong> <code>/books</code>: Retrieve the list of books.</li>
+<li><strong>POST</strong> <code>/books</code>: Add a new book. Example JSON body:
+<pre><code class="language-json">{
+    &quot;id&quot;: 3,
+    &quot;title&quot;: &quot;The Great Gatsby&quot;,
+    &quot;author&quot;: &quot;F. Scott Fitzgerald&quot;
+}
+</code></pre>
+</li>
+<li><strong>PUT</strong> <code>/books/1</code>: Update the book with ID 1. Example JSON body:
+<pre><code class="language-json">{
+    &quot;title&quot;: &quot;Nineteen Eighty-Four&quot;,
+    &quot;author&quot;: &quot;George Orwell&quot;
+}
+</code></pre>
+</li>
+<li><strong>DELETE</strong> <code>/books/2</code>: Delete the book with ID 2.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Missing JSON Body</strong>: Ensure that the request body is in JSON format when using POST and PUT methods.</li>
+<li><strong>Incorrect URL</strong>: Double-check the endpoint URLs and HTTP methods.</li>
+<li><strong>Global State</strong>: Be cautious with global variables in a real-world application. Consider using a database for persistent storage.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to create RESTful endpoints in Flask. You now have the skills to create, read, update, and delete resources using Flask. In the next section, we will explore handling JSON data in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-intro-restful-apis' title="Introduction to RESTful APIs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-handling-json-data' title="Handling JSON Data">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

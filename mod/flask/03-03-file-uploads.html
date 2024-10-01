@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Uploads</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/03-03-file-uploads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/03-03-file-uploads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/03-03-file-uploads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/03-03-file-uploads" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/03-03-file-uploads" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-form-validation-wtforms' title="Form Validation with WTForms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">File Uploads</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-intro-flask-sqlalchemy' title="Introduction to Flask-SQLAlchemy">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to handle file uploads in a Flask application. File uploads are a common feature in web applications, allowing users to upload images, documents, and other files. We will cover the following topics:</p>
+<ol>
+<li>Setting up the file upload form</li>
+<li>Handling file uploads in Flask</li>
+<li>Saving uploaded files</li>
+<li>Validating file uploads</li>
+</ol>
+</div><h1>1. Setting Up the File Upload Form</h1>
+<div class='content'><p>First, we need to create an HTML form that allows users to select and upload files. We will use the <code>enctype=&quot;multipart/form-data&quot;</code> attribute in the form tag to ensure that the file data is sent correctly.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvdXBsb2FkLmh0bWwgLS0+CjwhRE9DVFlQRSBodG1sPgo8aHRtbCBsYW5nPSJlbiI+CjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPHRpdGxlPkZpbGUgVXBsb2FkPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5VcGxvYWQgYSBGaWxlPC9oMT4KICAgIDxmb3JtIGFjdGlvbj0iL3VwbG9hZCIgbWV0aG9kPSJwb3N0IiBlbmN0eXBlPSJtdWx0aXBhcnQvZm9ybS1kYXRhIj4KICAgICAgICA8aW5wdXQgdHlwZT0iZmlsZSIgbmFtZT0iZmlsZSI+CiAgICAgICAgPGlucHV0IHR5cGU9InN1Ym1pdCIgdmFsdWU9IlVwbG9hZCI+CiAgICA8L2Zvcm0+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/upload.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;File Upload&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Upload a File&lt;/h1&gt;
+    &lt;form action=&quot;/upload&quot; method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+        &lt;input type=&quot;file&quot; name=&quot;file&quot;&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Upload&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>2. Handling File Uploads in Flask</h1>
+<div class='content'><p>Next, we need to create a route in our Flask application to handle the file upload. This route will process the form data and save the uploaded file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlZGlyZWN0LCB1cmxfZm9yLCByZW5kZXJfdGVtcGxhdGUKaW1wb3J0IG9zCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgRW5zdXJlIHRoZSB1cGxvYWQgZm9sZGVyIGV4aXN0cwpVUExPQURfRk9MREVSID0gJ3VwbG9hZHMnCmlmIG5vdCBvcy5wYXRoLmV4aXN0cyhVUExPQURfRk9MREVSKToKICAgIG9zLm1ha2VkaXJzKFVQTE9BRF9GT0xERVIpCgphcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10gPSBVUExPQURfRk9MREVSCgpAYXBwLnJvdXRlKCcvJykKZGVmIGluZGV4KCk6CiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCd1cGxvYWQuaHRtbCcpCgpAYXBwLnJvdXRlKCcvdXBsb2FkJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIHVwbG9hZF9maWxlKCk6CiAgICBpZiAnZmlsZScgbm90IGluIHJlcXVlc3QuZmlsZXM6CiAgICAgICAgcmV0dXJuICdObyBmaWxlIHBhcnQnCiAgICBmaWxlID0gcmVxdWVzdC5maWxlc1snZmlsZSddCiAgICBpZiBmaWxlLmZpbGVuYW1lID09ICcnOgogICAgICAgIHJldHVybiAnTm8gc2VsZWN0ZWQgZmlsZScKICAgIGlmIGZpbGU6CiAgICAgICAgZmlsZW5hbWUgPSBmaWxlLmZpbGVuYW1lCiAgICAgICAgZmlsZS5zYXZlKG9zLnBhdGguam9pbihhcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10sIGZpbGVuYW1lKSkKICAgICAgICByZXR1cm4gJ0ZpbGUgc3VjY2Vzc2Z1bGx5IHVwbG9hZGVkJwoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask import Flask, request, redirect, url_for, render_template
+import os
+
+app = Flask(__name__)
+
+# Ensure the upload folder exists
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+@app.route('/')
+def index():
+    return render_template('upload.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part'
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file'
+    if file:
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'File successfully uploaded'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>3. Saving Uploaded Files</h1>
+<div class='content'><p>In the above code, we save the uploaded file to a directory specified by <code>UPLOAD_FOLDER</code>. The <code>file.save()</code> method is used to save the file to the server.</p>
+</div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>request.files['file']</code>: Accesses the uploaded file.</li>
+<li><code>file.filename</code>: Retrieves the name of the uploaded file.</li>
+<li><code>file.save()</code>: Saves the file to the specified directory.</li>
+</ul>
+</div><h1>4. Validating File Uploads</h1>
+<div class='content'><p>It's important to validate the uploaded files to ensure they meet certain criteria, such as file type and size. We can add validation logic to our <code>upload_file</code> route.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkgKGNvbnRpbnVlZCkKZnJvbSB3ZXJremV1Zy51dGlscyBpbXBvcnQgc2VjdXJlX2ZpbGVuYW1lCgpBTExPV0VEX0VYVEVOU0lPTlMgPSB7J3R4dCcsICdwZGYnLCAncG5nJywgJ2pwZycsICdqcGVnJywgJ2dpZid9CgpkZWYgYWxsb3dlZF9maWxlKGZpbGVuYW1lKToKICAgIHJldHVybiAnLicgaW4gZmlsZW5hbWUgYW5kIFwKICAgICAgICAgICBmaWxlbmFtZS5yc3BsaXQoJy4nLCAxKVsxXS5sb3dlcigpIGluIEFMTE9XRURfRVhURU5TSU9OUwoKQGFwcC5yb3V0ZSgnL3VwbG9hZCcsIG1ldGhvZHM9WydQT1NUJ10pCmRlZiB1cGxvYWRfZmlsZSgpOgogICAgaWYgJ2ZpbGUnIG5vdCBpbiByZXF1ZXN0LmZpbGVzOgogICAgICAgIHJldHVybiAnTm8gZmlsZSBwYXJ0JwogICAgZmlsZSA9IHJlcXVlc3QuZmlsZXNbJ2ZpbGUnXQogICAgaWYgZmlsZS5maWxlbmFtZSA9PSAnJzoKICAgICAgICByZXR1cm4gJ05vIHNlbGVjdGVkIGZpbGUnCiAgICBpZiBmaWxlIGFuZCBhbGxvd2VkX2ZpbGUoZmlsZS5maWxlbmFtZSk6CiAgICAgICAgZmlsZW5hbWUgPSBzZWN1cmVfZmlsZW5hbWUoZmlsZS5maWxlbmFtZSkKICAgICAgICBmaWxlLnNhdmUob3MucGF0aC5qb2luKGFwcC5jb25maWdbJ1VQTE9BRF9GT0xERVInXSwgZmlsZW5hbWUpKQogICAgICAgIHJldHVybiAnRmlsZSBzdWNjZXNzZnVsbHkgdXBsb2FkZWQnCiAgICBlbHNlOgogICAgICAgIHJldHVybiAnRmlsZSB0eXBlIG5vdCBhbGxvd2VkJw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py (continued)
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part'
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'File successfully uploaded'
+    else:
+        return 'File type not allowed'</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>allowed_file(filename)</code>: Checks if the file extension is in the allowed list.</li>
+<li><code>secure_filename(filename)</code>: Ensures the filename is secure and safe to use.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise:</h2>
+<div class='content'><ol>
+<li>Create a Flask application that allows users to upload images.</li>
+<li>Validate that only image files (png, jpg, jpeg, gif) are allowed.</li>
+<li>Save the uploaded images to a directory named <code>uploads</code>.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhcHAucHkKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlZGlyZWN0LCB1cmxfZm9yLCByZW5kZXJfdGVtcGxhdGUKaW1wb3J0IG9zCmZyb20gd2Vya3pldWcudXRpbHMgaW1wb3J0IHNlY3VyZV9maWxlbmFtZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpVUExPQURfRk9MREVSID0gJ3VwbG9hZHMnCkFMTE9XRURfRVhURU5TSU9OUyA9IHsncG5nJywgJ2pwZycsICdqcGVnJywgJ2dpZid9CgppZiBub3Qgb3MucGF0aC5leGlzdHMoVVBMT0FEX0ZPTERFUik6CiAgICBvcy5tYWtlZGlycyhVUExPQURfRk9MREVSKQoKYXBwLmNvbmZpZ1snVVBMT0FEX0ZPTERFUiddID0gVVBMT0FEX0ZPTERFUgoKZGVmIGFsbG93ZWRfZmlsZShmaWxlbmFtZSk6CiAgICByZXR1cm4gJy4nIGluIGZpbGVuYW1lIGFuZCBcCiAgICAgICAgICAgZmlsZW5hbWUucnNwbGl0KCcuJywgMSlbMV0ubG93ZXIoKSBpbiBBTExPV0VEX0VYVEVOU0lPTlMKCkBhcHAucm91dGUoJy8nKQpkZWYgaW5kZXgoKToKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3VwbG9hZC5odG1sJykKCkBhcHAucm91dGUoJy91cGxvYWQnLCBtZXRob2RzPVsnUE9TVCddKQpkZWYgdXBsb2FkX2ZpbGUoKToKICAgIGlmICdmaWxlJyBub3QgaW4gcmVxdWVzdC5maWxlczoKICAgICAgICByZXR1cm4gJ05vIGZpbGUgcGFydCcKICAgIGZpbGUgPSByZXF1ZXN0LmZpbGVzWydmaWxlJ10KICAgIGlmIGZpbGUuZmlsZW5hbWUgPT0gJyc6CiAgICAgICAgcmV0dXJuICdObyBzZWxlY3RlZCBmaWxlJwogICAgaWYgZmlsZSBhbmQgYWxsb3dlZF9maWxlKGZpbGUuZmlsZW5hbWUpOgogICAgICAgIGZpbGVuYW1lID0gc2VjdXJlX2ZpbGVuYW1lKGZpbGUuZmlsZW5hbWUpCiAgICAgICAgZmlsZS5zYXZlKG9zLnBhdGguam9pbihhcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10sIGZpbGVuYW1lKSkKICAgICAgICByZXR1cm4gJ0ZpbGUgc3VjY2Vzc2Z1bGx5IHVwbG9hZGVkJwogICAgZWxzZToKICAgICAgICByZXR1cm4gJ0ZpbGUgdHlwZSBub3QgYWxsb3dlZCcKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># app.py
+from flask import Flask, request, redirect, url_for, render_template
+import os
+from werkzeug.utils import secure_filename
+
+app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/')
+def index():
+    return render_template('upload.html')
+
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return 'No file part'
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file'
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'File successfully uploaded'
+    else:
+        return 'File type not allowed'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Common Mistakes:</h2>
+<div class='content'><ul>
+<li>Forgetting to set <code>enctype=&quot;multipart/form-data&quot;</code> in the form.</li>
+<li>Not checking if the file part exists in <code>request.files</code>.</li>
+<li>Not validating the file type before saving.</li>
+</ul>
+</div><h2>Additional Tips:</h2>
+<div class='content'><ul>
+<li>Use <code>secure_filename</code> to avoid security issues with filenames.</li>
+<li>Consider adding more validation, such as file size limits.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to handle file uploads in a Flask application. We covered setting up the file upload form, handling file uploads, saving uploaded files, and validating file uploads. With these skills, you can now allow users to upload files to your Flask applications securely and efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-form-validation-wtforms' title="Form Validation with WTForms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-intro-flask-sqlalchemy' title="Introduction to Flask-SQLAlchemy">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

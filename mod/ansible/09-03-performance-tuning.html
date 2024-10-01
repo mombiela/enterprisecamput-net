@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Tuning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/09-03-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/09-03-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/09-03-performance-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ansible/09-03-performance-tuning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/09-03-performance-tuning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-security-best-practices' title="Security Best Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Performance Tuning</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-testing-ansible-code' title="Testing Ansible Code">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Performance tuning in Ansible is crucial for ensuring that your automation tasks run efficiently and effectively, especially when managing a large number of nodes or complex playbooks. This section will cover various strategies and best practices to optimize the performance of your Ansible playbooks and roles.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Parallelism and Forks</strong></li>
+<li><strong>Fact Caching</strong></li>
+<li><strong>Task Optimization</strong></li>
+<li><strong>Efficient Use of Modules</strong></li>
+<li><strong>Reducing SSH Overhead</strong></li>
+<li><strong>Using Asynchronous Actions</strong></li>
+<li><strong>Profiling and Benchmarking</strong></li>
+</ol>
+</div><h1>1. Parallelism and Forks</h1>
+<div class='content'><p>Ansible can run tasks in parallel across multiple hosts. By default, Ansible uses a fork value of 5, meaning it will run tasks on 5 hosts simultaneously. You can increase this number to improve performance.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCmZvcmtzID0gMjA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+forks = 20</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>Increasing the number of forks allows Ansible to manage more hosts concurrently, reducing the overall execution time.</li>
+</ul>
+</div><h1>2. Fact Caching</h1>
+<div class='content'><p>Gathering facts can be time-consuming, especially in large environments. Fact caching allows Ansible to store facts and reuse them, reducing the need to gather facts repeatedly.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCmdhdGhlcmluZyA9IHNtYXJ0CmZhY3RfY2FjaGluZyA9IGpzb25maWxlCmZhY3RfY2FjaGluZ19jb25uZWN0aW9uID0gL3RtcC9hbnNpYmxlX2ZhY3RzCmZhY3RfY2FjaGluZ190aW1lb3V0ID0gODY0MDA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+gathering = smart
+fact_caching = jsonfile
+fact_caching_connection = /tmp/ansible_facts
+fact_caching_timeout = 86400</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>gathering = smart</code>: Gathers facts only when necessary.</li>
+<li><code>fact_caching = jsonfile</code>: Uses JSON files for caching.</li>
+<li><code>fact_caching_connection</code>: Directory where facts are stored.</li>
+<li><code>fact_caching_timeout</code>: Time in seconds before cached facts expire.</li>
+</ul>
+</div><h1>3. Task Optimization</h1>
+<div class='content'><p>Optimizing individual tasks can significantly improve performance. This includes minimizing the number of tasks, using efficient modules, and avoiding unnecessary loops.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBwbGF5Ym9vay55bWwKLSBuYW1lOiBJbnN0YWxsIHBhY2thZ2VzCiAgYXB0OgogICAgbmFtZTogInt7IGl0ZW0gfX0iCiAgICBzdGF0ZTogcHJlc2VudAogIHdpdGhfaXRlbXM6CiAgICAtIGdpdAogICAgLSBjdXJsCiAgICAtIHZpbQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># playbook.yml
+- name: Install packages
+  apt:
+    name: &quot;{{ item }}&quot;
+    state: present
+  with_items:
+    - git
+    - curl
+    - vim</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>Using <code>with_items</code> to install multiple packages in a single task reduces the overhead of multiple task executions.</li>
+</ul>
+</div><h1>4. Efficient Use of Modules</h1>
+<div class='content'><p>Some modules are more efficient than others. For example, using the <code>command</code> module instead of <code>shell</code> can be faster and more secure.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbmVmZmljaWVudAotIG5hbWU6IENyZWF0ZSBkaXJlY3RvcnkKICBzaGVsbDogbWtkaXIgLXAgL3BhdGgvdG8vZGlyZWN0b3J5CgojIEVmZmljaWVudAotIG5hbWU6IENyZWF0ZSBkaXJlY3RvcnkKICBmaWxlOgogICAgcGF0aDogL3BhdGgvdG8vZGlyZWN0b3J5CiAgICBzdGF0ZTogZGlyZWN0b3J5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Inefficient
+- name: Create directory
+  shell: mkdir -p /path/to/directory
+
+# Efficient
+- name: Create directory
+  file:
+    path: /path/to/directory
+    state: directory</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>file</code> module is more efficient and safer for creating directories compared to using the <code>shell</code> module.</li>
+</ul>
+</div><h1>5. Reducing SSH Overhead</h1>
+<div class='content'><p>SSH connections can add significant overhead. Using persistent connections can help reduce this.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbc3NoX2Nvbm5lY3Rpb25dCnBpcGVsaW5pbmcgPSBUcnVlCmNvbnRyb2xfcGF0aCA9ICUoZGlyZWN0b3J5KXMvJSVoLSUlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[ssh_connection]
+pipelining = True
+control_path = %(directory)s/%%h-%%r</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>pipelining = True</code>: Reduces the number of SSH operations required to execute a module.</li>
+<li><code>control_path</code>: Specifies the path for SSH control sockets, enabling persistent connections.</li>
+</ul>
+</div><h1>6. Using Asynchronous Actions</h1>
+<div class='content'><p>For long-running tasks, using asynchronous actions can free up Ansible to perform other tasks while waiting for the long-running task to complete.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBwbGF5Ym9vay55bWwKLSBuYW1lOiBMb25nIHJ1bm5pbmcgdGFzawogIGNvbW1hbmQ6IC9wYXRoL3RvL2xvbmdfcnVubmluZ19zY3JpcHQuc2gKICBhc3luYzogMzYwMAogIHBvbGw6IDAKCi0gbmFtZTogQ2hlY2sgb24gbG9uZyBydW5uaW5nIHRhc2sKICBhc3luY19zdGF0dXM6CiAgICBqaWQ6ICJ7eyBsb25nX3J1bm5pbmdfdGFzay5hbnNpYmxlX2pvYl9pZCB9fSIKICByZWdpc3Rlcjogam9iX3Jlc3VsdAogIHVudGlsOiBqb2JfcmVzdWx0LmZpbmlzaGVkCiAgcmV0cmllczogMzAKICBkZWxheTogNjA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># playbook.yml
+- name: Long running task
+  command: /path/to/long_running_script.sh
+  async: 3600
+  poll: 0
+
+- name: Check on long running task
+  async_status:
+    jid: &quot;{{ long_running_task.ansible_job_id }}&quot;
+  register: job_result
+  until: job_result.finished
+  retries: 30
+  delay: 60</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>async</code>: Specifies the maximum runtime for the task.</li>
+<li><code>poll</code>: Set to 0 to run the task in the background.</li>
+<li><code>async_status</code>: Checks the status of the asynchronous task.</li>
+</ul>
+</div><h1>7. Profiling and Benchmarking</h1>
+<div class='content'><p>Profiling and benchmarking your playbooks can help identify bottlenecks and areas for improvement.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YW5zaWJsZS1wbGF5Ym9vayBwbGF5Ym9vay55bWwgLS1wcm9maWxl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ansible-playbook playbook.yml --profile</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>--profile</code> option provides detailed timing information for each task, helping you identify slow tasks.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>Create an Ansible playbook that installs multiple packages on multiple hosts.</li>
+<li>Optimize the playbook for performance using the techniques discussed above.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBvcHRpbWl6ZWRfcGxheWJvb2sueW1sCi0gbmFtZTogSW5zdGFsbCBwYWNrYWdlcyBvbiBtdWx0aXBsZSBob3N0cwogIGhvc3RzOiBhbGwKICBnYXRoZXJfZmFjdHM6IG5vCiAgdGFza3M6CiAgICAtIG5hbWU6IEluc3RhbGwgcGFja2FnZXMKICAgICAgYXB0OgogICAgICAgIG5hbWU6ICJ7eyBpdGVtIH19IgogICAgICAgIHN0YXRlOiBwcmVzZW50CiAgICAgIHdpdGhfaXRlbXM6CiAgICAgICAgLSBnaXQKICAgICAgICAtIGN1cmwKICAgICAgICAtIHZpbQogICAgICBhc3luYzogMzYwMAogICAgICBwb2xsOiAwCgogICAgLSBuYW1lOiBDaGVjayBvbiBwYWNrYWdlIGluc3RhbGxhdGlvbgogICAgICBhc3luY19zdGF0dXM6CiAgICAgICAgamlkOiAie3sgaW5zdGFsbF9wYWNrYWdlcy5hbnNpYmxlX2pvYl9pZCB9fSIKICAgICAgcmVnaXN0ZXI6IGpvYl9yZXN1bHQKICAgICAgdW50aWw6IGpvYl9yZXN1bHQuZmluaXNoZWQKICAgICAgcmV0cmllczogMzAKICAgICAgZGVsYXk6IDYw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># optimized_playbook.yml
+- name: Install packages on multiple hosts
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Install packages
+      apt:
+        name: &quot;{{ item }}&quot;
+        state: present
+      with_items:
+        - git
+        - curl
+        - vim
+      async: 3600
+      poll: 0
+
+    - name: Check on package installation
+      async_status:
+        jid: &quot;{{ install_packages.ansible_job_id }}&quot;
+      register: job_result
+      until: job_result.finished
+      retries: 30
+      delay: 60</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The playbook installs multiple packages using the <code>apt</code> module.</li>
+<li>Asynchronous actions are used to handle long-running tasks efficiently.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Performance tuning in Ansible involves a combination of strategies, including parallelism, fact caching, task optimization, efficient module usage, reducing SSH overhead, and using asynchronous actions. By applying these techniques, you can significantly improve the efficiency and speed of your Ansible automation tasks.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-security-best-practices' title="Security Best Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-testing-ansible-code' title="Testing Ansible Code">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

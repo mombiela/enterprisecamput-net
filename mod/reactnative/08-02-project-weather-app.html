@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2: Weather App</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/08-02-project-weather-app" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/08-02-project-weather-app" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/08-02-project-weather-app" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/08-02-project-weather-app" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/08-02-project-weather-app" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-project-todo-list-app' title="Project 1: To-Do List App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Project 2: Weather App</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-project-ecommerce-app' title="Project 3: E-commerce App">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this project, we will build a Weather App using React Native. This app will fetch weather data from an API and display it to the user. This project will help you understand how to integrate APIs, manage state, and handle user input in a real-world application.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Fetch data from a weather API.</li>
+<li>Display weather information to the user.</li>
+<li>Handle user input to search for different cities.</li>
+<li>Manage state using React hooks.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting this project, make sure you are familiar with the following concepts:</p>
+<ul>
+<li>Basic React Native components and styling.</li>
+<li>State and lifecycle methods.</li>
+<li>Fetching data from APIs.</li>
+<li>Handling user input.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>Step 1: Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new React Native project:</strong></p>
+<pre><code class="language-bash">npx react-native init WeatherApp
+cd WeatherApp
+</code></pre>
+</li>
+<li>
+<p><strong>Install necessary dependencies:</strong></p>
+<pre><code class="language-bash">npm install axios
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Fetching Weather Data</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a new file <code>WeatherService.js</code> to handle API requests:</strong></p>
+<pre><code class="language-javascript">// WeatherService.js
+import axios from 'axios';
+
+const API_KEY = 'your_api_key_here';
+const BASE_URL = 'http://api.openweathermap.org/data/2.5/weather';
+
+export const fetchWeather = async (city) =&gt; {
+  try {
+    const response = await axios.get(`${BASE_URL}?q=${city}&amp;appid=${API_KEY}&amp;units=metric`);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Replace <code>your_api_key_here</code> with your actual API key from OpenWeatherMap.</strong></p>
+</li>
+</ol>
+</div><h2>Step 3: Creating the Main Component</h2>
+<div class='content'><ol>
+<li><strong>Create a new file <code>WeatherApp.js</code>:</strong>
+<pre><code class="language-javascript">// WeatherApp.js
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { fetchWeather } from './WeatherService';
+
+const WeatherApp = () =&gt; {
+  const [city, setCity] = useState('');
+  const [weather, setWeather] = useState(null);
+  const [error, setError] = useState('');
+
+  const handleFetchWeather = async () =&gt; {
+    try {
+      const data = await fetchWeather(city);
+      setWeather(data);
+      setError('');
+    } catch (err) {
+      setError('City not found');
+      setWeather(null);
+    }
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text style={styles.title}&gt;Weather App&lt;/Text&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Enter city&quot;
+        value={city}
+        onChangeText={setCity}
+      /&gt;
+      &lt;Button title=&quot;Get Weather&quot; onPress={handleFetchWeather} /&gt;
+      {error ? &lt;Text style={styles.error}&gt;{error}&lt;/Text&gt; : null}
+      {weather &amp;&amp; (
+        &lt;View style={styles.weatherContainer}&gt;
+          &lt;Text style={styles.weatherText}&gt;Temperature: {weather.main.temp}°C&lt;/Text&gt;
+          &lt;Text style={styles.weatherText}&gt;Humidity: {weather.main.humidity}%&lt;/Text&gt;
+          &lt;Text style={styles.weatherText}&gt;Condition: {weather.weather[0].description}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 16,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 16,
+    paddingHorizontal: 8,
+    width: '80%',
+  },
+  weatherContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  weatherText: {
+    fontSize: 18,
+  },
+  error: {
+    color: 'red',
+    marginTop: 16,
+  },
+});
+
+export default WeatherApp;
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 4: Integrating the Main Component</h2>
+<div class='content'><ol>
+<li><strong>Update <code>App.js</code> to use the <code>WeatherApp</code> component:</strong>
+<pre><code class="language-javascript">// App.js
+import React from 'react';
+import WeatherApp from './WeatherApp';
+
+const App = () =&gt; {
+  return &lt;WeatherApp /&gt;;
+};
+
+export default App;
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 5: Running the App</h2>
+<div class='content'><ol>
+<li><strong>Run the app on your emulator or device:</strong>
+<pre><code class="language-bash">npx react-native run-android
+# or
+npx react-native run-ios
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercises</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Exercise 1: Add More Weather Details</strong></p>
+<ul>
+<li>Extend the app to display additional weather details such as wind speed and pressure.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exercise 2: Improve Error Handling</strong></p>
+<ul>
+<li>Enhance the error handling to provide more specific error messages based on different error scenarios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exercise 3: Add Loading Indicator</strong></p>
+<ul>
+<li>Implement a loading indicator to show while the weather data is being fetched.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Solution to Exercise 1:</strong></p>
+<pre><code class="language-javascript">// Add the following lines in the weatherContainer View in WeatherApp.js
+&lt;Text style={styles.weatherText}&gt;Wind Speed: {weather.wind.speed} m/s&lt;/Text&gt;
+&lt;Text style={styles.weatherText}&gt;Pressure: {weather.main.pressure} hPa&lt;/Text&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Solution to Exercise 2:</strong></p>
+<pre><code class="language-javascript">// Update the handleFetchWeather function in WeatherApp.js
+const handleFetchWeather = async () =&gt; {
+  try {
+    const data = await fetchWeather(city);
+    setWeather(data);
+    setError('');
+  } catch (err) {
+    if (err.response &amp;&amp; err.response.status === 404) {
+      setError('City not found');
+    } else {
+      setError('An error occurred. Please try again.');
+    }
+    setWeather(null);
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Solution to Exercise 3:</strong></p>
+<pre><code class="language-javascript">// Add a loading state in WeatherApp.js
+const [loading, setLoading] = useState(false);
+
+// Update the handleFetchWeather function
+const handleFetchWeather = async () =&gt; {
+  setLoading(true);
+  try {
+    const data = await fetchWeather(city);
+    setWeather(data);
+    setError('');
+  } catch (err) {
+    if (err.response &amp;&amp; err.response.status === 404) {
+      setError('City not found');
+    } else {
+      setError('An error occurred. Please try again.');
+    }
+    setWeather(null);
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Add a loading indicator in the render method
+{loading &amp;&amp; &lt;Text&gt;Loading...&lt;/Text&gt;}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this project, you learned how to build a Weather App using React Native. You integrated a weather API, managed state, and handled user input. This project provided a practical example of how to apply the concepts learned in the previous modules. Continue to experiment and enhance the app to solidify your understanding and skills in React Native development.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-project-todo-list-app' title="Project 1: To-Do List App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-project-ecommerce-app' title="Project 3: E-commerce App">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

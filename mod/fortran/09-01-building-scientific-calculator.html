@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building a Scientific Calculator</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/09-01-building-scientific-calculator" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/09-01-building-scientific-calculator" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/09-01-building-scientific-calculator" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fortran/09-01-building-scientific-calculator" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/09-01-building-scientific-calculator" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-fortran-standards-portability' title="Fortran Standards and Portability">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Building a Scientific Calculator</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-numerical-methods-fortran' title="Numerical Methods in Fortran">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will guide you through the process of building a scientific calculator using Fortran. This project will help you apply various concepts learned throughout the course, including control structures, functions, and file handling.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the structure of a scientific calculator program.</li>
+<li>Implement basic arithmetic operations.</li>
+<li>Implement advanced mathematical functions.</li>
+<li>Handle user input and output.</li>
+<li>Organize the code using subroutines and functions.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Program Structure</h2>
+<div class='content'><p>First, let's outline the structure of our scientific calculator program. The main components will include:</p>
+<ul>
+<li>A main program to handle user interaction.</li>
+<li>Subroutines for basic arithmetic operations (addition, subtraction, multiplication, division).</li>
+<li>Functions for advanced mathematical operations (e.g., sine, cosine, logarithm).</li>
+</ul>
+</div><h2>2. Setting Up the Main Program</h2>
+<div class='content'><p>Create a new Fortran file named <code>calculator.f90</code> and start by setting up the main program structure.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBzY2llbnRpZmljX2NhbGN1bGF0b3IKICAgIGltcGxpY2l0IG5vbmUKICAgIGludGVnZXIgOjogY2hvaWNlCiAgICByZWFsIDo6IG51bTEsIG51bTIsIHJlc3VsdAoKICAgIGRvCiAgICAgICAgY2FsbCBkaXNwbGF5X21lbnUoKQogICAgICAgIHJlYWQoKiwqKSBjaG9pY2UKCiAgICAgICAgaWYgKGNob2ljZSA9PSAwKSBleGl0CgogICAgICAgIGNhbGwgZ2V0X2lucHV0KG51bTEsIG51bTIpCgogICAgICAgIHNlbGVjdCBjYXNlIChjaG9pY2UpCiAgICAgICAgICAgIGNhc2UgKDEpCiAgICAgICAgICAgICAgICByZXN1bHQgPSBhZGQobnVtMSwgbnVtMikKICAgICAgICAgICAgY2FzZSAoMikKICAgICAgICAgICAgICAgIHJlc3VsdCA9IHN1YnRyYWN0KG51bTEsIG51bTIpCiAgICAgICAgICAgIGNhc2UgKDMpCiAgICAgICAgICAgICAgICByZXN1bHQgPSBtdWx0aXBseShudW0xLCBudW0yKQogICAgICAgICAgICBjYXNlICg0KQogICAgICAgICAgICAgICAgcmVzdWx0ID0gZGl2aWRlKG51bTEsIG51bTIpCiAgICAgICAgICAgIGNhc2UgKDUpCiAgICAgICAgICAgICAgICByZXN1bHQgPSBzaW5lKG51bTEpCiAgICAgICAgICAgIGNhc2UgKDYpCiAgICAgICAgICAgICAgICByZXN1bHQgPSBjb3NpbmUobnVtMSkKICAgICAgICAgICAgY2FzZSAoNykKICAgICAgICAgICAgICAgIHJlc3VsdCA9IGxvZ2FyaXRobShudW0xKQogICAgICAgICAgICBjYXNlIGRlZmF1bHQKICAgICAgICAgICAgICAgIHByaW50ICosICJJbnZhbGlkIGNob2ljZS4gUGxlYXNlIHRyeSBhZ2Fpbi4iCiAgICAgICAgICAgICAgICBjeWNsZQogICAgICAgIGVuZCBzZWxlY3QKCiAgICAgICAgcHJpbnQgKiwgIlJlc3VsdDogIiwgcmVzdWx0CiAgICBlbmQgZG8KCiAgICBwcmludCAqLCAiRXhpdGluZyB0aGUgY2FsY3VsYXRvci4gR29vZGJ5ZSEiCmVuZCBwcm9ncmFtIHNjaWVudGlmaWNfY2FsY3VsYXRvcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program scientific_calculator
+    implicit none
+    integer :: choice
+    real :: num1, num2, result
+
+    do
+        call display_menu()
+        read(*,*) choice
+
+        if (choice == 0) exit
+
+        call get_input(num1, num2)
+
+        select case (choice)
+            case (1)
+                result = add(num1, num2)
+            case (2)
+                result = subtract(num1, num2)
+            case (3)
+                result = multiply(num1, num2)
+            case (4)
+                result = divide(num1, num2)
+            case (5)
+                result = sine(num1)
+            case (6)
+                result = cosine(num1)
+            case (7)
+                result = logarithm(num1)
+            case default
+                print *, &quot;Invalid choice. Please try again.&quot;
+                cycle
+        end select
+
+        print *, &quot;Result: &quot;, result
+    end do
+
+    print *, &quot;Exiting the calculator. Goodbye!&quot;
+end program scientific_calculator</pre></div><div class='content'></div><h2>3. Display Menu Subroutine</h2>
+<div class='content'><p>Create a subroutine to display the menu options to the user.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3Vicm91dGluZSBkaXNwbGF5X21lbnUoKQogICAgcHJpbnQgKiwgIlNjaWVudGlmaWMgQ2FsY3VsYXRvciIKICAgIHByaW50ICosICIxLiBBZGRpdGlvbiIKICAgIHByaW50ICosICIyLiBTdWJ0cmFjdGlvbiIKICAgIHByaW50ICosICIzLiBNdWx0aXBsaWNhdGlvbiIKICAgIHByaW50ICosICI0LiBEaXZpc2lvbiIKICAgIHByaW50ICosICI1LiBTaW5lIgogICAgcHJpbnQgKiwgIjYuIENvc2luZSIKICAgIHByaW50ICosICI3LiBMb2dhcml0aG0iCiAgICBwcmludCAqLCAiMC4gRXhpdCIKICAgIHByaW50ICosICJFbnRlciB5b3VyIGNob2ljZTogIgplbmQgc3Vicm91dGluZSBkaXNwbGF5X21lbnU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>subroutine display_menu()
+    print *, &quot;Scientific Calculator&quot;
+    print *, &quot;1. Addition&quot;
+    print *, &quot;2. Subtraction&quot;
+    print *, &quot;3. Multiplication&quot;
+    print *, &quot;4. Division&quot;
+    print *, &quot;5. Sine&quot;
+    print *, &quot;6. Cosine&quot;
+    print *, &quot;7. Logarithm&quot;
+    print *, &quot;0. Exit&quot;
+    print *, &quot;Enter your choice: &quot;
+end subroutine display_menu</pre></div><div class='content'></div><h2>4. Get Input Subroutine</h2>
+<div class='content'><p>Create a subroutine to get input from the user. For simplicity, we will assume that advanced functions like sine, cosine, and logarithm only require one input.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3Vicm91dGluZSBnZXRfaW5wdXQobnVtMSwgbnVtMikKICAgIHJlYWwsIGludGVudChvdXQpIDo6IG51bTEsIG51bTIKICAgIHByaW50ICosICJFbnRlciB0aGUgZmlyc3QgbnVtYmVyOiAiCiAgICByZWFkKCosKikgbnVtMQogICAgcHJpbnQgKiwgIkVudGVyIHRoZSBzZWNvbmQgbnVtYmVyIChpZiBhcHBsaWNhYmxlLCBvdGhlcndpc2UgZW50ZXIgMCk6ICIKICAgIHJlYWQoKiwqKSBudW0yCmVuZCBzdWJyb3V0aW5lIGdldF9pbnB1dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>subroutine get_input(num1, num2)
+    real, intent(out) :: num1, num2
+    print *, &quot;Enter the first number: &quot;
+    read(*,*) num1
+    print *, &quot;Enter the second number (if applicable, otherwise enter 0): &quot;
+    read(*,*) num2
+end subroutine get_input</pre></div><div class='content'></div><h2>5. Basic Arithmetic Operations</h2>
+<div class='content'><p>Implement subroutines for basic arithmetic operations.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVhbCBmdW5jdGlvbiBhZGQoYSwgYikKICAgIHJlYWwsIGludGVudChpbikgOjogYSwgYgogICAgYWRkID0gYSArIGIKZW5kIGZ1bmN0aW9uIGFkZAoKcmVhbCBmdW5jdGlvbiBzdWJ0cmFjdChhLCBiKQogICAgcmVhbCwgaW50ZW50KGluKSA6OiBhLCBiCiAgICBzdWJ0cmFjdCA9IGEgLSBiCmVuZCBmdW5jdGlvbiBzdWJ0cmFjdAoKcmVhbCBmdW5jdGlvbiBtdWx0aXBseShhLCBiKQogICAgcmVhbCwgaW50ZW50KGluKSA6OiBhLCBiCiAgICBtdWx0aXBseSA9IGEgKiBiCmVuZCBmdW5jdGlvbiBtdWx0aXBseQoKcmVhbCBmdW5jdGlvbiBkaXZpZGUoYSwgYikKICAgIHJlYWwsIGludGVudChpbikgOjogYSwgYgogICAgaWYgKGIgPT0gMC4wKSB0aGVuCiAgICAgICAgcHJpbnQgKiwgIkVycm9yOiBEaXZpc2lvbiBieSB6ZXJvIgogICAgICAgIGRpdmlkZSA9IDAuMAogICAgZWxzZQogICAgICAgIGRpdmlkZSA9IGEgLyBiCiAgICBlbmQgaWYKZW5kIGZ1bmN0aW9uIGRpdmlkZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>real function add(a, b)
+    real, intent(in) :: a, b
+    add = a + b
+end function add
+
+real function subtract(a, b)
+    real, intent(in) :: a, b
+    subtract = a - b
+end function subtract
+
+real function multiply(a, b)
+    real, intent(in) :: a, b
+    multiply = a * b
+end function multiply
+
+real function divide(a, b)
+    real, intent(in) :: a, b
+    if (b == 0.0) then
+        print *, &quot;Error: Division by zero&quot;
+        divide = 0.0
+    else
+        divide = a / b
+    end if
+end function divide</pre></div><div class='content'></div><h2>6. Advanced Mathematical Functions</h2>
+<div class='content'><p>Implement functions for advanced mathematical operations.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVhbCBmdW5jdGlvbiBzaW5lKHgpCiAgICByZWFsLCBpbnRlbnQoaW4pIDo6IHgKICAgIHNpbmUgPSBzaW4oeCkKZW5kIGZ1bmN0aW9uIHNpbmUKCnJlYWwgZnVuY3Rpb24gY29zaW5lKHgpCiAgICByZWFsLCBpbnRlbnQoaW4pIDo6IHgKICAgIGNvc2luZSA9IGNvcyh4KQplbmQgZnVuY3Rpb24gY29zaW5lCgpyZWFsIGZ1bmN0aW9uIGxvZ2FyaXRobSh4KQogICAgcmVhbCwgaW50ZW50KGluKSA6OiB4CiAgICBpZiAoeCA8PSAwLjApIHRoZW4KICAgICAgICBwcmludCAqLCAiRXJyb3I6IExvZ2FyaXRobSBvZiBub24tcG9zaXRpdmUgbnVtYmVyIgogICAgICAgIGxvZ2FyaXRobSA9IDAuMAogICAgZWxzZQogICAgICAgIGxvZ2FyaXRobSA9IGxvZyh4KQogICAgZW5kIGlmCmVuZCBmdW5jdGlvbiBsb2dhcml0aG0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>real function sine(x)
+    real, intent(in) :: x
+    sine = sin(x)
+end function sine
+
+real function cosine(x)
+    real, intent(in) :: x
+    cosine = cos(x)
+end function cosine
+
+real function logarithm(x)
+    real, intent(in) :: x
+    if (x &lt;= 0.0) then
+        print *, &quot;Error: Logarithm of non-positive number&quot;
+        logarithm = 0.0
+    else
+        logarithm = log(x)
+    end if
+end function logarithm</pre></div><div class='content'></div><h2>7. Compiling and Running the Program</h2>
+<div class='content'><p>To compile and run the program, use the following commands in your terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2ZvcnRyYW4gLW8gY2FsY3VsYXRvciBjYWxjdWxhdG9yLmY5MAouL2NhbGN1bGF0b3I="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gfortran -o calculator calculator.f90
+./calculator</pre></div><div class='content'></div><h2>8. Practical Exercises</h2>
+<div class='content'><h4>Exercise 1: Add More Functions</h4>
+<p>Add more mathematical functions to the calculator, such as:</p>
+<ul>
+<li>Tangent</li>
+<li>Exponential</li>
+<li>Square root</li>
+</ul>
+<h4>Exercise 2: Error Handling</h4>
+<p>Improve the error handling in the program. For example, handle cases where the user inputs non-numeric values.</p>
+<h4>Exercise 3: Modularize the Code</h4>
+<p>Refactor the code to use modules for better organization and reusability.</p>
+</div><h2>9. Summary</h2>
+<div class='content'><p>In this section, we built a simple scientific calculator using Fortran. We covered:</p>
+<ul>
+<li>Setting up the main program structure.</li>
+<li>Implementing basic arithmetic operations.</li>
+<li>Implementing advanced mathematical functions.</li>
+<li>Handling user input and output.</li>
+</ul>
+<p>This project helped reinforce various Fortran concepts and provided a practical application to solidify your understanding. In the next section, we will explore numerical methods in Fortran.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-fortran-standards-portability' title="Fortran Standards and Portability">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-numerical-methods-fortran' title="Numerical Methods in Fortran">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

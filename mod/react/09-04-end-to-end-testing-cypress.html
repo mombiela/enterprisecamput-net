@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End-to-End Testing with Cypress</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/09-04-end-to-end-testing-cypress" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/09-04-end-to-end-testing-cypress" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/09-04-end-to-end-testing-cypress" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/react/09-04-end-to-end-testing-cypress" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/react/09-04-end-to-end-testing-cypress" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-testing-components-react-testing-library' title="Testing Components with React Testing Library">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">End-to-End Testing with Cypress</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-ssr-nextjs' title="Server-Side Rendering (SSR) with Next.js">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>End-to-end (E2E) testing is a methodology used to test whether the flow of an application is performing as designed from start to finish. In this section, we will explore how to use Cypress, a powerful E2E testing framework, to test React applications.</p>
+</div><h1>What is Cypress?</h1>
+<div class='content'><p>Cypress is a JavaScript-based end-to-end testing framework that is designed to make testing web applications easier and more reliable. It provides a rich set of features, including:</p>
+<ul>
+<li><strong>Automatic waiting</strong>: Cypress automatically waits for commands and assertions before moving on.</li>
+<li><strong>Real-time reloads</strong>: Cypress automatically reloads the tests when changes are made.</li>
+<li><strong>Time travel</strong>: Cypress takes snapshots as your tests run, allowing you to see what happened at each step.</li>
+<li><strong>Debugging</strong>: Cypress provides detailed error messages and stack traces to help you debug your tests.</li>
+</ul>
+</div><h1>Setting Up Cypress</h1>
+<div class='content'><p>To get started with Cypress, you need to install it in your project. Follow these steps:</p>
+<ol>
+<li>
+<p><strong>Install Cypress</strong>:</p>
+<pre><code class="language-bash">npm install cypress --save-dev
+</code></pre>
+</li>
+<li>
+<p><strong>Open Cypress</strong>:</p>
+<pre><code class="language-bash">npx cypress open
+</code></pre>
+<p>This command will open the Cypress Test Runner, which provides a graphical interface to run and manage your tests.</p>
+</li>
+<li>
+<p><strong>Project Structure</strong>:
+Cypress will create a <code>cypress</code> folder in your project directory with the following structure:</p>
+<pre><code>cypress/
+  ├── fixtures/
+  ├── integration/
+  ├── plugins/
+  └── support/
+</code></pre>
+</li>
+</ol>
+</div><h1>Writing Your First Cypress Test</h1>
+<div class='content'><p>Let's write a simple test to check if our React application loads correctly.</p>
+<ol>
+<li>
+<p><strong>Create a Test File</strong>:
+Create a new file in the <code>cypress/integration</code> folder, e.g., <code>app_spec.js</code>.</p>
+</li>
+<li>
+<p><strong>Write the Test</strong>:</p>
+<pre><code class="language-javascript">describe('My First Test', () =&gt; {
+  it('Visits the app root url', () =&gt; {
+    cy.visit('http://localhost:3000');
+    cy.contains('Welcome to React');
+  });
+});
+</code></pre>
+<ul>
+<li><code>describe</code>: Groups related tests.</li>
+<li><code>it</code>: Defines a single test case.</li>
+<li><code>cy.visit</code>: Navigates to the specified URL.</li>
+<li><code>cy.contains</code>: Asserts that the specified text is present on the page.</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Test</strong>:
+Open the Cypress Test Runner and click on the test file to run it. You should see the test pass if the text &quot;Welcome to React&quot; is present on the page.</p>
+</li>
+</ol>
+</div><h1>Advanced Cypress Features</h1>
+<div class='content'></div><h2>Interacting with Elements</h2>
+<div class='content'><p>Cypress provides various commands to interact with elements on the page, such as clicking buttons, typing into input fields, and selecting options from dropdowns.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3kuZ2V0KCdpbnB1dFtuYW1lPSJ1c2VybmFtZSJdJykudHlwZSgnbXl1c2VybmFtZScpOwpjeS5nZXQoJ2lucHV0W25hbWU9InBhc3N3b3JkIl0nKS50eXBlKCdteXBhc3N3b3JkJyk7CmN5LmdldCgnYnV0dG9uW3R5cGU9InN1Ym1pdCJdJykuY2xpY2soKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cy.get('input[name=&quot;username&quot;]').type('myusername');
+cy.get('input[name=&quot;password&quot;]').type('mypassword');
+cy.get('button[type=&quot;submit&quot;]').click();</pre></div><div class='content'></div><h2>Assertions</h2>
+<div class='content'><p>Cypress includes a wide range of assertions to verify the state of your application.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3kuZ2V0KCdoMScpLnNob3VsZCgnaGF2ZS50ZXh0JywgJ0Rhc2hib2FyZCcpOwpjeS51cmwoKS5zaG91bGQoJ2luY2x1ZGUnLCAnL2Rhc2hib2FyZCcpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cy.get('h1').should('have.text', 'Dashboard');
+cy.url().should('include', '/dashboard');</pre></div><div class='content'></div><h2>Stubbing and Mocking</h2>
+<div class='content'><p>Cypress allows you to stub and mock network requests to test how your application handles different responses.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3kuc2VydmVyKCk7CmN5LnJvdXRlKCdHRVQnLCAnL2FwaS90b2RvcycsICdmaXh0dXJlOnRvZG9zLmpzb24nKS5hcygnZ2V0VG9kb3MnKTsKY3kudmlzaXQoJy90b2RvcycpOwpjeS53YWl0KCdAZ2V0VG9kb3MnKTsKY3kuZ2V0KCcudG9kby1pdGVtJykuc2hvdWxkKCdoYXZlLmxlbmd0aCcsIDMpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cy.server();
+cy.route('GET', '/api/todos', 'fixture:todos.json').as('getTodos');
+cy.visit('/todos');
+cy.wait('@getTodos');
+cy.get('.todo-item').should('have.length', 3);</pre></div><div class='content'></div><h2>Custom Commands</h2>
+<div class='content'><p>You can create custom commands to encapsulate repetitive actions and make your tests more readable.</p>
+<p>Example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q3lwcmVzcy5Db21tYW5kcy5hZGQoJ2xvZ2luJywgKHVzZXJuYW1lLCBwYXNzd29yZCkgPT4gewogIGN5LmdldCgnaW5wdXRbbmFtZT0idXNlcm5hbWUiXScpLnR5cGUodXNlcm5hbWUpOwogIGN5LmdldCgnaW5wdXRbbmFtZT0icGFzc3dvcmQiXScpLnR5cGUocGFzc3dvcmQpOwogIGN5LmdldCgnYnV0dG9uW3R5cGU9InN1Ym1pdCJdJykuY2xpY2soKTsKfSk7CgovLyBVc2FnZQpjeS5sb2dpbignbXl1c2VybmFtZScsICdteXBhc3N3b3JkJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Cypress.Commands.add('login', (username, password) =&gt; {
+  cy.get('input[name=&quot;username&quot;]').type(username);
+  cy.get('input[name=&quot;password&quot;]').type(password);
+  cy.get('button[type=&quot;submit&quot;]').click();
+});
+
+// Usage
+cy.login('myusername', 'mypassword');</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Testing a Login Flow</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Setup</strong>:
+Ensure your React application has a login page with username and password fields and a submit button.</p>
+</li>
+<li>
+<p><strong>Write the Test</strong>:
+Create a new file <code>login_spec.js</code> in the <code>cypress/integration</code> folder and write the following test:</p>
+<pre><code class="language-javascript">describe('Login Flow', () =&gt; {
+  it('Logs in with valid credentials', () =&gt; {
+    cy.visit('http://localhost:3000/login');
+    cy.get('input[name=&quot;username&quot;]').type('testuser');
+    cy.get('input[name=&quot;password&quot;]').type('password123');
+    cy.get('button[type=&quot;submit&quot;]').click();
+    cy.url().should('include', '/dashboard');
+    cy.get('h1').should('have.text', 'Welcome, testuser');
+  });
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Run the Test</strong>:
+Open the Cypress Test Runner and run the <code>login_spec.js</code> test file. Ensure the test passes and the login flow works as expected.</p>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>The provided test script should work if your application is set up correctly. If you encounter any issues, check the following:</p>
+<ul>
+<li>Ensure the URL in <code>cy.visit</code> matches your application's login page.</li>
+<li>Verify the selectors used in <code>cy.get</code> match the elements in your application.</li>
+<li>Check the assertions to ensure they match the expected behavior of your application.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of end-to-end testing with Cypress, including setting up Cypress, writing simple tests, and using advanced features like interacting with elements, assertions, stubbing, and custom commands. By incorporating E2E tests into your development workflow, you can ensure that your React application works as expected from the user's perspective, leading to a more robust and reliable application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-testing-components-react-testing-library' title="Testing Components with React Testing Library">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-ssr-nextjs' title="Server-Side Rendering (SSR) with Next.js">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

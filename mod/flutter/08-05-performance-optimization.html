@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Optimization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/08-05-performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/08-05-performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/08-05-performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flutter/08-05-performance-optimization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/08-05-performance-optimization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-isolates-and-concurrency' title="Isolates and Concurrency">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Performance Optimization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-to-testing' title="Introduction to Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Performance optimization is crucial for ensuring that your Flutter applications run smoothly and efficiently. In this section, we will cover various techniques and best practices to optimize the performance of your Flutter apps.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Understanding Performance Bottlenecks</strong></p>
+<ul>
+<li>Identifying areas in your app that cause slowdowns.</li>
+<li>Using tools like the Flutter DevTools to analyze performance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Efficient Widget Building</strong></p>
+<ul>
+<li>Minimizing the number of widgets built.</li>
+<li>Using <code>const</code> constructors where possible.</li>
+<li>Avoiding unnecessary rebuilds.</li>
+</ul>
+</li>
+<li>
+<p><strong>Optimizing Layouts</strong></p>
+<ul>
+<li>Using efficient layout widgets.</li>
+<li>Avoiding deeply nested widgets.</li>
+<li>Leveraging <code>RepaintBoundary</code> to isolate parts of the UI.</li>
+</ul>
+</li>
+<li>
+<p><strong>Managing State Efficiently</strong></p>
+<ul>
+<li>Choosing the right state management solution.</li>
+<li>Reducing the scope of state changes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Reducing Overdraw</strong></p>
+<ul>
+<li>Minimizing the number of times pixels are drawn.</li>
+<li>Using tools to visualize overdraw.</li>
+</ul>
+</li>
+<li>
+<p><strong>Optimizing Images and Assets</strong></p>
+<ul>
+<li>Using appropriate image formats and resolutions.</li>
+<li>Lazy loading images.</li>
+<li>Caching assets effectively.</li>
+</ul>
+</li>
+<li>
+<p><strong>Handling Animations</strong></p>
+<ul>
+<li>Using efficient animation techniques.</li>
+<li>Avoiding complex animations that can cause jank.</li>
+</ul>
+</li>
+<li>
+<p><strong>Memory Management</strong></p>
+<ul>
+<li>Avoiding memory leaks.</li>
+<li>Managing object lifecycles properly.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Efficient Widget Building</h2>
+<div class='content'><p><strong>Example: Using <code>const</code> Constructors</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIGNvbnN0IFRleHQoJ0hlbGxvLCBXb3JsZCEnKTsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Text('Hello, World!');
+  }
+}</pre></div><div class='content'><p><strong>Explanation:</strong>
+Using <code>const</code> constructors helps Flutter optimize the widget tree by reusing instances of widgets that do not change.</p>
+</div><h2>Optimizing Layouts</h2>
+<div class='content'><p><strong>Example: Using <code>RepaintBoundary</code></strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIFJlcGFpbnRCb3VuZGFyeSgKICAgICAgY2hpbGQ6IENvbHVtbigKICAgICAgICBjaGlsZHJlbjogWwogICAgICAgICAgVGV4dCgnVGhpcyBpcyBhIHN0YXRpYyB0ZXh0JyksCiAgICAgICAgICAvLyBPdGhlciB3aWRnZXRzCiAgICAgICAgXSwKICAgICAgKSwKICAgICk7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          Text('This is a static text'),
+          // Other widgets
+        ],
+      ),
+    );
+  }
+}</pre></div><div class='content'><p><strong>Explanation:</strong>
+<code>RepaintBoundary</code> helps isolate parts of the UI that do not need to be repainted, reducing the workload on the rendering engine.</p>
+</div><h2>Reducing Overdraw</h2>
+<div class='content'><p><strong>Example: Visualizing Overdraw</strong></p>
+<p>Use the Flutter DevTools to visualize overdraw in your app. This tool helps you identify areas where pixels are being drawn multiple times, allowing you to optimize your layouts.</p>
+</div><h2>Optimizing Images and Assets</h2>
+<div class='content'><p><strong>Example: Lazy Loading Images</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIExpc3RWaWV3LmJ1aWxkZXIoCiAgICAgIGl0ZW1Db3VudDogMTAwLAogICAgICBpdGVtQnVpbGRlcjogKGNvbnRleHQsIGluZGV4KSB7CiAgICAgICAgcmV0dXJuIEltYWdlLm5ldHdvcmsoCiAgICAgICAgICAnaHR0cHM6Ly9leGFtcGxlLmNvbS9pbWFnZV8kaW5kZXguanBnJywKICAgICAgICAgIGxvYWRpbmdCdWlsZGVyOiAoY29udGV4dCwgY2hpbGQsIGxvYWRpbmdQcm9ncmVzcykgewogICAgICAgICAgICBpZiAobG9hZGluZ1Byb2dyZXNzID09IG51bGwpIHJldHVybiBjaGlsZDsKICAgICAgICAgICAgcmV0dXJuIENlbnRlcigKICAgICAgICAgICAgICBjaGlsZDogQ2lyY3VsYXJQcm9ncmVzc0luZGljYXRvcigKICAgICAgICAgICAgICAgIHZhbHVlOiBsb2FkaW5nUHJvZ3Jlc3MuZXhwZWN0ZWRUb3RhbEJ5dGVzICE9IG51bGwKICAgICAgICAgICAgICAgICAgICA/IGxvYWRpbmdQcm9ncmVzcy5jdW11bGF0aXZlQnl0ZXNMb2FkZWQgLwogICAgICAgICAgICAgICAgICAgICAgICBsb2FkaW5nUHJvZ3Jlc3MuZXhwZWN0ZWRUb3RhbEJ5dGVzIQogICAgICAgICAgICAgICAgICAgIDogbnVsbCwKICAgICAgICAgICAgICApLAogICAgICAgICAgICApOwogICAgICAgICAgfSwKICAgICAgICApOwogICAgICB9LAogICAgKTsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: 100,
+      itemBuilder: (context, index) {
+        return Image.network(
+          'https://example.com/image_$index.jpg',
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}</pre></div><div class='content'><p><strong>Explanation:</strong>
+Lazy loading images ensures that images are only loaded when they are needed, reducing memory usage and improving performance.</p>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Optimize Widget Building</h2>
+<div class='content'><p><strong>Task:</strong>
+Refactor the following code to use <code>const</code> constructors where possible.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIENvbHVtbigKICAgICAgY2hpbGRyZW46IFsKICAgICAgICBUZXh0KCdIZWxsbywgV29ybGQhJyksCiAgICAgICAgSWNvbihJY29ucy5zdGFyKSwKICAgICAgXSwKICAgICk7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('Hello, World!'),
+        Icon(Icons.star),
+      ],
+    );
+  }
+}</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIENvbHVtbigKICAgICAgY2hpbGRyZW46IFsKICAgICAgICBjb25zdCBUZXh0KCdIZWxsbywgV29ybGQhJyksCiAgICAgICAgY29uc3QgSWNvbihJY29ucy5zdGFyKSwKICAgICAgXSwKICAgICk7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Text('Hello, World!'),
+        const Icon(Icons.star),
+      ],
+    );
+  }
+}</pre></div><div class='content'></div><h2>Exercise 2: Use `RepaintBoundary`</h2>
+<div class='content'><p><strong>Task:</strong>
+Add a <code>RepaintBoundary</code> to the following widget to optimize its performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIENvbHVtbigKICAgICAgY2hpbGRyZW46IFsKICAgICAgICBUZXh0KCdUaGlzIGlzIGEgc3RhdGljIHRleHQnKSwKICAgICAgICAvLyBPdGhlciB3aWRnZXRzCiAgICAgIF0sCiAgICApOwogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text('This is a static text'),
+        // Other widgets
+      ],
+    );
+  }
+}</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlXaWRnZXQgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIFJlcGFpbnRCb3VuZGFyeSgKICAgICAgY2hpbGQ6IENvbHVtbigKICAgICAgICBjaGlsZHJlbjogWwogICAgICAgICAgVGV4dCgnVGhpcyBpcyBhIHN0YXRpYyB0ZXh0JyksCiAgICAgICAgICAvLyBPdGhlciB3aWRnZXRzCiAgICAgICAgXSwKICAgICAgKSwKICAgICk7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          Text('This is a static text'),
+          // Other widgets
+        ],
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Mistake:</strong> Overusing <code>setState</code> leading to unnecessary rebuilds.</p>
+<ul>
+<li><strong>Tip:</strong> Use state management solutions like Provider or Riverpod to manage state more efficiently.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake:</strong> Ignoring performance tools.</p>
+<ul>
+<li><strong>Tip:</strong> Regularly use Flutter DevTools to monitor and optimize your app's performance.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake:</strong> Using high-resolution images unnecessarily.</p>
+<ul>
+<li><strong>Tip:</strong> Optimize images for the target device's resolution to save memory and improve performance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Performance optimization is an ongoing process that requires careful consideration of various factors, including widget building, layout efficiency, state management, and asset handling. By following the best practices and techniques outlined in this section, you can ensure that your Flutter applications run smoothly and provide a great user experience.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-isolates-and-concurrency' title="Isolates and Concurrency">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-to-testing' title="Introduction to Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiling and Using Shaders</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/03-04-compiling-using-shaders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/03-04-compiling-using-shaders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/03-04-compiling-using-shaders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/03-04-compiling-using-shaders" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/03-04-compiling-using-shaders" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-writing-pixel-shaders' title="Writing Pixel Shaders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Compiling and Using Shaders</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-texture-mapping' title="Texture Mapping">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the process of compiling and using shaders in DirectX. Shaders are essential for rendering graphics, and understanding how to compile and use them is crucial for any DirectX programmer.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Shader Compilation</strong>: The process of converting shader code written in HLSL (High-Level Shader Language) into a format that the GPU can execute.</li>
+<li><strong>Shader Types</strong>: Different types of shaders (vertex, pixel, geometry, etc.) and their roles in the rendering pipeline.</li>
+<li><strong>Shader Resources</strong>: How to bind resources like textures and buffers to shaders.</li>
+<li><strong>Error Handling</strong>: Techniques for debugging and handling errors during shader compilation.</li>
+</ol>
+</div><h1>Steps to Compile and Use Shaders</h1>
+<div class='content'></div><h2>1. Writing Shader Code</h2>
+<div class='content'><p>Shaders are written in HLSL. Below is an example of a simple vertex shader and pixel shader.</p>
+<p><strong>Vertex Shader (SimpleVertexShader.hlsl):</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFZTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBQT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKc3RydWN0IFBTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBTVl9QT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKUFNfSU5QVVQgVlNNYWluKFZTX0lOUFVUIGlucHV0KQp7CiAgICBQU19JTlBVVCBvdXRwdXQ7CiAgICBvdXRwdXQuUG9zID0gaW5wdXQuUG9zOwogICAgb3V0cHV0LkNvbG9yID0gaW5wdXQuQ29sb3I7CiAgICByZXR1cm4gb3V0cHV0Owp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct VS_INPUT
+{
+    float4 Pos : POSITION;
+    float4 Color : COLOR;
+};
+
+struct PS_INPUT
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+PS_INPUT VSMain(VS_INPUT input)
+{
+    PS_INPUT output;
+    output.Pos = input.Pos;
+    output.Color = input.Color;
+    return output;
+}</pre></div><div class='content'><p><strong>Pixel Shader (SimplePixelShader.hlsl):</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFBTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBTVl9QT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKZmxvYXQ0IFBTTWFpbihQU19JTlBVVCBpbnB1dCkgOiBTVl9UQVJHRVQKewogICAgcmV0dXJuIGlucHV0LkNvbG9yOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct PS_INPUT
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    return input.Color;
+}</pre></div><div class='content'></div><h2>2. Compiling Shaders</h2>
+<div class='content'><p>Shaders need to be compiled from HLSL to bytecode that the GPU can understand. This can be done using the D3DCompile function.</p>
+<p><strong>Example Code to Compile Shaders:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGQzZGNvbXBpbGVyLmg+CiNwcmFnbWEgY29tbWVudChsaWIsICJkM2Rjb21waWxlci5saWIiKQoKSFJFU1VMVCBDb21waWxlU2hhZGVyRnJvbUZpbGUoY29uc3QgV0NIQVIqIHN6RmlsZU5hbWUsIExQQ1NUUiBzekVudHJ5UG9pbnQsIExQQ1NUUiBzelNoYWRlck1vZGVsLCBJRDNEQmxvYioqIHBwQmxvYk91dCkKewogICAgRFdPUkQgZHdTaGFkZXJGbGFncyA9IEQzRENPTVBJTEVfRU5BQkxFX1NUUklDVE5FU1M7CiAgICAjaWYgZGVmaW5lZCggREVCVUcgKSB8fCBkZWZpbmVkKCBfREVCVUcgKQogICAgICAgIGR3U2hhZGVyRmxhZ3MgfD0gRDNEQ09NUElMRV9ERUJVRzsKICAgICNlbmRpZgoKICAgIElEM0RCbG9iKiBwRXJyb3JCbG9iID0gbnVsbHB0cjsKICAgIEhSRVNVTFQgaHIgPSBEM0RDb21waWxlRnJvbUZpbGUoc3pGaWxlTmFtZSwgbnVsbHB0ciwgbnVsbHB0ciwgc3pFbnRyeVBvaW50LCBzelNoYWRlck1vZGVsLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZHdTaGFkZXJGbGFncywgMCwgcHBCbG9iT3V0LCAmcEVycm9yQmxvYik7CiAgICBpZiAoRkFJTEVEKGhyKSkKICAgIHsKICAgICAgICBpZiAocEVycm9yQmxvYikKICAgICAgICB7CiAgICAgICAgICAgIE91dHB1dERlYnVnU3RyaW5nQSgoY2hhciopcEVycm9yQmxvYi0+R2V0QnVmZmVyUG9pbnRlcigpKTsKICAgICAgICAgICAgcEVycm9yQmxvYi0+UmVsZWFzZSgpOwogICAgICAgIH0KICAgICAgICByZXR1cm4gaHI7CiAgICB9CiAgICBpZiAocEVycm9yQmxvYikgcEVycm9yQmxvYi0+UmVsZWFzZSgpOwoKICAgIHJldHVybiBTX09LOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;d3dcompiler.h&gt;
+#pragma comment(lib, &quot;d3dcompiler.lib&quot;)
+
+HRESULT CompileShaderFromFile(const WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
+{
+    DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+    #if defined( DEBUG ) || defined( _DEBUG )
+        dwShaderFlags |= D3DCOMPILE_DEBUG;
+    #endif
+
+    ID3DBlob* pErrorBlob = nullptr;
+    HRESULT hr = D3DCompileFromFile(szFileName, nullptr, nullptr, szEntryPoint, szShaderModel, 
+                                    dwShaderFlags, 0, ppBlobOut, &amp;pErrorBlob);
+    if (FAILED(hr))
+    {
+        if (pErrorBlob)
+        {
+            OutputDebugStringA((char*)pErrorBlob-&gt;GetBufferPointer());
+            pErrorBlob-&gt;Release();
+        }
+        return hr;
+    }
+    if (pErrorBlob) pErrorBlob-&gt;Release();
+
+    return S_OK;
+}</pre></div><div class='content'></div><h2>3. Creating Shader Objects</h2>
+<div class='content'><p>Once compiled, the shader bytecode can be used to create shader objects.</p>
+<p><strong>Example Code to Create Shader Objects:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SUQzRDExVmVydGV4U2hhZGVyKiBnX3BWZXJ0ZXhTaGFkZXIgPSBudWxscHRyOwpJRDNEMTFQaXhlbFNoYWRlciogZ19wUGl4ZWxTaGFkZXIgPSBudWxscHRyOwpJRDNEQmxvYiogcFZTQmxvYiA9IG51bGxwdHI7CklEM0RCbG9iKiBwUFNCbG9iID0gbnVsbHB0cjsKCi8vIENvbXBpbGUgdGhlIHZlcnRleCBzaGFkZXIKSFJFU1VMVCBociA9IENvbXBpbGVTaGFkZXJGcm9tRmlsZShMIlNpbXBsZVZlcnRleFNoYWRlci5obHNsIiwgIlZTTWFpbiIsICJ2c181XzAiLCAmcFZTQmxvYik7CmlmIChGQUlMRUQoaHIpKQp7CiAgICBNZXNzYWdlQm94KG51bGxwdHIsIEwiVGhlIEZYIGZpbGUgY2Fubm90IGJlIGNvbXBpbGVkLiBQbGVhc2UgcnVuIHRoaXMgZXhlY3V0YWJsZSBmcm9tIHRoZSBkaXJlY3RvcnkgdGhhdCBjb250YWlucyB0aGUgRlggZmlsZS4iLCBMIkVycm9yIiwgTUJfT0spOwogICAgcmV0dXJuIGhyOwp9CgovLyBDcmVhdGUgdGhlIHZlcnRleCBzaGFkZXIKaHIgPSBnX3BkM2REZXZpY2UtPkNyZWF0ZVZlcnRleFNoYWRlcihwVlNCbG9iLT5HZXRCdWZmZXJQb2ludGVyKCksIHBWU0Jsb2ItPkdldEJ1ZmZlclNpemUoKSwgbnVsbHB0ciwgJmdfcFZlcnRleFNoYWRlcik7CmlmIChGQUlMRUQoaHIpKQp7CiAgICBwVlNCbG9iLT5SZWxlYXNlKCk7CiAgICByZXR1cm4gaHI7Cn0KCi8vIENvbXBpbGUgdGhlIHBpeGVsIHNoYWRlcgpociA9IENvbXBpbGVTaGFkZXJGcm9tRmlsZShMIlNpbXBsZVBpeGVsU2hhZGVyLmhsc2wiLCAiUFNNYWluIiwgInBzXzVfMCIsICZwUFNCbG9iKTsKaWYgKEZBSUxFRChocikpCnsKICAgIE1lc3NhZ2VCb3gobnVsbHB0ciwgTCJUaGUgRlggZmlsZSBjYW5ub3QgYmUgY29tcGlsZWQuIFBsZWFzZSBydW4gdGhpcyBleGVjdXRhYmxlIGZyb20gdGhlIGRpcmVjdG9yeSB0aGF0IGNvbnRhaW5zIHRoZSBGWCBmaWxlLiIsIEwiRXJyb3IiLCBNQl9PSyk7CiAgICByZXR1cm4gaHI7Cn0KCi8vIENyZWF0ZSB0aGUgcGl4ZWwgc2hhZGVyCmhyID0gZ19wZDNkRGV2aWNlLT5DcmVhdGVQaXhlbFNoYWRlcihwUFNCbG9iLT5HZXRCdWZmZXJQb2ludGVyKCksIHBQU0Jsb2ItPkdldEJ1ZmZlclNpemUoKSwgbnVsbHB0ciwgJmdfcFBpeGVsU2hhZGVyKTsKaWYgKEZBSUxFRChocikpCnsKICAgIHBQU0Jsb2ItPlJlbGVhc2UoKTsKICAgIHJldHVybiBocjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ID3D11VertexShader* g_pVertexShader = nullptr;
+ID3D11PixelShader* g_pPixelShader = nullptr;
+ID3DBlob* pVSBlob = nullptr;
+ID3DBlob* pPSBlob = nullptr;
+
+// Compile the vertex shader
+HRESULT hr = CompileShaderFromFile(L&quot;SimpleVertexShader.hlsl&quot;, &quot;VSMain&quot;, &quot;vs_5_0&quot;, &amp;pVSBlob);
+if (FAILED(hr))
+{
+    MessageBox(nullptr, L&quot;The FX file cannot be compiled. Please run this executable from the directory that contains the FX file.&quot;, L&quot;Error&quot;, MB_OK);
+    return hr;
+}
+
+// Create the vertex shader
+hr = g_pd3dDevice-&gt;CreateVertexShader(pVSBlob-&gt;GetBufferPointer(), pVSBlob-&gt;GetBufferSize(), nullptr, &amp;g_pVertexShader);
+if (FAILED(hr))
+{
+    pVSBlob-&gt;Release();
+    return hr;
+}
+
+// Compile the pixel shader
+hr = CompileShaderFromFile(L&quot;SimplePixelShader.hlsl&quot;, &quot;PSMain&quot;, &quot;ps_5_0&quot;, &amp;pPSBlob);
+if (FAILED(hr))
+{
+    MessageBox(nullptr, L&quot;The FX file cannot be compiled. Please run this executable from the directory that contains the FX file.&quot;, L&quot;Error&quot;, MB_OK);
+    return hr;
+}
+
+// Create the pixel shader
+hr = g_pd3dDevice-&gt;CreatePixelShader(pPSBlob-&gt;GetBufferPointer(), pPSBlob-&gt;GetBufferSize(), nullptr, &amp;g_pPixelShader);
+if (FAILED(hr))
+{
+    pPSBlob-&gt;Release();
+    return hr;
+}</pre></div><div class='content'></div><h2>4. Setting Shaders for Rendering</h2>
+<div class='content'><p>After creating the shader objects, they need to be set to the rendering pipeline.</p>
+<p><strong>Example Code to Set Shaders:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z19wSW1tZWRpYXRlQ29udGV4dC0+VlNTZXRTaGFkZXIoZ19wVmVydGV4U2hhZGVyLCBudWxscHRyLCAwKTsKZ19wSW1tZWRpYXRlQ29udGV4dC0+UFNTZXRTaGFkZXIoZ19wUGl4ZWxTaGFkZXIsIG51bGxwdHIsIDApOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>g_pImmediateContext-&gt;VSSetShader(g_pVertexShader, nullptr, 0);
+g_pImmediateContext-&gt;PSSetShader(g_pPixelShader, nullptr, 0);</pre></div><div class='content'></div><h2>5. Binding Resources</h2>
+<div class='content'><p>Shaders often require resources like textures and constant buffers. These resources need to be bound to the pipeline.</p>
+<p><strong>Example Code to Bind Resources:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SUQzRDExQnVmZmVyKiBnX3BDb25zdGFudEJ1ZmZlciA9IG51bGxwdHI7CmdfcEltbWVkaWF0ZUNvbnRleHQtPlZTU2V0Q29uc3RhbnRCdWZmZXJzKDAsIDEsICZnX3BDb25zdGFudEJ1ZmZlcik7CmdfcEltbWVkaWF0ZUNvbnRleHQtPlBTU2V0U2hhZGVyUmVzb3VyY2VzKDAsIDEsICZnX3BUZXh0dXJlUlYpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ID3D11Buffer* g_pConstantBuffer = nullptr;
+g_pImmediateContext-&gt;VSSetConstantBuffers(0, 1, &amp;g_pConstantBuffer);
+g_pImmediateContext-&gt;PSSetShaderResources(0, 1, &amp;g_pTextureRV);</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Compile and Use a Simple Shader</h2>
+<div class='content'><ol>
+<li><strong>Write a Vertex Shader and Pixel Shader</strong>: Create two HLSL files, one for the vertex shader and one for the pixel shader.</li>
+<li><strong>Compile the Shaders</strong>: Use the provided <code>CompileShaderFromFile</code> function to compile the shaders.</li>
+<li><strong>Create Shader Objects</strong>: Create vertex and pixel shader objects using the compiled bytecode.</li>
+<li><strong>Set the Shaders</strong>: Set the shaders to the rendering pipeline.</li>
+<li><strong>Render a Triangle</strong>: Use the shaders to render a simple colored triangle.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p><strong>Vertex Shader (SimpleVertexShader.hlsl):</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFZTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBQT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKc3RydWN0IFBTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBTVl9QT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKUFNfSU5QVVQgVlNNYWluKFZTX0lOUFVUIGlucHV0KQp7CiAgICBQU19JTlBVVCBvdXRwdXQ7CiAgICBvdXRwdXQuUG9zID0gaW5wdXQuUG9zOwogICAgb3V0cHV0LkNvbG9yID0gaW5wdXQuQ29sb3I7CiAgICByZXR1cm4gb3V0cHV0Owp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct VS_INPUT
+{
+    float4 Pos : POSITION;
+    float4 Color : COLOR;
+};
+
+struct PS_INPUT
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+PS_INPUT VSMain(VS_INPUT input)
+{
+    PS_INPUT output;
+    output.Pos = input.Pos;
+    output.Color = input.Color;
+    return output;
+}</pre></div><div class='content'><p><strong>Pixel Shader (SimplePixelShader.hlsl):</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFBTX0lOUFVUCnsKICAgIGZsb2F0NCBQb3MgOiBTVl9QT1NJVElPTjsKICAgIGZsb2F0NCBDb2xvciA6IENPTE9SOwp9OwoKZmxvYXQ0IFBTTWFpbihQU19JTlBVVCBpbnB1dCkgOiBTVl9UQVJHRVQKewogICAgcmV0dXJuIGlucHV0LkNvbG9yOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct PS_INPUT
+{
+    float4 Pos : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+float4 PSMain(PS_INPUT input) : SV_TARGET
+{
+    return input.Color;
+}</pre></div><div class='content'><p><strong>Main Application Code:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29tcGlsZSBhbmQgY3JlYXRlIHNoYWRlcnMKSUQzREJsb2IqIHBWU0Jsb2IgPSBudWxscHRyOwpJRDNEQmxvYiogcFBTQmxvYiA9IG51bGxwdHI7CkNvbXBpbGVTaGFkZXJGcm9tRmlsZShMIlNpbXBsZVZlcnRleFNoYWRlci5obHNsIiwgIlZTTWFpbiIsICJ2c181XzAiLCAmcFZTQmxvYik7CmdfcGQzZERldmljZS0+Q3JlYXRlVmVydGV4U2hhZGVyKHBWU0Jsb2ItPkdldEJ1ZmZlclBvaW50ZXIoKSwgcFZTQmxvYi0+R2V0QnVmZmVyU2l6ZSgpLCBudWxscHRyLCAmZ19wVmVydGV4U2hhZGVyKTsKQ29tcGlsZVNoYWRlckZyb21GaWxlKEwiU2ltcGxlUGl4ZWxTaGFkZXIuaGxzbCIsICJQU01haW4iLCAicHNfNV8wIiwgJnBQU0Jsb2IpOwpnX3BkM2REZXZpY2UtPkNyZWF0ZVBpeGVsU2hhZGVyKHBQU0Jsb2ItPkdldEJ1ZmZlclBvaW50ZXIoKSwgcFBTQmxvYi0+R2V0QnVmZmVyU2l6ZSgpLCBudWxscHRyLCAmZ19wUGl4ZWxTaGFkZXIpOwoKLy8gU2V0IHNoYWRlcnMKZ19wSW1tZWRpYXRlQ29udGV4dC0+VlNTZXRTaGFkZXIoZ19wVmVydGV4U2hhZGVyLCBudWxscHRyLCAwKTsKZ19wSW1tZWRpYXRlQ29udGV4dC0+UFNTZXRTaGFkZXIoZ19wUGl4ZWxTaGFkZXIsIG51bGxwdHIsIDApOwoKLy8gUmVuZGVyIGEgdHJpYW5nbGUgKGFzc3VtaW5nIHZlcnRleCBidWZmZXIgYW5kIGlucHV0IGxheW91dCBhcmUgYWxyZWFkeSBzZXQpCmdfcEltbWVkaWF0ZUNvbnRleHQtPkRyYXcoMywgMCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Compile and create shaders
+ID3DBlob* pVSBlob = nullptr;
+ID3DBlob* pPSBlob = nullptr;
+CompileShaderFromFile(L&quot;SimpleVertexShader.hlsl&quot;, &quot;VSMain&quot;, &quot;vs_5_0&quot;, &amp;pVSBlob);
+g_pd3dDevice-&gt;CreateVertexShader(pVSBlob-&gt;GetBufferPointer(), pVSBlob-&gt;GetBufferSize(), nullptr, &amp;g_pVertexShader);
+CompileShaderFromFile(L&quot;SimplePixelShader.hlsl&quot;, &quot;PSMain&quot;, &quot;ps_5_0&quot;, &amp;pPSBlob);
+g_pd3dDevice-&gt;CreatePixelShader(pPSBlob-&gt;GetBufferPointer(), pPSBlob-&gt;GetBufferSize(), nullptr, &amp;g_pPixelShader);
+
+// Set shaders
+g_pImmediateContext-&gt;VSSetShader(g_pVertexShader, nullptr, 0);
+g_pImmediateContext-&gt;PSSetShader(g_pPixelShader, nullptr, 0);
+
+// Render a triangle (assuming vertex buffer and input layout are already set)
+g_pImmediateContext-&gt;Draw(3, 0);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to write, compile, and use shaders in DirectX. We covered the basics of shader compilation, creating shader objects, setting shaders for rendering, and binding resources. By completing the practical exercise, you should now have a solid understanding of how to work with shaders in DirectX. In the next module, we will delve deeper into advanced rendering techniques, starting with texture mapping.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-writing-pixel-shaders' title="Writing Pixel Shaders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-texture-mapping' title="Texture Mapping">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

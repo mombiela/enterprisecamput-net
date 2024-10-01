@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Security Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/05-03-docker-security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/05-03-docker-security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/05-03-docker-security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/docker/05-03-docker-security-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/05-03-docker-security-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-docker-storage-options' title="Docker Storage Options">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Docker Security Best Practices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-optimizing-docker-images' title="Optimizing Docker Images">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover essential security practices to ensure your Docker environment is secure. Docker security is crucial for protecting your applications, data, and infrastructure from potential threats.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Least Privilege Principle</strong>: Run containers with the minimum privileges necessary.</li>
+<li><strong>Image Security</strong>: Use trusted and verified images.</li>
+<li><strong>Network Security</strong>: Secure container communication.</li>
+<li><strong>Data Security</strong>: Protect sensitive data within containers.</li>
+<li><strong>Monitoring and Logging</strong>: Continuously monitor and log container activities.</li>
+</ol>
+</div><h1>1. Least Privilege Principle</h1>
+<div class='content'></div><h2>Running Containers as Non-Root Users</h2>
+<div class='content'><p>By default, Docker containers run as the root user, which can pose security risks. It's a best practice to run containers as non-root users.</p>
+<p><strong>Example: Dockerfile with Non-Root User</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2UgYW4gb2ZmaWNpYWwgUHl0aG9uIHJ1bnRpbWUgYXMgYSBwYXJlbnQgaW1hZ2UKRlJPTSBweXRob246My44LXNsaW0KCiMgQ3JlYXRlIGEgbm9uLXJvb3QgdXNlcgpSVU4gdXNlcmFkZCAtbSBteXVzZXIKCiMgU2V0IHRoZSB1c2VyIHRvIHRoZSBub24tcm9vdCB1c2VyClVTRVIgbXl1c2VyCgojIFNldCB0aGUgd29ya2luZyBkaXJlY3RvcnkKV09SS0RJUiAvaG9tZS9teXVzZXIvYXBwCgojIENvcHkgdGhlIGN1cnJlbnQgZGlyZWN0b3J5IGNvbnRlbnRzIGludG8gdGhlIGNvbnRhaW5lciBhdCAvYXBwCkNPUFkgLiAuCgojIEluc3RhbGwgYW55IG5lZWRlZCBwYWNrYWdlcyBzcGVjaWZpZWQgaW4gcmVxdWlyZW1lbnRzLnR4dApSVU4gcGlwIGluc3RhbGwgLS1uby1jYWNoZS1kaXIgLXIgcmVxdWlyZW1lbnRzLnR4dAoKIyBSdW4gdGhlIGFwcGxpY2F0aW9uCkNNRCBbInB5dGhvbiIsICJhcHAucHkiXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Use an official Python runtime as a parent image
+FROM python:3.8-slim
+
+# Create a non-root user
+RUN useradd -m myuser
+
+# Set the user to the non-root user
+USER myuser
+
+# Set the working directory
+WORKDIR /home/myuser/app
+
+# Copy the current directory contents into the container at /app
+COPY . .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run the application
+CMD [&quot;python&quot;, &quot;app.py&quot;]</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>RUN useradd -m myuser</code>: Creates a new user named <code>myuser</code>.</li>
+<li><code>USER myuser</code>: Switches to the non-root user.</li>
+<li>The rest of the Dockerfile commands are executed as <code>myuser</code>.</li>
+</ul>
+</div><h1>2. Image Security</h1>
+<div class='content'></div><h2>Using Trusted and Verified Images</h2>
+<div class='content'><p>Always use official or verified images from Docker Hub or other trusted sources. Avoid using unverified images as they may contain vulnerabilities.</p>
+<p><strong>Example: Pulling an Official Image</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHB1bGwgbmdpbng6bGF0ZXN0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker pull nginx:latest</pre></div><div class='content'></div><h2>Scanning Images for Vulnerabilities</h2>
+<div class='content'><p>Use tools like Docker Bench for Security or third-party tools to scan images for vulnerabilities.</p>
+<p><strong>Example: Scanning an Image with Docker Bench for Security</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHJ1biAtaXQgLS1uZXQgaG9zdCAtLXBpZCBob3N0IC0tY2FwLWFkZCBhdWRpdF9jb250cm9sIFwKICAtdiAvdmFyL2xpYjovdmFyL2xpYiAtdiAvdmFyL3J1bi9kb2NrZXIuc29jazovdmFyL3J1bi9kb2NrZXIuc29jayBcCiAgLS1sYWJlbCBkb2NrZXJfYmVuY2hfc2VjdXJpdHkgXAogIGRvY2tlci9kb2NrZXItYmVuY2gtc2VjdXJpdHk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker run -it --net host --pid host --cap-add audit_control \
+  -v /var/lib:/var/lib -v /var/run/docker.sock:/var/run/docker.sock \
+  --label docker_bench_security \
+  docker/docker-bench-security</pre></div><div class='content'></div><h1>3. Network Security</h1>
+<div class='content'></div><h2>Isolating Containers with Networks</h2>
+<div class='content'><p>Use Docker networks to isolate containers and control their communication.</p>
+<p><strong>Example: Creating and Using a Custom Network</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBjdXN0b20gbmV0d29yawpkb2NrZXIgbmV0d29yayBjcmVhdGUgbXlfbmV0d29yawoKIyBSdW4gY29udGFpbmVycyBvbiB0aGUgY3VzdG9tIG5ldHdvcmsKZG9ja2VyIHJ1biAtZCAtLW5hbWUgd2ViIC0tbmV0d29yayBteV9uZXR3b3JrIG5naW54CmRvY2tlciBydW4gLWQgLS1uYW1lIGRiIC0tbmV0d29yayBteV9uZXR3b3JrIG15c3Fs"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a custom network
+docker network create my_network
+
+# Run containers on the custom network
+docker run -d --name web --network my_network nginx
+docker run -d --name db --network my_network mysql</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>docker network create my_network</code>: Creates a custom network named <code>my_network</code>.</li>
+<li><code>--network my_network</code>: Connects the containers to the custom network.</li>
+</ul>
+</div><h1>4. Data Security</h1>
+<div class='content'></div><h2>Using Secrets to Manage Sensitive Data</h2>
+<div class='content'><p>Use Docker secrets to manage sensitive data such as passwords, API keys, and certificates.</p>
+<p><strong>Example: Creating and Using a Docker Secret</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBzZWNyZXQKZWNobyAibXlfc2VjcmV0X3Bhc3N3b3JkIiB8IGRvY2tlciBzZWNyZXQgY3JlYXRlIGRiX3Bhc3N3b3JkIC0KCiMgVXNlIHRoZSBzZWNyZXQgaW4gYSBzZXJ2aWNlCmRvY2tlciBzZXJ2aWNlIGNyZWF0ZSAtLW5hbWUgbXlfc2VydmljZSAtLXNlY3JldCBkYl9wYXNzd29yZCBteV9pbWFnZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a secret
+echo &quot;my_secret_password&quot; | docker secret create db_password -
+
+# Use the secret in a service
+docker service create --name my_service --secret db_password my_image</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>docker secret create db_password -</code>: Creates a secret named <code>db_password</code>.</li>
+<li><code>--secret db_password</code>: Makes the secret available to the service.</li>
+</ul>
+</div><h1>5. Monitoring and Logging</h1>
+<div class='content'></div><h2>Enabling Docker Logging</h2>
+<div class='content'><p>Enable and configure Docker logging to monitor container activities.</p>
+<p><strong>Example: Configuring JSON File Logging Driver</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHJ1biAtZCAtLW5hbWUgbXlfY29udGFpbmVyIC0tbG9nLWRyaXZlciBqc29uLWZpbGUgLS1sb2ctb3B0IG1heC1zaXplPTEwbSAtLWxvZy1vcHQgbWF4LWZpbGU9MyBteV9pbWFnZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker run -d --name my_container --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 my_image</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>--log-driver json-file</code>: Uses the JSON file logging driver.</li>
+<li><code>--log-opt max-size=10m</code>: Sets the maximum size of the log file to 10MB.</li>
+<li><code>--log-opt max-file=3</code>: Keeps a maximum of 3 log files.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Secure a Docker Container</h2>
+<div class='content'><ol>
+<li>Create a Dockerfile for a simple Node.js application.</li>
+<li>Ensure the container runs as a non-root user.</li>
+<li>Use a trusted base image.</li>
+<li>Create a custom network and run the container on it.</li>
+<li>Use Docker secrets to manage sensitive data.</li>
+</ol>
+<p><strong>Solution</strong></p>
+<p><strong>Dockerfile</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2UgYW4gb2ZmaWNpYWwgTm9kZSBydW50aW1lIGFzIGEgcGFyZW50IGltYWdlCkZST00gbm9kZToxNC1zbGltCgojIENyZWF0ZSBhIG5vbi1yb290IHVzZXIKUlVOIHVzZXJhZGQgLW0gbXl1c2VyCgojIFNldCB0aGUgdXNlciB0byB0aGUgbm9uLXJvb3QgdXNlcgpVU0VSIG15dXNlcgoKIyBTZXQgdGhlIHdvcmtpbmcgZGlyZWN0b3J5CldPUktESVIgL2hvbWUvbXl1c2VyL2FwcAoKIyBDb3B5IHRoZSBjdXJyZW50IGRpcmVjdG9yeSBjb250ZW50cyBpbnRvIHRoZSBjb250YWluZXIgYXQgL2FwcApDT1BZIC4gLgoKIyBJbnN0YWxsIGFueSBuZWVkZWQgcGFja2FnZXMKUlVOIG5wbSBpbnN0YWxsCgojIFJ1biB0aGUgYXBwbGljYXRpb24KQ01EIFsibm9kZSIsICJhcHAuanMiXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Use an official Node runtime as a parent image
+FROM node:14-slim
+
+# Create a non-root user
+RUN useradd -m myuser
+
+# Set the user to the non-root user
+USER myuser
+
+# Set the working directory
+WORKDIR /home/myuser/app
+
+# Copy the current directory contents into the container at /app
+COPY . .
+
+# Install any needed packages
+RUN npm install
+
+# Run the application
+CMD [&quot;node&quot;, &quot;app.js&quot;]</pre></div><div class='content'><p><strong>Commands</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBjdXN0b20gbmV0d29yawpkb2NrZXIgbmV0d29yayBjcmVhdGUgbXlfbmV0d29yawoKIyBDcmVhdGUgYSBzZWNyZXQKZWNobyAibXlfc2VjcmV0X3Bhc3N3b3JkIiB8IGRvY2tlciBzZWNyZXQgY3JlYXRlIGRiX3Bhc3N3b3JkIC0KCiMgQnVpbGQgdGhlIERvY2tlciBpbWFnZQpkb2NrZXIgYnVpbGQgLXQgbXlfbm9kZV9hcHAgLgoKIyBSdW4gdGhlIGNvbnRhaW5lciBvbiB0aGUgY3VzdG9tIG5ldHdvcmsgd2l0aCB0aGUgc2VjcmV0CmRvY2tlciBzZXJ2aWNlIGNyZWF0ZSAtLW5hbWUgbXlfc2VydmljZSAtLW5ldHdvcmsgbXlfbmV0d29yayAtLXNlY3JldCBkYl9wYXNzd29yZCBteV9ub2RlX2FwcA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a custom network
+docker network create my_network
+
+# Create a secret
+echo &quot;my_secret_password&quot; | docker secret create db_password -
+
+# Build the Docker image
+docker build -t my_node_app .
+
+# Run the container on the custom network with the secret
+docker service create --name my_service --network my_network --secret db_password my_node_app</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered essential Docker security best practices, including running containers with the least privilege, using trusted images, securing container communication, protecting sensitive data, and monitoring container activities. By following these practices, you can significantly enhance the security of your Docker environment. In the next section, we will dive deeper into optimizing Docker images for better performance and efficiency.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-docker-storage-options' title="Docker Storage Options">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-optimizing-docker-images' title="Optimizing Docker Images">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

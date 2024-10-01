@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Studies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/06-04-case-studies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/06-04-case-studies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/06-04-case-studies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/06-04-case-studies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/06-04-case-studies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-security-considerations' title="Security Considerations">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Case Studies</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore real-world applications of PL/SQL through detailed case studies. These case studies will help you understand how PL/SQL can be used to solve complex problems, optimize performance, and integrate with other systems. Each case study will include a problem statement, a step-by-step solution, and a discussion of the results.</p>
+</div><h1>Case Study 1: Inventory Management System</h1>
+<div class='content'></div><h2>Problem Statement</h2>
+<div class='content'><p>A retail company needs to manage its inventory efficiently. The system should track stock levels, reorder products when they fall below a certain threshold, and generate reports on inventory status.</p>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Database Design</strong>:</p>
+<ul>
+<li>Create tables for products, suppliers, and inventory transactions.</li>
+<li>Define relationships between these tables.</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE products (
+    product_id NUMBER PRIMARY KEY,
+    product_name VARCHAR2(100),
+    supplier_id NUMBER,
+    reorder_level NUMBER
+);
+
+CREATE TABLE suppliers (
+    supplier_id NUMBER PRIMARY KEY,
+    supplier_name VARCHAR2(100)
+);
+
+CREATE TABLE inventory_transactions (
+    transaction_id NUMBER PRIMARY KEY,
+    product_id NUMBER,
+    transaction_date DATE,
+    quantity NUMBER,
+    transaction_type VARCHAR2(10)
+);
+</code></pre>
+</li>
+<li>
+<p><strong>PL/SQL Procedures</strong>:</p>
+<ul>
+<li>Create a procedure to add new inventory transactions.</li>
+<li>Create a procedure to check stock levels and reorder products.</li>
+</ul>
+<pre><code class="language-sql">CREATE OR REPLACE PROCEDURE add_inventory_transaction (
+    p_product_id IN NUMBER,
+    p_quantity IN NUMBER,
+    p_transaction_type IN VARCHAR2
+) IS
+BEGIN
+    INSERT INTO inventory_transactions (transaction_id, product_id, transaction_date, quantity, transaction_type)
+    VALUES (inventory_transactions_seq.NEXTVAL, p_product_id, SYSDATE, p_quantity, p_transaction_type);
+END;
+/
+
+CREATE OR REPLACE PROCEDURE check_and_reorder (
+    p_product_id IN NUMBER
+) IS
+    v_quantity NUMBER;
+    v_reorder_level NUMBER;
+BEGIN
+    SELECT SUM(quantity) INTO v_quantity
+    FROM inventory_transactions
+    WHERE product_id = p_product_id;
+
+    SELECT reorder_level INTO v_reorder_level
+    FROM products
+    WHERE product_id = p_product_id;
+
+    IF v_quantity &lt; v_reorder_level THEN
+        -- Reorder logic here
+        DBMS_OUTPUT.PUT_LINE('Reordering product ' || p_product_id);
+    END IF;
+END;
+/
+</code></pre>
+</li>
+<li>
+<p><strong>Triggers</strong>:</p>
+<ul>
+<li>Create a trigger to automatically check stock levels after each transaction.</li>
+</ul>
+<pre><code class="language-sql">CREATE OR REPLACE TRIGGER trg_after_inventory_transaction
+AFTER INSERT ON inventory_transactions
+FOR EACH ROW
+BEGIN
+    check_and_reorder(:NEW.product_id);
+END;
+/
+</code></pre>
+</li>
+</ol>
+</div><h2>Discussion</h2>
+<div class='content'><p>This case study demonstrates how PL/SQL can be used to manage inventory efficiently. The use of procedures and triggers ensures that stock levels are always monitored and products are reordered automatically when necessary. This approach minimizes manual intervention and reduces the risk of stockouts.</p>
+</div><h1>Case Study 2: Employee Performance Tracking</h1>
+<div class='content'></div><h2>Problem Statement</h2>
+<div class='content'><p>A company wants to track the performance of its employees. The system should record performance metrics, calculate performance scores, and generate performance reports.</p>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Database Design</strong>:</p>
+<ul>
+<li>Create tables for employees, performance metrics, and performance scores.</li>
+</ul>
+<pre><code class="language-sql">CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    employee_name VARCHAR2(100),
+    department_id NUMBER
+);
+
+CREATE TABLE performance_metrics (
+    metric_id NUMBER PRIMARY KEY,
+    metric_name VARCHAR2(100)
+);
+
+CREATE TABLE performance_scores (
+    score_id NUMBER PRIMARY KEY,
+    employee_id NUMBER,
+    metric_id NUMBER,
+    score NUMBER,
+    score_date DATE
+);
+</code></pre>
+</li>
+<li>
+<p><strong>PL/SQL Procedures</strong>:</p>
+<ul>
+<li>Create a procedure to add performance scores.</li>
+<li>Create a procedure to calculate the average performance score for an employee.</li>
+</ul>
+<pre><code class="language-sql">CREATE OR REPLACE PROCEDURE add_performance_score (
+    p_employee_id IN NUMBER,
+    p_metric_id IN NUMBER,
+    p_score IN NUMBER
+) IS
+BEGIN
+    INSERT INTO performance_scores (score_id, employee_id, metric_id, score, score_date)
+    VALUES (performance_scores_seq.NEXTVAL, p_employee_id, p_metric_id, p_score, SYSDATE);
+END;
+/
+
+CREATE OR REPLACE PROCEDURE calculate_average_score (
+    p_employee_id IN NUMBER,
+    p_average_score OUT NUMBER
+) IS
+BEGIN
+    SELECT AVG(score) INTO p_average_score
+    FROM performance_scores
+    WHERE employee_id = p_employee_id;
+END;
+/
+</code></pre>
+</li>
+<li>
+<p><strong>Reports</strong>:</p>
+<ul>
+<li>Create a report to display the average performance score for each employee.</li>
+</ul>
+<pre><code class="language-sql">SET SERVEROUTPUT ON;
+DECLARE
+    v_employee_id NUMBER;
+    v_average_score NUMBER;
+BEGIN
+    FOR rec IN (SELECT employee_id FROM employees) LOOP
+        v_employee_id := rec.employee_id;
+        calculate_average_score(v_employee_id, v_average_score);
+        DBMS_OUTPUT.PUT_LINE('Employee ID: ' || v_employee_id || ' Average Score: ' || v_average_score);
+    END LOOP;
+END;
+/
+</code></pre>
+</li>
+</ol>
+</div><h2>Discussion</h2>
+<div class='content'><p>This case study illustrates how PL/SQL can be used to track and analyze employee performance. By recording performance metrics and calculating average scores, the company can gain valuable insights into employee performance and make informed decisions.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>These case studies provide practical examples of how PL/SQL can be used to solve real-world problems. By understanding these examples, you can apply similar techniques to your own projects and improve your PL/SQL skills. In the next module, we will explore more advanced topics and best practices to further enhance your PL/SQL knowledge.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-security-considerations' title="Security Considerations">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

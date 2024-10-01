@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analyzing Query Performance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/06-03-analyzing-query-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/06-03-analyzing-query-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/06-03-analyzing-query-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/06-03-analyzing-query-performance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/06-03-analyzing-query-performance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-indexing-strategies' title="Indexing Strategies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Analyzing Query Performance</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-vacuuming-and-maintenance' title="Vacuuming and Maintenance">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Analyzing query performance is crucial for ensuring that your PostgreSQL database operates efficiently, especially as the volume of data and the number of users grow. This section will cover various tools and techniques to analyze and optimize query performance in PostgreSQL.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Query Execution Plan</strong>: Understanding how PostgreSQL executes a query.</li>
+<li><strong>EXPLAIN and EXPLAIN ANALYZE</strong>: Tools to visualize and analyze query execution plans.</li>
+<li><strong>pg_stat_statements</strong>: Extension for tracking execution statistics of all SQL statements.</li>
+<li><strong>Indexes</strong>: How they impact query performance.</li>
+<li><strong>Vacuuming</strong>: Importance of regular maintenance.</li>
+</ol>
+</div><h1>Query Execution Plan</h1>
+<div class='content'><p>A query execution plan is a sequence of steps that PostgreSQL uses to execute a query. Understanding the execution plan helps identify performance bottlenecks.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>This command provides a high-level overview of the execution plan.</p>
+</div><h1>EXPLAIN and EXPLAIN ANALYZE</h1>
+<div class='content'></div><h2>EXPLAIN</h2>
+<div class='content'><p>The <code>EXPLAIN</code> command shows the execution plan of a query without actually running it.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>EXPLAIN ANALYZE</h2>
+<div class='content'><p>The <code>EXPLAIN ANALYZE</code> command runs the query and provides the actual execution time for each step.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>Example Output</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2VxIFNjYW4gb24gZW1wbG95ZWVzICAoY29zdD0wLjAwLi4zNS41MCByb3dzPTUgd2lkdGg9MTAwKSAoYWN0dWFsIHRpbWU9MC4wMTIuLjAuMDE1IHJvd3M9NSBsb29wcz0xKQogIEZpbHRlcjogKGRlcGFydG1lbnQgPSAnU2FsZXMnOjp0ZXh0KQpQbGFubmluZyBUaW1lOiAwLjEyMyBtcwpFeGVjdXRpb24gVGltZTogMC4wNDUgbXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Seq Scan on employees  (cost=0.00..35.50 rows=5 width=100) (actual time=0.012..0.015 rows=5 loops=1)
+  Filter: (department = 'Sales'::text)
+Planning Time: 0.123 ms
+Execution Time: 0.045 ms</pre></div><div class='content'><ul>
+<li><strong>Seq Scan</strong>: Indicates a sequential scan of the table.</li>
+<li><strong>cost</strong>: Estimated startup and total cost.</li>
+<li><strong>rows</strong>: Estimated number of rows.</li>
+<li><strong>width</strong>: Estimated average row width.</li>
+<li><strong>actual time</strong>: Actual time taken for each step.</li>
+<li><strong>loops</strong>: Number of times the step was executed.</li>
+</ul>
+</div><h1>pg_stat_statements</h1>
+<div class='content'><p>The <code>pg_stat_statements</code> extension tracks execution statistics of all SQL statements executed by a server.</p>
+</div><h2>Enabling pg_stat_statements</h2>
+<div class='content'><ol>
+<li>Add <code>pg_stat_statements</code> to the <code>shared_preload_libraries</code> parameter in <code>postgresql.conf</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2hhcmVkX3ByZWxvYWRfbGlicmFyaWVzID0gJ3BnX3N0YXRfc3RhdGVtZW50cyc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>shared_preload_libraries = 'pg_stat_statements'</pre></div><div class='content'><ol start="2">
+<li>
+<p>Restart PostgreSQL.</p>
+</li>
+<li>
+<p>Create the extension in your database.</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIEVYVEVOU0lPTiBwZ19zdGF0X3N0YXRlbWVudHM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE EXTENSION pg_stat_statements;</pre></div><div class='content'></div><h2>Querying pg_stat_statements</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIHF1ZXJ5LCBjYWxscywgdG90YWxfdGltZSwgcm93cwpGUk9NIHBnX3N0YXRfc3RhdGVtZW50cwpPUkRFUiBCWSB0b3RhbF90aW1lIERFU0MKTElNSVQgNTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT query, calls, total_time, rows
+FROM pg_stat_statements
+ORDER BY total_time DESC
+LIMIT 5;</pre></div><div class='content'><p>This query retrieves the top 5 most time-consuming queries.</p>
+</div><h1>Indexes</h1>
+<div class='content'><p>Indexes can significantly improve query performance by reducing the amount of data PostgreSQL needs to scan.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRtZW50IE9OIGVtcGxveWVlcyhkZXBhcnRtZW50KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_department ON employees(department);</pre></div><div class='content'></div><h2>Analyzing Index Usage</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>The output should now show an <code>Index Scan</code> instead of a <code>Seq Scan</code>.</p>
+</div><h1>Vacuuming</h1>
+<div class='content'><p>Regular vacuuming is essential for maintaining database performance by reclaiming storage and updating statistics.</p>
+</div><h2>Running VACUUM</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM;</pre></div><div class='content'></div><h2>Running VACUUM ANALYZE</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIEFOQUxZWkU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM ANALYZE;</pre></div><div class='content'><p>This command also updates the statistics used by the query planner.</p>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create a table <code>sales</code> with columns <code>id</code>, <code>product</code>, <code>quantity</code>, and <code>sale_date</code>.</li>
+<li>Insert 1000 rows of sample data.</li>
+<li>Create an index on the <code>sale_date</code> column.</li>
+<li>Use <code>EXPLAIN ANALYZE</code> to compare the performance of a query with and without the index.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU3RlcCAxOiBDcmVhdGUgdGhlIHRhYmxlCkNSRUFURSBUQUJMRSBzYWxlcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBwcm9kdWN0IFZBUkNIQVIoNTApLAogICAgcXVhbnRpdHkgSU5ULAogICAgc2FsZV9kYXRlIERBVEUKKTsKCi0tIFN0ZXAgMjogSW5zZXJ0IHNhbXBsZSBkYXRhCklOU0VSVCBJTlRPIHNhbGVzIChwcm9kdWN0LCBxdWFudGl0eSwgc2FsZV9kYXRlKQpTRUxFQ1QKICAgICdQcm9kdWN0ICcgfHwgaSwKICAgIChSQU5ET00oKSAqIDEwKTo6SU5ULAogICAgQ1VSUkVOVF9EQVRFIC0gKFJBTkRPTSgpICogMTAwKTo6SU5UCkZST00gZ2VuZXJhdGVfc2VyaWVzKDEsIDEwMDApIEFTIHMoaSk7CgotLSBTdGVwIDM6IENyZWF0ZSBhbiBpbmRleApDUkVBVEUgSU5ERVggaWR4X3NhbGVfZGF0ZSBPTiBzYWxlcyhzYWxlX2RhdGUpOwoKLS0gU3RlcCA0OiBDb21wYXJlIHBlcmZvcm1hbmNlCkVYUExBSU4gQU5BTFlaRSBTRUxFQ1QgKiBGUk9NIHNhbGVzIFdIRVJFIHNhbGVfZGF0ZSA9IENVUlJFTlRfREFURSAtIDE7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Step 1: Create the table
+CREATE TABLE sales (
+    id SERIAL PRIMARY KEY,
+    product VARCHAR(50),
+    quantity INT,
+    sale_date DATE
+);
+
+-- Step 2: Insert sample data
+INSERT INTO sales (product, quantity, sale_date)
+SELECT
+    'Product ' || i,
+    (RANDOM() * 10)::INT,
+    CURRENT_DATE - (RANDOM() * 100)::INT
+FROM generate_series(1, 1000) AS s(i);
+
+-- Step 3: Create an index
+CREATE INDEX idx_sale_date ON sales(sale_date);
+
+-- Step 4: Compare performance
+EXPLAIN ANALYZE SELECT * FROM sales WHERE sale_date = CURRENT_DATE - 1;</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Ignoring Execution Plans</strong>: Always analyze execution plans to understand query performance.</li>
+<li><strong>Overusing Indexes</strong>: While indexes improve read performance, they can degrade write performance. Use them judiciously.</li>
+<li><strong>Neglecting Maintenance</strong>: Regularly vacuum and analyze your database to keep it optimized.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essential tools and techniques for analyzing query performance in PostgreSQL. By understanding and utilizing execution plans, <code>pg_stat_statements</code>, and proper indexing, you can significantly improve the efficiency of your queries. Regular maintenance through vacuuming ensures that your database remains in optimal condition. In the next section, we will delve into indexing strategies to further enhance query performance.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-indexing-strategies' title="Indexing Strategies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-vacuuming-and-maintenance' title="Vacuuming and Maintenance">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

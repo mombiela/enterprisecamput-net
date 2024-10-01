@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 2: Log File Analyzer</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/09-02-log-file-analyzer" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/09-02-log-file-analyzer" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/09-02-log-file-analyzer" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bash/09-02-log-file-analyzer" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/09-02-log-file-analyzer" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-system-information-script' title="Project 1: System Information Script">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Project 2: Log File Analyzer</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-automated-backup-system' title="Project 3: Automated Backup System">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this project, you will create a Bash script to analyze log files. This is a common task for system administrators and developers to monitor system health, track errors, and gather usage statistics. By the end of this project, you will have a script that can parse log files, extract useful information, and present it in a readable format.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the structure of log files.</li>
+<li>Use text processing commands to extract and manipulate data.</li>
+<li>Implement conditional statements and loops to process log entries.</li>
+<li>Generate a summary report from the log data.</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Understanding Log Files</h2>
+<div class='content'><p>Log files are records of events that happen within a system or application. They typically contain information such as timestamps, event types, and messages.</p>
+<p><strong>Example Log File (sample.log):</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MjAyMy0xMC0wMSAxMDowMDowMCBJTkZPIFVzZXIgbG9naW4gc3VjY2Vzc2Z1bDogdXNlcjEKMjAyMy0xMC0wMSAxMDowNTowMCBFUlJPUiBGYWlsZWQgdG8gY29ubmVjdCB0byBkYXRhYmFzZQoyMDIzLTEwLTAxIDEwOjEwOjAwIElORk8gVXNlciBsb2dvdXQ6IHVzZXIxCjIwMjMtMTAtMDEgMTA6MTU6MDAgV0FSTiBEaXNrIHNwYWNlIGxvdwoyMDIzLTEwLTAxIDEwOjIwOjAwIElORk8gVXNlciBsb2dpbiBzdWNjZXNzZnVsOiB1c2VyMg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>2023-10-01 10:00:00 INFO User login successful: user1
+2023-10-01 10:05:00 ERROR Failed to connect to database
+2023-10-01 10:10:00 INFO User logout: user1
+2023-10-01 10:15:00 WARN Disk space low
+2023-10-01 10:20:00 INFO User login successful: user2</pre></div><div class='content'></div><h2>2. Setting Up the Script</h2>
+<div class='content'><p>Create a new Bash script file named <code>log_analyzer.sh</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgTG9nIGZpbGUgdG8gYW5hbHl6ZQpMT0dfRklMRT0ic2FtcGxlLmxvZyIKCiMgQ2hlY2sgaWYgdGhlIGxvZyBmaWxlIGV4aXN0cwppZiBbWyAhIC1mICIkTE9HX0ZJTEUiIF1dOyB0aGVuCiAgICBlY2hvICJMb2cgZmlsZSBub3QgZm91bmQhIgogICAgZXhpdCAxCmZpCgojIEluaXRpYWxpemUgY291bnRlcnMKaW5mb19jb3VudD0wCmVycm9yX2NvdW50PTAKd2Fybl9jb3VudD0wCgojIFByb2Nlc3MgZWFjaCBsaW5lIGluIHRoZSBsb2cgZmlsZQp3aGlsZSBJRlM9IHJlYWQgLXIgbGluZTsgZG8KICAgICMgRXh0cmFjdCB0aGUgbG9nIGxldmVsIChJTkZPLCBFUlJPUiwgV0FSTikKICAgIGxvZ19sZXZlbD0kKGVjaG8gIiRsaW5lIiB8IGF3ayAne3ByaW50ICQzfScpCiAgICAKICAgICMgSW5jcmVtZW50IHRoZSBjb3JyZXNwb25kaW5nIGNvdW50ZXIKICAgIGNhc2UgIiRsb2dfbGV2ZWwiIGluCiAgICAgICAgSU5GTykKICAgICAgICAgICAgKChpbmZvX2NvdW50KyspKQogICAgICAgICAgICA7OwogICAgICAgIEVSUk9SKQogICAgICAgICAgICAoKGVycm9yX2NvdW50KyspKQogICAgICAgICAgICA7OwogICAgICAgIFdBUk4pCiAgICAgICAgICAgICgod2Fybl9jb3VudCsrKSkKICAgICAgICAgICAgOzsKICAgIGVzYWMKZG9uZSA8ICIkTE9HX0ZJTEUiCgojIERpc3BsYXkgdGhlIHN1bW1hcnkgcmVwb3J0CmVjaG8gIkxvZyBGaWxlIEFuYWx5c2lzIFJlcG9ydCIKZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIgplY2hvICJJTkZPOiAkaW5mb19jb3VudCIKZWNobyAiRVJST1I6ICRlcnJvcl9jb3VudCIKZWNobyAiV0FSTjogJHdhcm5fY291bnQi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Log file to analyze
+LOG_FILE=&quot;sample.log&quot;
+
+# Check if the log file exists
+if [[ ! -f &quot;$LOG_FILE&quot; ]]; then
+    echo &quot;Log file not found!&quot;
+    exit 1
+fi
+
+# Initialize counters
+info_count=0
+error_count=0
+warn_count=0
+
+# Process each line in the log file
+while IFS= read -r line; do
+    # Extract the log level (INFO, ERROR, WARN)
+    log_level=$(echo &quot;$line&quot; | awk '{print $3}')
+    
+    # Increment the corresponding counter
+    case &quot;$log_level&quot; in
+        INFO)
+            ((info_count++))
+            ;;
+        ERROR)
+            ((error_count++))
+            ;;
+        WARN)
+            ((warn_count++))
+            ;;
+    esac
+done &lt; &quot;$LOG_FILE&quot;
+
+# Display the summary report
+echo &quot;Log File Analysis Report&quot;
+echo &quot;------------------------&quot;
+echo &quot;INFO: $info_count&quot;
+echo &quot;ERROR: $error_count&quot;
+echo &quot;WARN: $warn_count&quot;</pre></div><div class='content'></div><h2>3. Explanation of the Script</h2>
+<div class='content'><ul>
+<li><strong>Shebang (<code>#!/bin/bash</code>)</strong>: Specifies the script should be run in the Bash shell.</li>
+<li><strong>LOG_FILE</strong>: Variable holding the name of the log file to analyze.</li>
+<li><strong>File Existence Check</strong>: Ensures the log file exists before proceeding.</li>
+<li><strong>Counters</strong>: Variables to count occurrences of different log levels.</li>
+<li><strong>While Loop</strong>: Reads each line of the log file.</li>
+<li><strong>AWK Command</strong>: Extracts the log level from each line.</li>
+<li><strong>Case Statement</strong>: Increments the appropriate counter based on the log level.</li>
+<li><strong>Summary Report</strong>: Displays the counts of each log level.</li>
+</ul>
+</div><h2>4. Running the Script</h2>
+<div class='content'><p>Make the script executable and run it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2htb2QgK3ggbG9nX2FuYWx5emVyLnNoCi4vbG9nX2FuYWx5emVyLnNo"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>chmod +x log_analyzer.sh
+./log_analyzer.sh</pre></div><div class='content'></div><h2>5. Enhancements</h2>
+<div class='content'><p>To make the script more robust and feature-rich, consider the following enhancements:</p>
+<ul>
+<li><strong>Date Range Filtering</strong>: Allow the user to specify a date range to filter log entries.</li>
+<li><strong>Detailed Report</strong>: Include additional details such as the most frequent error messages.</li>
+<li><strong>Output to File</strong>: Save the summary report to a file instead of just printing it to the console.</li>
+</ul>
+</div><h2>6. Exercise</h2>
+<div class='content'><p>Modify the script to include the following features:</p>
+<ul>
+<li><strong>User Input</strong>: Prompt the user to enter the log file name.</li>
+<li><strong>Date Range Filtering</strong>: Allow the user to specify a start and end date to filter log entries.</li>
+</ul>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgUHJvbXB0IHRoZSB1c2VyIGZvciB0aGUgbG9nIGZpbGUgbmFtZQpyZWFkIC1wICJFbnRlciB0aGUgbG9nIGZpbGUgbmFtZTogIiBMT0dfRklMRQoKIyBDaGVjayBpZiB0aGUgbG9nIGZpbGUgZXhpc3RzCmlmIFtbICEgLWYgIiRMT0dfRklMRSIgXV07IHRoZW4KICAgIGVjaG8gIkxvZyBmaWxlIG5vdCBmb3VuZCEiCiAgICBleGl0IDEKZmkKCiMgUHJvbXB0IHRoZSB1c2VyIGZvciB0aGUgZGF0ZSByYW5nZQpyZWFkIC1wICJFbnRlciB0aGUgc3RhcnQgZGF0ZSAoWVlZWS1NTS1ERCk6ICIgU1RBUlRfREFURQpyZWFkIC1wICJFbnRlciB0aGUgZW5kIGRhdGUgKFlZWVktTU0tREQpOiAiIEVORF9EQVRFCgojIEluaXRpYWxpemUgY291bnRlcnMKaW5mb19jb3VudD0wCmVycm9yX2NvdW50PTAKd2Fybl9jb3VudD0wCgojIFByb2Nlc3MgZWFjaCBsaW5lIGluIHRoZSBsb2cgZmlsZQp3aGlsZSBJRlM9IHJlYWQgLXIgbGluZTsgZG8KICAgICMgRXh0cmFjdCB0aGUgZGF0ZSBhbmQgbG9nIGxldmVsCiAgICBsb2dfZGF0ZT0kKGVjaG8gIiRsaW5lIiB8IGF3ayAne3ByaW50ICQxfScpCiAgICBsb2dfbGV2ZWw9JChlY2hvICIkbGluZSIgfCBhd2sgJ3twcmludCAkM30nKQogICAgCiAgICAjIENoZWNrIGlmIHRoZSBsb2cgZGF0ZSBpcyB3aXRoaW4gdGhlIHNwZWNpZmllZCByYW5nZQogICAgaWYgW1sgIiRsb2dfZGF0ZSIgPiAiJFNUQVJUX0RBVEUiICYmICIkbG9nX2RhdGUiIDwgIiRFTkRfREFURSIgXV07IHRoZW4KICAgICAgICAjIEluY3JlbWVudCB0aGUgY29ycmVzcG9uZGluZyBjb3VudGVyCiAgICAgICAgY2FzZSAiJGxvZ19sZXZlbCIgaW4KICAgICAgICAgICAgSU5GTykKICAgICAgICAgICAgICAgICgoaW5mb19jb3VudCsrKSkKICAgICAgICAgICAgICAgIDs7CiAgICAgICAgICAgIEVSUk9SKQogICAgICAgICAgICAgICAgKChlcnJvcl9jb3VudCsrKSkKICAgICAgICAgICAgICAgIDs7CiAgICAgICAgICAgIFdBUk4pCiAgICAgICAgICAgICAgICAoKHdhcm5fY291bnQrKykpCiAgICAgICAgICAgICAgICA7OwogICAgICAgIGVzYWMKICAgIGZpCmRvbmUgPCAiJExPR19GSUxFIgoKIyBEaXNwbGF5IHRoZSBzdW1tYXJ5IHJlcG9ydAplY2hvICJMb2cgRmlsZSBBbmFseXNpcyBSZXBvcnQiCmVjaG8gIi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSIKZWNobyAiSU5GTzogJGluZm9fY291bnQiCmVjaG8gIkVSUk9SOiAkZXJyb3JfY291bnQiCmVjaG8gIldBUk46ICR3YXJuX2NvdW50Ig=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Prompt the user for the log file name
+read -p &quot;Enter the log file name: &quot; LOG_FILE
+
+# Check if the log file exists
+if [[ ! -f &quot;$LOG_FILE&quot; ]]; then
+    echo &quot;Log file not found!&quot;
+    exit 1
+fi
+
+# Prompt the user for the date range
+read -p &quot;Enter the start date (YYYY-MM-DD): &quot; START_DATE
+read -p &quot;Enter the end date (YYYY-MM-DD): &quot; END_DATE
+
+# Initialize counters
+info_count=0
+error_count=0
+warn_count=0
+
+# Process each line in the log file
+while IFS= read -r line; do
+    # Extract the date and log level
+    log_date=$(echo &quot;$line&quot; | awk '{print $1}')
+    log_level=$(echo &quot;$line&quot; | awk '{print $3}')
+    
+    # Check if the log date is within the specified range
+    if [[ &quot;$log_date&quot; &gt; &quot;$START_DATE&quot; &amp;&amp; &quot;$log_date&quot; &lt; &quot;$END_DATE&quot; ]]; then
+        # Increment the corresponding counter
+        case &quot;$log_level&quot; in
+            INFO)
+                ((info_count++))
+                ;;
+            ERROR)
+                ((error_count++))
+                ;;
+            WARN)
+                ((warn_count++))
+                ;;
+        esac
+    fi
+done &lt; &quot;$LOG_FILE&quot;
+
+# Display the summary report
+echo &quot;Log File Analysis Report&quot;
+echo &quot;------------------------&quot;
+echo &quot;INFO: $info_count&quot;
+echo &quot;ERROR: $error_count&quot;
+echo &quot;WARN: $warn_count&quot;</pre></div><div class='content'></div><h2>Conclusion</h2>
+<div class='content'><p>In this project, you learned how to create a Bash script to analyze log files. You used text processing commands, loops, and conditional statements to extract and summarize log data. This script can be further enhanced to meet specific requirements, making it a powerful tool for system administrators and developers.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-system-information-script' title="Project 1: System Information Script">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-automated-backup-system' title="Project 3: Automated Backup System">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

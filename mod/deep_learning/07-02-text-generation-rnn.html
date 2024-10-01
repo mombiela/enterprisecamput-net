@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Generation with RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/07-02-generacion-texto-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/07-02-generacion-texto-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/07-02-text-generation-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/deep_learning/07-02-text-generation-rnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/07-02-text-generation-rnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-image-classification-cnn' title="Image Classification with CNN">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Text Generation with RNN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-anomaly-detection-autoencoders' title="Anomaly Detection with Autoencoders">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Text generation is a fascinating application of Recurrent Neural Networks (RNNs), which are well-suited for sequential data. In this section, we will explore how RNNs can be used to generate text by learning patterns in a given dataset. We will cover the following topics:</p>
+<ol>
+<li>Understanding the basics of text generation using RNNs.</li>
+<li>Preparing the dataset for training.</li>
+<li>Building and training an RNN model for text generation.</li>
+<li>Generating text using the trained model.</li>
+<li>Practical exercises to reinforce the concepts.</li>
+</ol>
+</div><h1>1. Understanding the Basics of Text Generation Using RNNs</h1>
+<div class='content'><p>RNNs are a type of neural network designed to handle sequential data. They maintain a hidden state that captures information about previous elements in the sequence, making them ideal for tasks like text generation.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Sequential Data:</strong> Data where the order of elements is important, such as text.</li>
+<li><strong>Hidden State:</strong> A memory that captures information from previous steps in the sequence.</li>
+<li><strong>Training:</strong> The process of teaching the RNN to predict the next character or word in a sequence.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>Consider the sentence &quot;Hello, world!&quot;. An RNN can be trained to predict the next character in the sequence. Given the input &quot;Hello, worl&quot;, the RNN should predict &quot;d&quot;.</p>
+</div><h1>2. Preparing the Dataset for Training</h1>
+<div class='content'><p>Before training an RNN, we need to prepare the dataset. This involves tokenizing the text and creating sequences of input-output pairs.</p>
+</div><h2>Steps:</h2>
+<div class='content'><ol>
+<li><strong>Tokenization:</strong> Convert the text into a sequence of tokens (characters or words).</li>
+<li><strong>Sequence Creation:</strong> Create input-output pairs where the input is a sequence of tokens, and the output is the next token.</li>
+</ol>
+</div><h2>Example Code:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCB0ZW5zb3JmbG93IGFzIHRmCmZyb20gdGVuc29yZmxvdy5rZXJhcy5wcmVwcm9jZXNzaW5nLnRleHQgaW1wb3J0IFRva2VuaXplcgpmcm9tIHRlbnNvcmZsb3cua2VyYXMudXRpbHMgaW1wb3J0IHRvX2NhdGVnb3JpY2FsCgojIFNhbXBsZSB0ZXh0CnRleHQgPSAiSGVsbG8sIHdvcmxkISBUaGlzIGlzIGEgdGV4dCBnZW5lcmF0aW9uIGV4YW1wbGUuIgoKIyBUb2tlbml6YXRpb24KdG9rZW5pemVyID0gVG9rZW5pemVyKGNoYXJfbGV2ZWw9VHJ1ZSkKdG9rZW5pemVyLmZpdF9vbl90ZXh0cyhbdGV4dF0pCnRvdGFsX2NoYXJzID0gbGVuKHRva2VuaXplci53b3JkX2luZGV4KSArIDEKCiMgQ29udmVydCB0ZXh0IHRvIHNlcXVlbmNlIG9mIGludGVnZXJzCnRleHRfc2VxID0gdG9rZW5pemVyLnRleHRzX3RvX3NlcXVlbmNlcyhbdGV4dF0pWzBdCgojIENyZWF0ZSBpbnB1dC1vdXRwdXQgcGFpcnMKc2VxX2xlbmd0aCA9IDEwClggPSBbXQp5ID0gW10KZm9yIGkgaW4gcmFuZ2UobGVuKHRleHRfc2VxKSAtIHNlcV9sZW5ndGgpOgogICAgWC5hcHBlbmQodGV4dF9zZXFbaTppK3NlcV9sZW5ndGhdKQogICAgeS5hcHBlbmQodGV4dF9zZXFbaStzZXFfbGVuZ3RoXSkKClggPSBucC5hcnJheShYKQp5ID0gdG9fY2F0ZWdvcmljYWwoeSwgbnVtX2NsYXNzZXM9dG90YWxfY2hhcnMpCgpwcmludCgiSW5wdXQgc2VxdWVuY2VzOiIsIFguc2hhcGUpCnByaW50KCJPdXRwdXQgc2VxdWVuY2VzOiIsIHkuc2hhcGUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import tensorflow as tf
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.utils import to_categorical
+
+# Sample text
+text = &quot;Hello, world! This is a text generation example.&quot;
+
+# Tokenization
+tokenizer = Tokenizer(char_level=True)
+tokenizer.fit_on_texts([text])
+total_chars = len(tokenizer.word_index) + 1
+
+# Convert text to sequence of integers
+text_seq = tokenizer.texts_to_sequences([text])[0]
+
+# Create input-output pairs
+seq_length = 10
+X = []
+y = []
+for i in range(len(text_seq) - seq_length):
+    X.append(text_seq[i:i+seq_length])
+    y.append(text_seq[i+seq_length])
+
+X = np.array(X)
+y = to_categorical(y, num_classes=total_chars)
+
+print(&quot;Input sequences:&quot;, X.shape)
+print(&quot;Output sequences:&quot;, y.shape)</pre></div><div class='content'></div><h1>3. Building and Training an RNN Model for Text Generation</h1>
+<div class='content'><p>We will build an RNN model using TensorFlow and Keras. The model will consist of an embedding layer, an LSTM layer, and a dense output layer.</p>
+</div><h2>Example Code:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBFbWJlZGRpbmcsIExTVE0sIERlbnNlCgojIERlZmluZSB0aGUgbW9kZWwKbW9kZWwgPSBTZXF1ZW50aWFsKCkKbW9kZWwuYWRkKEVtYmVkZGluZyh0b3RhbF9jaGFycywgNTAsIGlucHV0X2xlbmd0aD1zZXFfbGVuZ3RoKSkKbW9kZWwuYWRkKExTVE0oMTAwLCByZXR1cm5fc2VxdWVuY2VzPUZhbHNlKSkKbW9kZWwuYWRkKERlbnNlKHRvdGFsX2NoYXJzLCBhY3RpdmF0aW9uPSdzb2Z0bWF4JykpCgojIENvbXBpbGUgdGhlIG1vZGVsCm1vZGVsLmNvbXBpbGUobG9zcz0nY2F0ZWdvcmljYWxfY3Jvc3NlbnRyb3B5Jywgb3B0aW1pemVyPSdhZGFtJywgbWV0cmljcz1bJ2FjY3VyYWN5J10pCgojIFRyYWluIHRoZSBtb2RlbAptb2RlbC5maXQoWCwgeSwgZXBvY2hzPTUwLCBiYXRjaF9zaXplPTMyKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, LSTM, Dense
+
+# Define the model
+model = Sequential()
+model.add(Embedding(total_chars, 50, input_length=seq_length))
+model.add(LSTM(100, return_sequences=False))
+model.add(Dense(total_chars, activation='softmax'))
+
+# Compile the model
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+# Train the model
+model.fit(X, y, epochs=50, batch_size=32)</pre></div><div class='content'></div><h1>4. Generating Text Using the Trained Model</h1>
+<div class='content'><p>Once the model is trained, we can use it to generate text by providing a seed sequence and predicting the next character iteratively.</p>
+</div><h2>Example Code:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGdlbmVyYXRlX3RleHQobW9kZWwsIHRva2VuaXplciwgc2VxX2xlbmd0aCwgc2VlZF90ZXh0LCBudW1fY2hhcnMpOgogICAgcmVzdWx0ID0gc2VlZF90ZXh0CiAgICBmb3IgXyBpbiByYW5nZShudW1fY2hhcnMpOgogICAgICAgICMgQ29udmVydCBzZWVkIHRleHQgdG8gc2VxdWVuY2Ugb2YgaW50ZWdlcnMKICAgICAgICBlbmNvZGVkID0gdG9rZW5pemVyLnRleHRzX3RvX3NlcXVlbmNlcyhbc2VlZF90ZXh0XSlbMF0KICAgICAgICBlbmNvZGVkID0gbnAuYXJyYXkoZW5jb2RlZFstc2VxX2xlbmd0aDpdKS5yZXNoYXBlKDEsIHNlcV9sZW5ndGgpCiAgICAgICAgCiAgICAgICAgIyBQcmVkaWN0IHRoZSBuZXh0IGNoYXJhY3RlcgogICAgICAgIHByZWRpY3RlZCA9IG1vZGVsLnByZWRpY3QoZW5jb2RlZCwgdmVyYm9zZT0wKQogICAgICAgIG5leHRfY2hhciA9IHRva2VuaXplci5pbmRleF93b3JkW25wLmFyZ21heChwcmVkaWN0ZWQpXQogICAgICAgIAogICAgICAgICMgQXBwZW5kIHRoZSBwcmVkaWN0ZWQgY2hhcmFjdGVyIHRvIHRoZSBzZWVkIHRleHQKICAgICAgICBzZWVkX3RleHQgKz0gbmV4dF9jaGFyCiAgICAgICAgcmVzdWx0ICs9IG5leHRfY2hhcgogICAgcmV0dXJuIHJlc3VsdAoKIyBHZW5lcmF0ZSB0ZXh0CnNlZWRfdGV4dCA9ICJIZWxsbywgd29ybCIKZ2VuZXJhdGVkX3RleHQgPSBnZW5lcmF0ZV90ZXh0KG1vZGVsLCB0b2tlbml6ZXIsIHNlcV9sZW5ndGgsIHNlZWRfdGV4dCwgNTApCnByaW50KCJHZW5lcmF0ZWQgdGV4dDoiLCBnZW5lcmF0ZWRfdGV4dCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def generate_text(model, tokenizer, seq_length, seed_text, num_chars):
+    result = seed_text
+    for _ in range(num_chars):
+        # Convert seed text to sequence of integers
+        encoded = tokenizer.texts_to_sequences([seed_text])[0]
+        encoded = np.array(encoded[-seq_length:]).reshape(1, seq_length)
+        
+        # Predict the next character
+        predicted = model.predict(encoded, verbose=0)
+        next_char = tokenizer.index_word[np.argmax(predicted)]
+        
+        # Append the predicted character to the seed text
+        seed_text += next_char
+        result += next_char
+    return result
+
+# Generate text
+seed_text = &quot;Hello, worl&quot;
+generated_text = generate_text(model, tokenizer, seq_length, seed_text, 50)
+print(&quot;Generated text:&quot;, generated_text)</pre></div><div class='content'></div><h1>5. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Train an RNN on a Different Dataset</h2>
+<div class='content'><ul>
+<li>Use a different text dataset (e.g., a book or article) to train an RNN model.</li>
+<li>Follow the steps outlined above to tokenize the text, create sequences, build and train the model, and generate text.</li>
+</ul>
+</div><h2>Exercise 2: Experiment with Model Parameters</h2>
+<div class='content'><ul>
+<li>Modify the model architecture by changing the number of LSTM units or adding more layers.</li>
+<li>Experiment with different sequence lengths and embedding dimensions.</li>
+<li>Observe how these changes affect the quality of the generated text.</li>
+</ul>
+</div><h2>Exercise 3: Implement a Character-Level RNN</h2>
+<div class='content'><ul>
+<li>Implement a character-level RNN for text generation.</li>
+<li>Use the same steps but tokenize the text at the character level instead of the word level.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored how to use RNNs for text generation. We covered the basics of RNNs, prepared a dataset, built and trained an RNN model, and generated text using the trained model. By completing the practical exercises, you should have a solid understanding of how to implement and experiment with text generation models using RNNs.</p>
+<p>Next, we will delve into anomaly detection with autoencoders, another exciting application of deep learning.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-image-classification-cnn' title="Image Classification with CNN">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-anomaly-detection-autoencoders' title="Anomaly Detection with Autoencoders">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

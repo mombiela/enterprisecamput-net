@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Positioning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/06-03-file-positioning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/06-03-file-positioning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/06-03-file-positioning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fortran/06-03-file-positioning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/06-03-file-positioning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-writing-to-files' title="Writing to Files">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">File Positioning</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-binary-file-operations' title="Binary File Operations">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to manage file positioning in Fortran. File positioning is crucial when you need to read from or write to specific locations within a file. This is particularly useful for large files where you want to avoid reading the entire file into memory.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>File Positioning Basics</strong>:</p>
+<ul>
+<li>Understanding the file pointer.</li>
+<li>Moving the file pointer to a specific location.</li>
+<li>Reading from and writing to specific positions in a file.</li>
+</ul>
+</li>
+<li>
+<p><strong>Fortran Intrinsic Functions for File Positioning</strong>:</p>
+<ul>
+<li><code>REWIND</code>: Moves the file pointer to the beginning of the file.</li>
+<li><code>BACKSPACE</code>: Moves the file pointer one record back.</li>
+<li><code>ENDFILE</code>: Marks the end of the file.</li>
+</ul>
+</li>
+<li>
+<p><strong>Direct Access Files</strong>:</p>
+<ul>
+<li>Using direct access to read/write specific records.</li>
+<li>Understanding record length and its importance in direct access.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Using REWIND</h2>
+<div class='content'><p>The <code>REWIND</code> statement moves the file pointer to the beginning of the file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFJPR1JBTSBSZXdpbmRFeGFtcGxlCiAgSU1QTElDSVQgTk9ORQogIElOVEVHRVIgOjogaQogIENIQVJBQ1RFUihMRU49MjApIDo6IGxpbmUKCiAgT1BFTihVTklUPTEwLCBGSUxFPSdleGFtcGxlLnR4dCcsIFNUQVRVUz0nT0xEJykKCiAgISBSZWFkIHRoZSBmaXJzdCBsaW5lCiAgUkVBRCgxMCwgJyhBKScpIGxpbmUKICBQUklOVCAqLCAnRmlyc3QgcmVhZDogJywgbGluZQoKICAhIFJld2luZCB0aGUgZmlsZQogIFJFV0lORCgxMCkKCiAgISBSZWFkIHRoZSBmaXJzdCBsaW5lIGFnYWluCiAgUkVBRCgxMCwgJyhBKScpIGxpbmUKICBQUklOVCAqLCAnU2Vjb25kIHJlYWQgYWZ0ZXIgcmV3aW5kOiAnLCBsaW5lCgogIENMT1NFKDEwKQpFTkQgUFJPR1JBTSBSZXdpbmRFeGFtcGxl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PROGRAM RewindExample
+  IMPLICIT NONE
+  INTEGER :: i
+  CHARACTER(LEN=20) :: line
+
+  OPEN(UNIT=10, FILE='example.txt', STATUS='OLD')
+
+  ! Read the first line
+  READ(10, '(A)') line
+  PRINT *, 'First read: ', line
+
+  ! Rewind the file
+  REWIND(10)
+
+  ! Read the first line again
+  READ(10, '(A)') line
+  PRINT *, 'Second read after rewind: ', line
+
+  CLOSE(10)
+END PROGRAM RewindExample</pre></div><div class='content'></div><h2>Example 2: Using BACKSPACE</h2>
+<div class='content'><p>The <code>BACKSPACE</code> statement moves the file pointer one record back.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFJPR1JBTSBCYWNrc3BhY2VFeGFtcGxlCiAgSU1QTElDSVQgTk9ORQogIElOVEVHRVIgOjogaQogIENIQVJBQ1RFUihMRU49MjApIDo6IGxpbmUKCiAgT1BFTihVTklUPTEwLCBGSUxFPSdleGFtcGxlLnR4dCcsIFNUQVRVUz0nT0xEJykKCiAgISBSZWFkIHRoZSBmaXJzdCBsaW5lCiAgUkVBRCgxMCwgJyhBKScpIGxpbmUKICBQUklOVCAqLCAnRmlyc3QgcmVhZDogJywgbGluZQoKICAhIFJlYWQgdGhlIHNlY29uZCBsaW5lCiAgUkVBRCgxMCwgJyhBKScpIGxpbmUKICBQUklOVCAqLCAnU2Vjb25kIHJlYWQ6ICcsIGxpbmUKCiAgISBCYWNrc3BhY2UgdG8gdGhlIGZpcnN0IGxpbmUKICBCQUNLU1BBQ0UoMTApCgogICEgUmVhZCB0aGUgZmlyc3QgbGluZSBhZ2FpbgogIFJFQUQoMTAsICcoQSknKSBsaW5lCiAgUFJJTlQgKiwgJ1JlYWQgYWZ0ZXIgYmFja3NwYWNlOiAnLCBsaW5lCgogIENMT1NFKDEwKQpFTkQgUFJPR1JBTSBCYWNrc3BhY2VFeGFtcGxl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PROGRAM BackspaceExample
+  IMPLICIT NONE
+  INTEGER :: i
+  CHARACTER(LEN=20) :: line
+
+  OPEN(UNIT=10, FILE='example.txt', STATUS='OLD')
+
+  ! Read the first line
+  READ(10, '(A)') line
+  PRINT *, 'First read: ', line
+
+  ! Read the second line
+  READ(10, '(A)') line
+  PRINT *, 'Second read: ', line
+
+  ! Backspace to the first line
+  BACKSPACE(10)
+
+  ! Read the first line again
+  READ(10, '(A)') line
+  PRINT *, 'Read after backspace: ', line
+
+  CLOSE(10)
+END PROGRAM BackspaceExample</pre></div><div class='content'></div><h2>Example 3: Using Direct Access</h2>
+<div class='content'><p>Direct access allows you to read/write specific records directly.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFJPR1JBTSBEaXJlY3RBY2Nlc3NFeGFtcGxlCiAgSU1QTElDSVQgTk9ORQogIElOVEVHRVIgOjogaQogIENIQVJBQ1RFUihMRU49MjApIDo6IGxpbmUKCiAgT1BFTihVTklUPTEwLCBGSUxFPSdleGFtcGxlLnR4dCcsIFNUQVRVUz0nT0xEJywgQUNDRVNTPSdESVJFQ1QnLCBSRUNMPTIwKQoKICAhIFdyaXRlIHRvIHRoZSA1dGggcmVjb3JkCiAgV1JJVEUoMTAsIFJFQz01KSAnVGhpcyBpcyByZWNvcmQgNScKCiAgISBSZWFkIHRoZSA1dGggcmVjb3JkCiAgUkVBRCgxMCwgUkVDPTUpIGxpbmUKICBQUklOVCAqLCAnUmVhZCBmcm9tIHJlY29yZCA1OiAnLCBsaW5lCgogIENMT1NFKDEwKQpFTkQgUFJPR1JBTSBEaXJlY3RBY2Nlc3NFeGFtcGxl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PROGRAM DirectAccessExample
+  IMPLICIT NONE
+  INTEGER :: i
+  CHARACTER(LEN=20) :: line
+
+  OPEN(UNIT=10, FILE='example.txt', STATUS='OLD', ACCESS='DIRECT', RECL=20)
+
+  ! Write to the 5th record
+  WRITE(10, REC=5) 'This is record 5'
+
+  ! Read the 5th record
+  READ(10, REC=5) line
+  PRINT *, 'Read from record 5: ', line
+
+  CLOSE(10)
+END PROGRAM DirectAccessExample</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Rewind and Read</h2>
+<div class='content'><ol>
+<li>
+<p>Create a file named <code>data.txt</code> with the following content:</p>
+<pre><code>Line 1
+Line 2
+Line 3
+</code></pre>
+</li>
+<li>
+<p>Write a Fortran program that:</p>
+<ul>
+<li>Opens the file.</li>
+<li>Reads and prints the first line.</li>
+<li>Rewinds the file.</li>
+<li>Reads and prints the first line again.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFJPR1JBTSBFeGVyY2lzZTEKICBJTVBMSUNJVCBOT05FCiAgQ0hBUkFDVEVSKExFTj0yMCkgOjogbGluZQoKICBPUEVOKFVOSVQ9MTAsIEZJTEU9J2RhdGEudHh0JywgU1RBVFVTPSdPTEQnKQoKICAhIFJlYWQgdGhlIGZpcnN0IGxpbmUKICBSRUFEKDEwLCAnKEEpJykgbGluZQogIFBSSU5UICosICdGaXJzdCByZWFkOiAnLCBsaW5lCgogICEgUmV3aW5kIHRoZSBmaWxlCiAgUkVXSU5EKDEwKQoKICAhIFJlYWQgdGhlIGZpcnN0IGxpbmUgYWdhaW4KICBSRUFEKDEwLCAnKEEpJykgbGluZQogIFBSSU5UICosICdTZWNvbmQgcmVhZCBhZnRlciByZXdpbmQ6ICcsIGxpbmUKCiAgQ0xPU0UoMTApCkVORCBQUk9HUkFNIEV4ZXJjaXNlMQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PROGRAM Exercise1
+  IMPLICIT NONE
+  CHARACTER(LEN=20) :: line
+
+  OPEN(UNIT=10, FILE='data.txt', STATUS='OLD')
+
+  ! Read the first line
+  READ(10, '(A)') line
+  PRINT *, 'First read: ', line
+
+  ! Rewind the file
+  REWIND(10)
+
+  ! Read the first line again
+  READ(10, '(A)') line
+  PRINT *, 'Second read after rewind: ', line
+
+  CLOSE(10)
+END PROGRAM Exercise1</pre></div><div class='content'></div><h2>Exercise 2: Direct Access Read/Write</h2>
+<div class='content'><ol>
+<li>Create a file named <code>records.txt</code> with at least 10 lines of text.</li>
+<li>Write a Fortran program that:
+<ul>
+<li>Opens the file in direct access mode.</li>
+<li>Writes a new line to the 3rd record.</li>
+<li>Reads and prints the 3rd record.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFJPR1JBTSBFeGVyY2lzZTIKICBJTVBMSUNJVCBOT05FCiAgQ0hBUkFDVEVSKExFTj0yMCkgOjogbGluZQoKICBPUEVOKFVOSVQ9MTAsIEZJTEU9J3JlY29yZHMudHh0JywgU1RBVFVTPSdPTEQnLCBBQ0NFU1M9J0RJUkVDVCcsIFJFQ0w9MjApCgogICEgV3JpdGUgdG8gdGhlIDNyZCByZWNvcmQKICBXUklURSgxMCwgUkVDPTMpICdOZXcgcmVjb3JkIDMnCgogICEgUmVhZCB0aGUgM3JkIHJlY29yZAogIFJFQUQoMTAsIFJFQz0zKSBsaW5lCiAgUFJJTlQgKiwgJ1JlYWQgZnJvbSByZWNvcmQgMzogJywgbGluZQoKICBDTE9TRSgxMCkKRU5EIFBST0dSQU0gRXhlcmNpc2Uy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PROGRAM Exercise2
+  IMPLICIT NONE
+  CHARACTER(LEN=20) :: line
+
+  OPEN(UNIT=10, FILE='records.txt', STATUS='OLD', ACCESS='DIRECT', RECL=20)
+
+  ! Write to the 3rd record
+  WRITE(10, REC=3) 'New record 3'
+
+  ! Read the 3rd record
+  READ(10, REC=3) line
+  PRINT *, 'Read from record 3: ', line
+
+  CLOSE(10)
+END PROGRAM Exercise2</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Record Length</strong>: When using direct access, ensure the record length (<code>RECL</code>) matches the length of the records in the file.</li>
+<li><strong>File Status</strong>: Always check the file status (<code>STATUS</code>) when opening files to avoid overwriting or failing to open files.</li>
+<li><strong>File Positioning Commands</strong>: Use <code>REWIND</code>, <code>BACKSPACE</code>, and <code>ENDFILE</code> appropriately to manage file pointers effectively.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of file positioning in Fortran, including how to use <code>REWIND</code>, <code>BACKSPACE</code>, and direct access methods. These techniques are essential for efficient file handling, especially when dealing with large files. In the next section, we will delve into binary file operations, which will further enhance your file handling capabilities in Fortran.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-writing-to-files' title="Writing to Files">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-binary-file-operations' title="Binary File Operations">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

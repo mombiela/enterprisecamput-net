@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/10-01-unit-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/10-01-unit-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/10-01-unit-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular2/10-01-unit-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/10-01-unit-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-ngrx-effects' title="NgRx Effects">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Unit Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-component-testing' title="Component Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Unit testing is a crucial part of software development that ensures individual units of code (such as functions, methods, or classes) work as expected. In Angular, unit testing is typically done using Jasmine and Karma.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Unit Testing Frameworks</strong>:</p>
+<ul>
+<li><strong>Jasmine</strong>: A behavior-driven development framework for testing JavaScript code.</li>
+<li><strong>Karma</strong>: A test runner that allows you to execute your tests in various browsers.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Bed</strong>:</p>
+<ul>
+<li>Angular's <code>TestBed</code> is a utility that provides a way to configure and initialize an environment for unit testing Angular components and services.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mocking</strong>:</p>
+<ul>
+<li>Creating mock objects to simulate the behavior of real objects in a controlled way.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up Unit Testing</h1>
+<div class='content'><p>Angular projects created with the Angular CLI come with Jasmine and Karma pre-configured. To run tests, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmcgdGVzdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ng test</pre></div><div class='content'><p>This command will start the Karma test runner and execute all the tests in your project.</p>
+</div><h1>Writing Your First Unit Test</h1>
+<div class='content'><p>Let's start with a simple example of a unit test for a service.</p>
+</div><h2>Example: Testing a Service</h2>
+<div class='content'><p>Consider a simple <code>CalculatorService</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY2FsY3VsYXRvci5zZXJ2aWNlLnRzCmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKCkBJbmplY3RhYmxlKHsKICBwcm92aWRlZEluOiAncm9vdCcKfSkKZXhwb3J0IGNsYXNzIENhbGN1bGF0b3JTZXJ2aWNlIHsKICBhZGQoYTogbnVtYmVyLCBiOiBudW1iZXIpOiBudW1iZXIgewogICAgcmV0dXJuIGEgKyBiOwogIH0KCiAgc3VidHJhY3QoYTogbnVtYmVyLCBiOiBudW1iZXIpOiBudW1iZXIgewogICAgcmV0dXJuIGEgLSBiOwogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// calculator.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CalculatorService {
+  add(a: number, b: number): number {
+    return a + b;
+  }
+
+  subtract(a: number, b: number): number {
+    return a - b;
+  }
+}</pre></div><div class='content'></div><h2>Writing Tests for CalculatorService</h2>
+<div class='content'><p>Create a test file <code>calculator.service.spec.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY2FsY3VsYXRvci5zZXJ2aWNlLnNwZWMudHMKaW1wb3J0IHsgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IENhbGN1bGF0b3JTZXJ2aWNlIH0gZnJvbSAnLi9jYWxjdWxhdG9yLnNlcnZpY2UnOwoKZGVzY3JpYmUoJ0NhbGN1bGF0b3JTZXJ2aWNlJywgKCkgPT4gewogIGxldCBzZXJ2aWNlOiBDYWxjdWxhdG9yU2VydmljZTsKCiAgYmVmb3JlRWFjaCgoKSA9PiB7CiAgICBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoe30pOwogICAgc2VydmljZSA9IFRlc3RCZWQuaW5qZWN0KENhbGN1bGF0b3JTZXJ2aWNlKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBiZSBjcmVhdGVkJywgKCkgPT4gewogICAgZXhwZWN0KHNlcnZpY2UpLnRvQmVUcnV0aHkoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBhZGQgdHdvIG51bWJlcnMnLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VydmljZS5hZGQoMiwgMykpLnRvRXF1YWwoNSk7CiAgfSk7CgogIGl0KCdzaG91bGQgc3VidHJhY3QgdHdvIG51bWJlcnMnLCAoKSA9PiB7CiAgICBleHBlY3Qoc2VydmljZS5zdWJ0cmFjdCg1LCAzKSkudG9FcXVhbCgyKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// calculator.service.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { CalculatorService } from './calculator.service';
+
+describe('CalculatorService', () =&gt; {
+  let service: CalculatorService;
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(CalculatorService);
+  });
+
+  it('should be created', () =&gt; {
+    expect(service).toBeTruthy();
+  });
+
+  it('should add two numbers', () =&gt; {
+    expect(service.add(2, 3)).toEqual(5);
+  });
+
+  it('should subtract two numbers', () =&gt; {
+    expect(service.subtract(5, 3)).toEqual(2);
+  });
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>describe</code></strong>: A Jasmine function that groups related tests.</li>
+<li><strong><code>beforeEach</code></strong>: A function that runs before each test to set up the testing environment.</li>
+<li><strong><code>it</code></strong>: A function that defines an individual test case.</li>
+<li><strong><code>expect</code></strong>: A function that defines an assertion.</li>
+</ul>
+</div><h1>Testing Components</h1>
+<div class='content'><p>Testing components involves more complexity due to the need to handle templates, styles, and component interactions.</p>
+</div><h2>Example: Testing a Component</h2>
+<div class='content'><p>Consider a simple <code>CounterComponent</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY291bnRlci5jb21wb25lbnQudHMKaW1wb3J0IHsgQ29tcG9uZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC1jb3VudGVyJywKICB0ZW1wbGF0ZTogYAogICAgPGJ1dHRvbiAoY2xpY2spPSJpbmNyZW1lbnQoKSI+SW5jcmVtZW50PC9idXR0b24+CiAgICA8cD57eyBjb3VudCB9fTwvcD4KICBgCn0pCmV4cG9ydCBjbGFzcyBDb3VudGVyQ29tcG9uZW50IHsKICBjb3VudCA9IDA7CgogIGluY3JlbWVudCgpIHsKICAgIHRoaXMuY291bnQrKzsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// counter.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-counter',
+  template: `
+    &lt;button (click)=&quot;increment()&quot;&gt;Increment&lt;/button&gt;
+    &lt;p&gt;{{ count }}&lt;/p&gt;
+  `
+})
+export class CounterComponent {
+  count = 0;
+
+  increment() {
+    this.count++;
+  }
+}</pre></div><div class='content'></div><h2>Writing Tests for CounterComponent</h2>
+<div class='content'><p>Create a test file <code>counter.component.spec.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY291bnRlci5jb21wb25lbnQuc3BlYy50cwppbXBvcnQgeyBDb21wb25lbnRGaXh0dXJlLCBUZXN0QmVkIH0gZnJvbSAnQGFuZ3VsYXIvY29yZS90ZXN0aW5nJzsKaW1wb3J0IHsgQ291bnRlckNvbXBvbmVudCB9IGZyb20gJy4vY291bnRlci5jb21wb25lbnQnOwppbXBvcnQgeyBCeSB9IGZyb20gJ0Bhbmd1bGFyL3BsYXRmb3JtLWJyb3dzZXInOwoKZGVzY3JpYmUoJ0NvdW50ZXJDb21wb25lbnQnLCAoKSA9PiB7CiAgbGV0IGNvbXBvbmVudDogQ291bnRlckNvbXBvbmVudDsKICBsZXQgZml4dHVyZTogQ29tcG9uZW50Rml4dHVyZTxDb3VudGVyQ29tcG9uZW50PjsKCiAgYmVmb3JlRWFjaChhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoewogICAgICBkZWNsYXJhdGlvbnM6IFsgQ291bnRlckNvbXBvbmVudCBdCiAgICB9KQogICAgLmNvbXBpbGVDb21wb25lbnRzKCk7CiAgfSk7CgogIGJlZm9yZUVhY2goKCkgPT4gewogICAgZml4dHVyZSA9IFRlc3RCZWQuY3JlYXRlQ29tcG9uZW50KENvdW50ZXJDb21wb25lbnQpOwogICAgY29tcG9uZW50ID0gZml4dHVyZS5jb21wb25lbnRJbnN0YW5jZTsKICAgIGZpeHR1cmUuZGV0ZWN0Q2hhbmdlcygpOwogIH0pOwoKICBpdCgnc2hvdWxkIGNyZWF0ZScsICgpID0+IHsKICAgIGV4cGVjdChjb21wb25lbnQpLnRvQmVUcnV0aHkoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBpbmNyZW1lbnQgY291bnQgb24gYnV0dG9uIGNsaWNrJywgKCkgPT4gewogICAgY29uc3QgYnV0dG9uID0gZml4dHVyZS5kZWJ1Z0VsZW1lbnQucXVlcnkoQnkuY3NzKCdidXR0b24nKSkubmF0aXZlRWxlbWVudDsKICAgIGJ1dHRvbi5jbGljaygpOwogICAgZml4dHVyZS5kZXRlY3RDaGFuZ2VzKCk7CiAgICBjb25zdCBjb3VudEVsZW1lbnQgPSBmaXh0dXJlLmRlYnVnRWxlbWVudC5xdWVyeShCeS5jc3MoJ3AnKSkubmF0aXZlRWxlbWVudDsKICAgIGV4cGVjdChjb3VudEVsZW1lbnQudGV4dENvbnRlbnQpLnRvQmUoJzEnKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// counter.component.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CounterComponent } from './counter.component';
+import { By } from '@angular/platform-browser';
+
+describe('CounterComponent', () =&gt; {
+  let component: CounterComponent;
+  let fixture: ComponentFixture&lt;CounterComponent&gt;;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ CounterComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(CounterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should increment count on button click', () =&gt; {
+    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    button.click();
+    fixture.detectChanges();
+    const countElement = fixture.debugElement.query(By.css('p')).nativeElement;
+    expect(countElement.textContent).toBe('1');
+  });
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>ComponentFixture</code></strong>: A wrapper around a component and its template.</li>
+<li><strong><code>By</code></strong>: A utility to query elements in the component's template.</li>
+<li><strong><code>fixture.detectChanges()</code></strong>: Triggers change detection to update the template.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Testing a Service</h2>
+<div class='content'><p>Create a <code>MathService</code> with methods for multiplication and division. Write unit tests to verify the correctness of these methods.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWF0aC5zZXJ2aWNlLnRzCmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKCkBJbmplY3RhYmxlKHsKICBwcm92aWRlZEluOiAncm9vdCcKfSkKZXhwb3J0IGNsYXNzIE1hdGhTZXJ2aWNlIHsKICBtdWx0aXBseShhOiBudW1iZXIsIGI6IG51bWJlcik6IG51bWJlciB7CiAgICByZXR1cm4gYSAqIGI7CiAgfQoKICBkaXZpZGUoYTogbnVtYmVyLCBiOiBudW1iZXIpOiBudW1iZXIgewogICAgaWYgKGIgPT09IDApIHsKICAgICAgdGhyb3cgbmV3IEVycm9yKCdEaXZpc2lvbiBieSB6ZXJvJyk7CiAgICB9CiAgICByZXR1cm4gYSAvIGI7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// math.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MathService {
+  multiply(a: number, b: number): number {
+    return a * b;
+  }
+
+  divide(a: number, b: number): number {
+    if (b === 0) {
+      throw new Error('Division by zero');
+    }
+    return a / b;
+  }
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWF0aC5zZXJ2aWNlLnNwZWMudHMKaW1wb3J0IHsgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IE1hdGhTZXJ2aWNlIH0gZnJvbSAnLi9tYXRoLnNlcnZpY2UnOwoKZGVzY3JpYmUoJ01hdGhTZXJ2aWNlJywgKCkgPT4gewogIGxldCBzZXJ2aWNlOiBNYXRoU2VydmljZTsKCiAgYmVmb3JlRWFjaCgoKSA9PiB7CiAgICBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoe30pOwogICAgc2VydmljZSA9IFRlc3RCZWQuaW5qZWN0KE1hdGhTZXJ2aWNlKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBiZSBjcmVhdGVkJywgKCkgPT4gewogICAgZXhwZWN0KHNlcnZpY2UpLnRvQmVUcnV0aHkoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBtdWx0aXBseSB0d28gbnVtYmVycycsICgpID0+IHsKICAgIGV4cGVjdChzZXJ2aWNlLm11bHRpcGx5KDIsIDMpKS50b0VxdWFsKDYpOwogIH0pOwoKICBpdCgnc2hvdWxkIGRpdmlkZSB0d28gbnVtYmVycycsICgpID0+IHsKICAgIGV4cGVjdChzZXJ2aWNlLmRpdmlkZSg2LCAzKSkudG9FcXVhbCgyKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCB0aHJvdyBlcnJvciBvbiBkaXZpc2lvbiBieSB6ZXJvJywgKCkgPT4gewogICAgZXhwZWN0KCgpID0+IHNlcnZpY2UuZGl2aWRlKDYsIDApKS50b1Rocm93KG5ldyBFcnJvcignRGl2aXNpb24gYnkgemVybycpKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// math.service.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { MathService } from './math.service';
+
+describe('MathService', () =&gt; {
+  let service: MathService;
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(MathService);
+  });
+
+  it('should be created', () =&gt; {
+    expect(service).toBeTruthy();
+  });
+
+  it('should multiply two numbers', () =&gt; {
+    expect(service.multiply(2, 3)).toEqual(6);
+  });
+
+  it('should divide two numbers', () =&gt; {
+    expect(service.divide(6, 3)).toEqual(2);
+  });
+
+  it('should throw error on division by zero', () =&gt; {
+    expect(() =&gt; service.divide(6, 0)).toThrow(new Error('Division by zero'));
+  });
+});</pre></div><div class='content'></div><h2>Exercise 2: Testing a Component</h2>
+<div class='content'><p>Create a <code>GreetingComponent</code> that displays a greeting message. Write unit tests to verify the message is displayed correctly.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gZ3JlZXRpbmcuY29tcG9uZW50LnRzCmltcG9ydCB7IENvbXBvbmVudCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQENvbXBvbmVudCh7CiAgc2VsZWN0b3I6ICdhcHAtZ3JlZXRpbmcnLAogIHRlbXBsYXRlOiBgPHA+e3sgbWVzc2FnZSB9fTwvcD5gCn0pCmV4cG9ydCBjbGFzcyBHcmVldGluZ0NvbXBvbmVudCB7CiAgbWVzc2FnZSA9ICdIZWxsbywgV29ybGQhJzsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// greeting.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-greeting',
+  template: `&lt;p&gt;{{ message }}&lt;/p&gt;`
+})
+export class GreetingComponent {
+  message = 'Hello, World!';
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gZ3JlZXRpbmcuY29tcG9uZW50LnNwZWMudHMKaW1wb3J0IHsgQ29tcG9uZW50Rml4dHVyZSwgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IEdyZWV0aW5nQ29tcG9uZW50IH0gZnJvbSAnLi9ncmVldGluZy5jb21wb25lbnQnOwoKZGVzY3JpYmUoJ0dyZWV0aW5nQ29tcG9uZW50JywgKCkgPT4gewogIGxldCBjb21wb25lbnQ6IEdyZWV0aW5nQ29tcG9uZW50OwogIGxldCBmaXh0dXJlOiBDb21wb25lbnRGaXh0dXJlPEdyZWV0aW5nQ29tcG9uZW50PjsKCiAgYmVmb3JlRWFjaChhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoewogICAgICBkZWNsYXJhdGlvbnM6IFsgR3JlZXRpbmdDb21wb25lbnQgXQogICAgfSkKICAgIC5jb21waWxlQ29tcG9uZW50cygpOwogIH0pOwoKICBiZWZvcmVFYWNoKCgpID0+IHsKICAgIGZpeHR1cmUgPSBUZXN0QmVkLmNyZWF0ZUNvbXBvbmVudChHcmVldGluZ0NvbXBvbmVudCk7CiAgICBjb21wb25lbnQgPSBmaXh0dXJlLmNvbXBvbmVudEluc3RhbmNlOwogICAgZml4dHVyZS5kZXRlY3RDaGFuZ2VzKCk7CiAgfSk7CgogIGl0KCdzaG91bGQgY3JlYXRlJywgKCkgPT4gewogICAgZXhwZWN0KGNvbXBvbmVudCkudG9CZVRydXRoeSgpOwogIH0pOwoKICBpdCgnc2hvdWxkIGRpc3BsYXkgZ3JlZXRpbmcgbWVzc2FnZScsICgpID0+IHsKICAgIGNvbnN0IG1lc3NhZ2VFbGVtZW50ID0gZml4dHVyZS5kZWJ1Z0VsZW1lbnQucXVlcnkoQnkuY3NzKCdwJykpLm5hdGl2ZUVsZW1lbnQ7CiAgICBleHBlY3QobWVzc2FnZUVsZW1lbnQudGV4dENvbnRlbnQpLnRvQmUoJ0hlbGxvLCBXb3JsZCEnKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// greeting.component.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { GreetingComponent } from './greeting.component';
+
+describe('GreetingComponent', () =&gt; {
+  let component: GreetingComponent;
+  let fixture: ComponentFixture&lt;GreetingComponent&gt;;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ GreetingComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(GreetingComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display greeting message', () =&gt; {
+    const messageElement = fixture.debugElement.query(By.css('p')).nativeElement;
+    expect(messageElement.textContent).toBe('Hello, World!');
+  });
+});</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not using <code>fixture.detectChanges()</code></strong>: Always call <code>fixture.detectChanges()</code> after making changes to the component to ensure the template is updated.</li>
+<li><strong>Mocking dependencies</strong>: Use Angular's <code>TestBed</code> to provide mock services or dependencies to isolate the unit being tested.</li>
+<li><strong>Testing implementation details</strong>: Focus on testing the behavior and output rather than the internal implementation details.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Unit testing is an essential practice in Angular development that helps ensure the reliability and correctness of your code. By using Jasmine and Karma, you can write and run tests for your services, components, and other units of code. Remember to follow best practices and avoid common pitfalls to make your tests effective and maintainable.</p>
+<p>In the next section, we will delve into component testing, where we will explore more advanced scenarios and techniques for testing Angular components.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-ngrx-effects' title="NgRx Effects">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-component-testing' title="Component Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

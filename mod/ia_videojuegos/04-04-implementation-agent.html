@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementation of a Learning Agent</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ia_videojuegos/04-04-implementacion-agente" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ia_videojuegos/04-04-implementacio-agent" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ia_videojuegos/04-04-implementation-agent" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ia_videojuegos/04-04-implementation-agent" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ia_videojuegos/04-04-implementation-agent" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-reinforcement-learning' title="Reinforcement Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Implementation of a Learning Agent</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-integration-engines' title="Integration of AI in Game Engines">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the practical aspects of implementing a learning agent in video games. This involves understanding the core concepts of machine learning, setting up the environment, and coding the agent to learn and adapt to the game environment. We will use reinforcement learning as our primary approach.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><p>Before we start coding, let's review some key concepts:</p>
+<ol>
+<li>
+<p><strong>Reinforcement Learning (RL)</strong>:</p>
+<ul>
+<li><strong>Agent</strong>: The entity that interacts with the environment.</li>
+<li><strong>Environment</strong>: The world through which the agent moves and interacts.</li>
+<li><strong>State</strong>: A representation of the current situation of the agent within the environment.</li>
+<li><strong>Action</strong>: A set of all possible moves the agent can make.</li>
+<li><strong>Reward</strong>: Feedback from the environment based on the action taken by the agent.</li>
+<li><strong>Policy</strong>: The strategy that the agent employs to determine the next action based on the current state.</li>
+<li><strong>Value Function</strong>: A function that estimates the expected reward of a state or state-action pair.</li>
+</ul>
+</li>
+<li>
+<p><strong>Q-Learning</strong>:</p>
+<ul>
+<li>A model-free reinforcement learning algorithm.</li>
+<li><strong>Q-Table</strong>: A table where we store the Q-values (expected future rewards) for each state-action pair.</li>
+<li><strong>Bellman Equation</strong>: Used to update the Q-values.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up the Environment</h1>
+<div class='content'><p>We will use a simple grid-based environment for our learning agent. The agent will learn to navigate from a starting point to a goal while avoiding obstacles.</p>
+</div><h2>Environment Setup</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCByYW5kb20KCmNsYXNzIEdyaWRFbnZpcm9ubWVudDoKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBncmlkX3NpemUsIHN0YXJ0LCBnb2FsLCBvYnN0YWNsZXMpOgogICAgICAgIHNlbGYuZ3JpZF9zaXplID0gZ3JpZF9zaXplCiAgICAgICAgc2VsZi5zdGFydCA9IHN0YXJ0CiAgICAgICAgc2VsZi5nb2FsID0gZ29hbAogICAgICAgIHNlbGYub2JzdGFjbGVzID0gb2JzdGFjbGVzCiAgICAgICAgc2VsZi5zdGF0ZSA9IHN0YXJ0CgogICAgZGVmIHJlc2V0KHNlbGYpOgogICAgICAgIHNlbGYuc3RhdGUgPSBzZWxmLnN0YXJ0CiAgICAgICAgcmV0dXJuIHNlbGYuc3RhdGUKCiAgICBkZWYgc3RlcChzZWxmLCBhY3Rpb24pOgogICAgICAgIG5leHRfc3RhdGUgPSAoc2VsZi5zdGF0ZVswXSArIGFjdGlvblswXSwgc2VsZi5zdGF0ZVsxXSArIGFjdGlvblsxXSkKICAgICAgICBpZiBuZXh0X3N0YXRlIGluIHNlbGYub2JzdGFjbGVzIG9yIG5vdCAoMCA8PSBuZXh0X3N0YXRlWzBdIDwgc2VsZi5ncmlkX3NpemVbMF0gYW5kIDAgPD0gbmV4dF9zdGF0ZVsxXSA8IHNlbGYuZ3JpZF9zaXplWzFdKToKICAgICAgICAgICAgbmV4dF9zdGF0ZSA9IHNlbGYuc3RhdGUgICMgSW52YWxpZCBtb3ZlLCBzdGF5IGluIHRoZSBzYW1lIHN0YXRlCiAgICAgICAgcmV3YXJkID0gLTEKICAgICAgICBpZiBuZXh0X3N0YXRlID09IHNlbGYuZ29hbDoKICAgICAgICAgICAgcmV3YXJkID0gMTAwICAjIFJld2FyZCBmb3IgcmVhY2hpbmcgdGhlIGdvYWwKICAgICAgICBzZWxmLnN0YXRlID0gbmV4dF9zdGF0ZQogICAgICAgIHJldHVybiBuZXh0X3N0YXRlLCByZXdhcmQKCiAgICBkZWYgaXNfZG9uZShzZWxmKToKICAgICAgICByZXR1cm4gc2VsZi5zdGF0ZSA9PSBzZWxmLmdvYWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import random
+
+class GridEnvironment:
+    def __init__(self, grid_size, start, goal, obstacles):
+        self.grid_size = grid_size
+        self.start = start
+        self.goal = goal
+        self.obstacles = obstacles
+        self.state = start
+
+    def reset(self):
+        self.state = self.start
+        return self.state
+
+    def step(self, action):
+        next_state = (self.state[0] + action[0], self.state[1] + action[1])
+        if next_state in self.obstacles or not (0 &lt;= next_state[0] &lt; self.grid_size[0] and 0 &lt;= next_state[1] &lt; self.grid_size[1]):
+            next_state = self.state  # Invalid move, stay in the same state
+        reward = -1
+        if next_state == self.goal:
+            reward = 100  # Reward for reaching the goal
+        self.state = next_state
+        return next_state, reward
+
+    def is_done(self):
+        return self.state == self.goal</pre></div><div class='content'></div><h2>Actions</h2>
+<div class='content'><p>We define the possible actions the agent can take:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWN0aW9ucyA9IHsKICAgIDA6ICgtMSwgMCksICAjIFVwCiAgICAxOiAoMSwgMCksICAgIyBEb3duCiAgICAyOiAoMCwgLTEpLCAgIyBMZWZ0CiAgICAzOiAoMCwgMSkgICAgIyBSaWdodAp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>actions = {
+    0: (-1, 0),  # Up
+    1: (1, 0),   # Down
+    2: (0, -1),  # Left
+    3: (0, 1)    # Right
+}</pre></div><div class='content'></div><h1>Implementing Q-Learning</h1>
+<div class='content'></div><h2>Q-Table Initialization</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cV90YWJsZSA9IG5wLnplcm9zKChncmlkX3NpemVbMF0sIGdyaWRfc2l6ZVsxXSwgbGVuKGFjdGlvbnMpKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>q_table = np.zeros((grid_size[0], grid_size[1], len(actions)))</pre></div><div class='content'></div><h2>Training the Agent</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHRyYWluX2FnZW50KGVudiwgcV90YWJsZSwgZXBpc29kZXMsIGFscGhhLCBnYW1tYSwgZXBzaWxvbik6CiAgICBmb3IgZXBpc29kZSBpbiByYW5nZShlcGlzb2Rlcyk6CiAgICAgICAgc3RhdGUgPSBlbnYucmVzZXQoKQogICAgICAgIGRvbmUgPSBGYWxzZQogICAgICAgIHdoaWxlIG5vdCBkb25lOgogICAgICAgICAgICBpZiByYW5kb20udW5pZm9ybSgwLCAxKSA8IGVwc2lsb246CiAgICAgICAgICAgICAgICBhY3Rpb24gPSByYW5kb20uY2hvaWNlKGxpc3QoYWN0aW9ucy5rZXlzKCkpKSAgIyBFeHBsb3JlCiAgICAgICAgICAgIGVsc2U6CiAgICAgICAgICAgICAgICBhY3Rpb24gPSBucC5hcmdtYXgocV90YWJsZVtzdGF0ZVswXSwgc3RhdGVbMV1dKSAgIyBFeHBsb2l0CgogICAgICAgICAgICBuZXh0X3N0YXRlLCByZXdhcmQgPSBlbnYuc3RlcChhY3Rpb25zW2FjdGlvbl0pCiAgICAgICAgICAgIG9sZF92YWx1ZSA9IHFfdGFibGVbc3RhdGVbMF0sIHN0YXRlWzFdLCBhY3Rpb25dCiAgICAgICAgICAgIG5leHRfbWF4ID0gbnAubWF4KHFfdGFibGVbbmV4dF9zdGF0ZVswXSwgbmV4dF9zdGF0ZVsxXV0pCgogICAgICAgICAgICBuZXdfdmFsdWUgPSAoMSAtIGFscGhhKSAqIG9sZF92YWx1ZSArIGFscGhhICogKHJld2FyZCArIGdhbW1hICogbmV4dF9tYXgpCiAgICAgICAgICAgIHFfdGFibGVbc3RhdGVbMF0sIHN0YXRlWzFdLCBhY3Rpb25dID0gbmV3X3ZhbHVlCgogICAgICAgICAgICBzdGF0ZSA9IG5leHRfc3RhdGUKICAgICAgICAgICAgZG9uZSA9IGVudi5pc19kb25lKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def train_agent(env, q_table, episodes, alpha, gamma, epsilon):
+    for episode in range(episodes):
+        state = env.reset()
+        done = False
+        while not done:
+            if random.uniform(0, 1) &lt; epsilon:
+                action = random.choice(list(actions.keys()))  # Explore
+            else:
+                action = np.argmax(q_table[state[0], state[1]])  # Exploit
+
+            next_state, reward = env.step(actions[action])
+            old_value = q_table[state[0], state[1], action]
+            next_max = np.max(q_table[next_state[0], next_state[1]])
+
+            new_value = (1 - alpha) * old_value + alpha * (reward + gamma * next_max)
+            q_table[state[0], state[1], action] = new_value
+
+            state = next_state
+            done = env.is_done()</pre></div><div class='content'></div><h2>Parameters</h2>
+<div class='content'><ul>
+<li><strong>alpha</strong>: Learning rate (e.g., 0.1)</li>
+<li><strong>gamma</strong>: Discount factor (e.g., 0.9)</li>
+<li><strong>epsilon</strong>: Exploration rate (e.g., 0.1)</li>
+</ul>
+</div><h2>Example Usage</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JpZF9zaXplID0gKDUsIDUpCnN0YXJ0ID0gKDAsIDApCmdvYWwgPSAoNCwgNCkKb2JzdGFjbGVzID0gWygxLCAxKSwgKDIsIDIpLCAoMywgMyldCgplbnYgPSBHcmlkRW52aXJvbm1lbnQoZ3JpZF9zaXplLCBzdGFydCwgZ29hbCwgb2JzdGFjbGVzKQplcGlzb2RlcyA9IDEwMDAKYWxwaGEgPSAwLjEKZ2FtbWEgPSAwLjkKZXBzaWxvbiA9IDAuMQoKdHJhaW5fYWdlbnQoZW52LCBxX3RhYmxlLCBlcGlzb2RlcywgYWxwaGEsIGdhbW1hLCBlcHNpbG9uKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>grid_size = (5, 5)
+start = (0, 0)
+goal = (4, 4)
+obstacles = [(1, 1), (2, 2), (3, 3)]
+
+env = GridEnvironment(grid_size, start, goal, obstacles)
+episodes = 1000
+alpha = 0.1
+gamma = 0.9
+epsilon = 0.1
+
+train_agent(env, q_table, episodes, alpha, gamma, epsilon)</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Modify the Environment</h2>
+<div class='content'><p><strong>Task</strong>: Modify the grid environment to include more obstacles and test the agent's performance.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JzdGFjbGVzID0gWygxLCAxKSwgKDEsIDIpLCAoMiwgMiksICgzLCAzKSwgKDMsIDQpXQplbnYgPSBHcmlkRW52aXJvbm1lbnQoZ3JpZF9zaXplLCBzdGFydCwgZ29hbCwgb2JzdGFjbGVzKQp0cmFpbl9hZ2VudChlbnYsIHFfdGFibGUsIGVwaXNvZGVzLCBhbHBoYSwgZ2FtbWEsIGVwc2lsb24p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>obstacles = [(1, 1), (1, 2), (2, 2), (3, 3), (3, 4)]
+env = GridEnvironment(grid_size, start, goal, obstacles)
+train_agent(env, q_table, episodes, alpha, gamma, epsilon)</pre></div><div class='content'></div><h2>Exercise 2: Adjust Hyperparameters</h2>
+<div class='content'><p><strong>Task</strong>: Experiment with different values of alpha, gamma, and epsilon to observe their impact on the agent's learning.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWxwaGEgPSAwLjIgICMgSW5jcmVhc2VkIGxlYXJuaW5nIHJhdGUKZ2FtbWEgPSAwLjk1ICAjIEluY3JlYXNlZCBkaXNjb3VudCBmYWN0b3IKZXBzaWxvbiA9IDAuMDUgICMgUmVkdWNlZCBleHBsb3JhdGlvbiByYXRlCnRyYWluX2FnZW50KGVudiwgcV90YWJsZSwgZXBpc29kZXMsIGFscGhhLCBnYW1tYSwgZXBzaWxvbik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>alpha = 0.2  # Increased learning rate
+gamma = 0.95  # Increased discount factor
+epsilon = 0.05  # Reduced exploration rate
+train_agent(env, q_table, episodes, alpha, gamma, epsilon)</pre></div><div class='content'></div><h2>Exercise 3: Implement a Different Reward System</h2>
+<div class='content'><p><strong>Task</strong>: Change the reward system to penalize the agent for hitting obstacles.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHN0ZXAoc2VsZiwgYWN0aW9uKToKICAgIG5leHRfc3RhdGUgPSAoc2VsZi5zdGF0ZVswXSArIGFjdGlvblswXSwgc2VsZi5zdGF0ZVsxXSArIGFjdGlvblsxXSkKICAgIGlmIG5leHRfc3RhdGUgaW4gc2VsZi5vYnN0YWNsZXMgb3Igbm90ICgwIDw9IG5leHRfc3RhdGVbMF0gPCBzZWxmLmdyaWRfc2l6ZVswXSBhbmQgMCA8PSBuZXh0X3N0YXRlWzFdIDwgc2VsZi5ncmlkX3NpemVbMV0pOgogICAgICAgIG5leHRfc3RhdGUgPSBzZWxmLnN0YXRlICAjIEludmFsaWQgbW92ZSwgc3RheSBpbiB0aGUgc2FtZSBzdGF0ZQogICAgICAgIHJld2FyZCA9IC0xMCAgIyBQZW5hbHR5IGZvciBoaXR0aW5nIGFuIG9ic3RhY2xlCiAgICBlbHNlOgogICAgICAgIHJld2FyZCA9IC0xCiAgICBpZiBuZXh0X3N0YXRlID09IHNlbGYuZ29hbDoKICAgICAgICByZXdhcmQgPSAxMDAgICMgUmV3YXJkIGZvciByZWFjaGluZyB0aGUgZ29hbAogICAgc2VsZi5zdGF0ZSA9IG5leHRfc3RhdGUKICAgIHJldHVybiBuZXh0X3N0YXRlLCByZXdhcmQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def step(self, action):
+    next_state = (self.state[0] + action[0], self.state[1] + action[1])
+    if next_state in self.obstacles or not (0 &lt;= next_state[0] &lt; self.grid_size[0] and 0 &lt;= next_state[1] &lt; self.grid_size[1]):
+        next_state = self.state  # Invalid move, stay in the same state
+        reward = -10  # Penalty for hitting an obstacle
+    else:
+        reward = -1
+    if next_state == self.goal:
+        reward = 100  # Reward for reaching the goal
+    self.state = next_state
+    return next_state, reward</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have implemented a basic learning agent using Q-learning. We set up a grid-based environment, defined actions, and trained the agent to navigate towards a goal while avoiding obstacles. By experimenting with different parameters and reward systems, you can further enhance the agent's learning capabilities. This foundational knowledge prepares you for more complex machine learning applications in video games.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-reinforcement-learning' title="Reinforcement Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-integration-engines' title="Integration of AI in Game Engines">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding the DirectX API</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/01-03-understanding-directx-api" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/01-03-understanding-directx-api" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/01-03-understanding-directx-api" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/01-03-understanding-directx-api" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/01-03-understanding-directx-api" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-setting-up-environment' title="Setting Up the Development Environment">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Understanding the DirectX API</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-creating-first-application' title="Creating Your First DirectX Application">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the DirectX API, which is a collection of APIs designed to handle tasks related to multimedia, especially game programming and video, on Microsoft platforms. Understanding the DirectX API is crucial for developing high-performance applications that leverage the power of modern graphics hardware.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. What is an API?</h2>
+<div class='content'><ul>
+<li><strong>API (Application Programming Interface)</strong>: A set of functions and protocols that allow different software components to communicate with each other.</li>
+<li><strong>DirectX API</strong>: A collection of APIs from Microsoft that handle multimedia tasks, including Direct3D for graphics, DirectSound for audio, and DirectInput for input devices.</li>
+</ul>
+</div><h2>2. Components of DirectX</h2>
+<div class='content'><ul>
+<li><strong>Direct3D</strong>: Handles 3D graphics rendering.</li>
+<li><strong>Direct2D</strong>: Handles 2D graphics rendering.</li>
+<li><strong>DirectWrite</strong>: Manages text rendering.</li>
+<li><strong>DirectSound</strong>: Manages audio playback and recording.</li>
+<li><strong>DirectInput</strong>: Handles input from devices like keyboards, mice, and game controllers.</li>
+<li><strong>DirectCompute</strong>: Allows for general-purpose computing on the GPU.</li>
+</ul>
+</div><h2>3. DirectX Versions</h2>
+<div class='content'><ul>
+<li><strong>DirectX 9</strong>: Widely used in older games and applications.</li>
+<li><strong>DirectX 10</strong>: Introduced significant improvements in graphics rendering.</li>
+<li><strong>DirectX 11</strong>: Added support for tessellation, multithreading, and compute shaders.</li>
+<li><strong>DirectX 12</strong>: Focuses on low-level programming, providing more control over hardware and improving performance.</li>
+</ul>
+</div><h1>Practical Example: Initializing DirectX</h1>
+<div class='content'><p>Let's walk through a simple example of initializing DirectX in a Windows application. This example will focus on setting up Direct3D 11.</p>
+</div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Include Necessary Headers</strong></p>
+<pre><code class="language-cpp">#include &lt;d3d11.h&gt;
+#include &lt;d3dcompiler.h&gt;
+#include &lt;DirectXMath.h&gt;
+#include &lt;windows.h&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Define Global Variables</strong></p>
+<pre><code class="language-cpp">ID3D11Device* g_pd3dDevice = nullptr;
+ID3D11DeviceContext* g_pImmediateContext = nullptr;
+IDXGISwapChain* g_pSwapChain = nullptr;
+ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize Direct3D</strong></p>
+<pre><code class="language-cpp">HRESULT InitD3D(HWND hWnd)
+{
+    // Create a swap chain description
+    DXGI_SWAP_CHAIN_DESC sd;
+    ZeroMemory(&amp;sd, sizeof(sd));
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = 800;
+    sd.BufferDesc.Height = 600;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = hWnd;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+
+    // Create the device, device context, and swap chain
+    HRESULT hr = D3D11CreateDeviceAndSwapChain(
+        nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        0,
+        nullptr,
+        0,
+        D3D11_SDK_VERSION,
+        &amp;sd,
+        &amp;g_pSwapChain,
+        &amp;g_pd3dDevice,
+        nullptr,
+        &amp;g_pImmediateContext
+    );
+
+    if (FAILED(hr))
+        return hr;
+
+    // Create a render target view
+    ID3D11Texture2D* pBackBuffer = nullptr;
+    g_pSwapChain-&gt;GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&amp;pBackBuffer);
+    g_pd3dDevice-&gt;CreateRenderTargetView(pBackBuffer, nullptr, &amp;g_pRenderTargetView);
+    pBackBuffer-&gt;Release();
+
+    g_pImmediateContext-&gt;OMSetRenderTargets(1, &amp;g_pRenderTargetView, nullptr);
+
+    // Setup the viewport
+    D3D11_VIEWPORT vp;
+    vp.Width = (FLOAT)800;
+    vp.Height = (FLOAT)600;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    g_pImmediateContext-&gt;RSSetViewports(1, &amp;vp);
+
+    return S_OK;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Clean Up Direct3D</strong></p>
+<pre><code class="language-cpp">void CleanupDevice()
+{
+    if (g_pImmediateContext) g_pImmediateContext-&gt;ClearState();
+    if (g_pRenderTargetView) g_pRenderTargetView-&gt;Release();
+    if (g_pSwapChain) g_pSwapChain-&gt;Release();
+    if (g_pImmediateContext) g_pImmediateContext-&gt;Release();
+    if (g_pd3dDevice) g_pd3dDevice-&gt;Release();
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Headers</strong>: We include the necessary DirectX headers for Direct3D and Windows.</li>
+<li><strong>Global Variables</strong>: We define global pointers to the Direct3D device, device context, swap chain, and render target view.</li>
+<li><strong>InitD3D Function</strong>: This function initializes Direct3D by creating a swap chain, device, and device context. It also sets up a render target view and viewport.</li>
+<li><strong>CleanupDevice Function</strong>: This function releases all Direct3D resources to avoid memory leaks.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a simple Direct3D application that initializes Direct3D and clears the screen to a solid color.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li>Set up a Windows application with a main window.</li>
+<li>Initialize Direct3D as shown in the example.</li>
+<li>In the render loop, clear the screen to a solid color using <code>g_pImmediateContext-&gt;ClearRenderTargetView</code>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGQzZDExLmg+CiNpbmNsdWRlIDxkM2Rjb21waWxlci5oPgojaW5jbHVkZSA8RGlyZWN0WE1hdGguaD4KI2luY2x1ZGUgPHdpbmRvd3MuaD4KCklEM0QxMURldmljZSogZ19wZDNkRGV2aWNlID0gbnVsbHB0cjsKSUQzRDExRGV2aWNlQ29udGV4dCogZ19wSW1tZWRpYXRlQ29udGV4dCA9IG51bGxwdHI7CklEWEdJU3dhcENoYWluKiBnX3BTd2FwQ2hhaW4gPSBudWxscHRyOwpJRDNEMTFSZW5kZXJUYXJnZXRWaWV3KiBnX3BSZW5kZXJUYXJnZXRWaWV3ID0gbnVsbHB0cjsKCkhSRVNVTFQgSW5pdEQzRChIV05EIGhXbmQpOwp2b2lkIENsZWFudXBEZXZpY2UoKTsKdm9pZCBSZW5kZXIoKTsKCkxSRVNVTFQgQ0FMTEJBQ0sgV25kUHJvYyhIV05ELCBVSU5ULCBXUEFSQU0sIExQQVJBTSk7CgppbnQgV0lOQVBJIHdXaW5NYWluKEhJTlNUQU5DRSBoSW5zdGFuY2UsIEhJTlNUQU5DRSBoUHJldkluc3RhbmNlLCBMUFdTVFIgbHBDbWRMaW5lLCBpbnQgbkNtZFNob3cpCnsKICAgIFVOUkVGRVJFTkNFRF9QQVJBTUVURVIoaFByZXZJbnN0YW5jZSk7CiAgICBVTlJFRkVSRU5DRURfUEFSQU1FVEVSKGxwQ21kTGluZSk7CgogICAgLy8gUmVnaXN0ZXIgY2xhc3MKICAgIFdORENMQVNTRVggd2NleDsKICAgIHdjZXguY2JTaXplID0gc2l6ZW9mKFdORENMQVNTRVgpOwogICAgd2NleC5zdHlsZSA9IENTX0hSRURSQVcgfCBDU19WUkVEUkFXOwogICAgd2NleC5scGZuV25kUHJvYyA9IFduZFByb2M7CiAgICB3Y2V4LmNiQ2xzRXh0cmEgPSAwOwogICAgd2NleC5jYlduZEV4dHJhID0gMDsKICAgIHdjZXguaEluc3RhbmNlID0gaEluc3RhbmNlOwogICAgd2NleC5oSWNvbiA9IExvYWRJY29uKGhJbnN0YW5jZSwgSURJX0FQUExJQ0FUSU9OKTsKICAgIHdjZXguaEN1cnNvciA9IExvYWRDdXJzb3IobnVsbHB0ciwgSURDX0FSUk9XKTsKICAgIHdjZXguaGJyQmFja2dyb3VuZCA9IChIQlJVU0gpKENPTE9SX1dJTkRPVyArIDEpOwogICAgd2NleC5scHN6TWVudU5hbWUgPSBudWxscHRyOwogICAgd2NleC5scHN6Q2xhc3NOYW1lID0gTCJEaXJlY3RYRXhhbXBsZSI7CiAgICB3Y2V4LmhJY29uU20gPSBMb2FkSWNvbih3Y2V4LmhJbnN0YW5jZSwgSURJX0FQUExJQ0FUSU9OKTsKICAgIFJlZ2lzdGVyQ2xhc3NFeCgmd2NleCk7CgogICAgLy8gQ3JlYXRlIHdpbmRvdwogICAgSFdORCBoV25kID0gQ3JlYXRlV2luZG93KEwiRGlyZWN0WEV4YW1wbGUiLCBMIkRpcmVjdFggRXhhbXBsZSIsIFdTX09WRVJMQVBQRURXSU5ET1csCiAgICAgICAgQ1dfVVNFREVGQVVMVCwgMCwgODAwLCA2MDAsIG51bGxwdHIsIG51bGxwdHIsIGhJbnN0YW5jZSwgbnVsbHB0cik7CgogICAgaWYgKCFoV25kKQogICAgICAgIHJldHVybiBGQUxTRTsKCiAgICBTaG93V2luZG93KGhXbmQsIG5DbWRTaG93KTsKICAgIFVwZGF0ZVdpbmRvdyhoV25kKTsKCiAgICBpZiAoRkFJTEVEKEluaXREM0QoaFduZCkpKQogICAgewogICAgICAgIENsZWFudXBEZXZpY2UoKTsKICAgICAgICByZXR1cm4gMDsKICAgIH0KCiAgICAvLyBNYWluIG1lc3NhZ2UgbG9vcAogICAgTVNHIG1zZyA9IHsgMCB9OwogICAgd2hpbGUgKFdNX1FVSVQgIT0gbXNnLm1lc3NhZ2UpCiAgICB7CiAgICAgICAgaWYgKFBlZWtNZXNzYWdlKCZtc2csIG51bGxwdHIsIDAsIDAsIFBNX1JFTU9WRSkpCiAgICAgICAgewogICAgICAgICAgICBUcmFuc2xhdGVNZXNzYWdlKCZtc2cpOwogICAgICAgICAgICBEaXNwYXRjaE1lc3NhZ2UoJm1zZyk7CiAgICAgICAgfQogICAgICAgIGVsc2UKICAgICAgICB7CiAgICAgICAgICAgIFJlbmRlcigpOwogICAgICAgIH0KICAgIH0KCiAgICBDbGVhbnVwRGV2aWNlKCk7CiAgICByZXR1cm4gKGludCltc2cud1BhcmFtOwp9CgpIUkVTVUxUIEluaXREM0QoSFdORCBoV25kKQp7CiAgICBEWEdJX1NXQVBfQ0hBSU5fREVTQyBzZDsKICAgIFplcm9NZW1vcnkoJnNkLCBzaXplb2Yoc2QpKTsKICAgIHNkLkJ1ZmZlckNvdW50ID0gMTsKICAgIHNkLkJ1ZmZlckRlc2MuV2lkdGggPSA4MDA7CiAgICBzZC5CdWZmZXJEZXNjLkhlaWdodCA9IDYwMDsKICAgIHNkLkJ1ZmZlckRlc2MuRm9ybWF0ID0gRFhHSV9GT1JNQVRfUjhHOEI4QThfVU5PUk07CiAgICBzZC5CdWZmZXJEZXNjLlJlZnJlc2hSYXRlLk51bWVyYXRvciA9IDYwOwogICAgc2QuQnVmZmVyRGVzYy5SZWZyZXNoUmF0ZS5EZW5vbWluYXRvciA9IDE7CiAgICBzZC5CdWZmZXJVc2FnZSA9IERYR0lfVVNBR0VfUkVOREVSX1RBUkdFVF9PVVRQVVQ7CiAgICBzZC5PdXRwdXRXaW5kb3cgPSBoV25kOwogICAgc2QuU2FtcGxlRGVzYy5Db3VudCA9IDE7CiAgICBzZC5TYW1wbGVEZXNjLlF1YWxpdHkgPSAwOwogICAgc2QuV2luZG93ZWQgPSBUUlVFOwoKICAgIEhSRVNVTFQgaHIgPSBEM0QxMUNyZWF0ZURldmljZUFuZFN3YXBDaGFpbigKICAgICAgICBudWxscHRyLAogICAgICAgIEQzRF9EUklWRVJfVFlQRV9IQVJEV0FSRSwKICAgICAgICBudWxscHRyLAogICAgICAgIDAsCiAgICAgICAgbnVsbHB0ciwKICAgICAgICAwLAogICAgICAgIEQzRDExX1NES19WRVJTSU9OLAogICAgICAgICZzZCwKICAgICAgICAmZ19wU3dhcENoYWluLAogICAgICAgICZnX3BkM2REZXZpY2UsCiAgICAgICAgbnVsbHB0ciwKICAgICAgICAmZ19wSW1tZWRpYXRlQ29udGV4dAogICAgKTsKCiAgICBpZiAoRkFJTEVEKGhyKSkKICAgICAgICByZXR1cm4gaHI7CgogICAgSUQzRDExVGV4dHVyZTJEKiBwQmFja0J1ZmZlciA9IG51bGxwdHI7CiAgICBnX3BTd2FwQ2hhaW4tPkdldEJ1ZmZlcigwLCBfX3V1aWRvZihJRDNEMTFUZXh0dXJlMkQpLCAoTFBWT0lEKikmcEJhY2tCdWZmZXIpOwogICAgZ19wZDNkRGV2aWNlLT5DcmVhdGVSZW5kZXJUYXJnZXRWaWV3KHBCYWNrQnVmZmVyLCBudWxscHRyLCAmZ19wUmVuZGVyVGFyZ2V0Vmlldyk7CiAgICBwQmFja0J1ZmZlci0+UmVsZWFzZSgpOwoKICAgIGdfcEltbWVkaWF0ZUNvbnRleHQtPk9NU2V0UmVuZGVyVGFyZ2V0cygxLCAmZ19wUmVuZGVyVGFyZ2V0VmlldywgbnVsbHB0cik7CgogICAgRDNEMTFfVklFV1BPUlQgdnA7CiAgICB2cC5XaWR0aCA9IChGTE9BVCk4MDA7CiAgICB2cC5IZWlnaHQgPSAoRkxPQVQpNjAwOwogICAgdnAuTWluRGVwdGggPSAwLjBmOwogICAgdnAuTWF4RGVwdGggPSAxLjBmOwogICAgdnAuVG9wTGVmdFggPSAwOwogICAgdnAuVG9wTGVmdFkgPSAwOwogICAgZ19wSW1tZWRpYXRlQ29udGV4dC0+UlNTZXRWaWV3cG9ydHMoMSwgJnZwKTsKCiAgICByZXR1cm4gU19PSzsKfQoKdm9pZCBDbGVhbnVwRGV2aWNlKCkKewogICAgaWYgKGdfcEltbWVkaWF0ZUNvbnRleHQpIGdfcEltbWVkaWF0ZUNvbnRleHQtPkNsZWFyU3RhdGUoKTsKICAgIGlmIChnX3BSZW5kZXJUYXJnZXRWaWV3KSBnX3BSZW5kZXJUYXJnZXRWaWV3LT5SZWxlYXNlKCk7CiAgICBpZiAoZ19wU3dhcENoYWluKSBnX3BTd2FwQ2hhaW4tPlJlbGVhc2UoKTsKICAgIGlmIChnX3BJbW1lZGlhdGVDb250ZXh0KSBnX3BJbW1lZGlhdGVDb250ZXh0LT5SZWxlYXNlKCk7CiAgICBpZiAoZ19wZDNkRGV2aWNlKSBnX3BkM2REZXZpY2UtPlJlbGVhc2UoKTsKfQoKdm9pZCBSZW5kZXIoKQp7CiAgICBmbG9hdCBDbGVhckNvbG9yWzRdID0geyAwLjBmLCAwLjEyNWYsIDAuM2YsIDEuMGYgfTsgLy8gUkdCQQogICAgZ19wSW1tZWRpYXRlQ29udGV4dC0+Q2xlYXJSZW5kZXJUYXJnZXRWaWV3KGdfcFJlbmRlclRhcmdldFZpZXcsIENsZWFyQ29sb3IpOwoKICAgIGdfcFN3YXBDaGFpbi0+UHJlc2VudCgwLCAwKTsKfQoKTFJFU1VMVCBDQUxMQkFDSyBXbmRQcm9jKEhXTkQgaFduZCwgVUlOVCBtZXNzYWdlLCBXUEFSQU0gd1BhcmFtLCBMUEFSQU0gbFBhcmFtKQp7CiAgICBzd2l0Y2ggKG1lc3NhZ2UpCiAgICB7CiAgICBjYXNlIFdNX1BBSU5UOgogICAgICAgIFBBSU5UU1RSVUNUIHBzOwogICAgICAgIEhEQyBoZGM7CiAgICAgICAgaGRjID0gQmVnaW5QYWludChoV25kLCAmcHMpOwogICAgICAgIEVuZFBhaW50KGhXbmQsICZwcyk7CiAgICAgICAgYnJlYWs7CiAgICBjYXNlIFdNX0RFU1RST1k6CiAgICAgICAgUG9zdFF1aXRNZXNzYWdlKDApOwogICAgICAgIGJyZWFrOwogICAgZGVmYXVsdDoKICAgICAgICByZXR1cm4gRGVmV2luZG93UHJvYyhoV25kLCBtZXNzYWdlLCB3UGFyYW0sIGxQYXJhbSk7CiAgICB9CiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;d3d11.h&gt;
+#include &lt;d3dcompiler.h&gt;
+#include &lt;DirectXMath.h&gt;
+#include &lt;windows.h&gt;
+
+ID3D11Device* g_pd3dDevice = nullptr;
+ID3D11DeviceContext* g_pImmediateContext = nullptr;
+IDXGISwapChain* g_pSwapChain = nullptr;
+ID3D11RenderTargetView* g_pRenderTargetView = nullptr;
+
+HRESULT InitD3D(HWND hWnd);
+void CleanupDevice();
+void Render();
+
+LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
+
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCmdShow)
+{
+    UNREFERENCED_PARAMETER(hPrevInstance);
+    UNREFERENCED_PARAMETER(lpCmdLine);
+
+    // Register class
+    WNDCLASSEX wcex;
+    wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = LoadIcon(hInstance, IDI_APPLICATION);
+    wcex.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = nullptr;
+    wcex.lpszClassName = L&quot;DirectXExample&quot;;
+    wcex.hIconSm = LoadIcon(wcex.hInstance, IDI_APPLICATION);
+    RegisterClassEx(&amp;wcex);
+
+    // Create window
+    HWND hWnd = CreateWindow(L&quot;DirectXExample&quot;, L&quot;DirectX Example&quot;, WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT, 0, 800, 600, nullptr, nullptr, hInstance, nullptr);
+
+    if (!hWnd)
+        return FALSE;
+
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+
+    if (FAILED(InitD3D(hWnd)))
+    {
+        CleanupDevice();
+        return 0;
+    }
+
+    // Main message loop
+    MSG msg = { 0 };
+    while (WM_QUIT != msg.message)
+    {
+        if (PeekMessage(&amp;msg, nullptr, 0, 0, PM_REMOVE))
+        {
+            TranslateMessage(&amp;msg);
+            DispatchMessage(&amp;msg);
+        }
+        else
+        {
+            Render();
+        }
+    }
+
+    CleanupDevice();
+    return (int)msg.wParam;
+}
+
+HRESULT InitD3D(HWND hWnd)
+{
+    DXGI_SWAP_CHAIN_DESC sd;
+    ZeroMemory(&amp;sd, sizeof(sd));
+    sd.BufferCount = 1;
+    sd.BufferDesc.Width = 800;
+    sd.BufferDesc.Height = 600;
+    sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    sd.BufferDesc.RefreshRate.Numerator = 60;
+    sd.BufferDesc.RefreshRate.Denominator = 1;
+    sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    sd.OutputWindow = hWnd;
+    sd.SampleDesc.Count = 1;
+    sd.SampleDesc.Quality = 0;
+    sd.Windowed = TRUE;
+
+    HRESULT hr = D3D11CreateDeviceAndSwapChain(
+        nullptr,
+        D3D_DRIVER_TYPE_HARDWARE,
+        nullptr,
+        0,
+        nullptr,
+        0,
+        D3D11_SDK_VERSION,
+        &amp;sd,
+        &amp;g_pSwapChain,
+        &amp;g_pd3dDevice,
+        nullptr,
+        &amp;g_pImmediateContext
+    );
+
+    if (FAILED(hr))
+        return hr;
+
+    ID3D11Texture2D* pBackBuffer = nullptr;
+    g_pSwapChain-&gt;GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&amp;pBackBuffer);
+    g_pd3dDevice-&gt;CreateRenderTargetView(pBackBuffer, nullptr, &amp;g_pRenderTargetView);
+    pBackBuffer-&gt;Release();
+
+    g_pImmediateContext-&gt;OMSetRenderTargets(1, &amp;g_pRenderTargetView, nullptr);
+
+    D3D11_VIEWPORT vp;
+    vp.Width = (FLOAT)800;
+    vp.Height = (FLOAT)600;
+    vp.MinDepth = 0.0f;
+    vp.MaxDepth = 1.0f;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    g_pImmediateContext-&gt;RSSetViewports(1, &amp;vp);
+
+    return S_OK;
+}
+
+void CleanupDevice()
+{
+    if (g_pImmediateContext) g_pImmediateContext-&gt;ClearState();
+    if (g_pRenderTargetView) g_pRenderTargetView-&gt;Release();
+    if (g_pSwapChain) g_pSwapChain-&gt;Release();
+    if (g_pImmediateContext) g_pImmediateContext-&gt;Release();
+    if (g_pd3dDevice) g_pd3dDevice-&gt;Release();
+}
+
+void Render()
+{
+    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // RGBA
+    g_pImmediateContext-&gt;ClearRenderTargetView(g_pRenderTargetView, ClearColor);
+
+    g_pSwapChain-&gt;Present(0, 0);
+}
+
+LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    switch (message)
+    {
+    case WM_PAINT:
+        PAINTSTRUCT ps;
+        HDC hdc;
+        hdc = BeginPaint(hWnd, &amp;ps);
+        EndPaint(hWnd, &amp;ps);
+        break;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        break;
+    default:
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+    return 0;
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Main Function</strong>: Sets up the window and initializes Direct3D.</li>
+<li><strong>Render Function</strong>: Clears the screen to a solid color and presents the back buffer.</li>
+<li><strong>WndProc Function</strong>: Handles window messages.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of the DirectX API, including its components and versions. We also walked through a practical example of initializing Direct3D and provided an exercise to reinforce the concepts. Understanding the DirectX API is fundamental for developing high-performance multimedia applications on Windows platforms. In the next module, we will dive deeper into Direct3D and explore its capabilities in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-setting-up-environment' title="Setting Up the Development Environment">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-creating-first-application' title="Creating Your First DirectX Application">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

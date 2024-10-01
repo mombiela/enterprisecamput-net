@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirection and Piping</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/02-04-redirection-piping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/02-04-redirection-piping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/02-04-redirection-piping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bash/02-04-redirection-piping" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/02-04-redirection-piping" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-file-permissions-ownership' title="File Permissions and Ownership">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Redirection and Piping</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-creating-running-script' title="Creating and Running a Script">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore two fundamental concepts in Bash: redirection and piping. These techniques allow you to control the flow of data between commands and files, making your scripts more powerful and flexible.</p>
+</div><h1>What is Redirection?</h1>
+<div class='content'><p>Redirection is a method of changing the standard input/output devices when executing a command. By default, commands read input from the keyboard and write output to the terminal. Redirection allows you to change this behavior.</p>
+</div><h2>Types of Redirection</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Output Redirection (<code>&gt;</code> and <code>&gt;&gt;</code>)</strong></p>
+<ul>
+<li><code>&gt;</code>: Redirects the output to a file, overwriting the file if it exists.</li>
+<li><code>&gt;&gt;</code>: Redirects the output to a file, appending to the file if it exists.</li>
+</ul>
+</li>
+<li>
+<p><strong>Input Redirection (<code>&lt;</code>)</strong></p>
+<ul>
+<li><code>&lt;</code>: Redirects input from a file to a command.</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Redirection (<code>2&gt;</code> and <code>2&gt;&gt;</code>)</strong></p>
+<ul>
+<li><code>2&gt;</code>: Redirects error messages to a file, overwriting the file if it exists.</li>
+<li><code>2&gt;&gt;</code>: Redirects error messages to a file, appending to the file if it exists.</li>
+</ul>
+</li>
+<li>
+<p><strong>Combining Output and Error Redirection (<code>&amp;&gt;</code>)</strong></p>
+<ul>
+<li><code>&amp;&gt;</code>: Redirects both standard output and error messages to a file.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Examples of Redirection</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBPdXRwdXQgcmVkaXJlY3Rpb24KZWNobyAiSGVsbG8sIFdvcmxkISIgPiBvdXRwdXQudHh0CgojIEFwcGVuZGluZyBvdXRwdXQgcmVkaXJlY3Rpb24KZWNobyAiVGhpcyBpcyBhIG5ldyBsaW5lLiIgPj4gb3V0cHV0LnR4dAoKIyBJbnB1dCByZWRpcmVjdGlvbgpzb3J0IDwgdW5zb3J0ZWRfbGlzdC50eHQKCiMgRXJyb3IgcmVkaXJlY3Rpb24KbHMgbm9uX2V4aXN0ZW50X2ZpbGUgMj4gZXJyb3IubG9nCgojIENvbWJpbmluZyBvdXRwdXQgYW5kIGVycm9yIHJlZGlyZWN0aW9uCmxzIG5vbl9leGlzdGVudF9maWxlICY+IGNvbWJpbmVkX291dHB1dC5sb2c="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Output redirection
+echo &quot;Hello, World!&quot; &gt; output.txt
+
+# Appending output redirection
+echo &quot;This is a new line.&quot; &gt;&gt; output.txt
+
+# Input redirection
+sort &lt; unsorted_list.txt
+
+# Error redirection
+ls non_existent_file 2&gt; error.log
+
+# Combining output and error redirection
+ls non_existent_file &amp;&gt; combined_output.log</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>echo &quot;Hello, World!&quot; &gt; output.txt</code>: Writes &quot;Hello, World!&quot; to <code>output.txt</code>, overwriting the file if it exists.</li>
+<li><code>echo &quot;This is a new line.&quot; &gt;&gt; output.txt</code>: Appends &quot;This is a new line.&quot; to <code>output.txt</code>.</li>
+<li><code>sort &lt; unsorted_list.txt</code>: Sorts the contents of <code>unsorted_list.txt</code>.</li>
+<li><code>ls non_existent_file 2&gt; error.log</code>: Redirects the error message from <code>ls</code> to <code>error.log</code>.</li>
+<li><code>ls non_existent_file &amp;&gt; combined_output.log</code>: Redirects both the output and error message from <code>ls</code> to <code>combined_output.log</code>.</li>
+</ul>
+</div><h1>What is Piping?</h1>
+<div class='content'><p>Piping is a method of passing the output of one command as input to another command. This is done using the pipe operator (<code>|</code>).</p>
+</div><h2>Examples of Piping</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2luZyBwaXBlIHRvIHBhc3Mgb3V0cHV0IG9mIG9uZSBjb21tYW5kIHRvIGFub3RoZXIKbHMgLWwgfCBncmVwICJ0eHQiCgojIENvbWJpbmluZyBtdWx0aXBsZSBjb21tYW5kcyB3aXRoIHBpcGVzCmNhdCBmaWxlLnR4dCB8IHRyICdhLXonICdBLVonIHwgc29ydA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Using pipe to pass output of one command to another
+ls -l | grep &quot;txt&quot;
+
+# Combining multiple commands with pipes
+cat file.txt | tr 'a-z' 'A-Z' | sort</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>ls -l | grep &quot;txt&quot;</code>: Lists files in long format and filters the output to show only lines containing &quot;txt&quot;.</li>
+<li><code>cat file.txt | tr 'a-z' 'A-Z' | sort</code>: Reads <code>file.txt</code>, converts all lowercase letters to uppercase, and sorts the output.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Redirecting Output</h2>
+<div class='content'><p><strong>Task:</strong> Create a script that writes &quot;Hello, Bash!&quot; to a file named <code>greeting.txt</code>.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKZWNobyAiSGVsbG8sIEJhc2ghIiA+IGdyZWV0aW5nLnR4dA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+echo &quot;Hello, Bash!&quot; &gt; greeting.txt</pre></div><div class='content'></div><h2>Exercise 2: Redirecting Errors</h2>
+<div class='content'><p><strong>Task:</strong> Create a script that attempts to list a non-existent file and redirects the error message to <code>error.log</code>.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKbHMgbm9uX2V4aXN0ZW50X2ZpbGUgMj4gZXJyb3IubG9n"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+ls non_existent_file 2&gt; error.log</pre></div><div class='content'></div><h2>Exercise 3: Using Pipes</h2>
+<div class='content'><p><strong>Task:</strong> Create a script that lists all files in the current directory, filters for <code>.sh</code> files, and sorts them alphabetically.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKbHMgfCBncmVwICJcLnNoJCIgfCBzb3J0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+ls | grep &quot;\.sh$&quot; | sort</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Overwriting Files:</strong> Be cautious with <code>&gt;</code> as it overwrites files. Use <code>&gt;&gt;</code> to append if you don't want to lose existing data.</li>
+<li><strong>Combining Redirection:</strong> Remember that <code>&amp;&gt;</code> redirects both standard output and error, which can be useful for logging.</li>
+<li><strong>Piping Limitations:</strong> Pipes only pass standard output, not standard error. Use <code>2&gt;&amp;1</code> to combine them if needed.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Redirection and piping are powerful tools in Bash that allow you to control the flow of data between commands and files. By mastering these techniques, you can create more efficient and flexible scripts. In the next section, we will delve into scripting basics, starting with creating and running a script.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-file-permissions-ownership' title="File Permissions and Ownership">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-creating-running-script' title="Creating and Running a Script">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

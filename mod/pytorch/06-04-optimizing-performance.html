@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizing Performance</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/06-04-optimizing-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/06-04-optimizing-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/06-04-optimizing-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/06-04-optimizing-performance" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/06-04-optimizing-performance" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-deploying-models' title="Deploying PyTorch Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizing Performance</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-image-classification-project' title="Image Classification Project">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this module, we will explore various techniques to optimize the performance of your PyTorch models. Performance optimization is crucial for reducing training time, improving model accuracy, and efficiently utilizing computational resources. This module will cover:</p>
+<ol>
+<li><strong>Profiling and Benchmarking</strong></li>
+<li><strong>Efficient Data Loading</strong></li>
+<li><strong>Mixed Precision Training</strong></li>
+<li><strong>Model Quantization</strong></li>
+<li><strong>Parallel and Distributed Training</strong></li>
+</ol>
+</div><h1>1. Profiling and Benchmarking</h1>
+<div class='content'></div><h2>Profiling</h2>
+<div class='content'><p>Profiling helps identify bottlenecks in your code. PyTorch provides tools like <code>torch.utils.bottleneck</code> and <code>torch.profiler</code> to profile your models.</p>
+<h4>Example: Using <code>torch.profiler</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5wcm9maWxlcgoKZGVmIG1vZGVsX3N0ZXAoKToKICAgICMgU2ltdWxhdGUgYSBtb2RlbCBzdGVwCiAgICB4ID0gdG9yY2gucmFuZG4oMTAwLCAxMDApCiAgICB5ID0gdG9yY2gubWF0bXVsKHgsIHgpCgp3aXRoIHRvcmNoLnByb2ZpbGVyLnByb2ZpbGUoCiAgICBhY3Rpdml0aWVzPVt0b3JjaC5wcm9maWxlci5Qcm9maWxlckFjdGl2aXR5LkNQVSwgdG9yY2gucHJvZmlsZXIuUHJvZmlsZXJBY3Rpdml0eS5DVURBXSwKICAgIHJlY29yZF9zaGFwZXM9VHJ1ZSwKICAgIHByb2ZpbGVfbWVtb3J5PVRydWUsCiAgICB3aXRoX3N0YWNrPVRydWUKKSBhcyBwcm9mOgogICAgbW9kZWxfc3RlcCgpCgpwcmludChwcm9mLmtleV9hdmVyYWdlcygpLnRhYmxlKHNvcnRfYnk9ImNwdV90aW1lX3RvdGFsIiwgcm93X2xpbWl0PTEwKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.profiler
+
+def model_step():
+    # Simulate a model step
+    x = torch.randn(100, 100)
+    y = torch.matmul(x, x)
+
+with torch.profiler.profile(
+    activities=[torch.profiler.ProfilerActivity.CPU, torch.profiler.ProfilerActivity.CUDA],
+    record_shapes=True,
+    profile_memory=True,
+    with_stack=True
+) as prof:
+    model_step()
+
+print(prof.key_averages().table(sort_by=&quot;cpu_time_total&quot;, row_limit=10))</pre></div><div class='content'><p>This code profiles a simple matrix multiplication operation, providing insights into CPU and GPU usage.</p>
+</div><h2>Benchmarking</h2>
+<div class='content'><p>Benchmarking helps compare the performance of different implementations. Use <code>torch.backends.cudnn.benchmark</code> to enable benchmarking for convolutional layers.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLmJhY2tlbmRzLmN1ZG5uIGFzIGN1ZG5uCgpjdWRubi5iZW5jaG1hcmsgPSBUcnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.backends.cudnn as cudnn
+
+cudnn.benchmark = True</pre></div><div class='content'></div><h1>2. Efficient Data Loading</h1>
+<div class='content'><p>Efficient data loading can significantly reduce training time. Use <code>DataLoader</code> with multiple workers and proper data augmentation.</p>
+</div><h2>Example: DataLoader with Multiple Workers</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhTG9hZGVyLCBEYXRhc2V0CgpjbGFzcyBSYW5kb21EYXRhc2V0KERhdGFzZXQpOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIHNpemUsIGxlbmd0aCk6CiAgICAgICAgc2VsZi5sZW4gPSBsZW5ndGgKICAgICAgICBzZWxmLmRhdGEgPSB0b3JjaC5yYW5kbihsZW5ndGgsIHNpemUpCgogICAgZGVmIF9fZ2V0aXRlbV9fKHNlbGYsIGluZGV4KToKICAgICAgICByZXR1cm4gc2VsZi5kYXRhW2luZGV4XQoKICAgIGRlZiBfX2xlbl9fKHNlbGYpOgogICAgICAgIHJldHVybiBzZWxmLmxlbgoKZGF0YXNldCA9IFJhbmRvbURhdGFzZXQoMTAsIDEwMDApCmRhdGFsb2FkZXIgPSBEYXRhTG9hZGVyKGRhdGFzZXQsIGJhdGNoX3NpemU9MzIsIHNodWZmbGU9VHJ1ZSwgbnVtX3dvcmtlcnM9NCkKCmZvciBkYXRhIGluIGRhdGFsb2FkZXI6CiAgICBwYXNzICAjIFNpbXVsYXRlIHRyYWluaW5nIHN0ZXA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from torch.utils.data import DataLoader, Dataset
+
+class RandomDataset(Dataset):
+    def __init__(self, size, length):
+        self.len = length
+        self.data = torch.randn(length, size)
+
+    def __getitem__(self, index):
+        return self.data[index]
+
+    def __len__(self):
+        return self.len
+
+dataset = RandomDataset(10, 1000)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=4)
+
+for data in dataloader:
+    pass  # Simulate training step</pre></div><div class='content'><p>Using <code>num_workers=4</code> allows data loading to be done in parallel, speeding up the process.</p>
+</div><h1>3. Mixed Precision Training</h1>
+<div class='content'><p>Mixed precision training uses both 16-bit and 32-bit floating-point types to speed up training and reduce memory usage.</p>
+</div><h2>Example: Mixed Precision Training with `torch.cuda.amp`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KZnJvbSB0b3JjaC5jdWRhLmFtcCBpbXBvcnQgR3JhZFNjYWxlciwgYXV0b2Nhc3QKCm1vZGVsID0gbm4uTGluZWFyKDEwLCAxKS5jdWRhKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEpCnNjYWxlciA9IEdyYWRTY2FsZXIoKQoKZm9yIGRhdGEgaW4gZGF0YWxvYWRlcjoKICAgIG9wdGltaXplci56ZXJvX2dyYWQoKQogICAgd2l0aCBhdXRvY2FzdCgpOgogICAgICAgIG91dHB1dCA9IG1vZGVsKGRhdGEuY3VkYSgpKQogICAgICAgIGxvc3MgPSBvdXRwdXQuc3VtKCkKICAgIHNjYWxlci5zY2FsZShsb3NzKS5iYWNrd2FyZCgpCiAgICBzY2FsZXIuc3RlcChvcHRpbWl6ZXIpCiAgICBzY2FsZXIudXBkYXRlKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.cuda.amp import GradScaler, autocast
+
+model = nn.Linear(10, 1).cuda()
+optimizer = optim.SGD(model.parameters(), lr=0.001)
+scaler = GradScaler()
+
+for data in dataloader:
+    optimizer.zero_grad()
+    with autocast():
+        output = model(data.cuda())
+        loss = output.sum()
+    scaler.scale(loss).backward()
+    scaler.step(optimizer)
+    scaler.update()</pre></div><div class='content'><p>Using <code>autocast</code> and <code>GradScaler</code> helps in performing mixed precision training efficiently.</p>
+</div><h1>4. Model Quantization</h1>
+<div class='content'><p>Quantization reduces the model size and increases inference speed by converting weights and activations from 32-bit floating-point to 8-bit integers.</p>
+</div><h2>Example: Dynamic Quantization</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLnF1YW50aXphdGlvbgoKbW9kZWwgPSBubi5MaW5lYXIoMTAsIDEpCm1vZGVsLnFjb25maWcgPSB0b3JjaC5xdWFudGl6YXRpb24uZGVmYXVsdF9keW5hbWljX3Fjb25maWcKbW9kZWxfcHJlcGFyZWQgPSB0b3JjaC5xdWFudGl6YXRpb24ucHJlcGFyZShtb2RlbCkKbW9kZWxfcXVhbnRpemVkID0gdG9yY2gucXVhbnRpemF0aW9uLmNvbnZlcnQobW9kZWxfcHJlcGFyZWQpCgpwcmludChtb2RlbF9xdWFudGl6ZWQp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.quantization
+
+model = nn.Linear(10, 1)
+model.qconfig = torch.quantization.default_dynamic_qconfig
+model_prepared = torch.quantization.prepare(model)
+model_quantized = torch.quantization.convert(model_prepared)
+
+print(model_quantized)</pre></div><div class='content'><p>Dynamic quantization is suitable for models with a lot of linear layers, like LSTMs.</p>
+</div><h1>5. Parallel and Distributed Training</h1>
+<div class='content'><p>Parallel and distributed training can significantly speed up training by utilizing multiple GPUs or machines.</p>
+</div><h2>Example: Data Parallelism</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm5uIGFzIG5uCmltcG9ydCB0b3JjaC5vcHRpbSBhcyBvcHRpbQoKbW9kZWwgPSBubi5MaW5lYXIoMTAsIDEpCm1vZGVsID0gbm4uRGF0YVBhcmFsbGVsKG1vZGVsKQpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwucGFyYW1ldGVycygpLCBscj0wLjAwMSkKCmZvciBkYXRhIGluIGRhdGFsb2FkZXI6CiAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dCA9IG1vZGVsKGRhdGEpCiAgICBsb3NzID0gb3V0cHV0LnN1bSgpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG9wdGltaXplci5zdGVwKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.nn as nn
+import torch.optim as optim
+
+model = nn.Linear(10, 1)
+model = nn.DataParallel(model)
+optimizer = optim.SGD(model.parameters(), lr=0.001)
+
+for data in dataloader:
+    optimizer.zero_grad()
+    output = model(data)
+    loss = output.sum()
+    loss.backward()
+    optimizer.step()</pre></div><div class='content'><p>Using <code>nn.DataParallel</code> allows the model to be parallelized across multiple GPUs.</p>
+</div><h1>Summary</h1>
+<div class='content'><p>In this module, we covered various techniques to optimize the performance of PyTorch models, including profiling and benchmarking, efficient data loading, mixed precision training, model quantization, and parallel and distributed training. These techniques can help you make the most out of your computational resources, reduce training time, and improve model performance.</p>
+<p>Next, we will delve into case studies and projects to apply these optimization techniques in real-world scenarios.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-deploying-models' title="Deploying PyTorch Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-image-classification-project' title="Image Classification Project">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

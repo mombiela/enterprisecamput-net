@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Replication in HDFS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/03-03-data-replication-in-hdfs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/03-03-data-replication-in-hdfs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/03-03-data-replication-in-hdfs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/03-03-data-replication-in-hdfs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/03-03-data-replication-in-hdfs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-hdfs-commands' title="HDFS Commands">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Data Replication in HDFS</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-hdfs-fault-tolerance' title="HDFS Fault Tolerance">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Data replication is a fundamental feature of the Hadoop Distributed File System (HDFS) that ensures data reliability and availability. In this section, we will explore how HDFS handles data replication, the configuration settings involved, and the benefits it provides.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Replication Factor</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: The replication factor is the number of copies of each data block that HDFS maintains across the cluster.</li>
+<li><strong>Default Value</strong>: The default replication factor in HDFS is 3.</li>
+<li><strong>Configuration</strong>: It can be configured in the <code>hdfs-site.xml</code> file.</li>
+</ul>
+</div><h2>2. Data Blocks</h2>
+<div class='content'><ul>
+<li><strong>Block Size</strong>: HDFS splits files into blocks, typically 128 MB or 256 MB in size.</li>
+<li><strong>Block Replication</strong>: Each block is replicated based on the replication factor.</li>
+</ul>
+</div><h2>3. Namenode and Datanodes</h2>
+<div class='content'><ul>
+<li><strong>Namenode</strong>: Manages the metadata and keeps track of the replication of data blocks.</li>
+<li><strong>Datanodes</strong>: Store the actual data blocks and their replicas.</li>
+</ul>
+</div><h1>How Replication Works</h1>
+<div class='content'></div><h2>1. Writing Data to HDFS</h2>
+<div class='content'><p>When a client writes data to HDFS:</p>
+<ol>
+<li>The file is split into blocks.</li>
+<li>The Namenode determines the Datanodes to store the replicas.</li>
+<li>The client writes the first replica to the first Datanode.</li>
+<li>The first Datanode forwards the block to the second Datanode.</li>
+<li>The second Datanode forwards the block to the third Datanode.</li>
+</ol>
+</div><h2>2. Replication Pipeline</h2>
+<div class='content'><ul>
+<li><strong>Pipeline Process</strong>: The replication process follows a pipeline approach where data is written to one Datanode and then forwarded to the next.</li>
+<li><strong>Acknowledgment</strong>: Each Datanode sends an acknowledgment back to the client once it has received and stored the block.</li>
+</ul>
+</div><h2>3. Block Placement Policy</h2>
+<div class='content'><ul>
+<li><strong>Rack Awareness</strong>: HDFS is rack-aware, meaning it tries to place replicas on different racks to improve fault tolerance.</li>
+<li><strong>Default Policy</strong>: One replica on the local rack, one on a different rack, and the third on the same rack as the second.</li>
+</ul>
+</div><h1>Configuration Settings</h1>
+<div class='content'></div><h2>1. Setting the Replication Factor</h2>
+<div class='content'><ul>
+<li><strong>Global Setting</strong>: Set in the <code>hdfs-site.xml</code> file.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;3&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+<li><strong>Per-File Setting</strong>: Can be set when creating a file.
+<pre><code class="language-java">Configuration conf = new Configuration();
+FileSystem fs = FileSystem.get(conf);
+Path filePath = new Path(&quot;/user/hadoop/myfile.txt&quot;);
+FSDataOutputStream out = fs.create(filePath, (short) 2); // Set replication factor to 2
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Monitoring Replication</h2>
+<div class='content'><ul>
+<li><strong>HDFS Web UI</strong>: Provides a visual interface to monitor the replication status of files.</li>
+<li><strong>Command Line</strong>: Use the <code>hdfs dfs -stat</code> command to check the replication factor of a file.
+<pre><code class="language-bash">hdfs dfs -stat %r /user/hadoop/myfile.txt
+</code></pre>
+</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Example: Writing a File with Custom Replication Factor</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmNvbmYuQ29uZmlndXJhdGlvbjsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmZzLkZpbGVTeXN0ZW07CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5mcy5GU0RhdGFPdXRwdXRTdHJlYW07CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5mcy5QYXRoOwoKcHVibGljIGNsYXNzIEhERlNSZXBsaWNhdGlvbkV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIENvbmZpZ3VyYXRpb24gY29uZiA9IG5ldyBDb25maWd1cmF0aW9uKCk7CiAgICAgICAgICAgIEZpbGVTeXN0ZW0gZnMgPSBGaWxlU3lzdGVtLmdldChjb25mKTsKICAgICAgICAgICAgUGF0aCBmaWxlUGF0aCA9IG5ldyBQYXRoKCIvdXNlci9oYWRvb3AvbXlmaWxlLnR4dCIpOwogICAgICAgICAgICBGU0RhdGFPdXRwdXRTdHJlYW0gb3V0ID0gZnMuY3JlYXRlKGZpbGVQYXRoLCAoc2hvcnQpIDIpOyAvLyBTZXQgcmVwbGljYXRpb24gZmFjdG9yIHRvIDIKICAgICAgICAgICAgb3V0LndyaXRlVVRGKCJIZWxsbywgSERGUyEiKTsKICAgICAgICAgICAgb3V0LmNsb3NlKCk7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiRmlsZSB3cml0dGVuIHdpdGggcmVwbGljYXRpb24gZmFjdG9yIDIiKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.FSDataOutputStream;
+import org.apache.hadoop.fs.Path;
+
+public class HDFSReplicationExample {
+    public static void main(String[] args) {
+        try {
+            Configuration conf = new Configuration();
+            FileSystem fs = FileSystem.get(conf);
+            Path filePath = new Path(&quot;/user/hadoop/myfile.txt&quot;);
+            FSDataOutputStream out = fs.create(filePath, (short) 2); // Set replication factor to 2
+            out.writeUTF(&quot;Hello, HDFS!&quot;);
+            out.close();
+            System.out.println(&quot;File written with replication factor 2&quot;);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explanation</strong>: This Java program writes a file to HDFS with a custom replication factor of 2.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Check Replication Factor</h2>
+<div class='content'><ol>
+<li>Write a file to HDFS.</li>
+<li>Check its replication factor using the HDFS command line.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGRmcyBkZnMgLXB1dCBsb2NhbGZpbGUudHh0IC91c2VyL2hhZG9vcC8KaGRmcyBkZnMgLXN0YXQgJXIgL3VzZXIvaGFkb29wL2xvY2FsZmlsZS50eHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>hdfs dfs -put localfile.txt /user/hadoop/
+hdfs dfs -stat %r /user/hadoop/localfile.txt</pre></div><div class='content'></div><h2>Exercise 2: Change Replication Factor</h2>
+<div class='content'><ol>
+<li>Change the replication factor of an existing file to 4.</li>
+<li>Verify the change.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGRmcyBkZnMgLXNldHJlcCAtdyA0IC91c2VyL2hhZG9vcC9sb2NhbGZpbGUudHh0CmhkZnMgZGZzIC1zdGF0ICVyIC91c2VyL2hhZG9vcC9sb2NhbGZpbGUudHh0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>hdfs dfs -setrep -w 4 /user/hadoop/localfile.txt
+hdfs dfs -stat %r /user/hadoop/localfile.txt</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Forgetting to set the replication factor during file creation.
+<ul>
+<li><strong>Tip</strong>: Always specify the replication factor if it differs from the default.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Not considering rack awareness in a multi-rack cluster.
+<ul>
+<li><strong>Tip</strong>: Ensure your cluster is configured for rack awareness to improve fault tolerance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Data replication in HDFS is crucial for ensuring data reliability and availability. By understanding the replication factor, block placement policy, and how to configure and monitor replication, you can effectively manage data in an HDFS cluster. This knowledge sets the foundation for more advanced topics in HDFS and Hadoop.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-hdfs-commands' title="HDFS Commands">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-hdfs-fault-tolerance' title="HDFS Fault Tolerance">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anomaly Detection with Autoencoders</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/07-03-deteccion-anomalias-autoencoders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/07-03-deteccion-anomalias-autoencoders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/07-03-anomaly-detection-autoencoders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/deep_learning/07-03-anomaly-detection-autoencoders" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/07-03-anomaly-detection-autoencoders" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-text-generation-rnn' title="Text Generation with RNN">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Anomaly Detection with Autoencoders</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-creating-gan-image-generation' title="Creating a GAN for Image Generation">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Anomaly detection is a crucial task in various fields such as fraud detection, network security, and industrial maintenance. Autoencoders, a type of neural network, are particularly effective for this task due to their ability to learn efficient representations of data. In this section, we will explore how autoencoders can be used for anomaly detection.</p>
+</div><h1>What is an Autoencoder?</h1>
+<div class='content'><p>An autoencoder is a type of neural network designed to learn a compressed representation of input data. It consists of two main parts:</p>
+<ol>
+<li><strong>Encoder</strong>: Compresses the input into a latent-space representation.</li>
+<li><strong>Decoder</strong>: Reconstructs the input from the latent space.</li>
+</ol>
+</div><h2>Structure of an Autoencoder</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5wdXQgLT4gW0VuY29kZXJdIC0+IExhdGVudCBTcGFjZSAtPiBbRGVjb2Rlcl0gLT4gT3V0cHV0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Input -&gt; [Encoder] -&gt; Latent Space -&gt; [Decoder] -&gt; Output</pre></div><div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Latent Space</strong>: The compressed representation of the input data.</li>
+<li><strong>Reconstruction Loss</strong>: The difference between the input and the reconstructed output, often measured using Mean Squared Error (MSE).</li>
+</ul>
+</div><h1>How Autoencoders Detect Anomalies</h1>
+<div class='content'><p>Autoencoders are trained to minimize the reconstruction loss for normal data. When an anomaly (data point significantly different from the normal data) is fed into the autoencoder, it typically results in a higher reconstruction loss. This property can be leveraged to detect anomalies.</p>
+</div><h2>Steps for Anomaly Detection</h2>
+<div class='content'><ol>
+<li><strong>Train the Autoencoder</strong>: Use normal data to train the autoencoder.</li>
+<li><strong>Calculate Reconstruction Loss</strong>: For each data point, calculate the reconstruction loss.</li>
+<li><strong>Set a Threshold</strong>: Determine a threshold for the reconstruction loss. Data points with a loss above this threshold are considered anomalies.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's implement an autoencoder for anomaly detection using Python and TensorFlow.</p>
+</div><h2>Step 1: Import Libraries</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCB0ZW5zb3JmbG93IGFzIHRmCmZyb20gdGVuc29yZmxvdy5rZXJhcy5tb2RlbHMgaW1wb3J0IE1vZGVsCmZyb20gdGVuc29yZmxvdy5rZXJhcy5sYXllcnMgaW1wb3J0IElucHV0LCBEZW5zZQpmcm9tIHNrbGVhcm4ucHJlcHJvY2Vzc2luZyBpbXBvcnQgTWluTWF4U2NhbGVyCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import tensorflow as tf
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt</pre></div><div class='content'></div><h2>Step 2: Prepare Data</h2>
+<div class='content'><p>For simplicity, we'll use synthetic data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmF0ZSBzeW50aGV0aWMgbm9ybWFsIGRhdGEKbm9ybWFsX2RhdGEgPSBucC5yYW5kb20ubm9ybWFsKDAsIDEsICgxMDAwLCAyMCkpCgojIEdlbmVyYXRlIHN5bnRoZXRpYyBhbm9tYWxvdXMgZGF0YQphbm9tYWxvdXNfZGF0YSA9IG5wLnJhbmRvbS5ub3JtYWwoNSwgMSwgKDUwLCAyMCkpCgojIENvbWJpbmUgZGF0YQpkYXRhID0gbnAuY29uY2F0ZW5hdGUoW25vcm1hbF9kYXRhLCBhbm9tYWxvdXNfZGF0YV0sIGF4aXM9MCkKCiMgU2NhbGUgZGF0YQpzY2FsZXIgPSBNaW5NYXhTY2FsZXIoKQpkYXRhX3NjYWxlZCA9IHNjYWxlci5maXRfdHJhbnNmb3JtKGRhdGEp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generate synthetic normal data
+normal_data = np.random.normal(0, 1, (1000, 20))
+
+# Generate synthetic anomalous data
+anomalous_data = np.random.normal(5, 1, (50, 20))
+
+# Combine data
+data = np.concatenate([normal_data, anomalous_data], axis=0)
+
+# Scale data
+scaler = MinMaxScaler()
+data_scaled = scaler.fit_transform(data)</pre></div><div class='content'></div><h2>Step 3: Build the Autoencoder</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5wdXRfZGltID0gZGF0YV9zY2FsZWQuc2hhcGVbMV0KZW5jb2RpbmdfZGltID0gMTAKCiMgSW5wdXQgbGF5ZXIKaW5wdXRfbGF5ZXIgPSBJbnB1dChzaGFwZT0oaW5wdXRfZGltLCkpCgojIEVuY29kZXIKZW5jb2RlZCA9IERlbnNlKGVuY29kaW5nX2RpbSwgYWN0aXZhdGlvbj0ncmVsdScpKGlucHV0X2xheWVyKQoKIyBEZWNvZGVyCmRlY29kZWQgPSBEZW5zZShpbnB1dF9kaW0sIGFjdGl2YXRpb249J3NpZ21vaWQnKShlbmNvZGVkKQoKIyBBdXRvZW5jb2RlciBtb2RlbAphdXRvZW5jb2RlciA9IE1vZGVsKGlucHV0X2xheWVyLCBkZWNvZGVkKQphdXRvZW5jb2Rlci5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J21zZScp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>input_dim = data_scaled.shape[1]
+encoding_dim = 10
+
+# Input layer
+input_layer = Input(shape=(input_dim,))
+
+# Encoder
+encoded = Dense(encoding_dim, activation='relu')(input_layer)
+
+# Decoder
+decoded = Dense(input_dim, activation='sigmoid')(encoded)
+
+# Autoencoder model
+autoencoder = Model(input_layer, decoded)
+autoencoder.compile(optimizer='adam', loss='mse')</pre></div><div class='content'></div><h2>Step 4: Train the Autoencoder</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBUcmFpbiBvbmx5IG9uIG5vcm1hbCBkYXRhCmF1dG9lbmNvZGVyLmZpdChub3JtYWxfZGF0YSwgbm9ybWFsX2RhdGEsIGVwb2Nocz01MCwgYmF0Y2hfc2l6ZT0zMiwgc2h1ZmZsZT1UcnVlLCB2YWxpZGF0aW9uX3NwbGl0PTAuMik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Train only on normal data
+autoencoder.fit(normal_data, normal_data, epochs=50, batch_size=32, shuffle=True, validation_split=0.2)</pre></div><div class='content'></div><h2>Step 5: Calculate Reconstruction Loss</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcmVkaWN0IG9uIGFsbCBkYXRhCnJlY29uc3RydWN0aW9ucyA9IGF1dG9lbmNvZGVyLnByZWRpY3QoZGF0YV9zY2FsZWQpCnJlY29uc3RydWN0aW9uX2xvc3MgPSBucC5tZWFuKG5wLnBvd2VyKGRhdGFfc2NhbGVkIC0gcmVjb25zdHJ1Y3Rpb25zLCAyKSwgYXhpcz0xKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Predict on all data
+reconstructions = autoencoder.predict(data_scaled)
+reconstruction_loss = np.mean(np.power(data_scaled - reconstructions, 2), axis=1)</pre></div><div class='content'></div><h2>Step 6: Set Threshold and Detect Anomalies</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgdGhyZXNob2xkIGFzIG1lYW4gKyAzKnN0ZCBvZiB0aGUgcmVjb25zdHJ1Y3Rpb24gbG9zcyBvZiBub3JtYWwgZGF0YQp0aHJlc2hvbGQgPSBucC5tZWFuKHJlY29uc3RydWN0aW9uX2xvc3NbOjEwMDBdKSArIDMgKiBucC5zdGQocmVjb25zdHJ1Y3Rpb25fbG9zc1s6MTAwMF0pCgojIERldGVjdCBhbm9tYWxpZXMKYW5vbWFsaWVzID0gcmVjb25zdHJ1Y3Rpb25fbG9zcyA+IHRocmVzaG9sZAoKIyBQbG90IHJlc3VsdHMKcGx0LmZpZ3VyZShmaWdzaXplPSgxMCwgNikpCnBsdC5oaXN0KHJlY29uc3RydWN0aW9uX2xvc3NbOjEwMDBdLCBiaW5zPTUwLCBhbHBoYT0wLjYsIGxhYmVsPSdOb3JtYWwnKQpwbHQuaGlzdChyZWNvbnN0cnVjdGlvbl9sb3NzWzEwMDA6XSwgYmlucz01MCwgYWxwaGE9MC42LCBsYWJlbD0nQW5vbWFsb3VzJykKcGx0LmF4dmxpbmUodGhyZXNob2xkLCBjb2xvcj0ncicsIGxpbmVzdHlsZT0nLS0nLCBsYWJlbD0nVGhyZXNob2xkJykKcGx0LmxlZ2VuZCgpCnBsdC54bGFiZWwoJ1JlY29uc3RydWN0aW9uIExvc3MnKQpwbHQueWxhYmVsKCdGcmVxdWVuY3knKQpwbHQudGl0bGUoJ1JlY29uc3RydWN0aW9uIExvc3MgRGlzdHJpYnV0aW9uJykKcGx0LnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set threshold as mean + 3*std of the reconstruction loss of normal data
+threshold = np.mean(reconstruction_loss[:1000]) + 3 * np.std(reconstruction_loss[:1000])
+
+# Detect anomalies
+anomalies = reconstruction_loss &gt; threshold
+
+# Plot results
+plt.figure(figsize=(10, 6))
+plt.hist(reconstruction_loss[:1000], bins=50, alpha=0.6, label='Normal')
+plt.hist(reconstruction_loss[1000:], bins=50, alpha=0.6, label='Anomalous')
+plt.axvline(threshold, color='r', linestyle='--', label='Threshold')
+plt.legend()
+plt.xlabel('Reconstruction Loss')
+plt.ylabel('Frequency')
+plt.title('Reconstruction Loss Distribution')
+plt.show()</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li><strong>Data Preparation</strong>: Generate a dataset with normal and anomalous data points.</li>
+<li><strong>Autoencoder Construction</strong>: Build and train an autoencoder using the normal data.</li>
+<li><strong>Anomaly Detection</strong>: Calculate the reconstruction loss and set a threshold to detect anomalies.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>Refer to the code provided in the practical example above.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Overfitting</strong>: Ensure the autoencoder does not overfit by using techniques like early stopping and validation splits.</li>
+<li><strong>Threshold Setting</strong>: Experiment with different methods for setting the threshold, such as using percentiles or domain knowledge.</li>
+<li><strong>Data Scaling</strong>: Always scale your data before training the autoencoder to ensure consistent performance.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored how autoencoders can be used for anomaly detection. We covered the basic concepts, implemented a practical example, and provided an exercise to reinforce the learning. Autoencoders are powerful tools for detecting anomalies in various types of data, making them invaluable in many real-world applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-text-generation-rnn' title="Text Generation with RNN">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-creating-gan-image-generation' title="Creating a GAN for Image Generation">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Kafka</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/04-03-monitoring-kafka" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/04-03-monitoring-kafka" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/04-03-monitoring-kafka" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/04-03-monitoring-kafka" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/04-03-monitoring-kafka" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-managing-kafka-topics' title="Managing Kafka Topics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Monitoring Kafka</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-kafka-security' title="Kafka Security">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Monitoring Kafka is crucial for ensuring the health, performance, and reliability of your Kafka clusters. This section will cover the key aspects of monitoring Kafka, including the tools and metrics you need to keep an eye on.</p>
+</div><h1>Key Concepts in Kafka Monitoring</h1>
+<div class='content'><ol>
+<li><strong>Metrics Collection</strong>: Understanding the various metrics that Kafka exposes.</li>
+<li><strong>Monitoring Tools</strong>: Tools and platforms that can be used to monitor Kafka.</li>
+<li><strong>Alerting</strong>: Setting up alerts to notify you of potential issues.</li>
+<li><strong>Log Analysis</strong>: Analyzing Kafka logs for troubleshooting and performance tuning.</li>
+</ol>
+</div><h1>Metrics Collection</h1>
+<div class='content'><p>Kafka exposes a wide range of metrics through JMX (Java Management Extensions). These metrics can be categorized into several groups:</p>
+<ul>
+<li><strong>Broker Metrics</strong>: Metrics related to the Kafka broker's performance.</li>
+<li><strong>Producer Metrics</strong>: Metrics related to the performance of Kafka producers.</li>
+<li><strong>Consumer Metrics</strong>: Metrics related to the performance of Kafka consumers.</li>
+<li><strong>Topic Metrics</strong>: Metrics related to the performance of Kafka topics and partitions.</li>
+</ul>
+</div><h2>Key Metrics to Monitor</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Metric Category</th>
+<th>Metric Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Broker</td>
+<td><code>kafka.server:type=BrokerTopicMetrics,name=MessagesInPerSec</code></td>
+<td>Number of messages received per second.</td>
+</tr>
+<tr>
+<td>Broker</td>
+<td><code>kafka.server:type=BrokerTopicMetrics,name=BytesInPerSec</code></td>
+<td>Number of bytes received per second.</td>
+</tr>
+<tr>
+<td>Broker</td>
+<td><code>kafka.server:type=BrokerTopicMetrics,name=BytesOutPerSec</code></td>
+<td>Number of bytes sent per second.</td>
+</tr>
+<tr>
+<td>Producer</td>
+<td><code>kafka.producer:type=producer-metrics,name=record-send-rate</code></td>
+<td>Rate at which records are sent.</td>
+</tr>
+<tr>
+<td>Consumer</td>
+<td><code>kafka.consumer:type=consumer-fetch-manager-metrics,name=records-consumed-rate</code></td>
+<td>Rate at which records are consumed.</td>
+</tr>
+<tr>
+<td>Topic</td>
+<td><code>kafka.log:type=Log,name=LogEndOffset</code></td>
+<td>The offset of the last message in the log.</td>
+</tr>
+<tr>
+<td>Topic</td>
+<td><code>kafka.log:type=Log,name=LogStartOffset</code></td>
+<td>The offset of the first message in the log.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Monitoring Tools</h1>
+<div class='content'><p>Several tools can be used to monitor Kafka. Here are some popular ones:</p>
+<ol>
+<li><strong>Prometheus and Grafana</strong>: Prometheus is an open-source monitoring and alerting toolkit, and Grafana is an open-source platform for monitoring and observability. Together, they provide a powerful solution for monitoring Kafka.</li>
+<li><strong>Kafka Manager</strong>: A tool for managing and monitoring Kafka.</li>
+<li><strong>Confluent Control Center</strong>: A commercial tool provided by Confluent for monitoring and managing Kafka.</li>
+<li><strong>Datadog</strong>: A monitoring and analytics platform that supports Kafka.</li>
+</ol>
+</div><h2>Example: Setting Up Prometheus and Grafana</h2>
+<div class='content'><ol>
+<li><strong>Install Prometheus</strong>: Follow the <a href="https://prometheus.io/docs/prometheus/latest/installation/">Prometheus installation guide</a>.</li>
+<li><strong>Install Grafana</strong>: Follow the <a href="https://grafana.com/docs/grafana/latest/installation/">Grafana installation guide</a>.</li>
+<li><strong>Configure Prometheus to Scrape Kafka Metrics</strong>:
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['localhost:9092']
+</code></pre>
+</li>
+<li><strong>Import Kafka Dashboard in Grafana</strong>: Use a pre-built Kafka dashboard from the Grafana dashboard repository.</li>
+</ol>
+</div><h1>Alerting</h1>
+<div class='content'><p>Setting up alerts is essential to notify you of potential issues before they become critical. Prometheus Alertmanager can be used to define alerting rules and send notifications.</p>
+</div><h2>Example: Alerting Rule for High Latency</h2>
+<div class='content'><ol>
+<li><strong>Define Alerting Rule in Prometheus</strong>:
+<pre><code class="language-yaml">groups:
+  - name: kafka_alerts
+    rules:
+      - alert: HighLatency
+        expr: kafka_producer_record_send_rate &gt; 100
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;High Latency Detected&quot;
+          description: &quot;The record send rate is above 100 for more than 5 minutes.&quot;
+</code></pre>
+</li>
+<li><strong>Configure Alertmanager</strong>: Follow the <a href="https://prometheus.io/docs/alerting/latest/alertmanager/">Alertmanager configuration guide</a>.</li>
+</ol>
+</div><h1>Log Analysis</h1>
+<div class='content'><p>Kafka logs are a valuable source of information for troubleshooting and performance tuning. Key logs to monitor include:</p>
+<ul>
+<li><strong>Server Logs</strong>: Logs related to the Kafka broker.</li>
+<li><strong>Producer Logs</strong>: Logs related to Kafka producers.</li>
+<li><strong>Consumer Logs</strong>: Logs related to Kafka consumers.</li>
+</ul>
+</div><h2>Example: Analyzing Kafka Logs</h2>
+<div class='content'><ol>
+<li><strong>Access Kafka Logs</strong>: Kafka logs are typically located in the <code>logs</code> directory of your Kafka installation.</li>
+<li><strong>Use Log Analysis Tools</strong>: Tools like ELK Stack (Elasticsearch, Logstash, Kibana) can be used to analyze Kafka logs.</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Setting Up Prometheus and Grafana for Kafka Monitoring</h2>
+<div class='content'><ol>
+<li><strong>Install Prometheus and Grafana</strong> on your local machine or server.</li>
+<li><strong>Configure Prometheus</strong> to scrape Kafka metrics.</li>
+<li><strong>Import a Kafka Dashboard</strong> in Grafana.</li>
+<li><strong>Create an Alerting Rule</strong> in Prometheus for high latency.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Prometheus and Grafana</strong>:</p>
+<ul>
+<li>Follow the installation guides for <a href="https://prometheus.io/docs/prometheus/latest/installation/">Prometheus</a> and <a href="https://grafana.com/docs/grafana/latest/installation/">Grafana</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Prometheus</strong>:</p>
+<ul>
+<li>Edit the <code>prometheus.yml</code> file to include the Kafka job:</li>
+</ul>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'kafka'
+    static_configs:
+      - targets: ['localhost:9092']
+</code></pre>
+</li>
+<li>
+<p><strong>Import Kafka Dashboard in Grafana</strong>:</p>
+<ul>
+<li>Open Grafana, go to Dashboards &gt; Import, and use the dashboard ID <code>7589</code> for a pre-built Kafka dashboard.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create an Alerting Rule</strong>:</p>
+<ul>
+<li>Add the following rule to the <code>prometheus.yml</code> file:</li>
+</ul>
+<pre><code class="language-yaml">groups:
+  - name: kafka_alerts
+    rules:
+      - alert: HighLatency
+        expr: kafka_producer_record_send_rate &gt; 100
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: &quot;High Latency Detected&quot;
+          description: &quot;The record send rate is above 100 for more than 5 minutes.&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Monitoring Kafka is essential for maintaining the health and performance of your Kafka clusters. By understanding the key metrics, using the right tools, setting up alerts, and analyzing logs, you can ensure that your Kafka deployment runs smoothly and efficiently. In the next section, we will cover Kafka Security, which is crucial for protecting your Kafka data and infrastructure.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-managing-kafka-topics' title="Managing Kafka Topics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-kafka-security' title="Kafka Security">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

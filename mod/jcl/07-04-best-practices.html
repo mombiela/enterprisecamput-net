@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jcl/07-04-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jcl/07-04-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jcl/07-04-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jcl/07-04-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jcl/07-04-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-parallel-processing' title="Parallel Processing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Best Practices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-real-world-examples' title="Real-World JCL Examples">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover best practices for writing and managing JCL (Job Control Language) jobs. Following these best practices will help you create efficient, maintainable, and error-free JCL scripts.</p>
+</div><h1>1. Clear and Consistent Naming Conventions</h1>
+<div class='content'><ul>
+<li><strong>Job Names</strong>: Use meaningful job names that reflect the purpose of the job. This makes it easier to identify and manage jobs.
+<pre><code class="language-jcl">//BACKUP01 JOB (ACCT),'DAILY BACKUP',CLASS=A,MSGCLASS=X
+</code></pre>
+</li>
+<li><strong>Data Set Names</strong>: Use descriptive names for data sets to indicate their content and purpose.
+<pre><code class="language-jcl">//INPUT01  DD DSN=PROD.DATA.INPUT,DISP=SHR
+</code></pre>
+</li>
+</ul>
+</div><h1>2. Modularize JCL with Procedures</h1>
+<div class='content'><ul>
+<li><strong>Use Procedures</strong>: Break down complex JCL jobs into smaller, reusable procedures. This makes the JCL easier to manage and maintain.
+<pre><code class="language-jcl">//PROC01  PROC
+//STEP1   EXEC PGM=MYPROG
+//INPUT   DD DSN=PROD.DATA.INPUT,DISP=SHR
+//OUTPUT  DD DSN=PROD.DATA.OUTPUT,DISP=(NEW,CATLG,DELETE)
+// PEND
+</code></pre>
+</li>
+</ul>
+</div><h1>3. Use Symbolic Parameters</h1>
+<div class='content'><ul>
+<li><strong>Symbolic Parameters</strong>: Use symbolic parameters to make your JCL more flexible and easier to modify.
+<pre><code class="language-jcl">//MYJOB   JOB (ACCT),'SYMBOLIC EXAMPLE',CLASS=A,MSGCLASS=X
+//STEP1   EXEC PROC=PROC01,INFILE='PROD.DATA.INPUT',OUTFILE='PROD.DATA.OUTPUT'
+</code></pre>
+</li>
+</ul>
+</div><h1>4. Proper Error Handling</h1>
+<div class='content'><ul>
+<li><strong>Check Return Codes</strong>: Always check the return codes of each step to handle errors appropriately.
+<pre><code class="language-jcl">//STEP1   EXEC PGM=MYPROG
+// IF (STEP1.RC = 0) THEN
+//STEP2   EXEC PGM=NEXTPROG
+// ENDIF
+</code></pre>
+</li>
+</ul>
+</div><h1>5. Efficient Data Set Management</h1>
+<div class='content'><ul>
+<li><strong>Disposition Parameter</strong>: Use the DISP parameter correctly to manage data sets efficiently.
+<pre><code class="language-jcl">//OUTPUT  DD DSN=PROD.DATA.OUTPUT,DISP=(NEW,CATLG,DELETE)
+</code></pre>
+</li>
+</ul>
+</div><h1>6. Documentation and Comments</h1>
+<div class='content'><ul>
+<li><strong>Comments</strong>: Use comments to document the purpose and functionality of your JCL. This helps others understand your code.
+<pre><code class="language-jcl">//STEP1   EXEC PGM=MYPROG
+//* This step executes the MYPROG program to process input data
+</code></pre>
+</li>
+</ul>
+</div><h1>7. Optimize Resource Usage</h1>
+<div class='content'><ul>
+<li><strong>Class and Priority</strong>: Assign appropriate class and priority to jobs to optimize resource usage.
+<pre><code class="language-jcl">//MYJOB   JOB (ACCT),'OPTIMIZE RESOURCES',CLASS=A,MSGCLASS=X
+</code></pre>
+</li>
+</ul>
+</div><h1>8. Use JES2/JES3 Features</h1>
+<div class='content'><ul>
+<li><strong>JES2/JES3</strong>: Utilize JES2/JES3 features for better job management and troubleshooting.
+<pre><code class="language-jcl">//MYJOB   JOB (ACCT),'JES2 FEATURES',CLASS=A,MSGCLASS=X
+//STEP1   EXEC PGM=MYPROG
+//JES2    OUTPUT CLASS=A,DEST=REMOTE
+</code></pre>
+</li>
+</ul>
+</div><h1>9. Regularly Review and Update JCL</h1>
+<div class='content'><ul>
+<li><strong>Review and Update</strong>: Regularly review and update your JCL to ensure it meets current requirements and standards.</li>
+</ul>
+</div><h1>10. Follow Organizational Standards</h1>
+<div class='content'><ul>
+<li><strong>Adhere to Standards</strong>: Follow your organization's standards and guidelines for writing JCL to ensure consistency and compliance.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>By following these best practices, you can create JCL jobs that are efficient, maintainable, and less prone to errors. These practices will help you manage your JCL scripts more effectively and ensure smooth job execution. In the next section, we will explore practical applications and case studies to see these best practices in action.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-parallel-processing' title="Parallel Processing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-real-world-examples' title="Real-World JCL Examples">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ansible Plugins</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/10-03-ansible-plugins" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/10-03-ansible-plugins" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/10-03-ansible-plugins" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ansible/10-03-ansible-plugins" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/10-03-ansible-plugins" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-dynamic-inventory' title="Dynamic Inventory">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ansible Plugins</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-ansible-api' title="Ansible API">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Ansible plugins are pieces of code that augment Ansible's core functionality. They allow you to extend Ansible's capabilities in various ways, such as adding new connection methods, lookup methods, or even custom actions. This topic will cover the different types of plugins available in Ansible, how to create your own plugins, and practical examples to help you understand their usage.</p>
+</div><h1>Types of Ansible Plugins</h1>
+<div class='content'><p>Ansible supports several types of plugins, each serving a different purpose:</p>
+<ol>
+<li><strong>Action Plugins</strong>: Modify the behavior of Ansible modules.</li>
+<li><strong>Callback Plugins</strong>: Respond to events during playbook execution.</li>
+<li><strong>Connection Plugins</strong>: Define how Ansible connects to hosts.</li>
+<li><strong>Lookup Plugins</strong>: Retrieve data from external sources.</li>
+<li><strong>Filter Plugins</strong>: Transform data within Jinja2 templates.</li>
+<li><strong>Test Plugins</strong>: Provide custom tests for conditionals in Jinja2 templates.</li>
+<li><strong>Vars Plugins</strong>: Load variables from external sources.</li>
+<li><strong>Inventory Plugins</strong>: Dynamically generate inventory from external sources.</li>
+</ol>
+</div><h1>Creating a Custom Filter Plugin</h1>
+<div class='content'><p>Let's create a simple custom filter plugin that reverses a string. This example will help you understand the structure and implementation of a filter plugin.</p>
+</div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Directory Structure</strong>:
+Create a directory structure for your custom plugin. For this example, we'll place our plugin in a directory named <code>filter_plugins</code>.</p>
+<pre><code>my_ansible_project/
+├── filter_plugins/
+│   └── reverse.py
+└── playbook.yml
+</code></pre>
+</li>
+<li>
+<p><strong>Plugin Code</strong>:
+In the <code>reverse.py</code> file, write the following code:</p>
+<pre><code class="language-python"># reverse.py
+class FilterModule(object):
+    def filters(self):
+        return {
+            'reverse_string': self.reverse_string
+        }
+
+    def reverse_string(self, value):
+        return value[::-1]
+</code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>FilterModule</code> class: Defines the plugin.</li>
+<li><code>filters</code> method: Returns a dictionary mapping filter names to their corresponding methods.</li>
+<li><code>reverse_string</code> method: Implements the logic to reverse a string.</li>
+</ul>
+</li>
+<li>
+<p><strong>Using the Plugin in a Playbook</strong>:
+Create a playbook <code>playbook.yml</code> to use the custom filter plugin.</p>
+<pre><code class="language-yaml"># playbook.yml
+- name: Test custom filter plugin
+  hosts: localhost
+  vars:
+    my_string: &quot;Hello, Ansible!&quot;
+  tasks:
+    - name: Reverse the string
+      debug:
+        msg: &quot;{{ my_string | reverse_string }}&quot;
+</code></pre>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>vars</code>: Defines a variable <code>my_string</code>.</li>
+<li><code>tasks</code>: Uses the <code>debug</code> module to print the reversed string using the custom filter <code>reverse_string</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Running the Playbook</strong>:
+Execute the playbook to see the custom filter in action.</p>
+<pre><code class="language-sh">ansible-playbook playbook.yml
+</code></pre>
+<p><strong>Expected Output</strong>:</p>
+<pre><code>TASK [Reverse the string] ****************************************************
+ok: [localhost] =&gt; {
+    &quot;msg&quot;: &quot;!elbisnA ,olleH&quot;
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Custom Lookup Plugin</h2>
+<div class='content'><p><strong>Objective</strong>: Create a custom lookup plugin that reads data from a local JSON file.</p>
+<ol>
+<li>
+<p><strong>Directory Structure</strong>:</p>
+<pre><code>my_ansible_project/
+├── lookup_plugins/
+│   └── json_lookup.py
+├── data.json
+└── playbook.yml
+</code></pre>
+</li>
+<li>
+<p><strong>Plugin Code</strong>:</p>
+<pre><code class="language-python"># json_lookup.py
+import json
+
+class LookupModule(object):
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def run(self, terms, variables=None, **kwargs):
+        with open(terms[0], 'r') as f:
+            data = json.load(f)
+        return [data]
+</code></pre>
+</li>
+<li>
+<p><strong>JSON Data</strong> (<code>data.json</code>):</p>
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;Ansible&quot;,
+    &quot;type&quot;: &quot;Automation&quot;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Playbook</strong> (<code>playbook.yml</code>):</p>
+<pre><code class="language-yaml">- name: Test custom lookup plugin
+  hosts: localhost
+  tasks:
+    - name: Read data from JSON file
+      debug:
+        msg: &quot;{{ lookup('json_lookup', 'data.json') }}&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Run the Playbook</strong>:</p>
+<pre><code class="language-sh">ansible-playbook playbook.yml
+</code></pre>
+</li>
+</ol>
+<p><strong>Expected Output</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VEFTSyBbUmVhZCBkYXRhIGZyb20gSlNPTiBmaWxlXSAKb2s6IFtsb2NhbGhvc3RdID0+IHsKICAgICJtc2ciOiBbCiAgICAgICAgewogICAgICAgICAgICAibmFtZSI6ICJBbnNpYmxlIiwKICAgICAgICAgICAgInR5cGUiOiAiQXV0b21hdGlvbiIKICAgICAgICB9CiAgICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>TASK [Read data from JSON file] <strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong><strong></strong>
+ok: [localhost] =&gt; {
+    &quot;msg&quot;: [
+        {
+            &quot;name&quot;: &quot;Ansible&quot;,
+            &quot;type&quot;: &quot;Automation&quot;
+        }
+    ]
+}</pre></div><div class='content'></div><h2>Exercise 2: Create a Custom Callback Plugin</h2>
+<div class='content'><p><strong>Objective</strong>: Create a custom callback plugin that logs task results to a file.</p>
+<ol>
+<li>
+<p><strong>Directory Structure</strong>:</p>
+<pre><code>my_ansible_project/
+├── callback_plugins/
+│   └── log_results.py
+└── playbook.yml
+</code></pre>
+</li>
+<li>
+<p><strong>Plugin Code</strong>:</p>
+<pre><code class="language-python"># log_results.py
+from ansible.plugins.callback import CallbackBase
+
+class CallbackModule(CallbackBase):
+    def v2_runner_on_ok(self, result):
+        with open('task_results.log', 'a') as f:
+            f.write(f&quot;Task {result.task_name} succeeded: {result._result}\n&quot;)
+</code></pre>
+</li>
+<li>
+<p><strong>Playbook</strong> (<code>playbook.yml</code>):</p>
+<pre><code class="language-yaml">- name: Test custom callback plugin
+  hosts: localhost
+  tasks:
+    - name: Test task
+      debug:
+        msg: &quot;This is a test message&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Run the Playbook</strong>:</p>
+<pre><code class="language-sh">ANSIBLE_STDOUT_CALLBACK=log_results ansible-playbook playbook.yml
+</code></pre>
+</li>
+</ol>
+<p><strong>Expected Output</strong>:
+Check the <code>task_results.log</code> file for the logged task results.</p>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the different types of Ansible plugins and how they can extend Ansible's functionality. We walked through creating a custom filter plugin and provided practical exercises for creating custom lookup and callback plugins. Understanding and utilizing plugins can significantly enhance your Ansible automation capabilities, allowing for more flexible and powerful playbooks.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-dynamic-inventory' title="Dynamic Inventory">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-ansible-api' title="Ansible API">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

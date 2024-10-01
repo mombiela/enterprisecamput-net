@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Simple Neural Network</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/04-02-creating-a-simple-neural-network" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/04-02-creating-a-simple-neural-network" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/04-02-creating-a-simple-neural-network" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/04-02-creating-a-simple-neural-network" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/04-02-creating-a-simple-neural-network" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-neural-networks' title="Introduction to Neural Networks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creating a Simple Neural Network</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-activation-functions' title="Activation Functions">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to create a simple neural network using TensorFlow. We will cover the following steps:</p>
+<ol>
+<li><strong>Understanding the Problem</strong></li>
+<li><strong>Preparing the Data</strong></li>
+<li><strong>Building the Model</strong></li>
+<li><strong>Compiling the Model</strong></li>
+<li><strong>Training the Model</strong></li>
+<li><strong>Evaluating the Model</strong></li>
+<li><strong>Making Predictions</strong></li>
+</ol>
+</div><h1>1. Understanding the Problem</h1>
+<div class='content'><p>Before we start coding, it's essential to understand the problem we are trying to solve. For this example, we will use the famous MNIST dataset, which consists of 28x28 grayscale images of handwritten digits (0-9). Our goal is to build a neural network that can classify these images into the correct digit.</p>
+</div><h1>2. Preparing the Data</h1>
+<div class='content'><p>First, let's load and preprocess the MNIST dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmRhdGFzZXRzIGltcG9ydCBtbmlzdAoKIyBMb2FkIHRoZSBkYXRhc2V0Cih4X3RyYWluLCB5X3RyYWluKSwgKHhfdGVzdCwgeV90ZXN0KSA9IG1uaXN0LmxvYWRfZGF0YSgpCgojIE5vcm1hbGl6ZSB0aGUgaW1hZ2VzIHRvIGEgcmFuZ2Ugb2YgMCB0byAxCnhfdHJhaW4sIHhfdGVzdCA9IHhfdHJhaW4gLyAyNTUuMCwgeF90ZXN0IC8gMjU1LjAKCiMgUHJpbnQgdGhlIHNoYXBlIG9mIHRoZSBkYXRhCnByaW50KGYieF90cmFpbiBzaGFwZToge3hfdHJhaW4uc2hhcGV9IikKcHJpbnQoZiJ5X3RyYWluIHNoYXBlOiB7eV90cmFpbi5zaGFwZX0iKQpwcmludChmInhfdGVzdCBzaGFwZToge3hfdGVzdC5zaGFwZX0iKQpwcmludChmInlfdGVzdCBzaGFwZToge3lfdGVzdC5zaGFwZX0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.datasets import mnist
+
+# Load the dataset
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+# Normalize the images to a range of 0 to 1
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Print the shape of the data
+print(f&quot;x_train shape: {x_train.shape}&quot;)
+print(f&quot;y_train shape: {y_train.shape}&quot;)
+print(f&quot;x_test shape: {x_test.shape}&quot;)
+print(f&quot;y_test shape: {y_test.shape}&quot;)</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We import TensorFlow and the MNIST dataset.</li>
+<li>We load the dataset using <code>mnist.load_data()</code>, which returns training and testing data.</li>
+<li>We normalize the pixel values of the images to be between 0 and 1 by dividing by 255.0.</li>
+</ul>
+</div><h1>3. Building the Model</h1>
+<div class='content'><p>Next, we will build a simple neural network model using TensorFlow's Keras API.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBEZW5zZSwgRmxhdHRlbgoKIyBCdWlsZCB0aGUgbW9kZWwKbW9kZWwgPSBTZXF1ZW50aWFsKFsKICAgIEZsYXR0ZW4oaW5wdXRfc2hhcGU9KDI4LCAyOCkpLCAgIyBGbGF0dGVuIHRoZSBpbnB1dAogICAgRGVuc2UoMTI4LCBhY3RpdmF0aW9uPSdyZWx1JyksICAjIEZpcnN0IGhpZGRlbiBsYXllcgogICAgRGVuc2UoMTAsIGFjdGl2YXRpb249J3NvZnRtYXgnKSAgIyBPdXRwdXQgbGF5ZXIKXSkKCiMgUHJpbnQgdGhlIG1vZGVsIHN1bW1hcnkKbW9kZWwuc3VtbWFyeSgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten
+
+# Build the model
+model = Sequential([
+    Flatten(input_shape=(28, 28)),  # Flatten the input
+    Dense(128, activation='relu'),  # First hidden layer
+    Dense(10, activation='softmax')  # Output layer
+])
+
+# Print the model summary
+model.summary()</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We use <code>Sequential</code> to create a linear stack of layers.</li>
+<li>The <code>Flatten</code> layer converts the 28x28 images into a 1D array of 784 pixels.</li>
+<li>The first <code>Dense</code> layer has 128 neurons and uses the ReLU activation function.</li>
+<li>The output <code>Dense</code> layer has 10 neurons (one for each digit) and uses the softmax activation function to output probabilities.</li>
+</ul>
+</div><h1>4. Compiling the Model</h1>
+<div class='content'><p>We need to compile the model before training it. This involves specifying the optimizer, loss function, and metrics.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb21waWxlIHRoZSBtb2RlbAptb2RlbC5jb21waWxlKG9wdGltaXplcj0nYWRhbScsCiAgICAgICAgICAgICAgbG9zcz0nc3BhcnNlX2NhdGVnb3JpY2FsX2Nyb3NzZW50cm9weScsCiAgICAgICAgICAgICAgbWV0cmljcz1bJ2FjY3VyYWN5J10p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Compile the model
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We use the Adam optimizer, which is a popular choice for training neural networks.</li>
+<li>The loss function is <code>sparse_categorical_crossentropy</code>, suitable for multi-class classification problems.</li>
+<li>We track the accuracy metric during training.</li>
+</ul>
+</div><h1>5. Training the Model</h1>
+<div class='content'><p>Now, we can train the model using the training data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBUcmFpbiB0aGUgbW9kZWwKbW9kZWwuZml0KHhfdHJhaW4sIHlfdHJhaW4sIGVwb2Nocz01KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Train the model
+model.fit(x_train, y_train, epochs=5)</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We call the <code>fit</code> method to train the model.</li>
+<li>We specify the training data (<code>x_train</code> and <code>y_train</code>) and the number of epochs (5).</li>
+</ul>
+</div><h1>6. Evaluating the Model</h1>
+<div class='content'><p>After training, we evaluate the model using the test data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFdmFsdWF0ZSB0aGUgbW9kZWwKdGVzdF9sb3NzLCB0ZXN0X2FjYyA9IG1vZGVsLmV2YWx1YXRlKHhfdGVzdCwgeV90ZXN0LCB2ZXJib3NlPTIpCnByaW50KGYiXG5UZXN0IGFjY3VyYWN5OiB7dGVzdF9hY2N9Iik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Evaluate the model
+test_loss, test_acc = model.evaluate(x_test, y_test, verbose=2)
+print(f&quot;\nTest accuracy: {test_acc}&quot;)</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We call the <code>evaluate</code> method to assess the model's performance on the test data.</li>
+<li>We print the test accuracy.</li>
+</ul>
+</div><h1>7. Making Predictions</h1>
+<div class='content'><p>Finally, we can use the trained model to make predictions on new data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYWtlIHByZWRpY3Rpb25zCnByZWRpY3Rpb25zID0gbW9kZWwucHJlZGljdCh4X3Rlc3QpCgojIFByaW50IHRoZSBmaXJzdCBwcmVkaWN0aW9uCnByaW50KGYiUHJlZGljdGlvbiBmb3IgdGhlIGZpcnN0IHRlc3QgaW1hZ2U6IHtwcmVkaWN0aW9uc1swXX0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Make predictions
+predictions = model.predict(x_test)
+
+# Print the first prediction
+print(f&quot;Prediction for the first test image: {predictions[0]}&quot;)</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li>We call the <code>predict</code> method to make predictions on the test data.</li>
+<li>We print the prediction for the first test image.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned how to create a simple neural network using TensorFlow. We covered the following steps:</p>
+<ul>
+<li>Understanding the problem</li>
+<li>Preparing the data</li>
+<li>Building the model</li>
+<li>Compiling the model</li>
+<li>Training the model</li>
+<li>Evaluating the model</li>
+<li>Making predictions</li>
+</ul>
+<p>By following these steps, you can build and train a neural network to solve various classification problems. In the next section, we will dive deeper into activation functions and their importance in neural networks.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-neural-networks' title="Introduction to Neural Networks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-activation-functions' title="Activation Functions">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

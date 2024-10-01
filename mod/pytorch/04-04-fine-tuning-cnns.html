@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fine-Tuning CNNs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/04-04-fine-tuning-cnns" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/04-04-fine-tuning-cnns" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/04-04-fine-tuning-cnns" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/04-04-fine-tuning-cnns" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/04-04-fine-tuning-cnns" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-transfer-learning' title="Transfer Learning with Pre-trained Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Fine-Tuning CNNs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-rnns' title="Introduction to RNNs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Fine-tuning is a powerful technique in deep learning where a pre-trained model is adapted to a new, often related, task. This approach leverages the knowledge the model has already learned from a large dataset, reducing the amount of data and training time required for the new task. In this section, we will cover the following:</p>
+<ol>
+<li><strong>Understanding Fine-Tuning</strong></li>
+<li><strong>Steps to Fine-Tune a CNN</strong></li>
+<li><strong>Practical Example: Fine-Tuning a Pre-trained Model</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>Understanding Fine-Tuning</h1>
+<div class='content'><p>Fine-tuning involves taking a pre-trained model, such as those available in PyTorch's <code>torchvision.models</code> module, and adjusting it to perform well on a new dataset. The key concepts include:</p>
+<ul>
+<li><strong>Transfer Learning</strong>: Using a model trained on one task and applying it to a different but related task.</li>
+<li><strong>Feature Extraction</strong>: Using the pre-trained model's learned features as input to a new classifier.</li>
+<li><strong>Fine-Tuning</strong>: Unfreezing some layers of the pre-trained model and jointly training both the pre-trained layers and the new layers.</li>
+</ul>
+</div><h1>Steps to Fine-Tune a CNN</h1>
+<div class='content'><ol>
+<li><strong>Load a Pre-trained Model</strong>: Choose a model pre-trained on a large dataset like ImageNet.</li>
+<li><strong>Modify the Final Layer</strong>: Replace the final classification layer to match the number of classes in your new dataset.</li>
+<li><strong>Freeze Layers</strong>: Optionally, freeze some of the earlier layers to retain their learned features.</li>
+<li><strong>Train the Model</strong>: Train the modified model on your new dataset.</li>
+</ol>
+</div><h1>Practical Example: Fine-Tuning a Pre-trained Model</h1>
+<div class='content'><p>Let's walk through a practical example of fine-tuning a ResNet model for a new image classification task.</p>
+</div><h2>Step 1: Load a Pre-trained Model</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIExvYWQgYSBwcmUtdHJhaW5lZCBSZXNOZXQgbW9kZWwKbW9kZWwgPSBtb2RlbHMucmVzbmV0MTgocHJldHJhaW5lZD1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torchvision.models as models
+
+# Load a pre-trained ResNet model
+model = models.resnet18(pretrained=True)</pre></div><div class='content'></div><h2>Step 2: Modify the Final Layer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm5uIGFzIG5uCgojIE1vZGlmeSB0aGUgZmluYWwgbGF5ZXIgdG8gbWF0Y2ggdGhlIG51bWJlciBvZiBjbGFzc2VzIGluIHRoZSBuZXcgZGF0YXNldApudW1fY2xhc3NlcyA9IDEwICAjIEV4YW1wbGU6IDEwIGNsYXNzZXMgaW4gdGhlIG5ldyBkYXRhc2V0Cm1vZGVsLmZjID0gbm4uTGluZWFyKG1vZGVsLmZjLmluX2ZlYXR1cmVzLCBudW1fY2xhc3Nlcyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.nn as nn
+
+# Modify the final layer to match the number of classes in the new dataset
+num_classes = 10  # Example: 10 classes in the new dataset
+model.fc = nn.Linear(model.fc.in_features, num_classes)</pre></div><div class='content'></div><h2>Step 3: Freeze Layers (Optional)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGcmVlemUgYWxsIGxheWVycyBleGNlcHQgdGhlIGZpbmFsIGxheWVyCmZvciBwYXJhbSBpbiBtb2RlbC5wYXJhbWV0ZXJzKCk6CiAgICBwYXJhbS5yZXF1aXJlc19ncmFkID0gRmFsc2UKCiMgVW5mcmVlemUgdGhlIGZpbmFsIGxheWVyCmZvciBwYXJhbSBpbiBtb2RlbC5mYy5wYXJhbWV0ZXJzKCk6CiAgICBwYXJhbS5yZXF1aXJlc19ncmFkID0gVHJ1ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Freeze all layers except the final layer
+for param in model.parameters():
+    param.requires_grad = False
+
+# Unfreeze the final layer
+for param in model.fc.parameters():
+    param.requires_grad = True</pre></div><div class='content'></div><h2>Step 4: Train the Model</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm9wdGltIGFzIG9wdGltCmZyb20gdG9yY2h2aXNpb24gaW1wb3J0IGRhdGFzZXRzLCB0cmFuc2Zvcm1zCgojIERlZmluZSBhIGxvc3MgZnVuY3Rpb24gYW5kIG9wdGltaXplcgpjcml0ZXJpb24gPSBubi5Dcm9zc0VudHJvcHlMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLmZjLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEsIG1vbWVudHVtPTAuOSkKCiMgTG9hZCB5b3VyIG5ldyBkYXRhc2V0CnRyYW5zZm9ybSA9IHRyYW5zZm9ybXMuQ29tcG9zZShbCiAgICB0cmFuc2Zvcm1zLlJlc2l6ZSgyNTYpLAogICAgdHJhbnNmb3Jtcy5DZW50ZXJDcm9wKDIyNCksCiAgICB0cmFuc2Zvcm1zLlRvVGVuc29yKCksCl0pCgp0cmFpbl9kYXRhc2V0ID0gZGF0YXNldHMuSW1hZ2VGb2xkZXIocm9vdD0ncGF0aC90by90cmFpbicsIHRyYW5zZm9ybT10cmFuc2Zvcm0pCnRyYWluX2xvYWRlciA9IHRvcmNoLnV0aWxzLmRhdGEuRGF0YUxvYWRlcih0cmFpbl9kYXRhc2V0LCBiYXRjaF9zaXplPTMyLCBzaHVmZmxlPVRydWUpCgojIFRyYWluaW5nIGxvb3AKbW9kZWwudHJhaW4oKQpmb3IgZXBvY2ggaW4gcmFuZ2UoMTApOiAgIyBFeGFtcGxlOiAxMCBlcG9jaHMKICAgIHJ1bm5pbmdfbG9zcyA9IDAuMAogICAgZm9yIGlucHV0cywgbGFiZWxzIGluIHRyYWluX2xvYWRlcjoKICAgICAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgbGFiZWxzKQogICAgICAgIGxvc3MuYmFja3dhcmQoKQogICAgICAgIG9wdGltaXplci5zdGVwKCkKICAgICAgICBydW5uaW5nX2xvc3MgKz0gbG9zcy5pdGVtKCkKICAgIHByaW50KGYnRXBvY2gge2Vwb2NoKzF9LCBMb3NzOiB7cnVubmluZ19sb3NzL2xlbih0cmFpbl9sb2FkZXIpfScp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.optim as optim
+from torchvision import datasets, transforms
+
+# Define a loss function and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.fc.parameters(), lr=0.001, momentum=0.9)
+
+# Load your new dataset
+transform = transforms.Compose([
+    transforms.Resize(256),
+    transforms.CenterCrop(224),
+    transforms.ToTensor(),
+])
+
+train_dataset = datasets.ImageFolder(root='path/to/train', transform=transform)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
+
+# Training loop
+model.train()
+for epoch in range(10):  # Example: 10 epochs
+    running_loss = 0.0
+    for inputs, labels in train_loader:
+        optimizer.zero_grad()
+        outputs = model(inputs)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+        running_loss += loss.item()
+    print(f'Epoch {epoch+1}, Loss: {running_loss/len(train_loader)}')</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Fine-Tune a Different Pre-trained Model</h2>
+<div class='content'><ol>
+<li>Choose a different pre-trained model from <code>torchvision.models</code> (e.g., VGG16).</li>
+<li>Modify the final layer to match the number of classes in a new dataset.</li>
+<li>Train the model on the new dataset.</li>
+</ol>
+</div><h2>Exercise 2: Experiment with Freezing Layers</h2>
+<div class='content'><ol>
+<li>Fine-tune a pre-trained model with different layers frozen.</li>
+<li>Compare the performance of the model with different configurations of frozen layers.</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Solution to Exercise 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIGEgcHJlLXRyYWluZWQgVkdHMTYgbW9kZWwKbW9kZWwgPSBtb2RlbHMudmdnMTYocHJldHJhaW5lZD1UcnVlKQoKIyBNb2RpZnkgdGhlIGZpbmFsIGxheWVyCm1vZGVsLmNsYXNzaWZpZXJbNl0gPSBubi5MaW5lYXIobW9kZWwuY2xhc3NpZmllcls2XS5pbl9mZWF0dXJlcywgbnVtX2NsYXNzZXMpCgojIEZyZWV6ZSBsYXllcnMgKG9wdGlvbmFsKQpmb3IgcGFyYW0gaW4gbW9kZWwuZmVhdHVyZXMucGFyYW1ldGVycygpOgogICAgcGFyYW0ucmVxdWlyZXNfZ3JhZCA9IEZhbHNlCgojIFRyYWluIHRoZSBtb2RlbCAoc2ltaWxhciB0byB0aGUgZXhhbXBsZSBhYm92ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load a pre-trained VGG16 model
+model = models.vgg16(pretrained=True)
+
+# Modify the final layer
+model.classifier[6] = nn.Linear(model.classifier[6].in_features, num_classes)
+
+# Freeze layers (optional)
+for param in model.features.parameters():
+    param.requires_grad = False
+
+# Train the model (similar to the example above)</pre></div><div class='content'><h4>Solution to Exercise 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeHBlcmltZW50IHdpdGggZnJlZXppbmcgZGlmZmVyZW50IGxheWVycwojIEV4YW1wbGU6IEZyZWV6ZSBvbmx5IHRoZSBmaXJzdCBmZXcgbGF5ZXJzCmZvciBuYW1lLCBwYXJhbSBpbiBtb2RlbC5uYW1lZF9wYXJhbWV0ZXJzKCk6CiAgICBpZiAnZmVhdHVyZXMuMCcgaW4gbmFtZSBvciAnZmVhdHVyZXMuMScgaW4gbmFtZToKICAgICAgICBwYXJhbS5yZXF1aXJlc19ncmFkID0gRmFsc2UKICAgIGVsc2U6CiAgICAgICAgcGFyYW0ucmVxdWlyZXNfZ3JhZCA9IFRydWUKCiMgVHJhaW4gdGhlIG1vZGVsIChzaW1pbGFyIHRvIHRoZSBleGFtcGxlIGFib3ZlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Experiment with freezing different layers
+# Example: Freeze only the first few layers
+for name, param in model.named_parameters():
+    if 'features.0' in name or 'features.1' in name:
+        param.requires_grad = False
+    else:
+        param.requires_grad = True
+
+# Train the model (similar to the example above)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the concept of fine-tuning CNNs, the steps involved, and provided a practical example. Fine-tuning allows you to leverage pre-trained models to achieve good performance on new tasks with less data and training time. By experimenting with different pre-trained models and configurations, you can optimize the performance for your specific use case.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-transfer-learning' title="Transfer Learning with Pre-trained Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-rnns' title="Introduction to RNNs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

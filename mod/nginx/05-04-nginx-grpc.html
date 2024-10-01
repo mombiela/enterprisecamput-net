@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGINX and gRPC</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/05-04-nginx-grpc" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/05-04-nginx-grpc" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/05-04-nginx-grpc" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/05-04-nginx-grpc" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/05-04-nginx-grpc" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-nginx-http2' title="NGINX and HTTP/2">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">NGINX and gRPC</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-monitoring-nginx' title="Monitoring NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to configure NGINX to work with gRPC (gRPC Remote Procedure Calls). gRPC is a high-performance, open-source universal RPC framework initially developed by Google. It uses HTTP/2 for transport, Protocol Buffers as the interface description language, and provides features such as authentication, load balancing, and more.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>gRPC</strong>: A modern, open-source, high-performance RPC framework that can run in any environment.</li>
+<li><strong>HTTP/2</strong>: The protocol used by gRPC for transport, which provides benefits like multiplexing, header compression, and more.</li>
+<li><strong>Protocol Buffers</strong>: A language-neutral, platform-neutral extensible mechanism for serializing structured data.</li>
+</ol>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before diving into the configuration, ensure you have:</p>
+<ul>
+<li>A basic understanding of NGINX configuration.</li>
+<li>NGINX installed on your system.</li>
+<li>A gRPC server running and accessible.</li>
+</ul>
+</div><h1>Configuring NGINX for gRPC</h1>
+<div class='content'></div><h2>Step 1: Install NGINX with HTTP/2 and gRPC Support</h2>
+<div class='content'><p>Ensure your NGINX installation supports HTTP/2 and gRPC. You can check this by running:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmdpbnggLVYgMj4mMSB8IGdyZXAgLW8gd2l0aC1odHRwX3YyX21vZHVsZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>nginx -V 2&gt;&amp;1 | grep -o with-http_v2_module</pre></div><div class='content'><p>If you see <code>with-http_v2_module</code> in the output, your NGINX supports HTTP/2. If not, you may need to recompile NGINX with the necessary modules or install a version that includes them.</p>
+</div><h2>Step 2: Basic gRPC Configuration</h2>
+<div class='content'><p>Create a new configuration file or edit your existing NGINX configuration to include the gRPC settings. Below is a basic example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBpbmNsdWRlICAgICAgIG1pbWUudHlwZXM7CiAgICBkZWZhdWx0X3R5cGUgIGFwcGxpY2F0aW9uL29jdGV0LXN0cmVhbTsKCiAgICB1cHN0cmVhbSBncnBjX2JhY2tlbmQgewogICAgICAgIHNlcnZlciAxMjcuMC4wLjE6NTAwNTE7ICAjIFJlcGxhY2Ugd2l0aCB5b3VyIGdSUEMgc2VydmVyIGFkZHJlc3MgYW5kIHBvcnQKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MCBodHRwMjsKICAgICAgICBzZXJ2ZXJfbmFtZSBncnBjLmV4YW1wbGUuY29tOyAgIyBSZXBsYWNlIHdpdGggeW91ciBzZXJ2ZXIgbmFtZQoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgZ3JwY19wYXNzIGdycGM6Ly9ncnBjX2JhY2tlbmQ7CiAgICAgICAgICAgIGVycm9yX3BhZ2UgNTAyID0gL2Vycm9yNTAyZ3JwYzsKICAgICAgICB9CgogICAgICAgIGxvY2F0aW9uID0gL2Vycm9yNTAyZ3JwYyB7CiAgICAgICAgICAgIGludGVybmFsOwogICAgICAgICAgICBkZWZhdWx0X3R5cGUgYXBwbGljYXRpb24vZ3JwYzsKICAgICAgICAgICAgYWRkX2hlYWRlciBncnBjLXN0YXR1cyAxNDsKICAgICAgICAgICAgYWRkX2hlYWRlciBjb250ZW50LWxlbmd0aCAwOwogICAgICAgICAgICByZXR1cm4gMjA0OwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    upstream grpc_backend {
+        server 127.0.0.1:50051;  # Replace with your gRPC server address and port
+    }
+
+    server {
+        listen 80 http2;
+        server_name grpc.example.com;  # Replace with your server name
+
+        location / {
+            grpc_pass grpc://grpc_backend;
+            error_page 502 = /error502grpc;
+        }
+
+        location = /error502grpc {
+            internal;
+            default_type application/grpc;
+            add_header grpc-status 14;
+            add_header content-length 0;
+            return 204;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>upstream grpc_backend</strong>: Defines the backend gRPC server.</li>
+<li><strong>listen 80 http2</strong>: Configures the server to listen on port 80 with HTTP/2.</li>
+<li><strong>grpc_pass grpc://grpc_backend</strong>: Forwards the gRPC requests to the backend server.</li>
+<li><strong>error_page 502</strong>: Handles gRPC-specific error responses.</li>
+</ul>
+</div><h2>Step 3: Testing the Configuration</h2>
+<div class='content'><p>After saving your configuration, test it for syntax errors:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmdpbnggLXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>nginx -t</pre></div><div class='content'><p>If the test is successful, reload NGINX to apply the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmdpbnggLXMgcmVsb2Fk"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>nginx -s reload</pre></div><div class='content'></div><h2>Step 4: Secure gRPC with SSL/TLS</h2>
+<div class='content'><p>To secure your gRPC connections, you can configure SSL/TLS. Here’s an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBpbmNsdWRlICAgICAgIG1pbWUudHlwZXM7CiAgICBkZWZhdWx0X3R5cGUgIGFwcGxpY2F0aW9uL29jdGV0LXN0cmVhbTsKCiAgICB1cHN0cmVhbSBncnBjX2JhY2tlbmQgewogICAgICAgIHNlcnZlciAxMjcuMC4wLjE6NTAwNTE7ICAjIFJlcGxhY2Ugd2l0aCB5b3VyIGdSUEMgc2VydmVyIGFkZHJlc3MgYW5kIHBvcnQKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA0NDMgc3NsIGh0dHAyOwogICAgICAgIHNlcnZlcl9uYW1lIGdycGMuZXhhbXBsZS5jb207ICAjIFJlcGxhY2Ugd2l0aCB5b3VyIHNlcnZlciBuYW1lCgogICAgICAgIHNzbF9jZXJ0aWZpY2F0ZSAvcGF0aC90by95b3VyL2NlcnQucGVtOwogICAgICAgIHNzbF9jZXJ0aWZpY2F0ZV9rZXkgL3BhdGgvdG8veW91ci9rZXkucGVtOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgZ3JwY19wYXNzIGdycGM6Ly9ncnBjX2JhY2tlbmQ7CiAgICAgICAgICAgIGVycm9yX3BhZ2UgNTAyID0gL2Vycm9yNTAyZ3JwYzsKICAgICAgICB9CgogICAgICAgIGxvY2F0aW9uID0gL2Vycm9yNTAyZ3JwYyB7CiAgICAgICAgICAgIGludGVybmFsOwogICAgICAgICAgICBkZWZhdWx0X3R5cGUgYXBwbGljYXRpb24vZ3JwYzsKICAgICAgICAgICAgYWRkX2hlYWRlciBncnBjLXN0YXR1cyAxNDsKICAgICAgICAgICAgYWRkX2hlYWRlciBjb250ZW50LWxlbmd0aCAwOwogICAgICAgICAgICByZXR1cm4gMjA0OwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    upstream grpc_backend {
+        server 127.0.0.1:50051;  # Replace with your gRPC server address and port
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name grpc.example.com;  # Replace with your server name
+
+        ssl_certificate /path/to/your/cert.pem;
+        ssl_certificate_key /path/to/your/key.pem;
+
+        location / {
+            grpc_pass grpc://grpc_backend;
+            error_page 502 = /error502grpc;
+        }
+
+        location = /error502grpc {
+            internal;
+            default_type application/grpc;
+            add_header grpc-status 14;
+            add_header content-length 0;
+            return 204;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>listen 443 ssl http2</strong>: Configures the server to listen on port 443 with SSL and HTTP/2.</li>
+<li><strong>ssl_certificate</strong> and <strong>ssl_certificate_key</strong>: Paths to your SSL certificate and key.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise 1: Configure NGINX to Proxy gRPC Traffic</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Configure NGINX to proxy gRPC traffic to a backend server running on <code>127.0.0.1:50051</code>.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Create a new NGINX configuration file.</li>
+<li>Define an upstream block for the gRPC backend.</li>
+<li>Configure a server block to listen on port 80 with HTTP/2.</li>
+<li>Use <code>grpc_pass</code> to forward requests to the backend.</li>
+<li>Test and reload the configuration.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBpbmNsdWRlICAgICAgIG1pbWUudHlwZXM7CiAgICBkZWZhdWx0X3R5cGUgIGFwcGxpY2F0aW9uL29jdGV0LXN0cmVhbTsKCiAgICB1cHN0cmVhbSBncnBjX2JhY2tlbmQgewogICAgICAgIHNlcnZlciAxMjcuMC4wLjE6NTAwNTE7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODAgaHR0cDI7CiAgICAgICAgc2VydmVyX25hbWUgZ3JwYy5leGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGdycGNfcGFzcyBncnBjOi8vZ3JwY19iYWNrZW5kOwogICAgICAgICAgICBlcnJvcl9wYWdlIDUwMiA9IC9lcnJvcjUwMmdycGM7CiAgICAgICAgfQoKICAgICAgICBsb2NhdGlvbiA9IC9lcnJvcjUwMmdycGMgewogICAgICAgICAgICBpbnRlcm5hbDsKICAgICAgICAgICAgZGVmYXVsdF90eXBlIGFwcGxpY2F0aW9uL2dycGM7CiAgICAgICAgICAgIGFkZF9oZWFkZXIgZ3JwYy1zdGF0dXMgMTQ7CiAgICAgICAgICAgIGFkZF9oZWFkZXIgY29udGVudC1sZW5ndGggMDsKICAgICAgICAgICAgcmV0dXJuIDIwNDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    upstream grpc_backend {
+        server 127.0.0.1:50051;
+    }
+
+    server {
+        listen 80 http2;
+        server_name grpc.example.com;
+
+        location / {
+            grpc_pass grpc://grpc_backend;
+            error_page 502 = /error502grpc;
+        }
+
+        location = /error502grpc {
+            internal;
+            default_type application/grpc;
+            add_header grpc-status 14;
+            add_header content-length 0;
+            return 204;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Secure gRPC Traffic with SSL/TLS</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Modify the previous configuration to secure gRPC traffic using SSL/TLS.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Update the server block to listen on port 443 with SSL.</li>
+<li>Add <code>ssl_certificate</code> and <code>ssl_certificate_key</code> directives.</li>
+<li>Test and reload the configuration.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBpbmNsdWRlICAgICAgIG1pbWUudHlwZXM7CiAgICBkZWZhdWx0X3R5cGUgIGFwcGxpY2F0aW9uL29jdGV0LXN0cmVhbTsKCiAgICB1cHN0cmVhbSBncnBjX2JhY2tlbmQgewogICAgICAgIHNlcnZlciAxMjcuMC4wLjE6NTAwNTE7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gNDQzIHNzbCBodHRwMjsKICAgICAgICBzZXJ2ZXJfbmFtZSBncnBjLmV4YW1wbGUuY29tOwoKICAgICAgICBzc2xfY2VydGlmaWNhdGUgL3BhdGgvdG8veW91ci9jZXJ0LnBlbTsKICAgICAgICBzc2xfY2VydGlmaWNhdGVfa2V5IC9wYXRoL3RvL3lvdXIva2V5LnBlbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIGdycGNfcGFzcyBncnBjOi8vZ3JwY19iYWNrZW5kOwogICAgICAgICAgICBlcnJvcl9wYWdlIDUwMiA9IC9lcnJvcjUwMmdycGM7CiAgICAgICAgfQoKICAgICAgICBsb2NhdGlvbiA9IC9lcnJvcjUwMmdycGMgewogICAgICAgICAgICBpbnRlcm5hbDsKICAgICAgICAgICAgZGVmYXVsdF90eXBlIGFwcGxpY2F0aW9uL2dycGM7CiAgICAgICAgICAgIGFkZF9oZWFkZXIgZ3JwYy1zdGF0dXMgMTQ7CiAgICAgICAgICAgIGFkZF9oZWFkZXIgY29udGVudC1sZW5ndGggMDsKICAgICAgICAgICAgcmV0dXJuIDIwNDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    upstream grpc_backend {
+        server 127.0.0.1:50051;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name grpc.example.com;
+
+        ssl_certificate /path/to/your/cert.pem;
+        ssl_certificate_key /path/to/your/key.pem;
+
+        location / {
+            grpc_pass grpc://grpc_backend;
+            error_page 502 = /error502grpc;
+        }
+
+        location = /error502grpc {
+            internal;
+            default_type application/grpc;
+            add_header grpc-status 14;
+            add_header content-length 0;
+            return 204;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect gRPC Server Address</strong>: Ensure the address and port of the gRPC server are correct.</li>
+<li><strong>HTTP/2 Not Enabled</strong>: Make sure HTTP/2 is enabled in the NGINX configuration.</li>
+<li><strong>SSL/TLS Configuration</strong>: Verify the paths to the SSL certificate and key are correct and the files are accessible.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to configure NGINX to work with gRPC, including setting up a basic configuration, securing the connection with SSL/TLS, and handling common errors. By following these steps, you can effectively proxy gRPC traffic through NGINX, leveraging its powerful features for load balancing, security, and more.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-nginx-http2' title="NGINX and HTTP/2">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-monitoring-nginx' title="Monitoring NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

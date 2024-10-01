@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheduling Queries with Cloud Scheduler</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/08-04-scheduling-queries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/08-04-scheduling-queries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/08-04-scheduling-queries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bigquery/08-04-scheduling-queries" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/08-04-scheduling-queries" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-automating-workflows' title="Automating Workflows with Cloud Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Scheduling Queries with Cloud Scheduler</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-bqml' title="Introduction to BigQuery ML">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to automate the execution of BigQuery queries using Google Cloud Scheduler. This is particularly useful for running periodic reports, data transformations, or any other recurring tasks.</p>
+</div><h1>What is Cloud Scheduler?</h1>
+<div class='content'><p>Cloud Scheduler is a fully managed cron job service that allows you to schedule virtually any job, including BigQuery queries, with a high degree of reliability and accuracy.</p>
+</div><h2>Key Features:</h2>
+<div class='content'><ul>
+<li><strong>Fully Managed</strong>: No need to manage infrastructure.</li>
+<li><strong>Flexible Scheduling</strong>: Supports cron syntax for flexible scheduling.</li>
+<li><strong>Integrated with Google Cloud</strong>: Easily integrates with other Google Cloud services.</li>
+</ul>
+</div><h1>Setting Up Cloud Scheduler</h1>
+<div class='content'></div><h2>Step 1: Enable Cloud Scheduler API</h2>
+<div class='content'><p>Before you can use Cloud Scheduler, you need to enable the Cloud Scheduler API in your Google Cloud project.</p>
+<ol>
+<li>Go to the <a href="https://console.cloud.google.com/apis/library/cloudscheduler.googleapis.com">Cloud Scheduler API page</a>.</li>
+<li>Click &quot;Enable&quot;.</li>
+</ol>
+</div><h2>Step 2: Create a Cloud Scheduler Job</h2>
+<div class='content'><ol>
+<li>Navigate to the <a href="https://console.cloud.google.com/cloudscheduler">Cloud Scheduler page</a>.</li>
+<li>Click &quot;Create Job&quot;.</li>
+</ol>
+</div><h2>Step 3: Configure the Job</h2>
+<div class='content'><h4>Job Configuration Fields:</h4>
+<ul>
+<li><strong>Name</strong>: A unique name for your job.</li>
+<li><strong>Frequency</strong>: The schedule in cron format (e.g., <code>0 9 * * 1</code> for every Monday at 9 AM).</li>
+<li><strong>Timezone</strong>: The timezone for the schedule.</li>
+<li><strong>Target</strong>: Select &quot;HTTP&quot;.</li>
+<li><strong>URL</strong>: The endpoint to trigger the BigQuery query (we will set this up next).</li>
+<li><strong>HTTP Method</strong>: POST.</li>
+<li><strong>Body</strong>: The payload containing the query details.</li>
+</ul>
+</div><h1>Creating a Cloud Function to Trigger BigQuery Queries</h1>
+<div class='content'><p>To execute BigQuery queries, we will use a Cloud Function that will be triggered by the Cloud Scheduler job.</p>
+</div><h2>Step 1: Create a Cloud Function</h2>
+<div class='content'><ol>
+<li>Navigate to the <a href="https://console.cloud.google.com/functions">Cloud Functions page</a>.</li>
+<li>Click &quot;Create Function&quot;.</li>
+</ol>
+</div><h2>Step 2: Configure the Function</h2>
+<div class='content'><h4>Function Configuration Fields:</h4>
+<ul>
+<li><strong>Name</strong>: A unique name for your function.</li>
+<li><strong>Trigger</strong>: HTTP.</li>
+<li><strong>Runtime</strong>: Choose your preferred runtime (e.g., Python 3.8).</li>
+</ul>
+</div><h2>Step 3: Write the Function Code</h2>
+<div class='content'><p>Below is an example of a Cloud Function written in Python that executes a BigQuery query:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9zCmZyb20gZ29vZ2xlLmNsb3VkIGltcG9ydCBiaWdxdWVyeQpmcm9tIGZsYXNrIGltcG9ydCBGbGFzaywgcmVxdWVzdAoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIHJ1bl9xdWVyeSgpOgogICAgY2xpZW50ID0gYmlncXVlcnkuQ2xpZW50KCkKICAgIHF1ZXJ5ID0gIiIiCiAgICBTRUxFQ1QKICAgICAgbmFtZSwKICAgICAgU1VNKG51bWJlcikgYXMgdG90YWxfbnVtYmVyCiAgICBGUk9NCiAgICAgIGBiaWdxdWVyeS1wdWJsaWMtZGF0YS51c2FfbmFtZXMudXNhXzE5MTBfMjAxM2AKICAgIFdIRVJFCiAgICAgIHN0YXRlID0gJ1RYJwogICAgR1JPVVAgQlkKICAgICAgbmFtZQogICAgT1JERVIgQlkKICAgICAgdG90YWxfbnVtYmVyIERFU0MKICAgIExJTUlUCiAgICAgIDEwCiAgICAiIiIKICAgIHF1ZXJ5X2pvYiA9IGNsaWVudC5xdWVyeShxdWVyeSkKICAgIHJlc3VsdHMgPSBxdWVyeV9qb2IucmVzdWx0KCkKICAgIGZvciByb3cgaW4gcmVzdWx0czoKICAgICAgICBwcmludChmIm5hbWU6IHtyb3cubmFtZX0sIHRvdGFsX251bWJlcjoge3Jvdy50b3RhbF9udW1iZXJ9IikKICAgIHJldHVybiAnUXVlcnkgZXhlY3V0ZWQgc3VjY2Vzc2Z1bGx5JywgMjAwCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import os
+from google.cloud import bigquery
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/', methods=['POST'])
+def run_query():
+    client = bigquery.Client()
+    query = &quot;&quot;&quot;
+    SELECT
+      name,
+      SUM(number) as total_number
+    FROM
+      `bigquery-public-data.usa_names.usa_1910_2013`
+    WHERE
+      state = 'TX'
+    GROUP BY
+      name
+    ORDER BY
+      total_number DESC
+    LIMIT
+      10
+    &quot;&quot;&quot;
+    query_job = client.query(query)
+    results = query_job.result()
+    for row in results:
+        print(f&quot;name: {row.name}, total_number: {row.total_number}&quot;)
+    return 'Query executed successfully', 200
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Step 4: Deploy the Function</h2>
+<div class='content'><ol>
+<li>Click &quot;Deploy&quot;.</li>
+</ol>
+</div><h2>Step 5: Get the Function URL</h2>
+<div class='content'><p>After deployment, note the URL of the Cloud Function. This will be used as the target URL in the Cloud Scheduler job.</p>
+</div><h1>Linking Cloud Scheduler to Cloud Function</h1>
+<div class='content'><ol>
+<li>Go back to the Cloud Scheduler job configuration.</li>
+<li>Set the <strong>URL</strong> field to the Cloud Function URL.</li>
+<li>Click &quot;Create&quot;.</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Schedule a Query to Run Every Day at Midnight</h2>
+<div class='content'><ol>
+<li><strong>Enable Cloud Scheduler API</strong>.</li>
+<li><strong>Create a Cloud Function</strong> that runs a BigQuery query to count the number of rows in a specific table.</li>
+<li><strong>Create a Cloud Scheduler job</strong> to trigger the Cloud Function every day at midnight.</li>
+</ol>
+<h4>Solution:</h4>
+<ol>
+<li><strong>Enable Cloud Scheduler API</strong>: Follow the steps mentioned above.</li>
+<li><strong>Create a Cloud Function</strong>:
+<pre><code class="language-python">import os
+from google.cloud import bigquery
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/', methods=['POST'])
+def run_query():
+    client = bigquery.Client()
+    query = &quot;&quot;&quot;
+    SELECT COUNT(*) as row_count
+    FROM `your_dataset.your_table`
+    &quot;&quot;&quot;
+    query_job = client.query(query)
+    results = query_job.result()
+    for row in results:
+        print(f&quot;row_count: {row.row_count}&quot;)
+    return 'Query executed successfully', 200
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+</li>
+<li><strong>Create a Cloud Scheduler job</strong>:
+<ul>
+<li><strong>Name</strong>: daily-query-job</li>
+<li><strong>Frequency</strong>: <code>0 0 * * *</code></li>
+<li><strong>Timezone</strong>: Your preferred timezone</li>
+<li><strong>Target</strong>: HTTP</li>
+<li><strong>URL</strong>: The URL of your Cloud Function</li>
+<li><strong>HTTP Method</strong>: POST</li>
+<li><strong>Body</strong>: Leave empty</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to use Cloud Scheduler to automate the execution of BigQuery queries. We covered the setup process, creating a Cloud Function to run the queries, and linking it with Cloud Scheduler. This automation can significantly enhance productivity by ensuring that recurring tasks are performed reliably and on schedule.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-automating-workflows' title="Automating Workflows with Cloud Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-bqml' title="Introduction to BigQuery ML">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

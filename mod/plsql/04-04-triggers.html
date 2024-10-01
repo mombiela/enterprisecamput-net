@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triggers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/04-04-triggers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/04-04-triggers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/04-04-triggers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/04-04-triggers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/04-04-triggers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-packages' title="Packages">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Triggers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-code-optimization' title="Code Optimization Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Triggers</h1>
+<div class='content'><p>Triggers are a powerful feature in PL/SQL that allow you to automatically execute a block of code in response to specific events on a table or view. They are commonly used for enforcing business rules, auditing changes, and maintaining complex data integrity.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Trigger Event</strong>: The event that causes the trigger to fire (e.g., INSERT, UPDATE, DELETE).</li>
+<li><strong>Trigger Timing</strong>: Specifies when the trigger should fire (e.g., BEFORE, AFTER).</li>
+<li><strong>Trigger Type</strong>: Defines whether the trigger is a row-level or statement-level trigger.</li>
+<li><strong>Trigger Body</strong>: The PL/SQL block that contains the code to be executed when the trigger fires.</li>
+</ul>
+</div><h1>Types of Triggers</h1>
+<div class='content'></div><h2>Based on Timing</h2>
+<div class='content'><ul>
+<li><strong>BEFORE Trigger</strong>: Executes before the triggering event.</li>
+<li><strong>AFTER Trigger</strong>: Executes after the triggering event.</li>
+</ul>
+</div><h2>Based on Scope</h2>
+<div class='content'><ul>
+<li><strong>Row-Level Trigger</strong>: Executes once for each row affected by the triggering event.</li>
+<li><strong>Statement-Level Trigger</strong>: Executes once for the entire triggering event, regardless of the number of rows affected.</li>
+</ul>
+</div><h1>Creating a Trigger</h1>
+<div class='content'></div><h2>Syntax</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFtPUiBSRVBMQUNFXSBUUklHR0VSIHRyaWdnZXJfbmFtZQp7QkVGT1JFIHwgQUZURVJ9IHtJTlNFUlQgfCBVUERBVEUgfCBERUxFVEV9Ck9OIHRhYmxlX25hbWUKW0ZPUiBFQUNIIFJPV10KREVDTEFSRQogIC0tIFZhcmlhYmxlIGRlY2xhcmF0aW9ucwpCRUdJTgogIC0tIFBML1NRTCBjb2RlCkVORDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE [OR REPLACE] TRIGGER trigger_name
+{BEFORE | AFTER} {INSERT | UPDATE | DELETE}
+ON table_name
+[FOR EACH ROW]
+DECLARE
+  -- Variable declarations
+BEGIN
+  -- PL/SQL code
+END;</pre></div><div class='content'></div><h2>Example: Creating a Row-Level Trigger</h2>
+<div class='content'><p>Let's create a trigger that automatically updates a <code>last_updated</code> column in a <code>employees</code> table whenever an employee's record is updated.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVFJJR0dFUiB1cGRhdGVfbGFzdF91cGRhdGVkCkJFRk9SRSBVUERBVEUgT04gZW1wbG95ZWVzCkZPUiBFQUNIIFJPVwpCRUdJTgogIDpORVcubGFzdF91cGRhdGVkIDo9IFNZU0RBVEU7CkVORDsKLw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TRIGGER update_last_updated
+BEFORE UPDATE ON employees
+FOR EACH ROW
+BEGIN
+  :NEW.last_updated := SYSDATE;
+END;
+/</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><code>CREATE OR REPLACE TRIGGER update_last_updated</code>: Creates a new trigger or replaces an existing one with the same name.</li>
+<li><code>BEFORE UPDATE ON employees</code>: Specifies that the trigger should fire before an UPDATE operation on the <code>employees</code> table.</li>
+<li><code>FOR EACH ROW</code>: Indicates that this is a row-level trigger.</li>
+<li><code>:NEW.last_updated := SYSDATE;</code>: Sets the <code>last_updated</code> column to the current date and time.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Creating a Trigger for Auditing</h2>
+<div class='content'><p>Create a trigger that logs changes to the <code>salary</code> column in the <code>employees</code> table into an <code>audit_log</code> table.</p>
+<h4>Solution</h4>
+<ol>
+<li>Create the <code>audit_log</code> table:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGF1ZGl0X2xvZyAoCiAgZW1wbG95ZWVfaWQgTlVNQkVSLAogIG9sZF9zYWxhcnkgTlVNQkVSLAogIG5ld19zYWxhcnkgTlVNQkVSLAogIGNoYW5nZV9kYXRlIERBVEUKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE audit_log (
+  employee_id NUMBER,
+  old_salary NUMBER,
+  new_salary NUMBER,
+  change_date DATE
+);</pre></div><div class='content'><ol start="2">
+<li>Create the trigger:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVFJJR0dFUiBhdWRpdF9zYWxhcnlfY2hhbmdlcwpBRlRFUiBVUERBVEUgT0Ygc2FsYXJ5IE9OIGVtcGxveWVlcwpGT1IgRUFDSCBST1cKQkVHSU4KICBJTlNFUlQgSU5UTyBhdWRpdF9sb2cgKGVtcGxveWVlX2lkLCBvbGRfc2FsYXJ5LCBuZXdfc2FsYXJ5LCBjaGFuZ2VfZGF0ZSkKICBWQUxVRVMgKDpPTEQuZW1wbG95ZWVfaWQsIDpPTEQuc2FsYXJ5LCA6TkVXLnNhbGFyeSwgU1lTREFURSk7CkVORDsKLw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TRIGGER audit_salary_changes
+AFTER UPDATE OF salary ON employees
+FOR EACH ROW
+BEGIN
+  INSERT INTO audit_log (employee_id, old_salary, new_salary, change_date)
+  VALUES (:OLD.employee_id, :OLD.salary, :NEW.salary, SYSDATE);
+END;
+/</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><code>AFTER UPDATE OF salary ON employees</code>: Specifies that the trigger should fire after an UPDATE operation on the <code>salary</code> column of the <code>employees</code> table.</li>
+<li><code>INSERT INTO audit_log ...</code>: Inserts a new record into the <code>audit_log</code> table with the old and new salary values and the current date.</li>
+</ul>
+</div><h2>Exercise 2: Preventing Deletions</h2>
+<div class='content'><p>Create a trigger that prevents the deletion of records from the <code>employees</code> table if the employee's <code>salary</code> is greater than 100,000.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVFJJR0dFUiBwcmV2ZW50X2hpZ2hfc2FsYXJ5X2RlbGV0aW9uCkJFRk9SRSBERUxFVEUgT04gZW1wbG95ZWVzCkZPUiBFQUNIIFJPVwpCRUdJTgogIElGIDpPTEQuc2FsYXJ5ID4gMTAwMDAwIFRIRU4KICAgIFJBSVNFX0FQUExJQ0FUSU9OX0VSUk9SKC0yMDAwMSwgJ0Nhbm5vdCBkZWxldGUgZW1wbG95ZWVzIHdpdGggc2FsYXJ5IGdyZWF0ZXIgdGhhbiAxMDAsMDAwJyk7CiAgRU5EIElGOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TRIGGER prevent_high_salary_deletion
+BEFORE DELETE ON employees
+FOR EACH ROW
+BEGIN
+  IF :OLD.salary &gt; 100000 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Cannot delete employees with salary greater than 100,000');
+  END IF;
+END;
+/</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><code>BEFORE DELETE ON employees</code>: Specifies that the trigger should fire before a DELETE operation on the <code>employees</code> table.</li>
+<li><code>IF :OLD.salary &gt; 100000 THEN ...</code>: Checks if the salary of the employee being deleted is greater than 100,000.</li>
+<li><code>RAISE_APPLICATION_ERROR(-20001, 'Cannot delete employees with salary greater than 100,000');</code>: Raises an application error to prevent the deletion.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mutating Table Error</strong>: Avoid writing triggers that query or modify the table that caused the trigger to fire, as this can lead to a mutating table error.</li>
+<li><strong>Performance Impact</strong>: Be cautious of the performance impact of triggers, especially row-level triggers on large tables.</li>
+<li><strong>Debugging</strong>: Use <code>DBMS_OUTPUT.PUT_LINE</code> to debug triggers by printing messages to the console.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Triggers are a versatile tool in PL/SQL for automating tasks and enforcing business rules. By understanding the different types of triggers and how to create them, you can enhance the functionality and integrity of your database applications. In the next module, we will delve into PL/SQL optimization and best practices to ensure your code runs efficiently and effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-packages' title="Packages">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-code-optimization' title="Code Optimization Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

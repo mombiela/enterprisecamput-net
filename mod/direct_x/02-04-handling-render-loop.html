@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling the Render Loop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/02-04-handling-render-loop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/02-04-handling-render-loop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/02-04-handling-render-loop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/02-04-handling-render-loop" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/02-04-handling-render-loop" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-rendering-a-triangle' title="Rendering a Triangle">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling the Render Loop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduction-to-shaders' title="Introduction to Shaders">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the concept of the render loop, which is a fundamental part of any real-time graphics application. The render loop is responsible for continuously updating and rendering the scene, ensuring smooth and consistent visuals.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Render Loop Definition</strong>: The render loop is a continuous cycle that updates the state of the application and renders the scene to the screen.</li>
+<li><strong>Frame Rate</strong>: The number of times the render loop executes per second, typically measured in frames per second (FPS).</li>
+<li><strong>Synchronization</strong>: Ensuring the render loop runs at a consistent rate, often synchronized with the display's refresh rate.</li>
+</ol>
+</div><h1>Basic Structure of a Render Loop</h1>
+<div class='content'><p>A typical render loop consists of the following steps:</p>
+<ol>
+<li><strong>Process Input</strong>: Handle user input (keyboard, mouse, etc.).</li>
+<li><strong>Update Scene</strong>: Update the positions, states, and properties of objects in the scene.</li>
+<li><strong>Render Scene</strong>: Draw the updated scene to the screen.</li>
+<li><strong>Present Frame</strong>: Display the rendered frame to the user.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple render loop in a DirectX application. We'll assume you have already initialized Direct3D as covered in the previous sections.</p>
+</div><h2>Code Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHdpbmRvd3MuaD4KI2luY2x1ZGUgPGQzZDExLmg+CiNpbmNsdWRlIDxkM2Rjb21waWxlci5oPgojaW5jbHVkZSA8RGlyZWN0WE1hdGguaD4KCi8vIEdsb2JhbCBEZWNsYXJhdGlvbnMKSURYR0lTd2FwQ2hhaW4qIHN3YXBDaGFpbjsKSUQzRDExRGV2aWNlKiBkZXZpY2U7CklEM0QxMURldmljZUNvbnRleHQqIGRldmljZUNvbnRleHQ7CklEM0QxMVJlbmRlclRhcmdldFZpZXcqIHJlbmRlclRhcmdldFZpZXc7CgovLyBGdW5jdGlvbiBQcm90b3R5cGVzCnZvaWQgSW5pdEQzRChIV05EIGhXbmQpOwp2b2lkIENsZWFuRDNEKCk7CnZvaWQgUmVuZGVyRnJhbWUoKTsKCi8vIFRoZSBXaW5kb3cgUHJvY2VkdXJlCkxSRVNVTFQgQ0FMTEJBQ0sgV2luZG93UHJvYyhIV05EIGhXbmQsIFVJTlQgbWVzc2FnZSwgV1BBUkFNIHdQYXJhbSwgTFBBUkFNIGxQYXJhbSkgewogICAgc3dpdGNoIChtZXNzYWdlKSB7CiAgICAgICAgY2FzZSBXTV9ERVNUUk9ZOgogICAgICAgICAgICBQb3N0UXVpdE1lc3NhZ2UoMCk7CiAgICAgICAgICAgIHJldHVybiAwOwogICAgICAgIGRlZmF1bHQ6CiAgICAgICAgICAgIHJldHVybiBEZWZXaW5kb3dQcm9jKGhXbmQsIG1lc3NhZ2UsIHdQYXJhbSwgbFBhcmFtKTsKICAgIH0KfQoKLy8gRW50cnkgUG9pbnQKaW50IFdJTkFQSSBXaW5NYWluKEhJTlNUQU5DRSBoSW5zdGFuY2UsIEhJTlNUQU5DRSBoUHJldkluc3RhbmNlLCBMUFNUUiBscENtZExpbmUsIGludCBuQ21kU2hvdykgewogICAgLy8gSW5pdGlhbGl6ZSB0aGUgd2luZG93CiAgICBXTkRDTEFTU0VYIHdjID0geyBzaXplb2YoV05EQ0xBU1NFWCksIENTX0NMQVNTREMsIFdpbmRvd1Byb2MsIDBMLCAwTCwgR2V0TW9kdWxlSGFuZGxlKE5VTEwpLCBOVUxMLCBOVUxMLCBOVUxMLCBOVUxMLCBMIkRpcmVjdFhFeGFtcGxlIiwgTlVMTCB9OwogICAgUmVnaXN0ZXJDbGFzc0V4KCZ3Yyk7CiAgICBIV05EIGhXbmQgPSBDcmVhdGVXaW5kb3cod2MubHBzekNsYXNzTmFtZSwgTCJEaXJlY3RYIEV4YW1wbGUiLCBXU19PVkVSTEFQUEVEV0lORE9XLCAxMDAsIDEwMCwgODAwLCA2MDAsIE5VTEwsIE5VTEwsIHdjLmhJbnN0YW5jZSwgTlVMTCk7CgogICAgLy8gSW5pdGlhbGl6ZSBEaXJlY3QzRAogICAgSW5pdEQzRChoV25kKTsKCiAgICAvLyBTaG93IHRoZSB3aW5kb3cKICAgIFNob3dXaW5kb3coaFduZCwgbkNtZFNob3cpOwogICAgVXBkYXRlV2luZG93KGhXbmQpOwoKICAgIC8vIEVudGVyIHRoZSByZW5kZXIgbG9vcAogICAgTVNHIG1zZyA9IHsgMCB9OwogICAgd2hpbGUgKG1zZy5tZXNzYWdlICE9IFdNX1FVSVQpIHsKICAgICAgICBpZiAoUGVla01lc3NhZ2UoJm1zZywgTlVMTCwgMFUsIDBVLCBQTV9SRU1PVkUpKSB7CiAgICAgICAgICAgIFRyYW5zbGF0ZU1lc3NhZ2UoJm1zZyk7CiAgICAgICAgICAgIERpc3BhdGNoTWVzc2FnZSgmbXNnKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBSZW5kZXJGcmFtZSgpOwogICAgICAgIH0KICAgIH0KCiAgICAvLyBDbGVhbiB1cCBEaXJlY3QzRAogICAgQ2xlYW5EM0QoKTsKCiAgICBVbnJlZ2lzdGVyQ2xhc3Mod2MubHBzekNsYXNzTmFtZSwgd2MuaEluc3RhbmNlKTsKICAgIHJldHVybiAwOwp9CgovLyBJbml0aWFsaXplIERpcmVjdDNECnZvaWQgSW5pdEQzRChIV05EIGhXbmQpIHsKICAgIERYR0lfU1dBUF9DSEFJTl9ERVNDIHNjZCA9IHsgMCB9OwogICAgc2NkLkJ1ZmZlckNvdW50ID0gMTsKICAgIHNjZC5CdWZmZXJEZXNjLkZvcm1hdCA9IERYR0lfRk9STUFUX1I4RzhCOEE4X1VOT1JNOwogICAgc2NkLkJ1ZmZlclVzYWdlID0gRFhHSV9VU0FHRV9SRU5ERVJfVEFSR0VUX09VVFBVVDsKICAgIHNjZC5PdXRwdXRXaW5kb3cgPSBoV25kOwogICAgc2NkLlNhbXBsZURlc2MuQ291bnQgPSA0OwogICAgc2NkLldpbmRvd2VkID0gVFJVRTsKCiAgICBEM0QxMUNyZWF0ZURldmljZUFuZFN3YXBDaGFpbihOVUxMLCBEM0RfRFJJVkVSX1RZUEVfSEFSRFdBUkUsIE5VTEwsIDAsIE5VTEwsIDAsIEQzRDExX1NES19WRVJTSU9OLCAmc2NkLCAmc3dhcENoYWluLCAmZGV2aWNlLCBOVUxMLCAmZGV2aWNlQ29udGV4dCk7CgogICAgSUQzRDExVGV4dHVyZTJEKiBwQmFja0J1ZmZlcjsKICAgIHN3YXBDaGFpbi0+R2V0QnVmZmVyKDAsIF9fdXVpZG9mKElEM0QxMVRleHR1cmUyRCksIChMUFZPSUQqKSZwQmFja0J1ZmZlcik7CiAgICBkZXZpY2UtPkNyZWF0ZVJlbmRlclRhcmdldFZpZXcocEJhY2tCdWZmZXIsIE5VTEwsICZyZW5kZXJUYXJnZXRWaWV3KTsKICAgIHBCYWNrQnVmZmVyLT5SZWxlYXNlKCk7CgogICAgZGV2aWNlQ29udGV4dC0+T01TZXRSZW5kZXJUYXJnZXRzKDEsICZyZW5kZXJUYXJnZXRWaWV3LCBOVUxMKTsKCiAgICBEM0QxMV9WSUVXUE9SVCB2aWV3cG9ydCA9IHsgMCB9OwogICAgdmlld3BvcnQuVG9wTGVmdFggPSAwOwogICAgdmlld3BvcnQuVG9wTGVmdFkgPSAwOwogICAgdmlld3BvcnQuV2lkdGggPSA4MDA7CiAgICB2aWV3cG9ydC5IZWlnaHQgPSA2MDA7CiAgICBkZXZpY2VDb250ZXh0LT5SU1NldFZpZXdwb3J0cygxLCAmdmlld3BvcnQpOwp9CgovLyBDbGVhbiB1cCBEaXJlY3QzRAp2b2lkIENsZWFuRDNEKCkgewogICAgc3dhcENoYWluLT5SZWxlYXNlKCk7CiAgICByZW5kZXJUYXJnZXRWaWV3LT5SZWxlYXNlKCk7CiAgICBkZXZpY2UtPlJlbGVhc2UoKTsKICAgIGRldmljZUNvbnRleHQtPlJlbGVhc2UoKTsKfQoKLy8gUmVuZGVyIGEgZnJhbWUKdm9pZCBSZW5kZXJGcmFtZSgpIHsKICAgIC8vIENsZWFyIHRoZSBiYWNrIGJ1ZmZlciB0byBhIGRlZXAgYmx1ZQogICAgZmxvYXQgY29sb3JbNF0gPSB7IDAuMGYsIDAuMmYsIDAuNGYsIDEuMGYgfTsKICAgIGRldmljZUNvbnRleHQtPkNsZWFyUmVuZGVyVGFyZ2V0VmlldyhyZW5kZXJUYXJnZXRWaWV3LCBjb2xvcik7CgogICAgLy8gUHJlc2VudCB0aGUgYmFjayBidWZmZXIgdG8gdGhlIHNjcmVlbgogICAgc3dhcENoYWluLT5QcmVzZW50KDAsIDApOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;windows.h&gt;
+#include &lt;d3d11.h&gt;
+#include &lt;d3dcompiler.h&gt;
+#include &lt;DirectXMath.h&gt;
+
+// Global Declarations
+IDXGISwapChain* swapChain;
+ID3D11Device* device;
+ID3D11DeviceContext* deviceContext;
+ID3D11RenderTargetView* renderTargetView;
+
+// Function Prototypes
+void InitD3D(HWND hWnd);
+void CleanD3D();
+void RenderFrame();
+
+// The Window Procedure
+LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+    switch (message) {
+        case WM_DESTROY:
+            PostQuitMessage(0);
+            return 0;
+        default:
+            return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+}
+
+// Entry Point
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    // Initialize the window
+    WNDCLASSEX wc = { sizeof(WNDCLASSEX), CS_CLASSDC, WindowProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L&quot;DirectXExample&quot;, NULL };
+    RegisterClassEx(&amp;wc);
+    HWND hWnd = CreateWindow(wc.lpszClassName, L&quot;DirectX Example&quot;, WS_OVERLAPPEDWINDOW, 100, 100, 800, 600, NULL, NULL, wc.hInstance, NULL);
+
+    // Initialize Direct3D
+    InitD3D(hWnd);
+
+    // Show the window
+    ShowWindow(hWnd, nCmdShow);
+    UpdateWindow(hWnd);
+
+    // Enter the render loop
+    MSG msg = { 0 };
+    while (msg.message != WM_QUIT) {
+        if (PeekMessage(&amp;msg, NULL, 0U, 0U, PM_REMOVE)) {
+            TranslateMessage(&amp;msg);
+            DispatchMessage(&amp;msg);
+        } else {
+            RenderFrame();
+        }
+    }
+
+    // Clean up Direct3D
+    CleanD3D();
+
+    UnregisterClass(wc.lpszClassName, wc.hInstance);
+    return 0;
+}
+
+// Initialize Direct3D
+void InitD3D(HWND hWnd) {
+    DXGI_SWAP_CHAIN_DESC scd = { 0 };
+    scd.BufferCount = 1;
+    scd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+    scd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    scd.OutputWindow = hWnd;
+    scd.SampleDesc.Count = 4;
+    scd.Windowed = TRUE;
+
+    D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, NULL, 0, D3D11_SDK_VERSION, &amp;scd, &amp;swapChain, &amp;device, NULL, &amp;deviceContext);
+
+    ID3D11Texture2D* pBackBuffer;
+    swapChain-&gt;GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&amp;pBackBuffer);
+    device-&gt;CreateRenderTargetView(pBackBuffer, NULL, &amp;renderTargetView);
+    pBackBuffer-&gt;Release();
+
+    deviceContext-&gt;OMSetRenderTargets(1, &amp;renderTargetView, NULL);
+
+    D3D11_VIEWPORT viewport = { 0 };
+    viewport.TopLeftX = 0;
+    viewport.TopLeftY = 0;
+    viewport.Width = 800;
+    viewport.Height = 600;
+    deviceContext-&gt;RSSetViewports(1, &amp;viewport);
+}
+
+// Clean up Direct3D
+void CleanD3D() {
+    swapChain-&gt;Release();
+    renderTargetView-&gt;Release();
+    device-&gt;Release();
+    deviceContext-&gt;Release();
+}
+
+// Render a frame
+void RenderFrame() {
+    // Clear the back buffer to a deep blue
+    float color[4] = { 0.0f, 0.2f, 0.4f, 1.0f };
+    deviceContext-&gt;ClearRenderTargetView(renderTargetView, color);
+
+    // Present the back buffer to the screen
+    swapChain-&gt;Present(0, 0);
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Window Initialization</strong>: We create a window using the Win32 API.</li>
+<li><strong>Direct3D Initialization</strong>: We set up the swap chain, device, and device context. We also create a render target view.</li>
+<li><strong>Render Loop</strong>: The <code>WinMain</code> function contains the render loop. It processes Windows messages and calls <code>RenderFrame</code> to update and render the scene.</li>
+<li><strong>RenderFrame Function</strong>: This function clears the back buffer to a blue color and presents it to the screen.</li>
+</ol>
+</div><h2>Common Mistakes</h2>
+<div class='content'><ul>
+<li><strong>Not Handling Messages</strong>: Ensure that all Windows messages are processed to avoid the application becoming unresponsive.</li>
+<li><strong>Resource Management</strong>: Always release Direct3D resources to prevent memory leaks.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Modify the <code>RenderFrame</code> function to render a different color each frame, cycling through red, green, and blue.</p>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBSZW5kZXJGcmFtZSgpIHsKICAgIHN0YXRpYyBmbG9hdCBjb2xvcls0XSA9IHsgMS4wZiwgMC4wZiwgMC4wZiwgMS4wZiB9OwogICAgc3RhdGljIGludCBjb2xvckluZGV4ID0gMDsKCiAgICAvLyBDbGVhciB0aGUgYmFjayBidWZmZXIgdG8gdGhlIGN1cnJlbnQgY29sb3IKICAgIGRldmljZUNvbnRleHQtPkNsZWFyUmVuZGVyVGFyZ2V0VmlldyhyZW5kZXJUYXJnZXRWaWV3LCBjb2xvcik7CgogICAgLy8gQ3ljbGUgdGhyb3VnaCBjb2xvcnMKICAgIGNvbG9ySW5kZXggPSAoY29sb3JJbmRleCArIDEpICUgMzsKICAgIGNvbG9yWzBdID0gKGNvbG9ySW5kZXggPT0gMCkgPyAxLjBmIDogMC4wZjsKICAgIGNvbG9yWzFdID0gKGNvbG9ySW5kZXggPT0gMSkgPyAxLjBmIDogMC4wZjsKICAgIGNvbG9yWzJdID0gKGNvbG9ySW5kZXggPT0gMikgPyAxLjBmIDogMC4wZjsKCiAgICAvLyBQcmVzZW50IHRoZSBiYWNrIGJ1ZmZlciB0byB0aGUgc2NyZWVuCiAgICBzd2FwQ2hhaW4tPlByZXNlbnQoMCwgMCk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void RenderFrame() {
+    static float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f };
+    static int colorIndex = 0;
+
+    // Clear the back buffer to the current color
+    deviceContext-&gt;ClearRenderTargetView(renderTargetView, color);
+
+    // Cycle through colors
+    colorIndex = (colorIndex + 1) % 3;
+    color[0] = (colorIndex == 0) ? 1.0f : 0.0f;
+    color[1] = (colorIndex == 1) ? 1.0f : 0.0f;
+    color[2] = (colorIndex == 2) ? 1.0f : 0.0f;
+
+    // Present the back buffer to the screen
+    swapChain-&gt;Present(0, 0);
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Static Variables</strong>: We use static variables to maintain the color state between frames.</li>
+<li><strong>Color Cycling</strong>: We cycle through red, green, and blue by updating the color array and color index.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of the render loop, including its structure and implementation in a DirectX application. We also provided a practical example and exercise to reinforce the concepts. Understanding and implementing an efficient render loop is crucial for creating smooth and responsive graphics applications. In the next module, we will delve deeper into working with shaders to enhance the visual quality of your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-rendering-a-triangle' title="Rendering a Triangle">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduction-to-shaders' title="Introduction to Shaders">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

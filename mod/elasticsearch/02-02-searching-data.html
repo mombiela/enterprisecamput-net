@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Searching Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/02-02-searching-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/02-02-searching-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/02-02-searching-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/02-02-searching-data" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/02-02-searching-data" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-indexing-data' title="Indexing Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Searching Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-updating-deleting-data' title="Updating and Deleting Data">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to search data in Elasticsearch. Searching is one of the core functionalities of Elasticsearch, and understanding how to effectively query your data is crucial for leveraging the full power of this search engine.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Document</strong>: The basic unit of information that can be indexed. It is a JSON object.</li>
+<li><strong>Index</strong>: A collection of documents that have similar characteristics.</li>
+<li><strong>Type</strong>: A logical category/partition of an index. (Note: Types are deprecated in newer versions of Elasticsearch.)</li>
+<li><strong>Query</strong>: A request to retrieve data from Elasticsearch.</li>
+</ol>
+</div><h1>Basic Search</h1>
+<div class='content'></div><h2>Match Query</h2>
+<div class='content'><p>The <code>match</code> query is the most basic and commonly used query. It searches for documents that match the provided text, analyzing the text before performing the search.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9teV9pbmRleC9fc2VhcmNoCnsKICAicXVlcnkiOiB7CiAgICAibWF0Y2giOiB7CiAgICAgICJmaWVsZF9uYW1lIjogInNlYXJjaCB0ZXh0IgogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /my_index/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;field_name&quot;: &quot;search text&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h2>Example</h2>
+<div class='content'><p>Let's assume we have an index named <code>library</code> with documents that represent books. Each document has fields like <code>title</code>, <code>author</code>, and <code>description</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJtYXRjaCI6IHsKICAgICAgInRpdGxlIjogIkVsYXN0aWNzZWFyY2giCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;title&quot;: &quot;Elasticsearch&quot;
+    }
+  }
+}</pre></div><div class='content'><p>This query searches for documents in the <code>library</code> index where the <code>title</code> field contains the word &quot;Elasticsearch&quot;.</p>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>GET /library/_search</code>: This is the endpoint to search within the <code>library</code> index.</li>
+<li><code>&quot;query&quot;</code>: The main query object.</li>
+<li><code>&quot;match&quot;</code>: Specifies the type of query.</li>
+<li><code>&quot;title&quot;: &quot;Elasticsearch&quot;</code>: The field to search in and the text to search for.</li>
+</ul>
+</div><h1>Boolean Queries</h1>
+<div class='content'><p>Boolean queries allow you to combine multiple queries using logical operators like <code>must</code>, <code>should</code>, and <code>must_not</code>.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJib29sIjogewogICAgICAibXVzdCI6IFsKICAgICAgICB7ICJtYXRjaCI6IHsgInRpdGxlIjogIkVsYXN0aWNzZWFyY2giIH0gfSwKICAgICAgICB7ICJtYXRjaCI6IHsgImF1dGhvciI6ICJKb2huIERvZSIgfSB9CiAgICAgIF0sCiAgICAgICJtdXN0X25vdCI6IFsKICAgICAgICB7ICJtYXRjaCI6IHsgImRlc2NyaXB0aW9uIjogIm91dGRhdGVkIiB9IH0KICAgICAgXSwKICAgICAgInNob3VsZCI6IFsKICAgICAgICB7ICJtYXRjaCI6IHsgImdlbnJlIjogInRlY2hub2xvZ3kiIH0gfQogICAgICBdCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: [
+        { &quot;match&quot;: { &quot;title&quot;: &quot;Elasticsearch&quot; } },
+        { &quot;match&quot;: { &quot;author&quot;: &quot;John Doe&quot; } }
+      ],
+      &quot;must_not&quot;: [
+        { &quot;match&quot;: { &quot;description&quot;: &quot;outdated&quot; } }
+      ],
+      &quot;should&quot;: [
+        { &quot;match&quot;: { &quot;genre&quot;: &quot;technology&quot; } }
+      ]
+    }
+  }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>&quot;bool&quot;</code>: The boolean query object.</li>
+<li><code>&quot;must&quot;</code>: Both conditions must be true.</li>
+<li><code>&quot;must_not&quot;</code>: The condition must not be true.</li>
+<li><code>&quot;should&quot;</code>: At least one of these conditions should be true.</li>
+</ul>
+</div><h1>Range Queries</h1>
+<div class='content'><p>Range queries allow you to search for documents where a field's value falls within a specified range.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJyYW5nZSI6IHsKICAgICAgInB1YmxpY2F0aW9uX3llYXIiOiB7CiAgICAgICAgImd0ZSI6IDIwMTAsCiAgICAgICAgImx0ZSI6IDIwMjAKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;range&quot;: {
+      &quot;publication_year&quot;: {
+        &quot;gte&quot;: 2010,
+        &quot;lte&quot;: 2020
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>&quot;range&quot;</code>: Specifies a range query.</li>
+<li><code>&quot;publication_year&quot;</code>: The field to apply the range query on.</li>
+<li><code>&quot;gte&quot;: 2010</code>: Greater than or equal to 2010.</li>
+<li><code>&quot;lte&quot;: 2020</code>: Less than or equal to 2020.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Match Query</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to search for documents in the <code>library</code> index where the <code>author</code> field contains the word &quot;Smith&quot;.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJtYXRjaCI6IHsKICAgICAgImF1dGhvciI6ICJTbWl0aCIKICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;author&quot;: &quot;Smith&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h2>Exercise 2: Boolean Query</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to search for documents in the <code>library</code> index where the <code>title</code> contains &quot;Elasticsearch&quot; and the <code>author</code> is &quot;Jane Doe&quot;, but the <code>description</code> does not contain &quot;beginner&quot;.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJib29sIjogewogICAgICAibXVzdCI6IFsKICAgICAgICB7ICJtYXRjaCI6IHsgInRpdGxlIjogIkVsYXN0aWNzZWFyY2giIH0gfSwKICAgICAgICB7ICJtYXRjaCI6IHsgImF1dGhvciI6ICJKYW5lIERvZSIgfSB9CiAgICAgIF0sCiAgICAgICJtdXN0X25vdCI6IFsKICAgICAgICB7ICJtYXRjaCI6IHsgImRlc2NyaXB0aW9uIjogImJlZ2lubmVyIiB9IH0KICAgICAgXQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: [
+        { &quot;match&quot;: { &quot;title&quot;: &quot;Elasticsearch&quot; } },
+        { &quot;match&quot;: { &quot;author&quot;: &quot;Jane Doe&quot; } }
+      ],
+      &quot;must_not&quot;: [
+        { &quot;match&quot;: { &quot;description&quot;: &quot;beginner&quot; } }
+      ]
+    }
+  }
+}</pre></div><div class='content'></div><h2>Exercise 3: Range Query</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to search for documents in the <code>library</code> index where the <code>publication_year</code> is between 2000 and 2015.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyYXJ5L19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJyYW5nZSI6IHsKICAgICAgInB1YmxpY2F0aW9uX3llYXIiOiB7CiAgICAgICAgImd0ZSI6IDIwMDAsCiAgICAgICAgImx0ZSI6IDIwMTUKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /library/_search
+{
+  &quot;query&quot;: {
+    &quot;range&quot;: {
+      &quot;publication_year&quot;: {
+        &quot;gte&quot;: 2000,
+        &quot;lte&quot;: 2015
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Common Mistake</strong>: Forgetting to specify the index in the search request.</p>
+<ul>
+<li><strong>Tip</strong>: Always ensure you are querying the correct index by specifying it in the URL.</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Mistake</strong>: Using deprecated features like types in newer versions of Elasticsearch.</p>
+<ul>
+<li><strong>Tip</strong>: Check the Elasticsearch documentation for the version you are using to avoid deprecated features.</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Mistake</strong>: Misunderstanding the difference between <code>must</code> and <code>should</code> in boolean queries.</p>
+<ul>
+<li><strong>Tip</strong>: Use <code>must</code> for mandatory conditions and <code>should</code> for optional conditions that boost relevance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of searching data in Elasticsearch, including match queries, boolean queries, and range queries. We also provided practical exercises to reinforce these concepts. Understanding these basic search techniques is essential for effectively querying your Elasticsearch indices. In the next section, we will delve into updating and deleting data in Elasticsearch.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-indexing-data' title="Indexing Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-updating-deleting-data' title="Updating and Deleting Data">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

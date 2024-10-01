@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperparameter Tuning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/07-04-hyperparameter-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/07-04-hyperparameter-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/07-04-hyperparameter-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/07-04-hyperparameter-tuning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/07-04-hyperparameter-tuning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-transfer-learning' title="Transfer Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Hyperparameter Tuning</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-model-saving-and-loading' title="Model Saving and Loading">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Hyperparameter tuning is a crucial step in the machine learning pipeline. It involves selecting the best set of hyperparameters for a machine learning model to optimize its performance. In this section, we will explore the concepts, techniques, and practical examples of hyperparameter tuning in TensorFlow.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Hyperparameters vs. Parameters</strong>:</p>
+<ul>
+<li><strong>Parameters</strong>: These are learned from the data during training (e.g., weights in a neural network).</li>
+<li><strong>Hyperparameters</strong>: These are set before the training process begins and are not learned from the data (e.g., learning rate, batch size, number of layers).</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Hyperparameters</strong>:</p>
+<ul>
+<li>Learning rate</li>
+<li>Batch size</li>
+<li>Number of epochs</li>
+<li>Number of layers</li>
+<li>Number of units per layer</li>
+<li>Dropout rate</li>
+</ul>
+</li>
+<li>
+<p><strong>Hyperparameter Tuning Techniques</strong>:</p>
+<ul>
+<li><strong>Grid Search</strong>: Exhaustively searches through a manually specified subset of the hyperparameter space.</li>
+<li><strong>Random Search</strong>: Samples hyperparameters randomly from a specified distribution.</li>
+<li><strong>Bayesian Optimization</strong>: Uses a probabilistic model to find the best hyperparameters.</li>
+<li><strong>Hyperband</strong>: Combines random search with early stopping to efficiently find the best hyperparameters.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Example: Hyperparameter Tuning with Keras Tuner</h1>
+<div class='content'><p>Keras Tuner is a library that helps with hyperparameter tuning for Keras models. It provides a simple interface to perform hyperparameter optimization.</p>
+</div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Keras Tuner</strong>:</p>
+<pre><code class="language-bash">pip install keras-tuner
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Model</strong>:</p>
+<pre><code class="language-python">import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import keras_tuner as kt
+
+def build_model(hp):
+    model = keras.Sequential()
+    model.add(layers.Flatten(input_shape=(28, 28)))
+
+    # Tune the number of units in the first Dense layer
+    hp_units = hp.Int('units', min_value=32, max_value=512, step=32)
+    model.add(layers.Dense(units=hp_units, activation='relu'))
+
+    # Tune the dropout rate
+    hp_dropout = hp.Float('dropout', min_value=0.0, max_value=0.5, step=0.1)
+    model.add(layers.Dropout(rate=hp_dropout))
+
+    model.add(layers.Dense(10, activation='softmax'))
+
+    # Tune the learning rate for the optimizer
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=hp_learning_rate),
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
+    return model
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize the Tuner</strong>:</p>
+<pre><code class="language-python">tuner = kt.Hyperband(build_model,
+                     objective='val_accuracy',
+                     max_epochs=10,
+                     factor=3,
+                     directory='my_dir',
+                     project_name='intro_to_kt')
+</code></pre>
+</li>
+<li>
+<p><strong>Prepare the Data</strong>:</p>
+<pre><code class="language-python">(x_train, y_train), (x_val, y_val) = keras.datasets.fashion_mnist.load_data()
+x_train, x_val = x_train / 255.0, x_val / 255.0
+</code></pre>
+</li>
+<li>
+<p><strong>Run the Hyperparameter Search</strong>:</p>
+<pre><code class="language-python">tuner.search(x_train, y_train, epochs=10, validation_data=(x_val, y_val))
+</code></pre>
+</li>
+<li>
+<p><strong>Retrieve the Best Hyperparameters</strong>:</p>
+<pre><code class="language-python">best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+print(f&quot;&quot;&quot;
+The hyperparameter search is complete. The optimal number of units in the first densely-connected
+layer is {best_hps.get('units')} and the optimal learning rate for the optimizer
+is {best_hps.get('learning_rate')}.
+&quot;&quot;&quot;)
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise</strong>: Use Keras Tuner to find the best hyperparameters for a neural network on the MNIST dataset. Tune the number of units in the hidden layers, the dropout rate, and the learning rate.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93IGltcG9ydCBrZXJhcwpmcm9tIHRlbnNvcmZsb3cua2VyYXMgaW1wb3J0IGxheWVycwppbXBvcnQga2VyYXNfdHVuZXIgYXMga3QKCmRlZiBidWlsZF9tb2RlbChocCk6CiAgICBtb2RlbCA9IGtlcmFzLlNlcXVlbnRpYWwoKQogICAgbW9kZWwuYWRkKGxheWVycy5GbGF0dGVuKGlucHV0X3NoYXBlPSgyOCwgMjgpKSkKCiAgICAjIFR1bmUgdGhlIG51bWJlciBvZiB1bml0cyBpbiB0aGUgZmlyc3QgRGVuc2UgbGF5ZXIKICAgIGhwX3VuaXRzID0gaHAuSW50KCd1bml0cycsIG1pbl92YWx1ZT0zMiwgbWF4X3ZhbHVlPTUxMiwgc3RlcD0zMikKICAgIG1vZGVsLmFkZChsYXllcnMuRGVuc2UodW5pdHM9aHBfdW5pdHMsIGFjdGl2YXRpb249J3JlbHUnKSkKCiAgICAjIFR1bmUgdGhlIGRyb3BvdXQgcmF0ZQogICAgaHBfZHJvcG91dCA9IGhwLkZsb2F0KCdkcm9wb3V0JywgbWluX3ZhbHVlPTAuMCwgbWF4X3ZhbHVlPTAuNSwgc3RlcD0wLjEpCiAgICBtb2RlbC5hZGQobGF5ZXJzLkRyb3BvdXQocmF0ZT1ocF9kcm9wb3V0KSkKCiAgICBtb2RlbC5hZGQobGF5ZXJzLkRlbnNlKDEwLCBhY3RpdmF0aW9uPSdzb2Z0bWF4JykpCgogICAgIyBUdW5lIHRoZSBsZWFybmluZyByYXRlIGZvciB0aGUgb3B0aW1pemVyCiAgICBocF9sZWFybmluZ19yYXRlID0gaHAuQ2hvaWNlKCdsZWFybmluZ19yYXRlJywgdmFsdWVzPVsxZS0yLCAxZS0zLCAxZS00XSkKICAgIG1vZGVsLmNvbXBpbGUob3B0aW1pemVyPWtlcmFzLm9wdGltaXplcnMuQWRhbShsZWFybmluZ19yYXRlPWhwX2xlYXJuaW5nX3JhdGUpLAogICAgICAgICAgICAgICAgICBsb3NzPSdzcGFyc2VfY2F0ZWdvcmljYWxfY3Jvc3NlbnRyb3B5JywKICAgICAgICAgICAgICAgICAgbWV0cmljcz1bJ2FjY3VyYWN5J10pCiAgICByZXR1cm4gbW9kZWwKCnR1bmVyID0ga3QuSHlwZXJiYW5kKGJ1aWxkX21vZGVsLAogICAgICAgICAgICAgICAgICAgICBvYmplY3RpdmU9J3ZhbF9hY2N1cmFjeScsCiAgICAgICAgICAgICAgICAgICAgIG1heF9lcG9jaHM9MTAsCiAgICAgICAgICAgICAgICAgICAgIGZhY3Rvcj0zLAogICAgICAgICAgICAgICAgICAgICBkaXJlY3Rvcnk9J215X2RpcicsCiAgICAgICAgICAgICAgICAgICAgIHByb2plY3RfbmFtZT0nbW5pc3RfdHVuaW5nJykKCih4X3RyYWluLCB5X3RyYWluKSwgKHhfdmFsLCB5X3ZhbCkgPSBrZXJhcy5kYXRhc2V0cy5tbmlzdC5sb2FkX2RhdGEoKQp4X3RyYWluLCB4X3ZhbCA9IHhfdHJhaW4gLyAyNTUuMCwgeF92YWwgLyAyNTUuMAoKdHVuZXIuc2VhcmNoKHhfdHJhaW4sIHlfdHJhaW4sIGVwb2Nocz0xMCwgdmFsaWRhdGlvbl9kYXRhPSh4X3ZhbCwgeV92YWwpKQoKYmVzdF9ocHMgPSB0dW5lci5nZXRfYmVzdF9oeXBlcnBhcmFtZXRlcnMobnVtX3RyaWFscz0xKVswXQpwcmludChmIiIiClRoZSBoeXBlcnBhcmFtZXRlciBzZWFyY2ggaXMgY29tcGxldGUuIFRoZSBvcHRpbWFsIG51bWJlciBvZiB1bml0cyBpbiB0aGUgZmlyc3QgZGVuc2VseS1jb25uZWN0ZWQKbGF5ZXIgaXMge2Jlc3RfaHBzLmdldCgndW5pdHMnKX0gYW5kIHRoZSBvcHRpbWFsIGxlYXJuaW5nIHJhdGUgZm9yIHRoZSBvcHRpbWl6ZXIKaXMge2Jlc3RfaHBzLmdldCgnbGVhcm5pbmdfcmF0ZScpfS4KIiIiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import keras_tuner as kt
+
+def build_model(hp):
+    model = keras.Sequential()
+    model.add(layers.Flatten(input_shape=(28, 28)))
+
+    # Tune the number of units in the first Dense layer
+    hp_units = hp.Int('units', min_value=32, max_value=512, step=32)
+    model.add(layers.Dense(units=hp_units, activation='relu'))
+
+    # Tune the dropout rate
+    hp_dropout = hp.Float('dropout', min_value=0.0, max_value=0.5, step=0.1)
+    model.add(layers.Dropout(rate=hp_dropout))
+
+    model.add(layers.Dense(10, activation='softmax'))
+
+    # Tune the learning rate for the optimizer
+    hp_learning_rate = hp.Choice('learning_rate', values=[1e-2, 1e-3, 1e-4])
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=hp_learning_rate),
+                  loss='sparse_categorical_crossentropy',
+                  metrics=['accuracy'])
+    return model
+
+tuner = kt.Hyperband(build_model,
+                     objective='val_accuracy',
+                     max_epochs=10,
+                     factor=3,
+                     directory='my_dir',
+                     project_name='mnist_tuning')
+
+(x_train, y_train), (x_val, y_val) = keras.datasets.mnist.load_data()
+x_train, x_val = x_train / 255.0, x_val / 255.0
+
+tuner.search(x_train, y_train, epochs=10, validation_data=(x_val, y_val))
+
+best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+print(f&quot;&quot;&quot;
+The hyperparameter search is complete. The optimal number of units in the first densely-connected
+layer is {best_hps.get('units')} and the optimal learning rate for the optimizer
+is {best_hps.get('learning_rate')}.
+&quot;&quot;&quot;)</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Overfitting</strong>: Be cautious of overfitting when tuning hyperparameters. Use validation data to monitor performance.</li>
+<li><strong>Search Space</strong>: Define a reasonable search space. Too large a space can make the search inefficient.</li>
+<li><strong>Early Stopping</strong>: Use early stopping to prevent unnecessary training and save computational resources.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of hyperparameter tuning and explored various techniques to optimize hyperparameters. We also provided a practical example using Keras Tuner to demonstrate how to perform hyperparameter tuning in TensorFlow. By carefully tuning hyperparameters, you can significantly improve the performance of your machine learning models.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-transfer-learning' title="Transfer Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-model-saving-and-loading' title="Model Saving and Loading">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

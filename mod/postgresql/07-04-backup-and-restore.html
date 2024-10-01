@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup and Restore</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/07-04-backup-and-restore" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/07-04-backup-and-restore" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/07-04-backup-and-restore" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/07-04-backup-and-restore" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/07-04-backup-and-restore" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-data-encryption' title="Data Encryption">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Backup and Restore</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-json-data-types' title="JSON Data Types">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the essential concepts and practical steps for backing up and restoring databases in PostgreSQL. Ensuring that you can reliably back up and restore your data is crucial for maintaining data integrity and availability.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Backup Types</strong>:</p>
+<ul>
+<li><strong>SQL Dump</strong>: A logical backup that generates SQL statements to recreate the database.</li>
+<li><strong>File System Level Backup</strong>: A physical backup that copies the database files directly.</li>
+<li><strong>Continuous Archiving and Point-in-Time Recovery (PITR)</strong>: Advanced backup strategy using Write-Ahead Logging (WAL).</li>
+</ul>
+</li>
+<li>
+<p><strong>Restore Types</strong>:</p>
+<ul>
+<li><strong>Restoring from SQL Dump</strong>: Replaying the SQL statements to recreate the database.</li>
+<li><strong>Restoring from File System Backup</strong>: Copying the database files back to the data directory.</li>
+<li><strong>Point-in-Time Recovery</strong>: Restoring the database to a specific point in time using WAL files.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>1. SQL Dump Backup</h2>
+<div class='content'><p>The <code>pg_dump</code> utility is used to create a logical backup of a PostgreSQL database.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdfZHVtcCAtVSBbdXNlcm5hbWVdIC1oIFtob3N0bmFtZV0gLXAgW3BvcnRdIC1GIGMgLWIgLXYgLWYgW2JhY2t1cF9maWxlXSBbZGF0YWJhc2VfbmFtZV0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pg_dump -U [username] -h [hostname] -p [port] -F c -b -v -f [backup_file] [database_name]</pre></div><div class='content'><ul>
+<li><code>-U [username]</code>: Specifies the database user.</li>
+<li><code>-h [hostname]</code>: Specifies the host.</li>
+<li><code>-p [port]</code>: Specifies the port.</li>
+<li><code>-F c</code>: Specifies the format (custom).</li>
+<li><code>-b</code>: Includes large objects.</li>
+<li><code>-v</code>: Verbose mode.</li>
+<li><code>-f [backup_file]</code>: Specifies the output file.</li>
+<li><code>[database_name]</code>: Specifies the database name.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdfZHVtcCAtVSBwb3N0Z3JlcyAtaCBsb2NhbGhvc3QgLXAgNTQzMiAtRiBjIC1iIC12IC1mIG15ZGJfYmFja3VwLmR1bXAgbXlkYg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pg_dump -U postgres -h localhost -p 5432 -F c -b -v -f mydb_backup.dump mydb</pre></div><div class='content'></div><h2>2. Restoring from SQL Dump</h2>
+<div class='content'><p>The <code>pg_restore</code> utility is used to restore a database from a custom-format dump file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdfcmVzdG9yZSAtVSBbdXNlcm5hbWVdIC1oIFtob3N0bmFtZV0gLXAgW3BvcnRdIC1kIFtkYXRhYmFzZV9uYW1lXSAtdiBbYmFja3VwX2ZpbGVd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pg_restore -U [username] -h [hostname] -p [port] -d [database_name] -v [backup_file]</pre></div><div class='content'><ul>
+<li><code>-U [username]</code>: Specifies the database user.</li>
+<li><code>-h [hostname]</code>: Specifies the host.</li>
+<li><code>-p [port]</code>: Specifies the port.</li>
+<li><code>-d [database_name]</code>: Specifies the target database.</li>
+<li><code>-v</code>: Verbose mode.</li>
+<li><code>[backup_file]</code>: Specifies the backup file.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdfcmVzdG9yZSAtVSBwb3N0Z3JlcyAtaCBsb2NhbGhvc3QgLXAgNTQzMiAtZCBteWRiIC12IG15ZGJfYmFja3VwLmR1bXA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pg_restore -U postgres -h localhost -p 5432 -d mydb -v mydb_backup.dump</pre></div><div class='content'></div><h2>3. File System Level Backup</h2>
+<div class='content'><p>To perform a file system level backup, you need to stop the PostgreSQL server and copy the data directory.</p>
+<p><strong>Stopping the PostgreSQL Server</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RvcCBwb3N0Z3Jlc3Fs"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl stop postgresql</pre></div><div class='content'><p><strong>Copying the Data Directory</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBjcCAtciAvdmFyL2xpYi9wb3N0Z3Jlc3FsL1t2ZXJzaW9uXS9tYWluIC9wYXRoL3RvL2JhY2t1cC8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo cp -r /var/lib/postgresql/[version]/main /path/to/backup/</pre></div><div class='content'><p><strong>Starting the PostgreSQL Server</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgcG9zdGdyZXNxbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start postgresql</pre></div><div class='content'></div><h2>4. Continuous Archiving and Point-in-Time Recovery (PITR)</h2>
+<div class='content'><p><strong>Setting Up Continuous Archiving</strong>:</p>
+<ol>
+<li>
+<p>Edit <code>postgresql.conf</code> to enable WAL archiving:</p>
+<pre><code class="language-conf">archive_mode = on
+archive_command = 'cp %p /path/to/archive/%f'
+</code></pre>
+</li>
+<li>
+<p>Restart PostgreSQL:</p>
+<pre><code class="language-sh">sudo systemctl restart postgresql
+</code></pre>
+</li>
+</ol>
+<p><strong>Performing a Base Backup</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdfYmFzZWJhY2t1cCAtVSBbdXNlcm5hbWVdIC1oIFtob3N0bmFtZV0gLUQgL3BhdGgvdG8vYmFja3VwIC1GIHRhciAteiAtUA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pg_basebackup -U [username] -h [hostname] -D /path/to/backup -F tar -z -P</pre></div><div class='content'><p><strong>Restoring from Base Backup and WAL Files</strong>:</p>
+<ol>
+<li>
+<p>Stop the PostgreSQL server.</p>
+</li>
+<li>
+<p>Clear the data directory and restore the base backup:</p>
+<pre><code class="language-sh">sudo rm -rf /var/lib/postgresql/[version]/main/*
+sudo tar -xvf /path/to/backup/base.tar -C /var/lib/postgresql/[version]/main/
+</code></pre>
+</li>
+<li>
+<p>Copy the archived WAL files to the <code>pg_wal</code> directory.</p>
+</li>
+<li>
+<p>Create a <code>recovery.conf</code> file in the data directory:</p>
+<pre><code class="language-conf">restore_command = 'cp /path/to/archive/%f %p'
+recovery_target_time = 'YYYY-MM-DD HH:MM:SS'
+</code></pre>
+</li>
+<li>
+<p>Start the PostgreSQL server.</p>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create and Restore a SQL Dump</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Backup</strong>:</p>
+<ul>
+<li>Use <code>pg_dump</code> to create a backup of a sample database.</li>
+<li>Verify the backup file is created.</li>
+</ul>
+</li>
+<li>
+<p><strong>Restore the Backup</strong>:</p>
+<ul>
+<li>Use <code>pg_restore</code> to restore the database from the backup file.</li>
+<li>Verify the restored database.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBiYWNrdXAKcGdfZHVtcCAtVSBwb3N0Z3JlcyAtaCBsb2NhbGhvc3QgLXAgNTQzMiAtRiBjIC1iIC12IC1mIHNhbXBsZWRiX2JhY2t1cC5kdW1wIHNhbXBsZWRiCgojIFJlc3RvcmUgdGhlIGJhY2t1cApwZ19yZXN0b3JlIC1VIHBvc3RncmVzIC1oIGxvY2FsaG9zdCAtcCA1NDMyIC1kIHNhbXBsZWRiIC12IHNhbXBsZWRiX2JhY2t1cC5kdW1w"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a backup
+pg_dump -U postgres -h localhost -p 5432 -F c -b -v -f sampledb_backup.dump sampledb
+
+# Restore the backup
+pg_restore -U postgres -h localhost -p 5432 -d sampledb -v sampledb_backup.dump</pre></div><div class='content'></div><h2>Exercise 2: Perform a File System Level Backup</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Stop the PostgreSQL Server</strong>:</p>
+<ul>
+<li>Use the appropriate command to stop the server.</li>
+</ul>
+</li>
+<li>
+<p><strong>Copy the Data Directory</strong>:</p>
+<ul>
+<li>Copy the data directory to a backup location.</li>
+</ul>
+</li>
+<li>
+<p><strong>Start the PostgreSQL Server</strong>:</p>
+<ul>
+<li>Restart the server and verify it is running.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdG9wIHRoZSBQb3N0Z3JlU1FMIHNlcnZlcgpzdWRvIHN5c3RlbWN0bCBzdG9wIHBvc3RncmVzcWwKCiMgQ29weSB0aGUgZGF0YSBkaXJlY3RvcnkKc3VkbyBjcCAtciAvdmFyL2xpYi9wb3N0Z3Jlc3FsLzEzL21haW4gL3BhdGgvdG8vYmFja3VwLwoKIyBTdGFydCB0aGUgUG9zdGdyZVNRTCBzZXJ2ZXIKc3VkbyBzeXN0ZW1jdGwgc3RhcnQgcG9zdGdyZXNxbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Stop the PostgreSQL server
+sudo systemctl stop postgresql
+
+# Copy the data directory
+sudo cp -r /var/lib/postgresql/13/main /path/to/backup/
+
+# Start the PostgreSQL server
+sudo systemctl start postgresql</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Mistake</strong>: Forgetting to stop the PostgreSQL server before performing a file system level backup.</p>
+<ul>
+<li><strong>Tip</strong>: Always ensure the server is stopped to avoid data corruption.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake</strong>: Not verifying the backup file after creation.</p>
+<ul>
+<li><strong>Tip</strong>: Always check the backup file to ensure it is complete and not corrupted.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake</strong>: Incorrect <code>archive_command</code> in continuous archiving.</p>
+<ul>
+<li><strong>Tip</strong>: Test the <code>archive_command</code> manually to ensure it works as expected.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essential techniques for backing up and restoring PostgreSQL databases. We explored different backup types, including SQL dumps, file system level backups, and continuous archiving for point-in-time recovery. Practical examples and exercises were provided to reinforce the concepts. Understanding these techniques is crucial for maintaining data integrity and ensuring business continuity.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-data-encryption' title="Data Encryption">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-json-data-types' title="JSON Data Types">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/06-03-integration-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/06-03-integration-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/06-03-integration-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/06-03-integration-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/06-03-integration-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-unit-testing-junit' title="Unit Testing with JUnit">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integration Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-mocking-mockito' title="Mocking with Mockito">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Integration testing is a crucial part of the software development lifecycle, especially in complex applications like those built with Spring Boot. It ensures that different parts of the application work together as expected. In this section, we will cover the basics of integration testing, how to set up integration tests in Spring Boot, and provide practical examples and exercises.</p>
+</div><h1>What is Integration Testing?</h1>
+<div class='content'><p>Integration testing involves testing the interaction between different modules or components of an application. Unlike unit tests, which test individual components in isolation, integration tests verify that the components work together correctly.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Integration Tests vs. Unit Tests</strong>: Unit tests focus on individual components, while integration tests focus on the interaction between components.</li>
+<li><strong>Test Environment</strong>: Integration tests often require a more complex setup, including databases, external services, and other dependencies.</li>
+<li><strong>Spring Boot Support</strong>: Spring Boot provides excellent support for integration testing through annotations and utilities.</li>
+</ul>
+</div><h1>Setting Up Integration Tests in Spring Boot</h1>
+<div class='content'><p>Spring Boot simplifies the setup of integration tests with several annotations and utilities. Here are the key steps to set up integration tests:</p>
+</div><h2>1. Dependencies</h2>
+<div class='content'><p>Ensure you have the necessary dependencies in your <code>pom.xml</code> or <code>build.gradle</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXRlc3Q8L2FydGlmYWN0SWQ+CiAgICA8c2NvcGU+dGVzdDwvc2NvcGU+CjwvZGVwZW5kZW5jeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>2. Annotations</h2>
+<div class='content'><ul>
+<li><strong>@SpringBootTest</strong>: This annotation is used to create an application context for integration tests.</li>
+<li><strong>@Test</strong>: Marks a method as a test method.</li>
+<li><strong>@RunWith(SpringRunner.class)</strong>: Integrates the Spring TestContext Framework with JUnit.</li>
+</ul>
+</div><h2>3. Example Integration Test</h2>
+<div class='content'><p>Here is a simple example of an integration test in a Spring Boot application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5iZWFucy5mYWN0b3J5LmFubm90YXRpb24uQXV0b3dpcmVkOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5ib290LnRlc3QuY29udGV4dC5TcHJpbmdCb290VGVzdDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuYm9vdC50ZXN0LndlYi5jbGllbnQuVGVzdFJlc3RUZW1wbGF0ZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuaHR0cC5SZXNwb25zZUVudGl0eTsKCmltcG9ydCBzdGF0aWMgb3JnLmFzc2VydGouY29yZS5hcGkuQXNzZXJ0aW9ucy5hc3NlcnRUaGF0OwoKQFNwcmluZ0Jvb3RUZXN0KHdlYkVudmlyb25tZW50ID0gU3ByaW5nQm9vdFRlc3QuV2ViRW52aXJvbm1lbnQuUkFORE9NX1BPUlQpCnB1YmxpYyBjbGFzcyBNeUludGVncmF0aW9uVGVzdCB7CgogICAgQEF1dG93aXJlZAogICAgcHJpdmF0ZSBUZXN0UmVzdFRlbXBsYXRlIHJlc3RUZW1wbGF0ZTsKCiAgICBAVGVzdAogICAgcHVibGljIHZvaWQgdGVzdEdldEVuZHBvaW50KCkgewogICAgICAgIFJlc3BvbnNlRW50aXR5PFN0cmluZz4gcmVzcG9uc2UgPSByZXN0VGVtcGxhdGUuZ2V0Rm9yRW50aXR5KCIvYXBpL2hlbGxvIiwgU3RyaW5nLmNsYXNzKTsKICAgICAgICBhc3NlcnRUaGF0KHJlc3BvbnNlLmdldFN0YXR1c0NvZGVWYWx1ZSgpKS5pc0VxdWFsVG8oMjAwKTsKICAgICAgICBhc3NlcnRUaGF0KHJlc3BvbnNlLmdldEJvZHkoKSkuaXNFcXVhbFRvKCJIZWxsbywgV29ybGQhIik7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.ResponseEntity;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class MyIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    public void testGetEndpoint() {
+        ResponseEntity&lt;String&gt; response = restTemplate.getForEntity(&quot;/api/hello&quot;, String.class);
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getBody()).isEqualTo(&quot;Hello, World!&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)</strong>: This annotation tells Spring Boot to start the application on a random port.</li>
+<li><strong>TestRestTemplate</strong>: A convenient class for testing RESTful web services.</li>
+<li><strong>assertThat</strong>: A method from AssertJ used for assertions.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Integration Test</h2>
+<div class='content'><p><strong>Objective</strong>: Write an integration test for a simple REST endpoint.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Create a new Spring Boot project with a REST controller.</li>
+<li>Add a simple endpoint, e.g., <code>/api/greet</code> that returns a greeting message.</li>
+<li>Write an integration test to verify the endpoint.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>
+<p><strong>Controller</strong>:</p>
+<pre><code class="language-java">@RestController
+public class GreetingController {
+
+    @GetMapping(&quot;/api/greet&quot;)
+    public String greet() {
+        return &quot;Hello, Spring Boot!&quot;;
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Integration Test</strong>:</p>
+<pre><code class="language-java">@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class GreetingControllerIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    public void testGreetEndpoint() {
+        ResponseEntity&lt;String&gt; response = restTemplate.getForEntity(&quot;/api/greet&quot;, String.class);
+        assertThat(response.getStatusCodeValue()).isEqualTo(200);
+        assertThat(response.getBody()).isEqualTo(&quot;Hello, Spring Boot!&quot;);
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Integration Test with Database</h2>
+<div class='content'><p><strong>Objective</strong>: Write an integration test that interacts with a database.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Create a new Spring Boot project with a JPA entity and repository.</li>
+<li>Add a simple endpoint to save and retrieve data.</li>
+<li>Write an integration test to verify the database interaction.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>
+<p><strong>Entity</strong>:</p>
+<pre><code class="language-java">@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+
+    // Getters and Setters
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Repository</strong>:</p>
+<pre><code class="language-java">public interface UserRepository extends JpaRepository&lt;User, Long&gt; {
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Controller</strong>:</p>
+<pre><code class="language-java">@RestController
+public class UserController {
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @PostMapping(&quot;/api/users&quot;)
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
+    @GetMapping(&quot;/api/users/{id}&quot;)
+    public User getUser(@PathVariable Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Integration Test</strong>:</p>
+<pre><code class="language-java">@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class UserControllerIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Test
+    public void testCreateAndGetUser() {
+        User user = new User();
+        user.setName(&quot;John Doe&quot;);
+
+        ResponseEntity&lt;User&gt; postResponse = restTemplate.postForEntity(&quot;/api/users&quot;, user, User.class);
+        assertThat(postResponse.getStatusCodeValue()).isEqualTo(201);
+        User createdUser = postResponse.getBody();
+        assertThat(createdUser).isNotNull();
+        assertThat(createdUser.getId()).isNotNull();
+        assertThat(createdUser.getName()).isEqualTo(&quot;John Doe&quot;);
+
+        ResponseEntity&lt;User&gt; getResponse = restTemplate.getForEntity(&quot;/api/users/&quot; + createdUser.getId(), User.class);
+        assertThat(getResponse.getStatusCodeValue()).isEqualTo(200);
+        User retrievedUser = getResponse.getBody();
+        assertThat(retrievedUser).isNotNull();
+        assertThat(retrievedUser.getName()).isEqualTo(&quot;John Doe&quot;);
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'></div><h2>Common Mistakes:</h2>
+<div class='content'><ul>
+<li><strong>Not Cleaning Up Data</strong>: Ensure that your tests clean up any data they create to avoid side effects.</li>
+<li><strong>Ignoring Dependencies</strong>: Make sure all dependencies (e.g., databases, external services) are properly configured for testing.</li>
+<li><strong>Overlapping Tests</strong>: Avoid tests that depend on the state left by other tests.</li>
+</ul>
+</div><h2>Tips:</h2>
+<div class='content'><ul>
+<li><strong>Use @DirtiesContext</strong>: This annotation can be used to indicate that the application context should be reset after a test.</li>
+<li><strong>Mock External Services</strong>: Use tools like WireMock to mock external services in your integration tests.</li>
+<li><strong>Profile-Specific Configuration</strong>: Use different profiles for testing to isolate test configurations from production configurations.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Integration testing is essential for ensuring that different parts of your Spring Boot application work together as expected. By using Spring Boot's testing support, you can write effective integration tests that cover various scenarios, from simple REST endpoints to complex database interactions. Remember to clean up data, properly configure dependencies, and use tools like TestRestTemplate to simplify your tests. With these practices, you'll be well-equipped to maintain a robust and reliable Spring Boot application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-unit-testing-junit' title="Unit Testing with JUnit">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-mocking-mockito' title="Mocking with Mockito">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

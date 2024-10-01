@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling UI Events</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/unity/05-03-handling-ui-events" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/unity/05-03-handling-ui-events" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/unity/05-03-handling-ui-events" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/unity/05-03-handling-ui-events" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/unity/05-03-handling-ui-events" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-creating-customizing-ui-elements' title="Creating and Customizing UI Elements">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling UI Events</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-creating-menus-huds' title="Creating Menus and HUDs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to handle user interface (UI) events in Unity. UI events are crucial for creating interactive and responsive applications. By the end of this module, you will understand how to capture and respond to various UI events such as button clicks, slider changes, and more.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Event System</strong>: Unity's Event System is responsible for managing and processing input events.</li>
+<li><strong>Event Triggers</strong>: Components that allow you to specify functions to be called in response to various events.</li>
+<li><strong>UI Components</strong>: Elements like buttons, sliders, and input fields that can generate events.</li>
+<li><strong>Event Listeners</strong>: Methods that respond to events.</li>
+</ol>
+</div><h1>Event System Overview</h1>
+<div class='content'><p>Unity's Event System is a powerful tool that handles all the input events in your UI. It consists of several components:</p>
+<ul>
+<li><strong>EventSystem</strong>: The core component that manages the current selected UI element and processes input events.</li>
+<li><strong>StandaloneInputModule</strong>: Handles input from mouse, keyboard, and touch.</li>
+<li><strong>TouchInputModule</strong>: Specifically handles touch input.</li>
+</ul>
+</div><h2>Setting Up the Event System</h2>
+<div class='content'><p>When you create a new UI element in Unity, an EventSystem is automatically added to your scene if one does not already exist. You can also add it manually:</p>
+<ol>
+<li><strong>Create Event System</strong>: Go to <code>GameObject &gt; UI &gt; Event System</code>.</li>
+</ol>
+</div><h1>Handling Button Clicks</h1>
+<div class='content'><p>Buttons are one of the most common UI elements. Let's start by handling button click events.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Button</strong>:</p>
+<ul>
+<li>Go to <code>GameObject &gt; UI &gt; Button</code>.</li>
+<li>This will create a button in your scene along with a Canvas and an EventSystem if they don't already exist.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add a Script</strong>:</p>
+<ul>
+<li>Create a new C# script named <code>ButtonHandler</code>.</li>
+<li>Attach this script to an empty GameObject or the Canvas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Script Content</strong>:</p>
+<pre><code class="language-csharp">using UnityEngine;
+using UnityEngine.UI;
+
+public class ButtonHandler : MonoBehaviour
+{
+    public Button myButton;
+
+    void Start()
+    {
+        // Ensure the button is assigned
+        if (myButton != null)
+        {
+            myButton.onClick.AddListener(OnButtonClick);
+        }
+    }
+
+    void OnButtonClick()
+    {
+        Debug.Log(&quot;Button was clicked!&quot;);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Assign the Button</strong>:</p>
+<ul>
+<li>In the Inspector, assign the <code>myButton</code> field to the button you created.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Button Component</strong>: The <code>Button</code> component has an <code>onClick</code> event that you can subscribe to.</li>
+<li><strong>AddListener</strong>: The <code>AddListener</code> method is used to add a method that will be called when the button is clicked.</li>
+<li><strong>OnButtonClick</strong>: This method will be executed when the button is clicked, logging a message to the console.</li>
+</ul>
+</div><h1>Handling Slider Changes</h1>
+<div class='content'><p>Sliders are useful for getting continuous input from the user. Let's handle slider value changes.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Slider</strong>:</p>
+<ul>
+<li>Go to <code>GameObject &gt; UI &gt; Slider</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add a Script</strong>:</p>
+<ul>
+<li>Create a new C# script named <code>SliderHandler</code>.</li>
+<li>Attach this script to an empty GameObject or the Canvas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Script Content</strong>:</p>
+<pre><code class="language-csharp">using UnityEngine;
+using UnityEngine.UI;
+
+public class SliderHandler : MonoBehaviour
+{
+    public Slider mySlider;
+
+    void Start()
+    {
+        // Ensure the slider is assigned
+        if (mySlider != null)
+        {
+            mySlider.onValueChanged.AddListener(OnSliderValueChanged);
+        }
+    }
+
+    void OnSliderValueChanged(float value)
+    {
+        Debug.Log(&quot;Slider value changed to: &quot; + value);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Assign the Slider</strong>:</p>
+<ul>
+<li>In the Inspector, assign the <code>mySlider</code> field to the slider you created.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Slider Component</strong>: The <code>Slider</code> component has an <code>onValueChanged</code> event that you can subscribe to.</li>
+<li><strong>AddListener</strong>: The <code>AddListener</code> method is used to add a method that will be called when the slider value changes.</li>
+<li><strong>OnSliderValueChanged</strong>: This method will be executed when the slider value changes, logging the new value to the console.</li>
+</ul>
+</div><h1>Handling Input Field Changes</h1>
+<div class='content'><p>Input fields are used to get text input from the user. Let's handle input field value changes.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create an Input Field</strong>:</p>
+<ul>
+<li>Go to <code>GameObject &gt; UI &gt; Input Field</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Add a Script</strong>:</p>
+<ul>
+<li>Create a new C# script named <code>InputFieldHandler</code>.</li>
+<li>Attach this script to an empty GameObject or the Canvas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Script Content</strong>:</p>
+<pre><code class="language-csharp">using UnityEngine;
+using UnityEngine.UI;
+
+public class InputFieldHandler : MonoBehaviour
+{
+    public InputField myInputField;
+
+    void Start()
+    {
+        // Ensure the input field is assigned
+        if (myInputField != null)
+        {
+            myInputField.onValueChanged.AddListener(OnInputFieldValueChanged);
+        }
+    }
+
+    void OnInputFieldValueChanged(string value)
+    {
+        Debug.Log(&quot;Input field value changed to: &quot; + value);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Assign the Input Field</strong>:</p>
+<ul>
+<li>In the Inspector, assign the <code>myInputField</code> field to the input field you created.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>InputField Component</strong>: The <code>InputField</code> component has an <code>onValueChanged</code> event that you can subscribe to.</li>
+<li><strong>AddListener</strong>: The <code>AddListener</code> method is used to add a method that will be called when the input field value changes.</li>
+<li><strong>OnInputFieldValueChanged</strong>: This method will be executed when the input field value changes, logging the new value to the console.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a simple UI with a button, a slider, and an input field. Write scripts to handle the events for each UI element and log the interactions to the console.</p>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create UI Elements</strong>:</p>
+<ul>
+<li>Create a button, a slider, and an input field as described in the examples above.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create and Attach Scripts</strong>:</p>
+<ul>
+<li>Create scripts <code>ButtonHandler</code>, <code>SliderHandler</code>, and <code>InputFieldHandler</code> as described above.</li>
+<li>Attach these scripts to an empty GameObject or the Canvas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Assign UI Elements</strong>:</p>
+<ul>
+<li>In the Inspector, assign the respective UI elements to the fields in the scripts.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Null Reference Exception</strong>: Ensure that you have assigned the UI elements in the Inspector. A common mistake is forgetting to assign the UI elements, leading to null reference exceptions.</li>
+<li><strong>Event Not Triggering</strong>: Make sure the UI elements are interactable and not disabled. If the UI element is disabled, the events will not trigger.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to handle various UI events in Unity. We learned about the Event System, how to handle button clicks, slider changes, and input field changes. By understanding these concepts, you can create interactive and responsive UIs in your Unity projects. In the next section, we will explore how to create menus and HUDs, building on the knowledge of handling UI events.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-creating-customizing-ui-elements' title="Creating and Customizing UI Elements">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-creating-menus-huds' title="Creating Menus and HUDs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

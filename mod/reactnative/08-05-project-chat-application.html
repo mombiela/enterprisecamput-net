@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 5: Chat Application</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/08-05-project-chat-application" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/08-05-project-chat-application" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/08-05-project-chat-application" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/08-05-project-chat-application" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/08-05-project-chat-application" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-project-social-media-app' title="Project 4: Social Media App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Project 5: Chat Application</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'><p>In this project, we will build a real-time chat application using React Native. This project will help you understand how to integrate real-time communication features into your app, manage user authentication, and handle data synchronization.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Set up a new React Native project.</li>
+<li>Implement user authentication.</li>
+<li>Create a chat interface.</li>
+<li>Integrate real-time messaging using a backend service.</li>
+<li>Handle data synchronization and offline support.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before starting this project, ensure you have completed the previous modules, especially those covering state management, networking, and handling user input.</p>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Initialize a New React Native Project</strong></p>
+<pre><code class="language-bash">npx react-native init ChatApp
+cd ChatApp
+</code></pre>
+</li>
+<li>
+<p><strong>Install Required Dependencies</strong>
+We will use Firebase for real-time messaging and user authentication.</p>
+<pre><code class="language-bash">npm install @react-native-firebase/app @react-native-firebase/auth @react-native-firebase/firestore
+</code></pre>
+</li>
+</ol>
+</div><h2>2. Configuring Firebase</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Firebase Project</strong></p>
+<ul>
+<li>Go to the <a href="https://console.firebase.google.com/">Firebase Console</a>.</li>
+<li>Create a new project and add an Android/iOS app to it.</li>
+<li>Follow the instructions to download the <code>google-services.json</code> (for Android) or <code>GoogleService-Info.plist</code> (for iOS) and place them in the appropriate directories.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Firebase in Your React Native Project</strong></p>
+<ul>
+<li>For Android, add the following to <code>android/build.gradle</code>:
+<pre><code class="language-gradle">buildscript {
+    dependencies {
+        // Add this line
+        classpath 'com.google.gms:google-services:4.3.3'
+    }
+}
+</code></pre>
+</li>
+<li>For iOS, add the following to <code>ios/Podfile</code>:
+<pre><code class="language-ruby">target 'YourTargetName' do
+  # Add this line
+  pod 'Firebase/Core'
+end
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>3. Implementing User Authentication</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create Authentication Screens</strong></p>
+<ul>
+<li>Create <code>LoginScreen.js</code> and <code>RegisterScreen.js</code> components.</li>
+<li>Use Firebase Authentication to handle user sign-in and sign-up.</li>
+</ul>
+<pre><code class="language-jsx">// LoginScreen.js
+import React, { useState } from 'react';
+import { View, TextInput, Button, Text } from 'react-native';
+import auth from '@react-native-firebase/auth';
+
+const LoginScreen = ({ navigation }) =&gt; {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = () =&gt; {
+    auth().signInWithEmailAndPassword(email, password)
+      .then(() =&gt; {
+        navigation.navigate('Chat');
+      })
+      .catch(error =&gt; {
+        console.error(error);
+      });
+  };
+
+  return (
+    &lt;View&gt;
+      &lt;TextInput placeholder=&quot;Email&quot; value={email} onChangeText={setEmail} /&gt;
+      &lt;TextInput placeholder=&quot;Password&quot; value={password} onChangeText={setPassword} secureTextEntry /&gt;
+      &lt;Button title=&quot;Login&quot; onPress={handleLogin} /&gt;
+      &lt;Text onPress={() =&gt; navigation.navigate('Register')}&gt;Don't have an account? Register&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default LoginScreen;
+</code></pre>
+</li>
+<li>
+<p><strong>Register Screen</strong></p>
+<pre><code class="language-jsx">// RegisterScreen.js
+import React, { useState } from 'react';
+import { View, TextInput, Button } from 'react-native';
+import auth from '@react-native-firebase/auth';
+
+const RegisterScreen = ({ navigation }) =&gt; {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleRegister = () =&gt; {
+    auth().createUserWithEmailAndPassword(email, password)
+      .then(() =&gt; {
+        navigation.navigate('Chat');
+      })
+      .catch(error =&gt; {
+        console.error(error);
+      });
+  };
+
+  return (
+    &lt;View&gt;
+      &lt;TextInput placeholder=&quot;Email&quot; value={email} onChangeText={setEmail} /&gt;
+      &lt;TextInput placeholder=&quot;Password&quot; value={password} onChangeText={setPassword} secureTextEntry /&gt;
+      &lt;Button title=&quot;Register&quot; onPress={handleRegister} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default RegisterScreen;
+</code></pre>
+</li>
+</ol>
+</div><h2>4. Creating the Chat Interface</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Chat Screen</strong></p>
+<ul>
+<li>Create <code>ChatScreen.js</code> to display messages and handle sending new messages.</li>
+</ul>
+<pre><code class="language-jsx">// ChatScreen.js
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Button, FlatList, Text } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
+
+const ChatScreen = () =&gt; {
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() =&gt; {
+    const unsubscribe = firestore()
+      .collection('messages')
+      .orderBy('createdAt', 'desc')
+      .onSnapshot(querySnapshot =&gt; {
+        const messages = querySnapshot.docs.map(doc =&gt; ({
+          _id: doc.id,
+          text: doc.data().text,
+          createdAt: doc.data().createdAt.toDate(),
+          user: doc.data().user,
+        }));
+        setMessages(messages);
+      });
+
+    return () =&gt; unsubscribe();
+  }, []);
+
+  const handleSend = () =&gt; {
+    const { uid, email } = auth().currentUser;
+    firestore().collection('messages').add({
+      text: message,
+      createdAt: new Date(),
+      user: {
+        _id: uid,
+        email,
+      },
+    });
+    setMessage('');
+  };
+
+  return (
+    &lt;View style={{ flex: 1 }}&gt;
+      &lt;FlatList
+        data={messages}
+        renderItem={({ item }) =&gt; (
+          &lt;View&gt;
+            &lt;Text&gt;{item.user.email}&lt;/Text&gt;
+            &lt;Text&gt;{item.text}&lt;/Text&gt;
+          &lt;/View&gt;
+        )}
+        keyExtractor={item =&gt; item._id}
+        inverted
+      /&gt;
+      &lt;TextInput
+        placeholder=&quot;Type a message&quot;
+        value={message}
+        onChangeText={setMessage}
+      /&gt;
+      &lt;Button title=&quot;Send&quot; onPress={handleSend} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default ChatScreen;
+</code></pre>
+</li>
+</ol>
+</div><h2>5. Navigation Setup</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install React Navigation</strong></p>
+<pre><code class="language-bash">npm install @react-navigation/native @react-navigation/stack
+npm install react-native-screens react-native-safe-area-context
+</code></pre>
+</li>
+<li>
+<p><strong>Configure Navigation</strong></p>
+<ul>
+<li>Create a <code>Navigation.js</code> file to handle navigation between screens.</li>
+</ul>
+<pre><code class="language-jsx">// Navigation.js
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './LoginScreen';
+import RegisterScreen from './RegisterScreen';
+import ChatScreen from './ChatScreen';
+
+const Stack = createStackNavigator();
+
+const Navigation = () =&gt; {
+  return (
+    &lt;NavigationContainer&gt;
+      &lt;Stack.Navigator initialRouteName=&quot;Login&quot;&gt;
+        &lt;Stack.Screen name=&quot;Login&quot; component={LoginScreen} /&gt;
+        &lt;Stack.Screen name=&quot;Register&quot; component={RegisterScreen} /&gt;
+        &lt;Stack.Screen name=&quot;Chat&quot; component={ChatScreen} /&gt;
+      &lt;/Stack.Navigator&gt;
+    &lt;/NavigationContainer&gt;
+  );
+};
+
+export default Navigation;
+</code></pre>
+</li>
+<li>
+<p><strong>Update App.js</strong></p>
+<pre><code class="language-jsx">// App.js
+import React from 'react';
+import Navigation from './Navigation';
+
+const App = () =&gt; {
+  return &lt;Navigation /&gt;;
+};
+
+export default App;
+</code></pre>
+</li>
+</ol>
+</div><h2>6. Testing and Debugging</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Run the Application</strong></p>
+<pre><code class="language-bash">npx react-native run-android
+npx react-native run-ios
+</code></pre>
+</li>
+<li>
+<p><strong>Test User Authentication</strong></p>
+<ul>
+<li>Register a new user and log in.</li>
+<li>Ensure that the user is redirected to the chat screen upon successful login.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Real-Time Messaging</strong></p>
+<ul>
+<li>Open the app on multiple devices or emulators.</li>
+<li>Send messages and verify that they appear in real-time on all devices.</li>
+</ul>
+</li>
+</ol>
+</div><h2>7. Conclusion</h2>
+<div class='content'><p>In this project, you have learned how to:</p>
+<ul>
+<li>Set up a new React Native project.</li>
+<li>Implement user authentication using Firebase.</li>
+<li>Create a chat interface.</li>
+<li>Integrate real-time messaging using Firestore.</li>
+<li>Handle data synchronization and offline support.</li>
+</ul>
+<p>This project provides a solid foundation for building more complex real-time applications. You can further enhance this app by adding features like user profiles, message notifications, and media sharing.</p>
+</div><h2>Exercises</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Add User Profiles</strong></p>
+<ul>
+<li>Extend the app to allow users to create and update their profiles with additional information like display name and profile picture.</li>
+</ul>
+</li>
+<li>
+<p><strong>Implement Message Notifications</strong></p>
+<ul>
+<li>Integrate push notifications to alert users of new messages even when the app is in the background.</li>
+</ul>
+</li>
+<li>
+<p><strong>Media Sharing</strong></p>
+<ul>
+<li>Allow users to send images and videos in the chat.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Authentication Errors</strong>: Ensure that Firebase is correctly configured and that the authentication methods are enabled in the Firebase console.</li>
+<li><strong>Real-Time Updates</strong>: If messages are not updating in real-time, check the Firestore rules and ensure that the app has the necessary permissions.</li>
+<li><strong>Navigation Issues</strong>: Make sure that the navigation stack is correctly set up and that the screens are properly registered.</li>
+</ul>
+<p>By completing this project, you have gained valuable experience in building a real-time chat application with React Native, which is a highly sought-after skill in mobile app development.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-project-social-media-app' title="Project 4: Social Media App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

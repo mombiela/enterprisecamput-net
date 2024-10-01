@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Writing Efficient VBA Code</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vba/06-01-writing-efficient-vba-code" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vba/06-01-writing-efficient-vba-code" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vba/06-01-writing-efficient-vba-code" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/vba/06-01-writing-efficient-vba-code" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/vba/06-01-writing-efficient-vba-code" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-using-vba-control-powerpoint' title="Using VBA to Control PowerPoint">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Writing Efficient VBA Code</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-code-refactoring-techniques' title="Code Refactoring Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Writing efficient VBA code is crucial for creating applications that run smoothly and perform well. In this section, we will cover best practices and techniques to optimize your VBA code for better performance and maintainability.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Avoiding Unnecessary Calculations</strong></li>
+<li><strong>Using Appropriate Data Types</strong></li>
+<li><strong>Minimizing the Use of Loops</strong></li>
+<li><strong>Efficiently Managing Excel Objects</strong></li>
+<li><strong>Using Built-in Functions</strong></li>
+<li><strong>Screen Updating and Calculation Settings</strong></li>
+<li><strong>Error Handling and Debugging</strong></li>
+</ol>
+</div><h1>1. Avoiding Unnecessary Calculations</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Unnecessary calculations can slow down your VBA code. Ensure that calculations are only performed when necessary.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JyBJbmVmZmljaWVudCBjb2RlCkZvciBpID0gMSBUbyAxMDAwCiAgICBDZWxscyhpLCAxKS5WYWx1ZSA9IENlbGxzKGksIDIpLlZhbHVlICogMgpOZXh0IGkKCicgRWZmaWNpZW50IGNvZGUKRGltIHZhbHVlcyBBcyBWYXJpYW50CnZhbHVlcyA9IFJhbmdlKCJCMTpCMTAwMCIpLlZhbHVlCkZvciBpID0gMSBUbyAxMDAwCiAgICB2YWx1ZXMoaSwgMSkgPSB2YWx1ZXMoaSwgMSkgKiAyCk5leHQgaQpSYW5nZSgiQTE6QTEwMDAiKS5WYWx1ZSA9IHZhbHVlcw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>' Inefficient code
+For i = 1 To 1000
+    Cells(i, 1).Value = Cells(i, 2).Value * 2
+Next i
+
+' Efficient code
+Dim values As Variant
+values = Range(&quot;B1:B1000&quot;).Value
+For i = 1 To 1000
+    values(i, 1) = values(i, 1) * 2
+Next i
+Range(&quot;A1:A1000&quot;).Value = values</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>In the efficient code, we read the range into an array, perform the calculations in memory, and then write the results back to the worksheet. This reduces the number of read/write operations to the worksheet.</p>
+</div><h1>2. Using Appropriate Data Types</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Using the correct data types can significantly improve the performance of your VBA code.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JyBJbmVmZmljaWVudCBjb2RlCkRpbSBpIEFzIFZhcmlhbnQKRm9yIGkgPSAxIFRvIDEwMDAwMDAKICAgICcgU29tZSBvcGVyYXRpb25zCk5leHQgaQoKJyBFZmZpY2llbnQgY29kZQpEaW0gaSBBcyBMb25nCkZvciBpID0gMSBUbyAxMDAwMDAwCiAgICAnIFNvbWUgb3BlcmF0aW9ucwpOZXh0IGk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>' Inefficient code
+Dim i As Variant
+For i = 1 To 1000000
+    ' Some operations
+Next i
+
+' Efficient code
+Dim i As Long
+For i = 1 To 1000000
+    ' Some operations
+Next i</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Using <code>Long</code> instead of <code>Variant</code> for the loop counter reduces memory usage and increases execution speed.</p>
+</div><h1>3. Minimizing the Use of Loops</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Loops can be slow, especially when dealing with large datasets. Use built-in functions and array operations where possible.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JyBJbmVmZmljaWVudCBjb2RlCkZvciBpID0gMSBUbyAxMDAwCiAgICBJZiBDZWxscyhpLCAxKS5WYWx1ZSA9ICJUZXN0IiBUaGVuCiAgICAgICAgQ2VsbHMoaSwgMikuVmFsdWUgPSAiUGFzcyIKICAgIEVuZCBJZgpOZXh0IGkKCicgRWZmaWNpZW50IGNvZGUKUmFuZ2UoIkIxOkIxMDAwIikuRm9ybXVsYSA9ICI9SUYoQTE6QTEwMDA9IiJUZXN0IiIsIiJQYXNzIiIsIiIiIiki"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>' Inefficient code
+For i = 1 To 1000
+    If Cells(i, 1).Value = &quot;Test&quot; Then
+        Cells(i, 2).Value = &quot;Pass&quot;
+    End If
+Next i
+
+' Efficient code
+Range(&quot;B1:B1000&quot;).Formula = &quot;=IF(A1:A1000=&quot;&quot;Test&quot;&quot;,&quot;&quot;Pass&quot;&quot;,&quot;&quot;&quot;&quot;)&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Using Excel's built-in <code>IF</code> function is faster than looping through each cell.</p>
+</div><h1>4. Efficiently Managing Excel Objects</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Minimize the number of times you interact with Excel objects. Use variables to store references to objects.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JyBJbmVmZmljaWVudCBjb2RlCkZvciBpID0gMSBUbyAxMDAwCiAgICBXb3Jrc2hlZXRzKCJTaGVldDEiKS5DZWxscyhpLCAxKS5WYWx1ZSA9IGkKTmV4dCBpCgonIEVmZmljaWVudCBjb2RlCkRpbSB3cyBBcyBXb3Jrc2hlZXQKU2V0IHdzID0gV29ya3NoZWV0cygiU2hlZXQxIikKRm9yIGkgPSAxIFRvIDEwMDAKICAgIHdzLkNlbGxzKGksIDEpLlZhbHVlID0gaQpOZXh0IGk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>' Inefficient code
+For i = 1 To 1000
+    Worksheets(&quot;Sheet1&quot;).Cells(i, 1).Value = i
+Next i
+
+' Efficient code
+Dim ws As Worksheet
+Set ws = Worksheets(&quot;Sheet1&quot;)
+For i = 1 To 1000
+    ws.Cells(i, 1).Value = i
+Next i</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Storing the worksheet reference in a variable reduces the number of times VBA needs to access the worksheet.</p>
+</div><h1>5. Using Built-in Functions</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Excel's built-in functions are optimized for performance. Use them instead of writing custom functions.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JyBJbmVmZmljaWVudCBjb2RlCkZ1bmN0aW9uIFN1bVJhbmdlKHJuZyBBcyBSYW5nZSkgQXMgRG91YmxlCiAgICBEaW0gY2VsbCBBcyBSYW5nZQogICAgRGltIHRvdGFsIEFzIERvdWJsZQogICAgdG90YWwgPSAwCiAgICBGb3IgRWFjaCBjZWxsIEluIHJuZwogICAgICAgIHRvdGFsID0gdG90YWwgKyBjZWxsLlZhbHVlCiAgICBOZXh0IGNlbGwKICAgIFN1bVJhbmdlID0gdG90YWwKRW5kIEZ1bmN0aW9uCgonIEVmZmljaWVudCBjb2RlCkZ1bmN0aW9uIFN1bVJhbmdlKHJuZyBBcyBSYW5nZSkgQXMgRG91YmxlCiAgICBTdW1SYW5nZSA9IEFwcGxpY2F0aW9uLldvcmtzaGVldEZ1bmN0aW9uLlN1bShybmcpCkVuZCBGdW5jdGlvbg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>' Inefficient code
+Function SumRange(rng As Range) As Double
+    Dim cell As Range
+    Dim total As Double
+    total = 0
+    For Each cell In rng
+        total = total + cell.Value
+    Next cell
+    SumRange = total
+End Function
+
+' Efficient code
+Function SumRange(rng As Range) As Double
+    SumRange = Application.WorksheetFunction.Sum(rng)
+End Function</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Using <code>Application.WorksheetFunction.Sum</code> is faster than looping through each cell to calculate the sum.</p>
+</div><h1>6. Screen Updating and Calculation Settings</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Disabling screen updating and setting calculation mode to manual can improve performance during code execution.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIE9wdGltaXplUGVyZm9ybWFuY2UoKQogICAgQXBwbGljYXRpb24uU2NyZWVuVXBkYXRpbmcgPSBGYWxzZQogICAgQXBwbGljYXRpb24uQ2FsY3VsYXRpb24gPSB4bENhbGN1bGF0aW9uTWFudWFsCgogICAgJyBZb3VyIGNvZGUgaGVyZQoKICAgIEFwcGxpY2F0aW9uLkNhbGN1bGF0aW9uID0geGxDYWxjdWxhdGlvbkF1dG9tYXRpYwogICAgQXBwbGljYXRpb24uU2NyZWVuVXBkYXRpbmcgPSBUcnVlCkVuZCBTdWI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub OptimizePerformance()
+    Application.ScreenUpdating = False
+    Application.Calculation = xlCalculationManual
+
+    ' Your code here
+
+    Application.Calculation = xlCalculationAutomatic
+    Application.ScreenUpdating = True
+End Sub</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Disabling screen updating and setting calculation mode to manual prevents Excel from recalculating and updating the screen after each operation, which can significantly speed up your code.</p>
+</div><h1>7. Error Handling and Debugging</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Proper error handling and debugging can help you identify and fix performance issues in your code.</p>
+</div><h2>Example</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIEV4YW1wbGVXaXRoRXJyb3JIYW5kbGluZygpCiAgICBPbiBFcnJvciBHb1RvIEVycm9ySGFuZGxlcgoKICAgICcgWW91ciBjb2RlIGhlcmUKCiAgICBFeGl0IFN1YgpFcnJvckhhbmRsZXI6CiAgICBNc2dCb3ggIkFuIGVycm9yIG9jY3VycmVkOiAiICYgRXJyLkRlc2NyaXB0aW9uCiAgICAnIEFkZGl0aW9uYWwgZXJyb3IgaGFuZGxpbmcgY29kZQpFbmQgU3Vi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub ExampleWithErrorHandling()
+    On Error GoTo ErrorHandler
+
+    ' Your code here
+
+    Exit Sub
+ErrorHandler:
+    MsgBox &quot;An error occurred: &quot; &amp; Err.Description
+    ' Additional error handling code
+End Sub</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Using error handling ensures that your code can gracefully handle unexpected errors and helps you identify the source of performance issues.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered several techniques to write efficient VBA code, including avoiding unnecessary calculations, using appropriate data types, minimizing the use of loops, efficiently managing Excel objects, using built-in functions, optimizing screen updating and calculation settings, and implementing proper error handling and debugging. By following these best practices, you can create VBA applications that run faster and are easier to maintain.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-using-vba-control-powerpoint' title="Using VBA to Control PowerPoint">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-code-refactoring-techniques' title="Code Refactoring Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

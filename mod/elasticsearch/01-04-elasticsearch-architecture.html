@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch Architecture</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/01-04-elasticsearch-architecture" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/01-04-elasticsearch-architecture" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-03-basic-concepts' title="Basic Concepts: Nodes, Clusters, and Indices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Elasticsearch Architecture</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-01-indexing-data' title="Indexing Data">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Understanding the architecture of Elasticsearch is crucial for effectively using and managing it. This section will cover the core components and how they interact to provide a scalable, distributed search and analytics engine.</p>
+</div><h1>Key Components of Elasticsearch Architecture</h1>
+<div class='content'></div><h2>1. Cluster</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A cluster is a collection of one or more nodes (servers) that together hold your entire data and provide federated indexing and search capabilities.</li>
+<li><strong>Naming</strong>: Each cluster has a unique name, which defaults to &quot;elasticsearch&quot;. Nodes in the same cluster must have the same cluster name.</li>
+</ul>
+</div><h2>2. Node</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A node is a single server that is part of a cluster, stores data, and participates in the cluster’s indexing and search capabilities.</li>
+<li><strong>Types of Nodes</strong>:
+<ul>
+<li><strong>Master Node</strong>: Responsible for cluster-wide settings and operations, such as creating or deleting an index, tracking nodes in the cluster, and deciding which shards to allocate to which nodes.</li>
+<li><strong>Data Node</strong>: Stores data and performs data-related operations such as CRUD, search, and aggregations.</li>
+<li><strong>Ingest Node</strong>: Preprocesses documents before indexing, such as enriching data or transforming it.</li>
+<li><strong>Coordinating Node</strong>: Routes requests, handles search and aggregation requests, and reduces results from different shards.</li>
+</ul>
+</li>
+</ul>
+</div><h2>3. Index</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: An index is a collection of documents that have somewhat similar characteristics. It is identified by a name, which is used to refer to the index when performing indexing, search, update, and delete operations.</li>
+<li><strong>Structure</strong>: An index is divided into shards, and each shard can have multiple replicas.</li>
+</ul>
+</div><h2>4. Shard</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A shard is a single Lucene instance. It is the basic unit of storage and search in Elasticsearch.</li>
+<li><strong>Types of Shards</strong>:
+<ul>
+<li><strong>Primary Shard</strong>: The original shard that holds the data.</li>
+<li><strong>Replica Shard</strong>: A copy of the primary shard, used for failover and increased search throughput.</li>
+</ul>
+</li>
+</ul>
+</div><h2>5. Document</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A document is a basic unit of information that can be indexed. It is expressed in JSON (JavaScript Object Notation) format.</li>
+<li><strong>Structure</strong>: Each document is stored in an index and has a unique identifier.</li>
+</ul>
+</div><h1>Elasticsearch Architecture Diagram</h1>
+<div class='content'><p>Below is a simplified diagram to illustrate the architecture:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q2x1c3RlcgogIOKUnOKUgOKUgCBOb2RlIDEgKE1hc3RlciArIERhdGEpCiAg4pSCICAgICDilJzilIDilIAgSW5kZXggMQogIOKUgiAgICAg4pSCICAgICDilJzilIDilIAgUHJpbWFyeSBTaGFyZCAxCiAg4pSCICAgICDilIIgICAgIOKUlOKUgOKUgCBSZXBsaWNhIFNoYXJkIDIKICDilIIgICAgIOKUlOKUgOKUgCBJbmRleCAyCiAg4pSCICAgICAgICAgICDilJzilIDilIAgUHJpbWFyeSBTaGFyZCAzCiAg4pSCICAgICAgICAgICDilJTilIDilIAgUmVwbGljYSBTaGFyZCA0CiAg4pSc4pSA4pSAIE5vZGUgMiAoRGF0YSkKICDilIIgICAgIOKUnOKUgOKUgCBJbmRleCAxCiAg4pSCICAgICDilIIgICAgIOKUnOKUgOKUgCBQcmltYXJ5IFNoYXJkIDIKICDilIIgICAgIOKUgiAgICAg4pSU4pSA4pSAIFJlcGxpY2EgU2hhcmQgMQogIOKUgiAgICAg4pSU4pSA4pSAIEluZGV4IDIKICDilIIgICAgICAgICAgIOKUnOKUgOKUgCBQcmltYXJ5IFNoYXJkIDQKICDilIIgICAgICAgICAgIOKUlOKUgOKUgCBSZXBsaWNhIFNoYXJkIDMKICDilJTilIDilIAgTm9kZSAzIChJbmdlc3Qp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Cluster
+  ├── Node 1 (Master + Data)
+  │     ├── Index 1
+  │     │     ├── Primary Shard 1
+  │     │     └── Replica Shard 2
+  │     └── Index 2
+  │           ├── Primary Shard 3
+  │           └── Replica Shard 4
+  ├── Node 2 (Data)
+  │     ├── Index 1
+  │     │     ├── Primary Shard 2
+  │     │     └── Replica Shard 1
+  │     └── Index 2
+  │           ├── Primary Shard 4
+  │           └── Replica Shard 3
+  └── Node 3 (Ingest)</pre></div><div class='content'></div><h1>Practical Example: Setting Up a Cluster</h1>
+<div class='content'></div><h2>Step 1: Configure the Cluster Name</h2>
+<div class='content'><p>In the <code>elasticsearch.yml</code> configuration file, set the cluster name:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2x1c3Rlci5uYW1lOiBteV9jbHVzdGVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cluster.name: my_cluster</pre></div><div class='content'></div><h2>Step 2: Configure Node Roles</h2>
+<div class='content'><p>Define the roles of each node in the <code>elasticsearch.yml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGb3IgYSBtYXN0ZXIgbm9kZQpub2RlLm1hc3RlcjogdHJ1ZQpub2RlLmRhdGE6IGZhbHNlCm5vZGUuaW5nZXN0OiBmYWxzZQoKIyBGb3IgYSBkYXRhIG5vZGUKbm9kZS5tYXN0ZXI6IGZhbHNlCm5vZGUuZGF0YTogdHJ1ZQpub2RlLmluZ2VzdDogZmFsc2UKCiMgRm9yIGFuIGluZ2VzdCBub2RlCm5vZGUubWFzdGVyOiBmYWxzZQpub2RlLmRhdGE6IGZhbHNlCm5vZGUuaW5nZXN0OiB0cnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># For a master node
+node.master: true
+node.data: false
+node.ingest: false
+
+# For a data node
+node.master: false
+node.data: true
+node.ingest: false
+
+# For an ingest node
+node.master: false
+node.data: false
+node.ingest: true</pre></div><div class='content'></div><h2>Step 3: Start the Nodes</h2>
+<div class='content'><p>Start each node using the command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9iaW4vZWxhc3RpY3NlYXJjaA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./bin/elasticsearch</pre></div><div class='content'></div><h2>Step 4: Verify the Cluster</h2>
+<div class='content'><p>Use the following command to check the cluster health and node information:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBHRVQgImxvY2FsaG9zdDo5MjAwL19jbHVzdGVyL2hlYWx0aD9wcmV0dHkiCmN1cmwgLVggR0VUICJsb2NhbGhvc3Q6OTIwMC9fY2F0L25vZGVzP3Yi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X GET &quot;localhost:9200/_cluster/health?pretty&quot;
+curl -X GET &quot;localhost:9200/_cat/nodes?v&quot;</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Cluster</h2>
+<div class='content'><ol>
+<li>Set up a three-node Elasticsearch cluster with one master node, one data node, and one ingest node.</li>
+<li>Verify the cluster health and node roles using the provided commands.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Configure the <code>elasticsearch.yml</code> files for each node as described in the practical example.</li>
+<li>Start each node and verify the cluster using:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBHRVQgImxvY2FsaG9zdDo5MjAwL19jbHVzdGVyL2hlYWx0aD9wcmV0dHkiCmN1cmwgLVggR0VUICJsb2NhbGhvc3Q6OTIwMC9fY2F0L25vZGVzP3Yi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X GET &quot;localhost:9200/_cluster/health?pretty&quot;
+curl -X GET &quot;localhost:9200/_cat/nodes?v&quot;</pre></div><div class='content'></div><h2>Exercise 2: Add an Index and Shards</h2>
+<div class='content'><ol>
+<li>Create an index named <code>test_index</code> with 2 primary shards and 1 replica.</li>
+<li>Verify the index and shard allocation.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Create the index using:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBQVVQgImxvY2FsaG9zdDo5MjAwL3Rlc3RfaW5kZXg/cHJldHR5IiAtSCAnQ29udGVudC1UeXBlOiBhcHBsaWNhdGlvbi9qc29uJyAtZCcKewogICJzZXR0aW5ncyI6IHsKICAgICJpbmRleCI6IHsKICAgICAgIm51bWJlcl9vZl9zaGFyZHMiOiAyLAogICAgICAibnVtYmVyX29mX3JlcGxpY2FzIjogMQogICAgfQogIH0KfQon"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X PUT &quot;localhost:9200/test_index?pretty&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;settings&quot;: {
+    &quot;index&quot;: {
+      &quot;number_of_shards&quot;: 2,
+      &quot;number_of_replicas&quot;: 1
+    }
+  }
+}
+'</pre></div><div class='content'><ol start="2">
+<li>Verify the index and shard allocation using:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBHRVQgImxvY2FsaG9zdDo5MjAwL19jYXQvaW5kaWNlcz92IgpjdXJsIC1YIEdFVCAibG9jYWxob3N0OjkyMDAvX2NhdC9zaGFyZHM/diI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X GET &quot;localhost:9200/_cat/indices?v&quot;
+curl -X GET &quot;localhost:9200/_cat/shards?v&quot;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the fundamental components of Elasticsearch architecture, including clusters, nodes, indices, shards, and documents. We also provided practical steps to set up a cluster and manage indices and shards. Understanding these concepts is essential for effectively using Elasticsearch and preparing for more advanced topics.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-03-basic-concepts' title="Basic Concepts: Nodes, Clusters, and Indices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-01-indexing-data' title="Indexing Data">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

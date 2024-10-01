@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrating with REST APIs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/05-05-integrating-rest-apis" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/05-05-integrating-rest-apis" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/05-05-integrating-rest-apis" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/reactnative/05-05-integrating-rest-apis" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/05-05-integrating-rest-apis" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-asyncstorage-local-data' title="AsyncStorage for Local Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integrating with REST APIs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-context-api' title="Context API">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to integrate REST APIs into a React Native application. REST APIs are a common way to interact with backend services, allowing us to fetch, create, update, and delete data. We will cover the following topics:</p>
+<ol>
+<li><strong>Understanding REST APIs</strong></li>
+<li><strong>Setting Up Axios</strong></li>
+<li><strong>Making GET Requests</strong></li>
+<li><strong>Making POST Requests</strong></li>
+<li><strong>Handling PUT and DELETE Requests</strong></li>
+<li><strong>Error Handling</strong></li>
+<li><strong>Practical Exercise</strong></li>
+</ol>
+</div><h1>1. Understanding REST APIs</h1>
+<div class='content'><p>REST (Representational State Transfer) is an architectural style for designing networked applications. It relies on a stateless, client-server, cacheable communications protocol -- the HTTP. RESTful applications use HTTP requests to perform CRUD (Create, Read, Update, Delete) operations.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Endpoint</strong>: A specific URL where an API can be accessed.</li>
+<li><strong>HTTP Methods</strong>: Common methods include GET, POST, PUT, DELETE.</li>
+<li><strong>Status Codes</strong>: Indicate the result of the HTTP request (e.g., 200 for success, 404 for not found).</li>
+</ul>
+</div><h1>2. Setting Up Axios</h1>
+<div class='content'><p>Axios is a popular HTTP client for making requests. It is promise-based and works in both the browser and Node.js environments.</p>
+</div><h2>Installation:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgYXhpb3M="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install axios</pre></div><div class='content'></div><h2>Basic Setup:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGF4aW9zIGZyb20gJ2F4aW9zJzsKCmNvbnN0IGFwaSA9IGF4aW9zLmNyZWF0ZSh7CiAgYmFzZVVSTDogJ2h0dHBzOi8vYXBpLmV4YW1wbGUuY29tJywKICB0aW1lb3V0OiAxMDAwLAogIGhlYWRlcnM6IHsnQXV0aG9yaXphdGlvbic6ICdCZWFyZXIgWU9VUl9UT0tFTid9Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'https://api.example.com',
+  timeout: 1000,
+  headers: {'Authorization': 'Bearer YOUR_TOKEN'}
+});</pre></div><div class='content'></div><h1>3. Making GET Requests</h1>
+<div class='content'><p>GET requests are used to retrieve data from a server.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQsIEFjdGl2aXR5SW5kaWNhdG9yIH0gZnJvbSAncmVhY3QtbmF0aXZlJzsKaW1wb3J0IGF4aW9zIGZyb20gJ2F4aW9zJzsKCmNvbnN0IEZldGNoRGF0YSA9ICgpID0+IHsKICBjb25zdCBbZGF0YSwgc2V0RGF0YV0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGF4aW9zLmdldCgnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YScpCiAgICAgIC50aGVuKHJlc3BvbnNlID0+IHsKICAgICAgICBzZXREYXRhKHJlc3BvbnNlLmRhdGEpOwogICAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgICB9KQogICAgICAuY2F0Y2goZXJyb3IgPT4gewogICAgICAgIGNvbnNvbGUuZXJyb3IoZXJyb3IpOwogICAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgICB9KTsKICB9LCBbXSk7CgogIGlmIChsb2FkaW5nKSB7CiAgICByZXR1cm4gPEFjdGl2aXR5SW5kaWNhdG9yIC8+OwogIH0KCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8VGV4dD57SlNPTi5zdHJpbmdpZnkoZGF0YSwgbnVsbCwgMil9PC9UZXh0PgogICAgPC9WaWV3PgogICk7Cn07CgpleHBvcnQgZGVmYXVsdCBGZXRjaERhdGE7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
+import axios from 'axios';
+
+const FetchData = () =&gt; {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    axios.get('https://api.example.com/data')
+      .then(response =&gt; {
+        setData(response.data);
+        setLoading(false);
+      })
+      .catch(error =&gt; {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return &lt;ActivityIndicator /&gt;;
+  }
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;{JSON.stringify(data, null, 2)}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default FetchData;</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>useEffect</strong>: Fetches data when the component mounts.</li>
+<li><strong>axios.get</strong>: Makes a GET request to the specified URL.</li>
+<li><strong>setData</strong>: Updates the state with the fetched data.</li>
+<li><strong>ActivityIndicator</strong>: Displays a loading spinner while data is being fetched.</li>
+</ul>
+</div><h1>4. Making POST Requests</h1>
+<div class='content'><p>POST requests are used to send data to a server.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0SW5wdXQsIEJ1dHRvbiwgVGV4dCB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBQb3N0RGF0YSA9ICgpID0+IHsKICBjb25zdCBbaW5wdXQsIHNldElucHV0XSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbcmVzcG9uc2UsIHNldFJlc3BvbnNlXSA9IHVzZVN0YXRlKG51bGwpOwoKICBjb25zdCBoYW5kbGVTdWJtaXQgPSAoKSA9PiB7CiAgICBheGlvcy5wb3N0KCdodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhJywgeyBkYXRhOiBpbnB1dCB9KQogICAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgc2V0UmVzcG9uc2UocmVzcG9uc2UuZGF0YSk7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgY29uc29sZS5lcnJvcihlcnJvcik7CiAgICAgIH0pOwogIH07CgogIHJldHVybiAoCiAgICA8Vmlldz4KICAgICAgPFRleHRJbnB1dAogICAgICAgIHZhbHVlPXtpbnB1dH0KICAgICAgICBvbkNoYW5nZVRleHQ9e3NldElucHV0fQogICAgICAgIHBsYWNlaG9sZGVyPSJFbnRlciBkYXRhIgogICAgICAvPgogICAgICA8QnV0dG9uIHRpdGxlPSJTdWJtaXQiIG9uUHJlc3M9e2hhbmRsZVN1Ym1pdH0gLz4KICAgICAge3Jlc3BvbnNlICYmIDxUZXh0PntKU09OLnN0cmluZ2lmeShyZXNwb25zZSwgbnVsbCwgMil9PC9UZXh0Pn0KICAgIDwvVmlldz4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgUG9zdERhdGE7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, TextInput, Button, Text } from 'react-native';
+import axios from 'axios';
+
+const PostData = () =&gt; {
+  const [input, setInput] = useState('');
+  const [response, setResponse] = useState(null);
+
+  const handleSubmit = () =&gt; {
+    axios.post('https://api.example.com/data', { data: input })
+      .then(response =&gt; {
+        setResponse(response.data);
+      })
+      .catch(error =&gt; {
+        console.error(error);
+      });
+  };
+
+  return (
+    &lt;View&gt;
+      &lt;TextInput
+        value={input}
+        onChangeText={setInput}
+        placeholder=&quot;Enter data&quot;
+      /&gt;
+      &lt;Button title=&quot;Submit&quot; onPress={handleSubmit} /&gt;
+      {response &amp;&amp; &lt;Text&gt;{JSON.stringify(response, null, 2)}&lt;/Text&gt;}
+    &lt;/View&gt;
+  );
+};
+
+export default PostData;</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>TextInput</strong>: Captures user input.</li>
+<li><strong>axios.post</strong>: Sends a POST request with the input data.</li>
+<li><strong>handleSubmit</strong>: Handles the form submission and updates the state with the server response.</li>
+</ul>
+</div><h1>5. Handling PUT and DELETE Requests</h1>
+<div class='content'><p>PUT requests are used to update existing data, while DELETE requests are used to remove data.</p>
+</div><h2>PUT Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXhpb3MucHV0KCdodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhLzEnLCB7IGRhdGE6ICdVcGRhdGVkIGRhdGEnIH0pCiAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgY29uc29sZS5sb2cocmVzcG9uc2UuZGF0YSk7CiAgfSkKICAuY2F0Y2goZXJyb3IgPT4gewogICAgY29uc29sZS5lcnJvcihlcnJvcik7CiAgfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>axios.put('https://api.example.com/data/1', { data: 'Updated data' })
+  .then(response =&gt; {
+    console.log(response.data);
+  })
+  .catch(error =&gt; {
+    console.error(error);
+  });</pre></div><div class='content'></div><h2>DELETE Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXhpb3MuZGVsZXRlKCdodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhLzEnKQogIC50aGVuKHJlc3BvbnNlID0+IHsKICAgIGNvbnNvbGUubG9nKHJlc3BvbnNlLmRhdGEpOwogIH0pCiAgLmNhdGNoKGVycm9yID0+IHsKICAgIGNvbnNvbGUuZXJyb3IoZXJyb3IpOwogIH0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>axios.delete('https://api.example.com/data/1')
+  .then(response =&gt; {
+    console.log(response.data);
+  })
+  .catch(error =&gt; {
+    console.error(error);
+  });</pre></div><div class='content'></div><h1>6. Error Handling</h1>
+<div class='content'><p>Proper error handling is crucial for a robust application.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXhpb3MuZ2V0KCdodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhJykKICAudGhlbihyZXNwb25zZSA9PiB7CiAgICBjb25zb2xlLmxvZyhyZXNwb25zZS5kYXRhKTsKICB9KQogIC5jYXRjaChlcnJvciA9PiB7CiAgICBpZiAoZXJyb3IucmVzcG9uc2UpIHsKICAgICAgLy8gU2VydmVyIHJlc3BvbmRlZCB3aXRoIGEgc3RhdHVzIG90aGVyIHRoYW4gMjAwIHJhbmdlCiAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHJlc3BvbnNlOicsIGVycm9yLnJlc3BvbnNlLmRhdGEpOwogICAgfSBlbHNlIGlmIChlcnJvci5yZXF1ZXN0KSB7CiAgICAgIC8vIFJlcXVlc3Qgd2FzIG1hZGUgYnV0IG5vIHJlc3BvbnNlIHJlY2VpdmVkCiAgICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIHJlcXVlc3Q6JywgZXJyb3IucmVxdWVzdCk7CiAgICB9IGVsc2UgewogICAgICAvLyBTb21ldGhpbmcgZWxzZSBoYXBwZW5lZAogICAgICBjb25zb2xlLmVycm9yKCdFcnJvciBtZXNzYWdlOicsIGVycm9yLm1lc3NhZ2UpOwogICAgfQogIH0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>axios.get('https://api.example.com/data')
+  .then(response =&gt; {
+    console.log(response.data);
+  })
+  .catch(error =&gt; {
+    if (error.response) {
+      // Server responded with a status other than 200 range
+      console.error('Error response:', error.response.data);
+    } else if (error.request) {
+      // Request was made but no response received
+      console.error('Error request:', error.request);
+    } else {
+      // Something else happened
+      console.error('Error message:', error.message);
+    }
+  });</pre></div><div class='content'></div><h1>7. Practical Exercise</h1>
+<div class='content'></div><h2>Task:</h2>
+<div class='content'><p>Create a simple React Native app that fetches a list of users from a public API and displays them in a list.</p>
+</div><h2>Steps:</h2>
+<div class='content'><ol>
+<li>Set up a new React Native project.</li>
+<li>Install Axios.</li>
+<li>Create a component that fetches data from <code>https://jsonplaceholder.typicode.com/users</code>.</li>
+<li>Display the list of users in a <code>FlatList</code>.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQsIEZsYXRMaXN0LCBBY3Rpdml0eUluZGljYXRvciB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7CmltcG9ydCBheGlvcyBmcm9tICdheGlvcyc7Cgpjb25zdCBVc2VyTGlzdCA9ICgpID0+IHsKICBjb25zdCBbdXNlcnMsIHNldFVzZXJzXSA9IHVzZVN0YXRlKFtdKTsKICBjb25zdCBbbG9hZGluZywgc2V0TG9hZGluZ10gPSB1c2VTdGF0ZSh0cnVlKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGF4aW9zLmdldCgnaHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3VzZXJzJykKICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICAgIHNldFVzZXJzKHJlc3BvbnNlLmRhdGEpOwogICAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgICB9KQogICAgICAuY2F0Y2goZXJyb3IgPT4gewogICAgICAgIGNvbnNvbGUuZXJyb3IoZXJyb3IpOwogICAgICAgIHNldExvYWRpbmcoZmFsc2UpOwogICAgICB9KTsKICB9LCBbXSk7CgogIGlmIChsb2FkaW5nKSB7CiAgICByZXR1cm4gPEFjdGl2aXR5SW5kaWNhdG9yIC8+OwogIH0KCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8RmxhdExpc3QKICAgICAgICBkYXRhPXt1c2Vyc30KICAgICAgICBrZXlFeHRyYWN0b3I9e2l0ZW0gPT4gaXRlbS5pZC50b1N0cmluZygpfQogICAgICAgIHJlbmRlckl0ZW09eyh7IGl0ZW0gfSkgPT4gKAogICAgICAgICAgPFZpZXc+CiAgICAgICAgICAgIDxUZXh0PntpdGVtLm5hbWV9PC9UZXh0PgogICAgICAgICAgICA8VGV4dD57aXRlbS5lbWFpbH08L1RleHQ+CiAgICAgICAgICA8L1ZpZXc+CiAgICAgICAgKX0KICAgICAgLz4KICAgIDwvVmlldz4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgVXNlckxpc3Q7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, ActivityIndicator } from 'react-native';
+import axios from 'axios';
+
+const UserList = () =&gt; {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() =&gt; {
+    axios.get('https://jsonplaceholder.typicode.com/users')
+      .then(response =&gt; {
+        setUsers(response.data);
+        setLoading(false);
+      })
+      .catch(error =&gt; {
+        console.error(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return &lt;ActivityIndicator /&gt;;
+  }
+
+  return (
+    &lt;View&gt;
+      &lt;FlatList
+        data={users}
+        keyExtractor={item =&gt; item.id.toString()}
+        renderItem={({ item }) =&gt; (
+          &lt;View&gt;
+            &lt;Text&gt;{item.name}&lt;/Text&gt;
+            &lt;Text&gt;{item.email}&lt;/Text&gt;
+          &lt;/View&gt;
+        )}
+      /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default UserList;</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>FlatList</strong>: Efficiently renders a list of users.</li>
+<li><strong>keyExtractor</strong>: Ensures each list item has a unique key.</li>
+<li><strong>renderItem</strong>: Defines how each user item should be displayed.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of integrating REST APIs into a React Native application using Axios. We learned how to make GET, POST, PUT, and DELETE requests, handle errors, and implemented a practical exercise to reinforce these concepts. Understanding how to interact with REST APIs is essential for building dynamic and data-driven applications. In the next module, we will explore more advanced concepts and techniques to further enhance our React Native skills.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-asyncstorage-local-data' title="AsyncStorage for Local Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-context-api' title="Context API">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

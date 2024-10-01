@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Blocks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/06-03-dynamic-blocks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/06-03-dynamic-blocks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/06-03-dynamic-blocks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/06-03-dynamic-blocks" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/06-03-dynamic-blocks" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-terraform-functions' title="Terraform Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Dynamic Blocks</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-terraform-import' title="Terraform Import">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Dynamic blocks in Terraform allow you to generate multiple nested blocks within a resource or module dynamically. This feature is particularly useful when you need to create a variable number of nested blocks based on input variables or other dynamic data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Dynamic Block Structure</strong>:</p>
+<ul>
+<li>A dynamic block is defined using the <code>dynamic</code> keyword.</li>
+<li>It contains a <code>for_each</code> argument to iterate over a collection.</li>
+<li>The <code>content</code> block defines the structure of the nested blocks to be generated.</li>
+</ul>
+</li>
+<li>
+<p><strong>Use Cases</strong>:</p>
+<ul>
+<li>Creating multiple sub-resources within a resource.</li>
+<li>Generating configuration blocks based on variable input.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Syntax</h1>
+<div class='content'><p>The basic syntax for a dynamic block is as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgInJlc291cmNlX3R5cGUiICJyZXNvdXJjZV9uYW1lIiB7CiAgIyBPdGhlciByZXNvdXJjZSBhcmd1bWVudHMKCiAgZHluYW1pYyAiYmxvY2tfbmFtZSIgewogICAgZm9yX2VhY2ggPSB2YXIuY29sbGVjdGlvbgogICAgY29udGVudCB7CiAgICAgICMgTmVzdGVkIGJsb2NrIGFyZ3VtZW50cwogICAgICBhcmd1bWVudDEgPSBibG9ja19uYW1lLnZhbHVlLmFyZ3VtZW50MQogICAgICBhcmd1bWVudDIgPSBibG9ja19uYW1lLnZhbHVlLmFyZ3VtZW50MgogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;resource_type&quot; &quot;resource_name&quot; {
+  # Other resource arguments
+
+  dynamic &quot;block_name&quot; {
+    for_each = var.collection
+    content {
+      # Nested block arguments
+      argument1 = block_name.value.argument1
+      argument2 = block_name.value.argument2
+    }
+  }
+}</pre></div><div class='content'><ul>
+<li><code>block_name</code>: The name of the nested block to be generated.</li>
+<li><code>for_each</code>: The collection to iterate over.</li>
+<li><code>content</code>: The structure of the nested block.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's consider an example where we need to create multiple security group rules for an AWS security group. The rules are defined in a variable.</p>
+</div><h2>Variable Definition</h2>
+<div class='content'><p>First, define a variable to hold the security group rules:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgInNlY3VyaXR5X2dyb3VwX3J1bGVzIiB7CiAgZGVzY3JpcHRpb24gPSAiTGlzdCBvZiBzZWN1cml0eSBncm91cCBydWxlcyIKICB0eXBlID0gbGlzdChvYmplY3QoewogICAgdHlwZSAgICAgICAgPSBzdHJpbmcKICAgIGZyb21fcG9ydCAgID0gbnVtYmVyCiAgICB0b19wb3J0ICAgICA9IG51bWJlcgogICAgcHJvdG9jb2wgICAgPSBzdHJpbmcKICAgIGNpZHJfYmxvY2tzID0gbGlzdChzdHJpbmcpCiAgfSkpCiAgZGVmYXVsdCA9IFtdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;security_group_rules&quot; {
+  description = &quot;List of security group rules&quot;
+  type = list(object({
+    type        = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default = []
+}</pre></div><div class='content'></div><h2>Resource Definition with Dynamic Block</h2>
+<div class='content'><p>Next, use a dynamic block to create the security group rules:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19zZWN1cml0eV9ncm91cCIgImV4YW1wbGUiIHsKICBuYW1lICAgICAgICA9ICJleGFtcGxlIgogIGRlc2NyaXB0aW9uID0gIkV4YW1wbGUgc2VjdXJpdHkgZ3JvdXAiCiAgdnBjX2lkICAgICAgPSB2YXIudnBjX2lkCgogIGR5bmFtaWMgImluZ3Jlc3MiIHsKICAgIGZvcl9lYWNoID0gdmFyLnNlY3VyaXR5X2dyb3VwX3J1bGVzCiAgICBjb250ZW50IHsKICAgICAgZnJvbV9wb3J0ICAgPSBpbmdyZXNzLnZhbHVlLmZyb21fcG9ydAogICAgICB0b19wb3J0ICAgICA9IGluZ3Jlc3MudmFsdWUudG9fcG9ydAogICAgICBwcm90b2NvbCAgICA9IGluZ3Jlc3MudmFsdWUucHJvdG9jb2wKICAgICAgY2lkcl9ibG9ja3MgPSBpbmdyZXNzLnZhbHVlLmNpZHJfYmxvY2tzCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_security_group&quot; &quot;example&quot; {
+  name        = &quot;example&quot;
+  description = &quot;Example security group&quot;
+  vpc_id      = var.vpc_id
+
+  dynamic &quot;ingress&quot; {
+    for_each = var.security_group_rules
+    content {
+      from_port   = ingress.value.from_port
+      to_port     = ingress.value.to_port
+      protocol    = ingress.value.protocol
+      cidr_blocks = ingress.value.cidr_blocks
+    }
+  }
+}</pre></div><div class='content'></div><h2>Example Variable Values</h2>
+<div class='content'><p>Provide values for the <code>security_group_rules</code> variable:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgInNlY3VyaXR5X2dyb3VwX3J1bGVzIiB7CiAgZGVmYXVsdCA9IFsKICAgIHsKICAgICAgdHlwZSAgICAgICAgPSAiaW5ncmVzcyIKICAgICAgZnJvbV9wb3J0ICAgPSA4MAogICAgICB0b19wb3J0ICAgICA9IDgwCiAgICAgIHByb3RvY29sICAgID0gInRjcCIKICAgICAgY2lkcl9ibG9ja3MgPSBbIjAuMC4wLjAvMCJdCiAgICB9LAogICAgewogICAgICB0eXBlICAgICAgICA9ICJpbmdyZXNzIgogICAgICBmcm9tX3BvcnQgICA9IDQ0MwogICAgICB0b19wb3J0ICAgICA9IDQ0MwogICAgICBwcm90b2NvbCAgICA9ICJ0Y3AiCiAgICAgIGNpZHJfYmxvY2tzID0gWyIwLjAuMC4wLzAiXQogICAgfQogIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;security_group_rules&quot; {
+  default = [
+    {
+      type        = &quot;ingress&quot;
+      from_port   = 80
+      to_port     = 80
+      protocol    = &quot;tcp&quot;
+      cidr_blocks = [&quot;0.0.0.0/0&quot;]
+    },
+    {
+      type        = &quot;ingress&quot;
+      from_port   = 443
+      to_port     = 443
+      protocol    = &quot;tcp&quot;
+      cidr_blocks = [&quot;0.0.0.0/0&quot;]
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Define a variable <code>firewall_rules</code> to hold a list of firewall rules.</li>
+<li>Create a Google Cloud Platform (GCP) firewall resource using a dynamic block to generate the rules.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Variable Definition</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgImZpcmV3YWxsX3J1bGVzIiB7CiAgZGVzY3JpcHRpb24gPSAiTGlzdCBvZiBmaXJld2FsbCBydWxlcyIKICB0eXBlID0gbGlzdChvYmplY3QoewogICAgbmFtZSAgICAgICAgPSBzdHJpbmcKICAgIGRpcmVjdGlvbiAgID0gc3RyaW5nCiAgICBwcmlvcml0eSAgICA9IG51bWJlcgogICAgcmFuZ2VzICAgICAgPSBsaXN0KHN0cmluZykKICAgIGFsbG93X3BvcnRzID0gbGlzdChvYmplY3QoewogICAgICBwcm90b2NvbCA9IHN0cmluZwogICAgICBwb3J0cyAgICA9IGxpc3Qoc3RyaW5nKQogICAgfSkpCiAgfSkpCiAgZGVmYXVsdCA9IFtdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;firewall_rules&quot; {
+  description = &quot;List of firewall rules&quot;
+  type = list(object({
+    name        = string
+    direction   = string
+    priority    = number
+    ranges      = list(string)
+    allow_ports = list(object({
+      protocol = string
+      ports    = list(string)
+    }))
+  }))
+  default = []
+}</pre></div><div class='content'><h4>Resource Definition with Dynamic Block</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImdvb2dsZV9jb21wdXRlX2ZpcmV3YWxsIiAiZXhhbXBsZSIgewogIG5hbWUgICAgPSAiZXhhbXBsZS1maXJld2FsbCIKICBuZXR3b3JrID0gdmFyLm5ldHdvcmsKCiAgZHluYW1pYyAiYWxsb3ciIHsKICAgIGZvcl9lYWNoID0gdmFyLmZpcmV3YWxsX3J1bGVzCiAgICBjb250ZW50IHsKICAgICAgcHJvdG9jb2wgPSBhbGxvdy52YWx1ZS5hbGxvd19wb3J0c1swXS5wcm90b2NvbAogICAgICBwb3J0cyAgICA9IGFsbG93LnZhbHVlLmFsbG93X3BvcnRzWzBdLnBvcnRzCiAgICB9CiAgfQoKICBzb3VyY2VfcmFuZ2VzID0gdmFyLmZpcmV3YWxsX3J1bGVzWzBdLnJhbmdlcwogIGRpcmVjdGlvbiAgICAgPSB2YXIuZmlyZXdhbGxfcnVsZXNbMF0uZGlyZWN0aW9uCiAgcHJpb3JpdHkgICAgICA9IHZhci5maXJld2FsbF9ydWxlc1swXS5wcmlvcml0eQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;google_compute_firewall&quot; &quot;example&quot; {
+  name    = &quot;example-firewall&quot;
+  network = var.network
+
+  dynamic &quot;allow&quot; {
+    for_each = var.firewall_rules
+    content {
+      protocol = allow.value.allow_ports[0].protocol
+      ports    = allow.value.allow_ports[0].ports
+    }
+  }
+
+  source_ranges = var.firewall_rules[0].ranges
+  direction     = var.firewall_rules[0].direction
+  priority      = var.firewall_rules[0].priority
+}</pre></div><div class='content'><h4>Example Variable Values</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgImZpcmV3YWxsX3J1bGVzIiB7CiAgZGVmYXVsdCA9IFsKICAgIHsKICAgICAgbmFtZSAgICAgICAgPSAiYWxsb3ctaHR0cCIKICAgICAgZGlyZWN0aW9uICAgPSAiSU5HUkVTUyIKICAgICAgcHJpb3JpdHkgICAgPSAxMDAwCiAgICAgIHJhbmdlcyAgICAgID0gWyIwLjAuMC4wLzAiXQogICAgICBhbGxvd19wb3J0cyA9IFsKICAgICAgICB7CiAgICAgICAgICBwcm90b2NvbCA9ICJ0Y3AiCiAgICAgICAgICBwb3J0cyAgICA9IFsiODAiXQogICAgICAgIH0KICAgICAgXQogICAgfSwKICAgIHsKICAgICAgbmFtZSAgICAgICAgPSAiYWxsb3ctaHR0cHMiCiAgICAgIGRpcmVjdGlvbiAgID0gIklOR1JFU1MiCiAgICAgIHByaW9yaXR5ICAgID0gMTAwMAogICAgICByYW5nZXMgICAgICA9IFsiMC4wLjAuMC8wIl0KICAgICAgYWxsb3dfcG9ydHMgPSBbCiAgICAgICAgewogICAgICAgICAgcHJvdG9jb2wgPSAidGNwIgogICAgICAgICAgcG9ydHMgICAgPSBbIjQ0MyJdCiAgICAgICAgfQogICAgICBdCiAgICB9CiAgXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;firewall_rules&quot; {
+  default = [
+    {
+      name        = &quot;allow-http&quot;
+      direction   = &quot;INGRESS&quot;
+      priority    = 1000
+      ranges      = [&quot;0.0.0.0/0&quot;]
+      allow_ports = [
+        {
+          protocol = &quot;tcp&quot;
+          ports    = [&quot;80&quot;]
+        }
+      ]
+    },
+    {
+      name        = &quot;allow-https&quot;
+      direction   = &quot;INGRESS&quot;
+      priority    = 1000
+      ranges      = [&quot;0.0.0.0/0&quot;]
+      allow_ports = [
+        {
+          protocol = &quot;tcp&quot;
+          ports    = [&quot;443&quot;]
+        }
+      ]
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect <code>for_each</code> Type</strong>: Ensure that the <code>for_each</code> argument is a collection (list, map, or set).</li>
+<li><strong>Referencing Values</strong>: Use <code>block_name.value</code> to reference the current item in the collection.</li>
+<li><strong>Nested Blocks</strong>: Dynamic blocks can be nested within other dynamic blocks if needed.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Dynamic blocks in Terraform provide a powerful way to generate multiple nested blocks based on dynamic data. By understanding and utilizing dynamic blocks, you can create more flexible and reusable Terraform configurations. In the next section, we will explore Terraform Import, which allows you to import existing infrastructure into your Terraform state.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-terraform-functions' title="Terraform Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-terraform-import' title="Terraform Import">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

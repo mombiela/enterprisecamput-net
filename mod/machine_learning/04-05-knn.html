@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Nearest Neighbors (K-NN)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/04-05-knn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/04-05-knn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/04-05-knn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/machine_learning/04-05-knn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/04-05-knn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-svm' title="Support Vector Machines (SVM)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">K-Nearest Neighbors (K-NN)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-06-neural-networks' title="Neural Networks">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>K-Nearest Neighbors (K-NN) is a simple, yet powerful, supervised machine learning algorithm used for both classification and regression tasks. It is based on the principle that similar data points are likely to have similar outcomes. The algorithm classifies a new data point based on the majority class of its 'k' nearest neighbors in the feature space.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Distance Metrics</h2>
+<div class='content'><p>K-NN relies on distance metrics to determine the proximity of data points. Common distance metrics include:</p>
+<ul>
+<li><strong>Euclidean Distance</strong>: The straight-line distance between two points in Euclidean space.</li>
+<li><strong>Manhattan Distance</strong>: The sum of the absolute differences of their coordinates.</li>
+<li><strong>Minkowski Distance</strong>: A generalization of both Euclidean and Manhattan distances.</li>
+</ul>
+</div><h2>2. Choosing 'k'</h2>
+<div class='content'><p>The parameter 'k' represents the number of nearest neighbors to consider. Choosing the right 'k' is crucial:</p>
+<ul>
+<li><strong>Small k</strong>: Can lead to overfitting and noise sensitivity.</li>
+<li><strong>Large k</strong>: Can lead to underfitting and loss of local detail.</li>
+</ul>
+</div><h2>3. Voting Mechanism</h2>
+<div class='content'><p>For classification tasks, K-NN uses a majority voting mechanism where the class of the majority of the 'k' nearest neighbors is assigned to the new data point.</p>
+</div><h2>4. Weighted K-NN</h2>
+<div class='content'><p>In weighted K-NN, closer neighbors are given more weight in the voting process, which can improve performance.</p>
+</div><h1>Example: K-NN for Classification</h1>
+<div class='content'><p>Let's implement a simple K-NN classifier using Python and the <code>scikit-learn</code> library.</p>
+</div><h2>Step-by-Step Implementation</h2>
+<div class='content'><ol>
+<li><strong>Import Libraries</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmZyb20gc2tsZWFybi5kYXRhc2V0cyBpbXBvcnQgbG9hZF9pcmlzCmZyb20gc2tsZWFybi5tb2RlbF9zZWxlY3Rpb24gaW1wb3J0IHRyYWluX3Rlc3Rfc3BsaXQKZnJvbSBza2xlYXJuLm5laWdoYm9ycyBpbXBvcnQgS05laWdoYm9yc0NsYXNzaWZpZXIKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3Jl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score</pre></div><div class='content'><ol start="2">
+<li><strong>Load Dataset</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSBJcmlzIGRhdGFzZXQKaXJpcyA9IGxvYWRfaXJpcygpClggPSBpcmlzLmRhdGEKeSA9IGlyaXMudGFyZ2V0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target</pre></div><div class='content'><ol start="3">
+<li><strong>Split Dataset</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTcGxpdCB0aGUgZGF0YXNldCBpbnRvIHRyYWluaW5nIGFuZCB0ZXN0aW5nIHNldHMKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjMsIHJhbmRvbV9zdGF0ZT00Mik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)</pre></div><div class='content'><ol start="4">
+<li><strong>Initialize and Train K-NN Classifier</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbml0aWFsaXplIHRoZSBLLU5OIGNsYXNzaWZpZXIgd2l0aCBrPTMKa25uID0gS05laWdoYm9yc0NsYXNzaWZpZXIobl9uZWlnaGJvcnM9MykKCiMgVHJhaW4gdGhlIGNsYXNzaWZpZXIKa25uLmZpdChYX3RyYWluLCB5X3RyYWluKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Initialize the K-NN classifier with k=3
+knn = KNeighborsClassifier(n_neighbors=3)
+
+# Train the classifier
+knn.fit(X_train, y_train)</pre></div><div class='content'><ol start="5">
+<li><strong>Make Predictions</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBNYWtlIHByZWRpY3Rpb25zIG9uIHRoZSB0ZXN0IHNldAp5X3ByZWQgPSBrbm4ucHJlZGljdChYX3Rlc3Qp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Make predictions on the test set
+y_pred = knn.predict(X_test)</pre></div><div class='content'><ol start="6">
+<li><strong>Evaluate the Model</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFdmFsdWF0ZSB0aGUgYWNjdXJhY3kgb2YgdGhlIG1vZGVsCmFjY3VyYWN5ID0gYWNjdXJhY3lfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCnByaW50KGYiQWNjdXJhY3k6IHthY2N1cmFjeSAqIDEwMDouMmZ9JSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Evaluate the accuracy of the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f&quot;Accuracy: {accuracy * 100:.2f}%&quot;)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Import Libraries</strong>: We import necessary libraries including <code>numpy</code> for numerical operations, <code>scikit-learn</code> for machine learning functionalities.</li>
+<li><strong>Load Dataset</strong>: We load the Iris dataset, which is a classic dataset for classification tasks.</li>
+<li><strong>Split Dataset</strong>: We split the dataset into training and testing sets to evaluate the model's performance.</li>
+<li><strong>Initialize and Train K-NN Classifier</strong>: We initialize the K-NN classifier with <code>k=3</code> and train it using the training data.</li>
+<li><strong>Make Predictions</strong>: We use the trained model to make predictions on the test set.</li>
+<li><strong>Evaluate the Model</strong>: We calculate the accuracy of the model by comparing the predicted labels with the true labels.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement K-NN for a Custom Dataset</h2>
+<div class='content'><ol>
+<li><strong>Load a Custom Dataset</strong>: Use any dataset of your choice (e.g., from <code>scikit-learn</code> or a CSV file).</li>
+<li><strong>Preprocess the Data</strong>: Handle missing values, normalize features, etc.</li>
+<li><strong>Split the Data</strong>: Split the data into training and testing sets.</li>
+<li><strong>Train K-NN Classifier</strong>: Initialize and train a K-NN classifier with an appropriate value of 'k'.</li>
+<li><strong>Evaluate the Model</strong>: Calculate and print the accuracy of the model.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBhbmRhcyBhcyBwZApmcm9tIHNrbGVhcm4ucHJlcHJvY2Vzc2luZyBpbXBvcnQgU3RhbmRhcmRTY2FsZXIKCiMgTG9hZCBjdXN0b20gZGF0YXNldCAoZXhhbXBsZTogV2luZSBkYXRhc2V0IGZyb20gc2Npa2l0LWxlYXJuKQpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IGxvYWRfd2luZQp3aW5lID0gbG9hZF93aW5lKCkKWCA9IHdpbmUuZGF0YQp5ID0gd2luZS50YXJnZXQKCiMgUHJlcHJvY2VzcyB0aGUgZGF0YQpzY2FsZXIgPSBTdGFuZGFyZFNjYWxlcigpClhfc2NhbGVkID0gc2NhbGVyLmZpdF90cmFuc2Zvcm0oWCkKCiMgU3BsaXQgdGhlIGRhdGEKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFhfc2NhbGVkLCB5LCB0ZXN0X3NpemU9MC4zLCByYW5kb21fc3RhdGU9NDIpCgojIFRyYWluIEstTk4gY2xhc3NpZmllcgprbm4gPSBLTmVpZ2hib3JzQ2xhc3NpZmllcihuX25laWdoYm9ycz01KQprbm4uZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIEV2YWx1YXRlIHRoZSBtb2RlbAp5X3ByZWQgPSBrbm4ucHJlZGljdChYX3Rlc3QpCmFjY3VyYWN5ID0gYWNjdXJhY3lfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCnByaW50KGYiQWNjdXJhY3k6IHthY2N1cmFjeSAqIDEwMDouMmZ9JSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pandas as pd
+from sklearn.preprocessing import StandardScaler
+
+# Load custom dataset (example: Wine dataset from scikit-learn)
+from sklearn.datasets import load_wine
+wine = load_wine()
+X = wine.data
+y = wine.target
+
+# Preprocess the data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3, random_state=42)
+
+# Train K-NN classifier
+knn = KNeighborsClassifier(n_neighbors=5)
+knn.fit(X_train, y_train)
+
+# Evaluate the model
+y_pred = knn.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f&quot;Accuracy: {accuracy * 100:.2f}%&quot;)</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Choosing 'k'</strong>: Always use cross-validation to choose the optimal value of 'k'.</li>
+<li><strong>Feature Scaling</strong>: K-NN is sensitive to the scale of features. Always normalize or standardize your data.</li>
+<li><strong>High Dimensionality</strong>: K-NN can suffer in high-dimensional spaces due to the curse of dimensionality. Consider using dimensionality reduction techniques like PCA.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>K-Nearest Neighbors (K-NN) is a versatile and intuitive algorithm suitable for both classification and regression tasks. Understanding the importance of distance metrics, the choice of 'k', and the need for feature scaling are crucial for effectively applying K-NN. With practical examples and exercises, you should now be able to implement and evaluate K-NN models on various datasets.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-svm' title="Support Vector Machines (SVM)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-06-neural-networks' title="Neural Networks">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

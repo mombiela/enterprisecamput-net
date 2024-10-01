@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Prometheus and Grafana</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/09-03-using-prometheus-grafana" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/09-03-using-prometheus-grafana" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/09-03-using-prometheus-grafana" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/09-03-using-prometheus-grafana" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/09-03-using-prometheus-grafana" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-monitoring-spring-boot-actuator' title="Monitoring with Spring Boot Actuator">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Prometheus and Grafana</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-logging-log-management' title="Logging and Log Management">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to use Prometheus and Grafana to monitor and visualize metrics from your Spring Boot application. Prometheus is an open-source monitoring and alerting toolkit, while Grafana is an open-source platform for monitoring and observability that allows you to query, visualize, alert on, and understand your metrics.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Prometheus</h2>
+<div class='content'><ul>
+<li><strong>Time-Series Database</strong>: Prometheus stores all data as time series, i.e., streams of timestamped values belonging to the same metric and the same set of labeled dimensions.</li>
+<li><strong>Pull-Based Model</strong>: Prometheus scrapes (pulls) metrics from instrumented jobs.</li>
+<li><strong>PromQL</strong>: Prometheus Query Language used to query the time-series data.</li>
+</ul>
+</div><h2>Grafana</h2>
+<div class='content'><ul>
+<li><strong>Dashboards</strong>: Grafana allows you to create dashboards with panels, each representing specific metrics.</li>
+<li><strong>Data Sources</strong>: Grafana supports various data sources, including Prometheus.</li>
+<li><strong>Alerting</strong>: Grafana can send alerts based on the data it visualizes.</li>
+</ul>
+</div><h1>Setting Up Prometheus</h1>
+<div class='content'></div><h2>Step 1: Install Prometheus</h2>
+<div class='content'><p>Download and install Prometheus from the <a href="https://prometheus.io/download/">official website</a>.</p>
+</div><h2>Step 2: Configure Prometheus</h2>
+<div class='content'><p>Create a <code>prometheus.yml</code> configuration file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xvYmFsOgogIHNjcmFwZV9pbnRlcnZhbDogMTVzCgpzY3JhcGVfY29uZmlnczoKICAtIGpvYl9uYW1lOiAnc3ByaW5nLWJvb3QtYXBwJwogICAgc3RhdGljX2NvbmZpZ3M6CiAgICAgIC0gdGFyZ2V0czogWydsb2NhbGhvc3Q6ODA4MCdd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'spring-boot-app'
+    static_configs:
+      - targets: ['localhost:8080']</pre></div><div class='content'></div><h2>Step 3: Run Prometheus</h2>
+<div class='content'><p>Run Prometheus using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9wcm9tZXRoZXVzIC0tY29uZmlnLmZpbGU9cHJvbWV0aGV1cy55bWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./prometheus --config.file=prometheus.yml</pre></div><div class='content'></div><h1>Instrumenting Spring Boot Application</h1>
+<div class='content'></div><h2>Step 1: Add Dependencies</h2>
+<div class='content'><p>Add the following dependencies to your <code>pom.xml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5pby5taWNyb21ldGVyPC9ncm91cElkPgogICAgPGFydGlmYWN0SWQ+bWljcm9tZXRlci1yZWdpc3RyeS1wcm9tZXRoZXVzPC9hcnRpZmFjdElkPgo8L2RlcGVuZGVuY3k+CjxkZXBlbmRlbmN5PgogICAgPGdyb3VwSWQ+b3JnLnNwcmluZ2ZyYW1ld29yay5ib290PC9ncm91cElkPgogICAgPGFydGlmYWN0SWQ+c3ByaW5nLWJvb3Qtc3RhcnRlci1hY3R1YXRvcjwvYXJ0aWZhY3RJZD4KPC9kZXBlbmRlbmN5Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-registry-prometheus&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Step 2: Enable Prometheus Metrics</h2>
+<div class='content'><p>Configure your <code>application.properties</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFuYWdlbWVudC5lbmRwb2ludHMud2ViLmV4cG9zdXJlLmluY2x1ZGU9KgptYW5hZ2VtZW50LmVuZHBvaW50LnByb21ldGhldXMuZW5hYmxlZD10cnVlCm1hbmFnZW1lbnQubWV0cmljcy5leHBvcnQucHJvbWV0aGV1cy5lbmFibGVkPXRydWU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>management.endpoints.web.exposure.include=*
+management.endpoint.prometheus.enabled=true
+management.metrics.export.prometheus.enabled=true</pre></div><div class='content'></div><h2>Step 3: Expose Metrics Endpoint</h2>
+<div class='content'><p>Ensure that the <code>/actuator/prometheus</code> endpoint is exposed. This is typically done by default when you include the <code>spring-boot-starter-actuator</code> dependency.</p>
+</div><h1>Setting Up Grafana</h1>
+<div class='content'></div><h2>Step 1: Install Grafana</h2>
+<div class='content'><p>Download and install Grafana from the <a href="https://grafana.com/grafana/download">official website</a>.</p>
+</div><h2>Step 2: Configure Data Source</h2>
+<div class='content'><ol>
+<li>Open Grafana in your browser (default is <code>http://localhost:3000</code>).</li>
+<li>Log in with the default credentials (<code>admin</code>/<code>admin</code>).</li>
+<li>Navigate to <strong>Configuration</strong> &gt; <strong>Data Sources</strong>.</li>
+<li>Add a new data source and select <strong>Prometheus</strong>.</li>
+<li>Set the URL to <code>http://localhost:9090</code> (default Prometheus server URL).</li>
+<li>Click <strong>Save &amp; Test</strong> to verify the connection.</li>
+</ol>
+</div><h2>Step 3: Create a Dashboard</h2>
+<div class='content'><ol>
+<li>Navigate to <strong>Create</strong> &gt; <strong>Dashboard</strong>.</li>
+<li>Add a new panel.</li>
+<li>Select <strong>Prometheus</strong> as the data source.</li>
+<li>Use PromQL to query metrics, e.g., <code>http_requests_total</code>.</li>
+<li>Customize the visualization and save the dashboard.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Example PromQL Queries</h2>
+<div class='content'><ul>
+<li><strong>Total HTTP Requests</strong>: <code>http_requests_total</code></li>
+<li><strong>Request Duration</strong>: <code>histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))</code></li>
+</ul>
+</div><h2>Example Grafana Panel Configuration</h2>
+<div class='content'><ol>
+<li><strong>Query</strong>: <code>http_requests_total</code></li>
+<li><strong>Visualization</strong>: Select <strong>Graph</strong>.</li>
+<li><strong>Panel Title</strong>: &quot;Total HTTP Requests&quot;.</li>
+<li><strong>Save</strong>: Save the panel and add it to your dashboard.</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Monitor a Spring Boot Application</h2>
+<div class='content'><ol>
+<li><strong>Setup</strong>: Install Prometheus and Grafana as described.</li>
+<li><strong>Instrument</strong>: Add the necessary dependencies and configurations to your Spring Boot application.</li>
+<li><strong>Run</strong>: Start Prometheus and Grafana.</li>
+<li><strong>Create Dashboard</strong>: Create a Grafana dashboard to visualize metrics such as total HTTP requests and request duration.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Prometheus Configuration</strong>: Ensure <code>prometheus.yml</code> is correctly configured.</li>
+<li><strong>Spring Boot Configuration</strong>: Ensure <code>application.properties</code> is correctly configured.</li>
+<li><strong>Grafana Data Source</strong>: Verify the Prometheus data source is correctly added.</li>
+<li><strong>Dashboard</strong>: Create panels with appropriate PromQL queries.</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Prometheus Configuration</strong>: Ensure the <code>prometheus.yml</code> file is correctly configured with the correct target.</li>
+<li><strong>Missing Dependencies</strong>: Ensure all necessary dependencies are added to your Spring Boot project.</li>
+<li><strong>Data Source Issues</strong>: Verify the Prometheus data source URL in Grafana is correct.</li>
+<li><strong>Query Errors</strong>: Double-check PromQL queries for syntax errors.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to set up Prometheus and Grafana to monitor a Spring Boot application. We learned how to install and configure Prometheus, instrument a Spring Boot application to expose metrics, and create Grafana dashboards to visualize these metrics. This setup is crucial for maintaining the health and performance of your applications in a production environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-monitoring-spring-boot-actuator' title="Monitoring with Spring Boot Actuator">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-logging-log-management' title="Logging and Log Management">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

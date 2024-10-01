@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploying to Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/08-04-deploying-kubernetes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/08-04-deploying-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/08-04-deploying-kubernetes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/08-04-deploying-kubernetes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/08-04-deploying-kubernetes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-deploying-aws' title="Deploying to AWS">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deploying to Kubernetes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-performance-tuning' title="Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Deploying Spring Boot applications to Kubernetes can significantly enhance scalability, manageability, and resilience. This section will guide you through the process of deploying a Spring Boot application to a Kubernetes cluster.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before you begin, ensure you have the following:</p>
+<ul>
+<li>A basic understanding of Kubernetes concepts (pods, services, deployments).</li>
+<li>A Spring Boot application ready for deployment.</li>
+<li>A Kubernetes cluster (local or cloud-based).</li>
+<li><code>kubectl</code> command-line tool installed and configured to interact with your Kubernetes cluster.</li>
+<li>Docker installed for building container images.</li>
+</ul>
+</div><h1>Steps to Deploy a Spring Boot Application to Kubernetes</h1>
+<div class='content'></div><h2>1. Containerizing Your Spring Boot Application</h2>
+<div class='content'><p>First, you need to create a Docker image of your Spring Boot application.</p>
+<h4>Dockerfile</h4>
+<p>Create a <code>Dockerfile</code> in the root directory of your Spring Boot project:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2UgYW4gb2ZmaWNpYWwgT3BlbkpESyBydW50aW1lIGFzIGEgcGFyZW50IGltYWdlCkZST00gb3BlbmpkazoxMS1qcmUtc2xpbQoKIyBTZXQgdGhlIHdvcmtpbmcgZGlyZWN0b3J5IGluIHRoZSBjb250YWluZXIKV09SS0RJUiAvYXBwCgojIENvcHkgdGhlIGphciBmaWxlIGludG8gdGhlIGNvbnRhaW5lcgpDT1BZIHRhcmdldC9teS1zcHJpbmctYm9vdC1hcHAuamFyIC9hcHAvbXktc3ByaW5nLWJvb3QtYXBwLmphcgoKIyBFeHBvc2UgdGhlIHBvcnQgdGhlIGFwcGxpY2F0aW9uIHJ1bnMgb24KRVhQT1NFIDgwODAKCiMgUnVuIHRoZSBqYXIgZmlsZQpFTlRSWVBPSU5UIFsiamF2YSIsICItamFyIiwgIm15LXNwcmluZy1ib290LWFwcC5qYXIiXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Use an official OpenJDK runtime as a parent image
+FROM openjdk:11-jre-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the jar file into the container
+COPY target/my-spring-boot-app.jar /app/my-spring-boot-app.jar
+
+# Expose the port the application runs on
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;my-spring-boot-app.jar&quot;]</pre></div><div class='content'><h4>Building the Docker Image</h4>
+<p>Build the Docker image using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIGJ1aWxkIC10IG15LXNwcmluZy1ib290LWFwcDpsYXRlc3QgLg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker build -t my-spring-boot-app:latest .</pre></div><div class='content'></div><h2>2. Pushing the Docker Image to a Container Registry</h2>
+<div class='content'><p>Push the Docker image to a container registry (e.g., Docker Hub, Google Container Registry, AWS ECR).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHRhZyBteS1zcHJpbmctYm9vdC1hcHA6bGF0ZXN0IDx5b3VyLXJlZ2lzdHJ5Pi9teS1zcHJpbmctYm9vdC1hcHA6bGF0ZXN0CmRvY2tlciBwdXNoIDx5b3VyLXJlZ2lzdHJ5Pi9teS1zcHJpbmctYm9vdC1hcHA6bGF0ZXN0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker tag my-spring-boot-app:latest &lt;your-registry&gt;/my-spring-boot-app:latest
+docker push &lt;your-registry&gt;/my-spring-boot-app:latest</pre></div><div class='content'></div><h2>3. Creating Kubernetes Deployment and Service Manifests</h2>
+<div class='content'><p>Create Kubernetes manifests to define the deployment and service for your Spring Boot application.</p>
+<h4>Deployment Manifest</h4>
+<p>Create a file named <code>deployment.yaml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LXNwcmluZy1ib290LWFwcApzcGVjOgogIHJlcGxpY2FzOiAzCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBteS1zcHJpbmctYm9vdC1hcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1zcHJpbmctYm9vdC1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktc3ByaW5nLWJvb3QtYXBwCiAgICAgICAgaW1hZ2U6IDx5b3VyLXJlZ2lzdHJ5Pi9teS1zcHJpbmctYm9vdC1hcHA6bGF0ZXN0CiAgICAgICAgcG9ydHM6CiAgICAgICAgLSBjb250YWluZXJQb3J0OiA4MDgw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-spring-boot-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-spring-boot-app
+  template:
+    metadata:
+      labels:
+        app: my-spring-boot-app
+    spec:
+      containers:
+      - name: my-spring-boot-app
+        image: &lt;your-registry&gt;/my-spring-boot-app:latest
+        ports:
+        - containerPort: 8080</pre></div><div class='content'><h4>Service Manifest</h4>
+<p>Create a file named <code>service.yaml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1zcHJpbmctYm9vdC1hcHAKc3BlYzoKICB0eXBlOiBMb2FkQmFsYW5jZXIKICBzZWxlY3RvcjoKICAgIGFwcDogbXktc3ByaW5nLWJvb3QtYXBwCiAgcG9ydHM6CiAgICAtIHByb3RvY29sOiBUQ1AKICAgICAgcG9ydDogODAKICAgICAgdGFyZ2V0UG9ydDogODA4MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-spring-boot-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: my-spring-boot-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080</pre></div><div class='content'></div><h2>4. Deploying to Kubernetes</h2>
+<div class='content'><p>Apply the manifests to your Kubernetes cluster using <code>kubectl</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBkZXBsb3ltZW50LnlhbWwKa3ViZWN0bCBhcHBseSAtZiBzZXJ2aWNlLnlhbWw="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml</pre></div><div class='content'></div><h2>5. Verifying the Deployment</h2>
+<div class='content'><p>Check the status of your deployment and service:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgZGVwbG95bWVudHMKa3ViZWN0bCBnZXQgc2VydmljZXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get deployments
+kubectl get services</pre></div><div class='content'><p>You should see your Spring Boot application running and the service exposing it.</p>
+</div><h2>6. Accessing Your Application</h2>
+<div class='content'><p>If you are using a cloud-based Kubernetes cluster, the <code>LoadBalancer</code> service will provide an external IP address. Use this IP address to access your Spring Boot application.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgc2VydmljZXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get services</pre></div><div class='content'><p>Look for the <code>EXTERNAL-IP</code> column in the output and use the IP address to access your application in a web browser.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to deploy a Spring Boot application to a Kubernetes cluster. You containerized your application using Docker, pushed the image to a container registry, created Kubernetes deployment and service manifests, and deployed the application to the cluster. This setup allows your application to scale and be managed efficiently in a Kubernetes environment.</p>
+<p>Next, you will learn about performance tuning and monitoring your Spring Boot applications in the Kubernetes environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-deploying-aws' title="Deploying to AWS">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-performance-tuning' title="Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

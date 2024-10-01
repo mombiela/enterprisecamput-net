@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Locking</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/03-04-state-locking" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/03-04-state-locking" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/03-04-state-locking" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/03-04-state-locking" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/03-04-state-locking" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-remote-state' title="Remote State">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">State Locking</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-modules' title="Introduction to Modules">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>State locking is a crucial concept in Terraform that ensures the integrity and consistency of the state file when multiple users or processes are working on the same infrastructure. This section will cover the following topics:</p>
+<ol>
+<li><strong>What is State Locking?</strong></li>
+<li><strong>Why is State Locking Important?</strong></li>
+<li><strong>How State Locking Works in Terraform</strong></li>
+<li><strong>Configuring State Locking</strong></li>
+<li><strong>Common Issues and Troubleshooting</strong></li>
+</ol>
+</div><h1>1. What is State Locking?</h1>
+<div class='content'><p>State locking is a mechanism that prevents concurrent operations on the same state file. When a state file is locked, other operations that require access to the state file will be blocked until the lock is released.</p>
+</div><h1>2. Why is State Locking Important?</h1>
+<div class='content'><p>State locking is important for several reasons:</p>
+<ul>
+<li><strong>Consistency:</strong> Ensures that the state file is not corrupted by concurrent operations.</li>
+<li><strong>Integrity:</strong> Prevents race conditions where multiple users or processes might try to update the state file simultaneously.</li>
+<li><strong>Coordination:</strong> Helps coordinate changes among team members working on the same infrastructure.</li>
+</ul>
+</div><h1>3. How State Locking Works in Terraform</h1>
+<div class='content'><p>Terraform uses a locking mechanism to manage state files. When an operation that modifies the state file is initiated, Terraform attempts to acquire a lock. If the lock is acquired successfully, the operation proceeds. If the lock is already held by another process, the operation will wait until the lock is released.</p>
+</div><h2>Example of State Locking</h2>
+<div class='content'><p>Here is a simple example to illustrate state locking:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2VyIEEgaW5pdGlhdGVzIGEgVGVycmFmb3JtIGFwcGx5IG9wZXJhdGlvbgokIHRlcnJhZm9ybSBhcHBseQpBY3F1aXJpbmcgc3RhdGUgbG9jay4gVGhpcyBtYXkgdGFrZSBhIGZldyBtb21lbnRzLi4uCgojIFVzZXIgQiB0cmllcyB0byBpbml0aWF0ZSBhbm90aGVyIFRlcnJhZm9ybSBhcHBseSBvcGVyYXRpb24KJCB0ZXJyYWZvcm0gYXBwbHkKRXJyb3I6IEVycm9yIGxvY2tpbmcgc3RhdGU6IEVycm9yIGFjcXVpcmluZyB0aGUgc3RhdGUgbG9jazogQ29uZGl0aW9uYWxDaGVja0ZhaWxlZEV4Y2VwdGlvbjogVGhlIGNvbmRpdGlvbmFsIHJlcXVlc3QgZmFpbGVkCkxvY2sgSW5mbzoKICBJRDogICAgICAgIDEyMzQ1Njc4LTEyMzQtMTIzNC0xMjM0LTEyMzQ1Njc4OTAxMgogIFBhdGg6ICAgICAgdGVycmFmb3JtLnRmc3RhdGUKICBPcGVyYXRpb246IE9wZXJhdGlvblR5cGVBcHBseQogIFdobzogICAgICAgdXNlckFAaG9zdG5hbWUKICBWZXJzaW9uOiAgIDAuMTQuMAogIENyZWF0ZWQ6ICAgMjAyMy0xMC0wMSAxMjowMDowMC4wMDAwMDAgKzAwMDAgVVRDCiAgSW5mbzo="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># User A initiates a Terraform apply operation
+$ terraform apply
+Acquiring state lock. This may take a few moments...
+
+# User B tries to initiate another Terraform apply operation
+$ terraform apply
+Error: Error locking state: Error acquiring the state lock: ConditionalCheckFailedException: The conditional request failed
+Lock Info:
+  ID:        12345678-1234-1234-1234-123456789012
+  Path:      terraform.tfstate
+  Operation: OperationTypeApply
+  Who:       userA@hostname
+  Version:   0.14.0
+  Created:   2023-10-01 12:00:00.000000 +0000 UTC
+  Info:</pre></div><div class='content'><p>In this example, User B's operation is blocked because User A has already acquired the lock.</p>
+</div><h1>4. Configuring State Locking</h1>
+<div class='content'><p>Terraform supports state locking with various backends. The most common backend for state locking is Amazon S3 with DynamoDB. Here’s how to configure it:</p>
+</div><h2>Step-by-Step Configuration</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create an S3 Bucket:</strong></p>
+<pre><code class="language-bash">aws s3api create-bucket --bucket my-terraform-state --region us-west-2
+</code></pre>
+</li>
+<li>
+<p><strong>Create a DynamoDB Table for Locking:</strong></p>
+<pre><code class="language-bash">aws dynamodb create-table <br>       --table-name terraform-lock-table <br>       --attribute-definitions AttributeName=LockID,AttributeType=S <br>       --key-schema AttributeName=LockID,KeyType=HASH <br>       --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the Backend in Terraform:</strong></p>
+<pre><code class="language-hcl">terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state&quot;
+    key            = &quot;path/to/my/key&quot;
+    region         = &quot;us-west-2&quot;
+    dynamodb_table = &quot;terraform-lock-table&quot;
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>bucket:</strong> The name of the S3 bucket where the state file will be stored.</li>
+<li><strong>key:</strong> The path within the bucket where the state file will be stored.</li>
+<li><strong>region:</strong> The AWS region where the S3 bucket is located.</li>
+<li><strong>dynamodb_table:</strong> The name of the DynamoDB table used for state locking.</li>
+</ul>
+</div><h1>5. Common Issues and Troubleshooting</h1>
+<div class='content'></div><h2>Issue: Lock Timeout</h2>
+<div class='content'><p><strong>Symptom:</strong> Terraform operation times out while waiting for the lock.</p>
+<p><strong>Solution:</strong> Ensure that no other operations are holding the lock. If necessary, manually release the lock from the DynamoDB table.</p>
+</div><h2>Issue: Lock Not Released</h2>
+<div class='content'><p><strong>Symptom:</strong> Lock is not released after the operation completes.</p>
+<p><strong>Solution:</strong> Check for any errors in the Terraform operation that might have prevented the lock from being released. Manually delete the lock entry from the DynamoDB table if needed.</p>
+</div><h2>Issue: ConditionalCheckFailedException</h2>
+<div class='content'><p><strong>Symptom:</strong> Error acquiring the state lock due to a conditional check failure.</p>
+<p><strong>Solution:</strong> Ensure that the DynamoDB table is correctly configured and that the lock ID is unique.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>State locking is an essential feature in Terraform that ensures the consistency and integrity of the state file during concurrent operations. By configuring state locking with a backend like S3 and DynamoDB, you can prevent race conditions and coordinate changes among team members effectively. Understanding and properly configuring state locking will help you manage your infrastructure more reliably and securely.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-remote-state' title="Remote State">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-modules' title="Introduction to Modules">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

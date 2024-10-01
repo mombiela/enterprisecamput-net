@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Algorithms</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fundamentos_ia/03-02-algoritmos-busqueda" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fundamentos_ia/03-02-algoritmos-busqueda" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fundamentos_ia/03-02-search-algorithms" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fundamentos_ia/03-02-search-algorithms" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fundamentos_ia/03-02-search-algorithms" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-introduction-algorithms' title="Introduction to Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Search Algorithms</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-optimization-algorithms' title="Optimization Algorithms">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Search algorithms are fundamental in the field of artificial intelligence. They are used to navigate through problem spaces to find solutions. This module will cover the basic principles of search algorithms, their types, and practical examples.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Problem Space</strong>: The environment in which the search algorithm operates, consisting of states and transitions between states.</li>
+<li><strong>Initial State</strong>: The starting point of the search.</li>
+<li><strong>Goal State</strong>: The desired end state that the search algorithm aims to reach.</li>
+<li><strong>Path</strong>: A sequence of states leading from the initial state to the goal state.</li>
+<li><strong>Cost</strong>: A value associated with each path, often representing time, distance, or other resources.</li>
+</ol>
+</div><h1>Types of Search Algorithms</h1>
+<div class='content'></div><h2>Uninformed (Blind) Search</h2>
+<div class='content'><p>Uninformed search algorithms do not have additional information about the states beyond the problem definition. They explore the search space blindly.</p>
+<ol>
+<li>
+<p><strong>Breadth-First Search (BFS)</strong></p>
+<ul>
+<li>Explores all nodes at the present depth level before moving on to nodes at the next depth level.</li>
+<li><strong>Advantages</strong>: Guaranteed to find the shortest path if the path cost is uniform.</li>
+<li><strong>Disadvantages</strong>: Can be memory-intensive.</li>
+</ul>
+<pre><code class="language-python">from collections import deque
+
+def bfs(graph, start, goal):
+    queue = deque([start])
+    visited = set()
+    while queue:
+        node = queue.popleft()
+        if node == goal:
+            return True
+        if node not in visited:
+            visited.add(node)
+            queue.extend(graph[node] - visited)
+    return False
+
+graph = {
+    'A': {'B', 'C'},
+    'B': {'A', 'D', 'E'},
+    'C': {'A', 'F'},
+    'D': {'B'},
+    'E': {'B', 'F'},
+    'F': {'C', 'E'}
+}
+
+print(bfs(graph, 'A', 'F'))  # Output: True
+</code></pre>
+</li>
+<li>
+<p><strong>Depth-First Search (DFS)</strong></p>
+<ul>
+<li>Explores as far as possible along each branch before backtracking.</li>
+<li><strong>Advantages</strong>: Requires less memory than BFS.</li>
+<li><strong>Disadvantages</strong>: Can get stuck in deep or infinite loops if not implemented with care.</li>
+</ul>
+<pre><code class="language-python">def dfs(graph, start, goal, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(start)
+    if start == goal:
+        return True
+    for next_node in graph[start] - visited:
+        if dfs(graph, next_node, goal, visited):
+            return True
+    return False
+
+print(dfs(graph, 'A', 'F'))  # Output: True
+</code></pre>
+</li>
+</ol>
+</div><h2>Informed (Heuristic) Search</h2>
+<div class='content'><p>Informed search algorithms use additional information (heuristics) to find solutions more efficiently.</p>
+<ol>
+<li>
+<p><strong>Greedy Best-First Search</strong></p>
+<ul>
+<li>Selects the path that appears to lead most directly to the goal.</li>
+<li><strong>Advantages</strong>: Can be faster than uninformed search.</li>
+<li><strong>Disadvantages</strong>: Not guaranteed to find the shortest path.</li>
+</ul>
+<pre><code class="language-python">import heapq
+
+def greedy_best_first_search(graph, start, goal, heuristic):
+    queue = [(heuristic[start], start)]
+    visited = set()
+    while queue:
+        _, node = heapq.heappop(queue)
+        if node == goal:
+            return True
+        if node not in visited:
+            visited.add(node)
+            for next_node in graph[node]:
+                if next_node not in visited:
+                    heapq.heappush(queue, (heuristic[next_node], next_node))
+    return False
+
+heuristic = {
+    'A': 3,
+    'B': 2,
+    'C': 4,
+    'D': 6,
+    'E': 1,
+    'F': 0
+}
+
+print(greedy_best_first_search(graph, 'A', 'F', heuristic))  # Output: True
+</code></pre>
+</li>
+<li>
+<p><em><em>A</em> Search</em>*</p>
+<ul>
+<li>Combines the cost to reach the node and the estimated cost to reach the goal (heuristic).</li>
+<li><strong>Advantages</strong>: Guaranteed to find the shortest path if the heuristic is admissible (never overestimates the true cost).</li>
+<li><strong>Disadvantages</strong>: Can be memory-intensive.</li>
+</ul>
+<pre><code class="language-python">def a_star_search(graph, start, goal, heuristic):
+    queue = [(0 + heuristic[start], 0, start)]
+    visited = set()
+    while queue:
+        _, cost, node = heapq.heappop(queue)
+        if node == goal:
+            return True
+        if node not in visited:
+            visited.add(node)
+            for next_node in graph[node]:
+                if next_node not in visited:
+                    total_cost = cost + 1  # Assuming uniform cost
+                    heapq.heappush(queue, (total_cost + heuristic[next_node], total_cost, next_node))
+    return False
+
+print(a_star_search(graph, 'A', 'F', heuristic))  # Output: True
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implement BFS and DFS</h2>
+<div class='content'><p><strong>Task</strong>: Implement BFS and DFS for the following graph and find if there is a path from 'A' to 'G'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JhcGggPSB7CiAgICAnQSc6IHsnQicsICdDJ30sCiAgICAnQic6IHsnQScsICdEJywgJ0UnfSwKICAgICdDJzogeydBJywgJ0YnfSwKICAgICdEJzogeydCJ30sCiAgICAnRSc6IHsnQicsICdHJ30sCiAgICAnRic6IHsnQyd9LAogICAgJ0cnOiB7J0UnfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>graph = {
+    'A': {'B', 'C'},
+    'B': {'A', 'D', 'E'},
+    'C': {'A', 'F'},
+    'D': {'B'},
+    'E': {'B', 'G'},
+    'F': {'C'},
+    'G': {'E'}
+}</pre></div><div class='content'><p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCRlMgSW1wbGVtZW50YXRpb24KZGVmIGJmcyhncmFwaCwgc3RhcnQsIGdvYWwpOgogICAgZnJvbSBjb2xsZWN0aW9ucyBpbXBvcnQgZGVxdWUKICAgIHF1ZXVlID0gZGVxdWUoW3N0YXJ0XSkKICAgIHZpc2l0ZWQgPSBzZXQoKQogICAgd2hpbGUgcXVldWU6CiAgICAgICAgbm9kZSA9IHF1ZXVlLnBvcGxlZnQoKQogICAgICAgIGlmIG5vZGUgPT0gZ29hbDoKICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgICAgICBpZiBub2RlIG5vdCBpbiB2aXNpdGVkOgogICAgICAgICAgICB2aXNpdGVkLmFkZChub2RlKQogICAgICAgICAgICBxdWV1ZS5leHRlbmQoZ3JhcGhbbm9kZV0gLSB2aXNpdGVkKQogICAgcmV0dXJuIEZhbHNlCgojIERGUyBJbXBsZW1lbnRhdGlvbgpkZWYgZGZzKGdyYXBoLCBzdGFydCwgZ29hbCwgdmlzaXRlZD1Ob25lKToKICAgIGlmIHZpc2l0ZWQgaXMgTm9uZToKICAgICAgICB2aXNpdGVkID0gc2V0KCkKICAgIHZpc2l0ZWQuYWRkKHN0YXJ0KQogICAgaWYgc3RhcnQgPT0gZ29hbDoKICAgICAgICByZXR1cm4gVHJ1ZQogICAgZm9yIG5leHRfbm9kZSBpbiBncmFwaFtzdGFydF0gLSB2aXNpdGVkOgogICAgICAgIGlmIGRmcyhncmFwaCwgbmV4dF9ub2RlLCBnb2FsLCB2aXNpdGVkKToKICAgICAgICAgICAgcmV0dXJuIFRydWUKICAgIHJldHVybiBGYWxzZQoKcHJpbnQoYmZzKGdyYXBoLCAnQScsICdHJykpICAjIE91dHB1dDogVHJ1ZQpwcmludChkZnMoZ3JhcGgsICdBJywgJ0cnKSkgICMgT3V0cHV0OiBUcnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># BFS Implementation
+def bfs(graph, start, goal):
+    from collections import deque
+    queue = deque([start])
+    visited = set()
+    while queue:
+        node = queue.popleft()
+        if node == goal:
+            return True
+        if node not in visited:
+            visited.add(node)
+            queue.extend(graph[node] - visited)
+    return False
+
+# DFS Implementation
+def dfs(graph, start, goal, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(start)
+    if start == goal:
+        return True
+    for next_node in graph[start] - visited:
+        if dfs(graph, next_node, goal, visited):
+            return True
+    return False
+
+print(bfs(graph, 'A', 'G'))  # Output: True
+print(dfs(graph, 'A', 'G'))  # Output: True</pre></div><div class='content'></div><h2>Exercise 2: Implement A* Search</h2>
+<div class='content'><p><strong>Task</strong>: Implement A* search for the given graph and heuristic to find if there is a path from 'A' to 'G'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JhcGggPSB7CiAgICAnQSc6IHsnQicsICdDJ30sCiAgICAnQic6IHsnQScsICdEJywgJ0UnfSwKICAgICdDJzogeydBJywgJ0YnfSwKICAgICdEJzogeydCJ30sCiAgICAnRSc6IHsnQicsICdHJ30sCiAgICAnRic6IHsnQyd9LAogICAgJ0cnOiB7J0UnfQp9CgpoZXVyaXN0aWMgPSB7CiAgICAnQSc6IDUsCiAgICAnQic6IDQsCiAgICAnQyc6IDMsCiAgICAnRCc6IDYsCiAgICAnRSc6IDIsCiAgICAnRic6IDQsCiAgICAnRyc6IDAKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>graph = {
+    'A': {'B', 'C'},
+    'B': {'A', 'D', 'E'},
+    'C': {'A', 'F'},
+    'D': {'B'},
+    'E': {'B', 'G'},
+    'F': {'C'},
+    'G': {'E'}
+}
+
+heuristic = {
+    'A': 5,
+    'B': 4,
+    'C': 3,
+    'D': 6,
+    'E': 2,
+    'F': 4,
+    'G': 0
+}</pre></div><div class='content'><p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGhlYXBxCgpkZWYgYV9zdGFyX3NlYXJjaChncmFwaCwgc3RhcnQsIGdvYWwsIGhldXJpc3RpYyk6CiAgICBxdWV1ZSA9IFsoMCArIGhldXJpc3RpY1tzdGFydF0sIDAsIHN0YXJ0KV0KICAgIHZpc2l0ZWQgPSBzZXQoKQogICAgd2hpbGUgcXVldWU6CiAgICAgICAgXywgY29zdCwgbm9kZSA9IGhlYXBxLmhlYXBwb3AocXVldWUpCiAgICAgICAgaWYgbm9kZSA9PSBnb2FsOgogICAgICAgICAgICByZXR1cm4gVHJ1ZQogICAgICAgIGlmIG5vZGUgbm90IGluIHZpc2l0ZWQ6CiAgICAgICAgICAgIHZpc2l0ZWQuYWRkKG5vZGUpCiAgICAgICAgICAgIGZvciBuZXh0X25vZGUgaW4gZ3JhcGhbbm9kZV06CiAgICAgICAgICAgICAgICBpZiBuZXh0X25vZGUgbm90IGluIHZpc2l0ZWQ6CiAgICAgICAgICAgICAgICAgICAgdG90YWxfY29zdCA9IGNvc3QgKyAxICAjIEFzc3VtaW5nIHVuaWZvcm0gY29zdAogICAgICAgICAgICAgICAgICAgIGhlYXBxLmhlYXBwdXNoKHF1ZXVlLCAodG90YWxfY29zdCArIGhldXJpc3RpY1tuZXh0X25vZGVdLCB0b3RhbF9jb3N0LCBuZXh0X25vZGUpKQogICAgcmV0dXJuIEZhbHNlCgpwcmludChhX3N0YXJfc2VhcmNoKGdyYXBoLCAnQScsICdHJywgaGV1cmlzdGljKSkgICMgT3V0cHV0OiBUcnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import heapq
+
+def a_star_search(graph, start, goal, heuristic):
+    queue = [(0 + heuristic[start], 0, start)]
+    visited = set()
+    while queue:
+        _, cost, node = heapq.heappop(queue)
+        if node == goal:
+            return True
+        if node not in visited:
+            visited.add(node)
+            for next_node in graph[node]:
+                if next_node not in visited:
+                    total_cost = cost + 1  # Assuming uniform cost
+                    heapq.heappush(queue, (total_cost + heuristic[next_node], total_cost, next_node))
+    return False
+
+print(a_star_search(graph, 'A', 'G', heuristic))  # Output: True</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Not Handling Cycles</strong>: Ensure that your search algorithms handle cycles in the graph to avoid infinite loops.</li>
+<li><strong>Incorrect Heuristic</strong>: For A* search, ensure that the heuristic is admissible to guarantee finding the shortest path.</li>
+<li><strong>Memory Management</strong>: Be mindful of memory usage, especially with BFS and A* search, as they can consume a lot of memory for large graphs.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of search algorithms, including both uninformed and informed search techniques. We implemented practical examples of BFS, DFS, Greedy Best-First Search, and A* Search. Understanding these algorithms is crucial for solving various AI problems efficiently. In the next module, we will delve into optimization algorithms, which are essential for improving the performance of AI systems.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-introduction-algorithms' title="Introduction to Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-optimization-algorithms' title="Optimization Algorithms">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A7: Cross-Site Scripting (XSS)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/owasp/03-07-xss" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/owasp/03-07-xss" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/owasp/03-07-xss" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/owasp/03-07-xss" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/owasp/03-07-xss" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-06-security-misconfiguration' title="A6: Security Misconfiguration">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">A7: Cross-Site Scripting (XSS)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-08-insecure-deserialization' title="A8: Insecure Deserialization">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Cross-Site Scripting (XSS)</h1>
+<div class='content'><p>Cross-Site Scripting (XSS) is a type of security vulnerability typically found in web applications. XSS vulnerabilities occur when an attacker is able to inject malicious scripts into content from otherwise trusted websites. These scripts can then be executed in the context of the user's browser, potentially leading to a variety of malicious activities.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Injection</strong>: XSS is a form of injection attack where malicious scripts are injected into web pages.</li>
+<li><strong>Client-Side Execution</strong>: The injected script runs in the user's browser, not on the server.</li>
+<li><strong>Trust Exploitation</strong>: The browser trusts the script because it comes from a trusted source.</li>
+</ul>
+</div><h2>Types of XSS</h2>
+<div class='content'><p>There are three main types of XSS vulnerabilities:</p>
+<ol>
+<li><strong>Stored XSS</strong>: The malicious script is permanently stored on the target server, such as in a database, comment field, or forum post.</li>
+<li><strong>Reflected XSS</strong>: The malicious script is reflected off a web server, such as in an error message, search result, or any other response that includes some or all of the input sent to the server.</li>
+<li><strong>DOM-Based XSS</strong>: The vulnerability exists in the client-side code rather than server-side code. The malicious script is executed as a result of modifying the DOM environment in the victim's browser.</li>
+</ol>
+</div><h2>Examples and Code Snippets</h2>
+<div class='content'><h4>Stored XSS Example</h4>
+<p>Stored XSS occurs when user input is stored on the server and then displayed on web pages without proper sanitization.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBFeGFtcGxlIG9mIGEgdnVsbmVyYWJsZSBjb21tZW50IHNlY3Rpb24gLS0+Cjxmb3JtIGFjdGlvbj0iL3N1Ym1pdF9jb21tZW50IiBtZXRob2Q9InBvc3QiPgogIDx0ZXh0YXJlYSBuYW1lPSJjb21tZW50Ij48L3RleHRhcmVhPgogIDxidXR0b24gdHlwZT0ic3VibWl0Ij5TdWJtaXQ8L2J1dHRvbj4KPC9mb3JtPgoKPCEtLSBEaXNwbGF5aW5nIGNvbW1lbnRzIC0tPgo8ZGl2IGlkPSJjb21tZW50cyI+CiAgPCEtLSBDb21tZW50cyBhcmUgZmV0Y2hlZCBmcm9tIHRoZSBzZXJ2ZXIgYW5kIGRpc3BsYXllZCBoZXJlIC0tPgogIDxkaXYgY2xhc3M9ImNvbW1lbnQiPgogICAgPHA+R3JlYXQgYXJ0aWNsZSE8L3A+CiAgPC9kaXY+CiAgPGRpdiBjbGFzcz0iY29tbWVudCI+CiAgICA8cD48c2NyaXB0PmFsZXJ0KCdYU1MnKTs8L3NjcmlwdD48L3A+CiAgPC9kaXY+CjwvZGl2Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Example of a vulnerable comment section --&gt;
+&lt;form action=&quot;/submit_comment&quot; method=&quot;post&quot;&gt;
+  &lt;textarea name=&quot;comment&quot;&gt;&lt;/textarea&gt;
+  &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying comments --&gt;
+&lt;div id=&quot;comments&quot;&gt;
+  &lt;!-- Comments are fetched from the server and displayed here --&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;Great article!&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre></div><div class='content'><h4>Reflected XSS Example</h4>
+<p>Reflected XSS occurs when user input is immediately returned by the server without proper sanitization.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBFeGFtcGxlIG9mIGEgdnVsbmVyYWJsZSBzZWFyY2ggZm9ybSAtLT4KPGZvcm0gYWN0aW9uPSIvc2VhcmNoIiBtZXRob2Q9ImdldCI+CiAgPGlucHV0IHR5cGU9InRleHQiIG5hbWU9InF1ZXJ5Ij4KICA8YnV0dG9uIHR5cGU9InN1Ym1pdCI+U2VhcmNoPC9idXR0b24+CjwvZm9ybT4KCjwhLS0gRGlzcGxheWluZyBzZWFyY2ggcmVzdWx0cyAtLT4KPGRpdiBpZD0icmVzdWx0cyI+CiAgPCEtLSBTZWFyY2ggcmVzdWx0cyBhcmUgZmV0Y2hlZCBmcm9tIHRoZSBzZXJ2ZXIgYW5kIGRpc3BsYXllZCBoZXJlIC0tPgogIDxwPlJlc3VsdHMgZm9yOiA8c3BhbiBpZD0ic2VhcmNoLXF1ZXJ5Ij48P3BocCBlY2hvICRfR0VUWydxdWVyeSddOyA/Pjwvc3Bhbj48L3A+CjwvZGl2Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Example of a vulnerable search form --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;query&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Search&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying search results --&gt;
+&lt;div id=&quot;results&quot;&gt;
+  &lt;!-- Search results are fetched from the server and displayed here --&gt;
+  &lt;p&gt;Results for: &lt;span id=&quot;search-query&quot;&gt;&lt;?php echo $_GET['query']; ?&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</pre></div><div class='content'><h4>DOM-Based XSS Example</h4>
+<p>DOM-Based XSS occurs when the client-side script manipulates the DOM in an unsafe way.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBFeGFtcGxlIG9mIGEgdnVsbmVyYWJsZSBjbGllbnQtc2lkZSBzY3JpcHQgLS0+CjxzY3JpcHQ+CiAgdmFyIHNlYXJjaFF1ZXJ5ID0gd2luZG93LmxvY2F0aW9uLnNlYXJjaC5zdWJzdHJpbmcoMSkuc3BsaXQoJz0nKVsxXTsKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnc2VhcmNoLXF1ZXJ5JykuaW5uZXJUZXh0ID0gc2VhcmNoUXVlcnk7Cjwvc2NyaXB0PgoKPCEtLSBEaXNwbGF5aW5nIHNlYXJjaCByZXN1bHRzIC0tPgo8ZGl2IGlkPSJyZXN1bHRzIj4KICA8cD5SZXN1bHRzIGZvcjogPHNwYW4gaWQ9InNlYXJjaC1xdWVyeSI+PC9zcGFuPjwvcD4KPC9kaXY+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Example of a vulnerable client-side script --&gt;
+&lt;script&gt;
+  var searchQuery = window.location.search.substring(1).split('=')[1];
+  document.getElementById('search-query').innerText = searchQuery;
+&lt;/script&gt;
+
+&lt;!-- Displaying search results --&gt;
+&lt;div id=&quot;results&quot;&gt;
+  &lt;p&gt;Results for: &lt;span id=&quot;search-query&quot;&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</pre></div><div class='content'></div><h2>Preventing XSS</h2>
+<div class='content'><p>To prevent XSS vulnerabilities, follow these best practices:</p>
+<ol>
+<li><strong>Input Validation</strong>: Validate all user inputs to ensure they conform to expected formats.</li>
+<li><strong>Output Encoding</strong>: Encode data before rendering it in the browser to prevent the execution of malicious scripts.</li>
+<li><strong>Content Security Policy (CSP)</strong>: Implement CSP to restrict the sources from which scripts can be loaded.</li>
+<li><strong>Sanitization Libraries</strong>: Use libraries and frameworks that automatically handle input sanitization and encoding.</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><h4>Exercise: Identifying and Fixing XSS Vulnerabilities</h4>
+<p><strong>Objective</strong>: Identify and fix XSS vulnerabilities in the provided code snippets.</p>
+<p><strong>Instructions</strong>:</p>
+<ol>
+<li>Review the provided code snippets and identify the XSS vulnerabilities.</li>
+<li>Modify the code to fix the vulnerabilities using proper input validation and output encoding techniques.</li>
+</ol>
+<p><strong>Code Snippet 1</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBWdWxuZXJhYmxlIGNvbW1lbnQgc2VjdGlvbiAtLT4KPGZvcm0gYWN0aW9uPSIvc3VibWl0X2NvbW1lbnQiIG1ldGhvZD0icG9zdCI+CiAgPHRleHRhcmVhIG5hbWU9ImNvbW1lbnQiPjwvdGV4dGFyZWE+CiAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlN1Ym1pdDwvYnV0dG9uPgo8L2Zvcm0+Cgo8IS0tIERpc3BsYXlpbmcgY29tbWVudHMgLS0+CjxkaXYgaWQ9ImNvbW1lbnRzIj4KICA8IS0tIENvbW1lbnRzIGFyZSBmZXRjaGVkIGZyb20gdGhlIHNlcnZlciBhbmQgZGlzcGxheWVkIGhlcmUgLS0+CiAgPGRpdiBjbGFzcz0iY29tbWVudCI+CiAgICA8cD5HcmVhdCBhcnRpY2xlITwvcD4KICA8L2Rpdj4KICA8ZGl2IGNsYXNzPSJjb21tZW50Ij4KICAgIDxwPjxzY3JpcHQ+YWxlcnQoJ1hTUycpOzwvc2NyaXB0PjwvcD4KICA8L2Rpdj4KPC9kaXY+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Vulnerable comment section --&gt;
+&lt;form action=&quot;/submit_comment&quot; method=&quot;post&quot;&gt;
+  &lt;textarea name=&quot;comment&quot;&gt;&lt;/textarea&gt;
+  &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying comments --&gt;
+&lt;div id=&quot;comments&quot;&gt;
+  &lt;!-- Comments are fetched from the server and displayed here --&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;Great article!&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;&lt;script&gt;alert('XSS');&lt;/script&gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre></div><div class='content'><p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBTZWN1cmUgY29tbWVudCBzZWN0aW9uIC0tPgo8Zm9ybSBhY3Rpb249Ii9zdWJtaXRfY29tbWVudCIgbWV0aG9kPSJwb3N0Ij4KICA8dGV4dGFyZWEgbmFtZT0iY29tbWVudCI+PC90ZXh0YXJlYT4KICA8YnV0dG9uIHR5cGU9InN1Ym1pdCI+U3VibWl0PC9idXR0b24+CjwvZm9ybT4KCjwhLS0gRGlzcGxheWluZyBjb21tZW50cyAtLT4KPGRpdiBpZD0iY29tbWVudHMiPgogIDwhLS0gQ29tbWVudHMgYXJlIGZldGNoZWQgZnJvbSB0aGUgc2VydmVyIGFuZCBkaXNwbGF5ZWQgaGVyZSAtLT4KICA8ZGl2IGNsYXNzPSJjb21tZW50Ij4KICAgIDxwPkdyZWF0IGFydGljbGUhPC9wPgogIDwvZGl2PgogIDxkaXYgY2xhc3M9ImNvbW1lbnQiPgogICAgPHA+Jmx0O3NjcmlwdCZndDthbGVydCgnWFNTJyk7Jmx0Oy9zY3JpcHQmZ3Q7PC9wPgogIDwvZGl2Pgo8L2Rpdj4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Secure comment section --&gt;
+&lt;form action=&quot;/submit_comment&quot; method=&quot;post&quot;&gt;
+  &lt;textarea name=&quot;comment&quot;&gt;&lt;/textarea&gt;
+  &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying comments --&gt;
+&lt;div id=&quot;comments&quot;&gt;
+  &lt;!-- Comments are fetched from the server and displayed here --&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;Great article!&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;comment&quot;&gt;
+    &lt;p&gt;&amp;lt;script&amp;gt;alert('XSS');&amp;lt;/script&amp;gt;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre></div><div class='content'><p><strong>Code Snippet 2</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBWdWxuZXJhYmxlIHNlYXJjaCBmb3JtIC0tPgo8Zm9ybSBhY3Rpb249Ii9zZWFyY2giIG1ldGhvZD0iZ2V0Ij4KICA8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0icXVlcnkiPgogIDxidXR0b24gdHlwZT0ic3VibWl0Ij5TZWFyY2g8L2J1dHRvbj4KPC9mb3JtPgoKPCEtLSBEaXNwbGF5aW5nIHNlYXJjaCByZXN1bHRzIC0tPgo8ZGl2IGlkPSJyZXN1bHRzIj4KICA8IS0tIFNlYXJjaCByZXN1bHRzIGFyZSBmZXRjaGVkIGZyb20gdGhlIHNlcnZlciBhbmQgZGlzcGxheWVkIGhlcmUgLS0+CiAgPHA+UmVzdWx0cyBmb3I6IDxzcGFuIGlkPSJzZWFyY2gtcXVlcnkiPjw/cGhwIGVjaG8gJF9HRVRbJ3F1ZXJ5J107ID8+PC9zcGFuPjwvcD4KPC9kaXY+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Vulnerable search form --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;query&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Search&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying search results --&gt;
+&lt;div id=&quot;results&quot;&gt;
+  &lt;!-- Search results are fetched from the server and displayed here --&gt;
+  &lt;p&gt;Results for: &lt;span id=&quot;search-query&quot;&gt;&lt;?php echo $_GET['query']; ?&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</pre></div><div class='content'><p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBTZWN1cmUgc2VhcmNoIGZvcm0gLS0+Cjxmb3JtIGFjdGlvbj0iL3NlYXJjaCIgbWV0aG9kPSJnZXQiPgogIDxpbnB1dCB0eXBlPSJ0ZXh0IiBuYW1lPSJxdWVyeSI+CiAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlNlYXJjaDwvYnV0dG9uPgo8L2Zvcm0+Cgo8IS0tIERpc3BsYXlpbmcgc2VhcmNoIHJlc3VsdHMgLS0+CjxkaXYgaWQ9InJlc3VsdHMiPgogIDwhLS0gU2VhcmNoIHJlc3VsdHMgYXJlIGZldGNoZWQgZnJvbSB0aGUgc2VydmVyIGFuZCBkaXNwbGF5ZWQgaGVyZSAtLT4KICA8cD5SZXN1bHRzIGZvcjogPHNwYW4gaWQ9InNlYXJjaC1xdWVyeSI+PD9waHAgZWNobyBodG1sc3BlY2lhbGNoYXJzKCRfR0VUWydxdWVyeSddLCBFTlRfUVVPVEVTLCAnVVRGLTgnKTsgPz48L3NwYW4+PC9wPgo8L2Rpdj4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- Secure search form --&gt;
+&lt;form action=&quot;/search&quot; method=&quot;get&quot;&gt;
+  &lt;input type=&quot;text&quot; name=&quot;query&quot;&gt;
+  &lt;button type=&quot;submit&quot;&gt;Search&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- Displaying search results --&gt;
+&lt;div id=&quot;results&quot;&gt;
+  &lt;!-- Search results are fetched from the server and displayed here --&gt;
+  &lt;p&gt;Results for: &lt;span id=&quot;search-query&quot;&gt;&lt;?php echo htmlspecialchars($_GET['query'], ENT_QUOTES, 'UTF-8'); ?&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;</pre></div><div class='content'></div><h2>Conclusion</h2>
+<div class='content'><p>Cross-Site Scripting (XSS) is a critical vulnerability that can lead to severe security issues. Understanding the different types of XSS and implementing proper prevention techniques such as input validation, output encoding, and using security policies can significantly reduce the risk of XSS attacks. By practicing identifying and fixing XSS vulnerabilities, developers can enhance the security of their web applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-06-security-misconfiguration' title="A6: Security Misconfiguration">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-08-insecure-deserialization' title="A8: Insecure Deserialization">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

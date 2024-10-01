@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vertical Pod Autoscaling</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/09-02-vertical-pod-autoscaling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/09-02-vertical-pod-autoscaling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/09-02-vertical-pod-autoscaling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/09-02-vertical-pod-autoscaling" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/09-02-vertical-pod-autoscaling" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-horizontal-pod-autoscaling' title="Horizontal Pod Autoscaling">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Vertical Pod Autoscaling</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-cluster-autoscaling' title="Cluster Autoscaling">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Vertical Pod Autoscaling (VPA) is a feature in Kubernetes that automatically adjusts the CPU and memory requests and limits for your pods based on their actual usage. This ensures that your applications have the resources they need to run efficiently without over-provisioning.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Resource Requests and Limits</strong>:</p>
+<ul>
+<li><strong>Requests</strong>: The amount of CPU and memory guaranteed to a container.</li>
+<li><strong>Limits</strong>: The maximum amount of CPU and memory a container can use.</li>
+</ul>
+</li>
+<li>
+<p><strong>Vertical Pod Autoscaler (VPA)</strong>:</p>
+<ul>
+<li>A Kubernetes component that monitors the resource usage of pods and adjusts their resource requests and limits accordingly.</li>
+</ul>
+</li>
+<li>
+<p><strong>VPA Modes</strong>:</p>
+<ul>
+<li><strong>Off</strong>: VPA is not active.</li>
+<li><strong>Auto</strong>: VPA automatically updates the resource requests and limits.</li>
+<li><strong>Recreate</strong>: VPA updates the resource requests and limits by recreating the pods.</li>
+<li><strong>Initial</strong>: VPA sets the initial resource requests and limits when the pod is created.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up Vertical Pod Autoscaling</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>A running Kubernetes cluster.</li>
+<li><code>kubectl</code> command-line tool configured to communicate with your cluster.</li>
+</ul>
+</div><h2>Installing the Vertical Pod Autoscaler</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Clone the VPA repository</strong>:</p>
+<pre><code class="language-sh">git clone https://github.com/kubernetes/autoscaler.git
+cd autoscaler/vertical-pod-autoscaler/
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy the VPA components</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f vertical-pod-autoscaler/deploy/recommender.yaml
+kubectl apply -f vertical-pod-autoscaler/deploy/updater.yaml
+kubectl apply -f vertical-pod-autoscaler/deploy/admission-controller.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Configuring Vertical Pod Autoscaler</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a VPA object</strong>:</p>
+<pre><code class="language-yaml">apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: my-vpa
+spec:
+  targetRef:
+    apiVersion: &quot;apps/v1&quot;
+    kind:       Deployment
+    name:       my-deployment
+  updatePolicy:
+    updateMode: &quot;Auto&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the VPA configuration</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f my-vpa.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Example Deployment with VPA</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a sample deployment</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: nginx
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+            memory: &quot;128Mi&quot;
+          limits:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the deployment</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f my-deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the VPA configuration</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f my-vpa.yaml
+</code></pre>
+</li>
+</ol>
+</div><h1>Monitoring and Managing VPA</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Check VPA recommendations</strong>:</p>
+<pre><code class="language-sh">kubectl describe vpa my-vpa
+</code></pre>
+</li>
+<li>
+<p><strong>View updated resource requests and limits</strong>:</p>
+<pre><code class="language-sh">kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{&quot;\t&quot;}{.spec.containers[*].resources}{&quot;\n&quot;}{end}'
+</code></pre>
+</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Vertical Pod Autoscaling</h2>
+<div class='content'><ol>
+<li><strong>Create a deployment for a sample application</strong>.</li>
+<li><strong>Configure and apply a VPA object for the deployment</strong>.</li>
+<li><strong>Monitor the resource adjustments made by VPA</strong>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a deployment</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+      - name: sample-container
+        image: nginx
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+            memory: &quot;128Mi&quot;
+          limits:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the deployment</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f sample-deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Create a VPA configuration</strong>:</p>
+<pre><code class="language-yaml">apiVersion: autoscaling.k8s.io/v1
+kind: VerticalPodAutoscaler
+metadata:
+  name: sample-vpa
+spec:
+  targetRef:
+    apiVersion: &quot;apps/v1&quot;
+    kind:       Deployment
+    name:       sample-deployment
+  updatePolicy:
+    updateMode: &quot;Auto&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Apply the VPA configuration</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f sample-vpa.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor the VPA recommendations</strong>:</p>
+<pre><code class="language-sh">kubectl describe vpa sample-vpa
+</code></pre>
+</li>
+<li>
+<p><strong>Check the updated resource requests and limits</strong>:</p>
+<pre><code class="language-sh">kubectl get pods -o=jsonpath='{range .items[*]}{.metadata.name}{&quot;\t&quot;}{.spec.containers[*].resources}{&quot;\n&quot;}{end}'
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect VPA mode</strong>: Ensure the <code>updateMode</code> is set correctly based on your needs (e.g., <code>Auto</code> for automatic updates).</li>
+<li><strong>Resource limits too high/low</strong>: Monitor the resource usage and adjust the initial requests and limits accordingly.</li>
+<li><strong>Not monitoring VPA recommendations</strong>: Regularly check VPA recommendations to ensure your pods are getting the right resources.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Vertical Pod Autoscaling is a powerful feature in Kubernetes that helps optimize resource usage by automatically adjusting the CPU and memory requests and limits for your pods. By setting up and configuring VPA, you can ensure that your applications run efficiently without over-provisioning resources. In the next section, we will explore Cluster Autoscaling, which focuses on scaling the entire cluster based on resource demands.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-horizontal-pod-autoscaling' title="Horizontal Pod Autoscaling">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-cluster-autoscaling' title="Cluster Autoscaling">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caching and Persistence</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/05-02-caching-persistence" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/05-02-caching-persistence" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/05-02-caching-persistence" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/05-02-caching-persistence" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/05-02-caching-persistence" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-understanding-spark-jobs' title="Understanding Spark Jobs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Caching and Persistence</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-memory-management' title="Memory Management">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the concepts of caching and persistence in Apache Spark. These techniques are crucial for optimizing the performance of Spark applications by reducing the time spent on recomputing intermediate results.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. What is Caching?</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Caching in Spark refers to the process of storing intermediate results in memory to speed up subsequent actions.</li>
+<li><strong>Purpose</strong>: It helps in reducing the computation time by avoiding repeated calculations of the same data.</li>
+</ul>
+</div><h2>2. What is Persistence?</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Persistence is similar to caching but offers more flexibility in terms of storage levels (e.g., memory, disk).</li>
+<li><strong>Purpose</strong>: It allows you to store data in a more durable manner, which can be useful for fault tolerance and resource management.</li>
+</ul>
+</div><h2>3. Storage Levels</h2>
+<div class='content'><p>Spark provides several storage levels to control how and where the data is stored:</p>
+<ul>
+<li><strong>MEMORY_ONLY</strong>: Stores RDD as deserialized Java objects in the JVM. If the data does not fit in memory, some partitions will not be cached and will be recomputed when needed.</li>
+<li><strong>MEMORY_AND_DISK</strong>: Stores RDD as deserialized Java objects in the JVM. If the data does not fit in memory, the partitions that do not fit are stored on disk and read from there when needed.</li>
+<li><strong>DISK_ONLY</strong>: Stores RDD partitions only on disk.</li>
+<li><strong>MEMORY_ONLY_SER</strong>: Similar to MEMORY_ONLY but stores RDD as serialized Java objects (one byte array per partition).</li>
+<li><strong>MEMORY_AND_DISK_SER</strong>: Similar to MEMORY_AND_DISK but stores RDD as serialized Java objects.</li>
+<li><strong>OFF_HEAP</strong>: (Experimental) Stores RDD in off-heap memory.</li>
+</ul>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Caching an RDD</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsue1NwYXJrQ29uZiwgU3BhcmtDb250ZXh0fQoKLy8gSW5pdGlhbGl6ZSBTcGFyayBDb250ZXh0CnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpLnNldEFwcE5hbWUoIkNhY2hpbmdFeGFtcGxlIikuc2V0TWFzdGVyKCJsb2NhbCIpCnZhbCBzYyA9IG5ldyBTcGFya0NvbnRleHQoY29uZikKCi8vIENyZWF0ZSBhbiBSREQKdmFsIGRhdGEgPSBzYy5wYXJhbGxlbGl6ZSgxIHRvIDEwMDAwMDApCgovLyBQZXJmb3JtIGEgdHJhbnNmb3JtYXRpb24KdmFsIHNxdWFyZWREYXRhID0gZGF0YS5tYXAoeCA9PiB4ICogeCkKCi8vIENhY2hlIHRoZSBSREQKc3F1YXJlZERhdGEuY2FjaGUoKQoKLy8gUGVyZm9ybSBhbiBhY3Rpb24KdmFsIGNvdW50ID0gc3F1YXJlZERhdGEuY291bnQoKQoKcHJpbnRsbihzIkNvdW50IG9mIHNxdWFyZWQgZGF0YTogJGNvdW50IikKCi8vIFN0b3AgdGhlIFNwYXJrIENvbnRleHQKc2Muc3RvcCgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.{SparkConf, SparkContext}
+
+// Initialize Spark Context
+val conf = new SparkConf().setAppName(&quot;CachingExample&quot;).setMaster(&quot;local&quot;)
+val sc = new SparkContext(conf)
+
+// Create an RDD
+val data = sc.parallelize(1 to 1000000)
+
+// Perform a transformation
+val squaredData = data.map(x =&gt; x * x)
+
+// Cache the RDD
+squaredData.cache()
+
+// Perform an action
+val count = squaredData.count()
+
+println(s&quot;Count of squared data: $count&quot;)
+
+// Stop the Spark Context
+sc.stop()</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>We initialize a Spark context and create an RDD from a range of numbers.</li>
+<li>We perform a transformation to square each number.</li>
+<li>We cache the transformed RDD to store it in memory.</li>
+<li>We perform an action (<code>count</code>) to trigger the computation and cache the data.</li>
+</ul>
+</div><h2>Example 2: Persisting an RDD with Different Storage Levels</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsue1NwYXJrQ29uZiwgU3BhcmtDb250ZXh0fQppbXBvcnQgb3JnLmFwYWNoZS5zcGFyay5zdG9yYWdlLlN0b3JhZ2VMZXZlbAoKLy8gSW5pdGlhbGl6ZSBTcGFyayBDb250ZXh0CnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpLnNldEFwcE5hbWUoIlBlcnNpc3RlbmNlRXhhbXBsZSIpLnNldE1hc3RlcigibG9jYWwiKQp2YWwgc2MgPSBuZXcgU3BhcmtDb250ZXh0KGNvbmYpCgovLyBDcmVhdGUgYW4gUkRECnZhbCBkYXRhID0gc2MucGFyYWxsZWxpemUoMSB0byAxMDAwMDAwKQoKLy8gUGVyZm9ybSBhIHRyYW5zZm9ybWF0aW9uCnZhbCBzcXVhcmVkRGF0YSA9IGRhdGEubWFwKHggPT4geCAqIHgpCgovLyBQZXJzaXN0IHRoZSBSREQgd2l0aCBNRU1PUllfQU5EX0RJU0sgc3RvcmFnZSBsZXZlbApzcXVhcmVkRGF0YS5wZXJzaXN0KFN0b3JhZ2VMZXZlbC5NRU1PUllfQU5EX0RJU0spCgovLyBQZXJmb3JtIGFuIGFjdGlvbgp2YWwgY291bnQgPSBzcXVhcmVkRGF0YS5jb3VudCgpCgpwcmludGxuKHMiQ291bnQgb2Ygc3F1YXJlZCBkYXRhOiAkY291bnQiKQoKLy8gU3RvcCB0aGUgU3BhcmsgQ29udGV4dApzYy5zdG9wKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.storage.StorageLevel
+
+// Initialize Spark Context
+val conf = new SparkConf().setAppName(&quot;PersistenceExample&quot;).setMaster(&quot;local&quot;)
+val sc = new SparkContext(conf)
+
+// Create an RDD
+val data = sc.parallelize(1 to 1000000)
+
+// Perform a transformation
+val squaredData = data.map(x =&gt; x * x)
+
+// Persist the RDD with MEMORY_AND_DISK storage level
+squaredData.persist(StorageLevel.MEMORY_AND_DISK)
+
+// Perform an action
+val count = squaredData.count()
+
+println(s&quot;Count of squared data: $count&quot;)
+
+// Stop the Spark Context
+sc.stop()</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>We initialize a Spark context and create an RDD from a range of numbers.</li>
+<li>We perform a transformation to square each number.</li>
+<li>We persist the transformed RDD with the <code>MEMORY_AND_DISK</code> storage level.</li>
+<li>We perform an action (<code>count</code>) to trigger the computation and persist the data.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Caching an RDD</h2>
+<div class='content'><p><strong>Task</strong>: Create an RDD from a text file, perform a transformation to filter lines containing a specific word, cache the RDD, and count the number of lines.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsue1NwYXJrQ29uZiwgU3BhcmtDb250ZXh0fQoKLy8gSW5pdGlhbGl6ZSBTcGFyayBDb250ZXh0CnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpLnNldEFwcE5hbWUoIkNhY2hlRXhlcmNpc2UiKS5zZXRNYXN0ZXIoImxvY2FsIikKdmFsIHNjID0gbmV3IFNwYXJrQ29udGV4dChjb25mKQoKLy8gTG9hZCBhIHRleHQgZmlsZQp2YWwgdGV4dEZpbGUgPSBzYy50ZXh0RmlsZSgicGF0aC90by90ZXh0ZmlsZS50eHQiKQoKLy8gRmlsdGVyIGxpbmVzIGNvbnRhaW5pbmcgdGhlIHdvcmQgIlNwYXJrIgp2YWwgZmlsdGVyZWRMaW5lcyA9IHRleHRGaWxlLmZpbHRlcihsaW5lID0+IGxpbmUuY29udGFpbnMoIlNwYXJrIikpCgovLyBDYWNoZSB0aGUgZmlsdGVyZWQgUkRECmZpbHRlcmVkTGluZXMuY2FjaGUoKQoKLy8gQ291bnQgdGhlIG51bWJlciBvZiBsaW5lcwp2YWwgY291bnQgPSBmaWx0ZXJlZExpbmVzLmNvdW50KCkKCnByaW50bG4ocyJOdW1iZXIgb2YgbGluZXMgY29udGFpbmluZyAnU3BhcmsnOiAkY291bnQiKQoKLy8gU3RvcCB0aGUgU3BhcmsgQ29udGV4dApzYy5zdG9wKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.{SparkConf, SparkContext}
+
+// Initialize Spark Context
+val conf = new SparkConf().setAppName(&quot;CacheExercise&quot;).setMaster(&quot;local&quot;)
+val sc = new SparkContext(conf)
+
+// Load a text file
+val textFile = sc.textFile(&quot;path/to/textfile.txt&quot;)
+
+// Filter lines containing the word &quot;Spark&quot;
+val filteredLines = textFile.filter(line =&gt; line.contains(&quot;Spark&quot;))
+
+// Cache the filtered RDD
+filteredLines.cache()
+
+// Count the number of lines
+val count = filteredLines.count()
+
+println(s&quot;Number of lines containing 'Spark': $count&quot;)
+
+// Stop the Spark Context
+sc.stop()</pre></div><div class='content'></div><h2>Exercise 2: Persisting an RDD with MEMORY_ONLY_SER</h2>
+<div class='content'><p><strong>Task</strong>: Create an RDD from a list of numbers, perform a transformation to compute the cube of each number, persist the RDD with <code>MEMORY_ONLY_SER</code> storage level, and collect the results.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsue1NwYXJrQ29uZiwgU3BhcmtDb250ZXh0fQppbXBvcnQgb3JnLmFwYWNoZS5zcGFyay5zdG9yYWdlLlN0b3JhZ2VMZXZlbAoKLy8gSW5pdGlhbGl6ZSBTcGFyayBDb250ZXh0CnZhbCBjb25mID0gbmV3IFNwYXJrQ29uZigpLnNldEFwcE5hbWUoIlBlcnNpc3RFeGVyY2lzZSIpLnNldE1hc3RlcigibG9jYWwiKQp2YWwgc2MgPSBuZXcgU3BhcmtDb250ZXh0KGNvbmYpCgovLyBDcmVhdGUgYW4gUkRECnZhbCBkYXRhID0gc2MucGFyYWxsZWxpemUoMSB0byAxMDApCgovLyBQZXJmb3JtIGEgdHJhbnNmb3JtYXRpb24gdG8gY29tcHV0ZSB0aGUgY3ViZQp2YWwgY3ViZWREYXRhID0gZGF0YS5tYXAoeCA9PiB4ICogeCAqIHgpCgovLyBQZXJzaXN0IHRoZSBSREQgd2l0aCBNRU1PUllfT05MWV9TRVIgc3RvcmFnZSBsZXZlbApjdWJlZERhdGEucGVyc2lzdChTdG9yYWdlTGV2ZWwuTUVNT1JZX09OTFlfU0VSKQoKLy8gQ29sbGVjdCB0aGUgcmVzdWx0cwp2YWwgcmVzdWx0cyA9IGN1YmVkRGF0YS5jb2xsZWN0KCkKCnByaW50bG4ocyJDdWJlZCBkYXRhOiAke3Jlc3VsdHMubWtTdHJpbmcoIiwgIil9IikKCi8vIFN0b3AgdGhlIFNwYXJrIENvbnRleHQKc2Muc3RvcCgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.storage.StorageLevel
+
+// Initialize Spark Context
+val conf = new SparkConf().setAppName(&quot;PersistExercise&quot;).setMaster(&quot;local&quot;)
+val sc = new SparkContext(conf)
+
+// Create an RDD
+val data = sc.parallelize(1 to 100)
+
+// Perform a transformation to compute the cube
+val cubedData = data.map(x =&gt; x * x * x)
+
+// Persist the RDD with MEMORY_ONLY_SER storage level
+cubedData.persist(StorageLevel.MEMORY_ONLY_SER)
+
+// Collect the results
+val results = cubedData.collect()
+
+println(s&quot;Cubed data: ${results.mkString(&quot;, &quot;)}&quot;)
+
+// Stop the Spark Context
+sc.stop()</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Triggering Actions</strong>: Caching and persistence only take effect when an action is triggered. Ensure you perform an action after caching or persisting an RDD.</li>
+<li><strong>Overusing Caching</strong>: Caching every RDD can lead to memory issues. Cache only those RDDs that are reused multiple times.</li>
+<li><strong>Choosing the Wrong Storage Level</strong>: Select the appropriate storage level based on your application's needs and available resources.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the concepts of caching and persistence in Apache Spark. We learned about different storage levels and how to use them to optimize the performance of Spark applications. Practical examples and exercises were provided to reinforce the concepts. Understanding and effectively using caching and persistence can significantly improve the efficiency of your Spark jobs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-understanding-spark-jobs' title="Understanding Spark Jobs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-memory-management' title="Memory Management">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

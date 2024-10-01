@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dependency Injection with Dagger</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/androidstudio/05-02-dependency-injection-with-dagger" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/androidstudio/05-02-dependency-injection-with-dagger" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-implementing-mvvm-architecture' title="Implementing MVVM Architecture">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Dependency Injection with Dagger</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-unit-testing-and-ui-testing' title="Unit Testing and UI Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Dependency Injection (DI) is a design pattern used to implement IoC (Inversion of Control), allowing the creation of dependent objects outside of a class and providing those objects to a class in various ways. Dagger is a popular DI framework for Java and Android that helps manage dependencies efficiently.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Dependency Injection (DI)</strong>: A technique where an object receives other objects it depends on.</li>
+<li><strong>Inversion of Control (IoC)</strong>: A principle where the control of object creation and management is transferred from the class itself to an external entity.</li>
+<li><strong>Dagger</strong>: A fully static, compile-time dependency injection framework for Java and Android.</li>
+</ol>
+</div><h1>Why Use Dagger?</h1>
+<div class='content'><ul>
+<li><strong>Simplifies Dependency Management</strong>: Automatically handles the creation and provision of dependencies.</li>
+<li><strong>Improves Testability</strong>: Makes it easier to inject mock dependencies for testing.</li>
+<li><strong>Enhances Code Maintainability</strong>: Reduces boilerplate code and makes the codebase cleaner and more modular.</li>
+</ul>
+</div><h1>Setting Up Dagger in Your Project</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Add Dagger Dependencies</strong>: Add the following dependencies to your <code>build.gradle</code> file.</p>
+<pre><code class="language-groovy">dependencies {
+    implementation 'com.google.dagger:dagger:2.x'
+    kapt 'com.google.dagger:dagger-compiler:2.x'
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Enable Annotation Processing</strong>: Ensure that annotation processing is enabled in your project.</p>
+<pre><code class="language-groovy">android {
+    ...
+    kapt {
+        generateStubs = true
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Basic Dagger Setup</h1>
+<h2>Step 1: Define a Module</h2>
+<div class='content'><p>A module is a class annotated with <code>@Module</code> that provides dependencies.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE1vZHVsZQpwdWJsaWMgY2xhc3MgTmV0d29ya01vZHVsZSB7CiAgICBAUHJvdmlkZXMKICAgIHB1YmxpYyBSZXRyb2ZpdCBwcm92aWRlUmV0cm9maXQoKSB7CiAgICAgICAgcmV0dXJuIG5ldyBSZXRyb2ZpdC5CdWlsZGVyKCkKICAgICAgICAgICAgICAgIC5iYXNlVXJsKCJodHRwczovL2FwaS5leGFtcGxlLmNvbSIpCiAgICAgICAgICAgICAgICAuYWRkQ29udmVydGVyRmFjdG9yeShHc29uQ29udmVydGVyRmFjdG9yeS5jcmVhdGUoKSkKICAgICAgICAgICAgICAgIC5idWlsZCgpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Module
+public class NetworkModule {
+    @Provides
+    public Retrofit provideRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(&quot;https://api.example.com&quot;)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+}</pre></div><div class='content'></div><h2>Step 2: Create a Component</h2>
+<div class='content'><p>A component is an interface annotated with <code>@Component</code> that connects modules and the classes that request injection.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QENvbXBvbmVudChtb2R1bGVzID0ge05ldHdvcmtNb2R1bGUuY2xhc3N9KQpwdWJsaWMgaW50ZXJmYWNlIEFwcENvbXBvbmVudCB7CiAgICB2b2lkIGluamVjdChNYWluQWN0aXZpdHkgbWFpbkFjdGl2aXR5KTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Component(modules = {NetworkModule.class})
+public interface AppComponent {
+    void inject(MainActivity mainActivity);
+}</pre></div><div class='content'></div><h2>Step 3: Inject Dependencies</h2>
+<div class='content'><p>Use the <code>@Inject</code> annotation to request dependencies in your classes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE1haW5BY3Rpdml0eSBleHRlbmRzIEFwcENvbXBhdEFjdGl2aXR5IHsKICAgIEBJbmplY3QKICAgIFJldHJvZml0IHJldHJvZml0OwoKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgb25DcmVhdGUoQnVuZGxlIHNhdmVkSW5zdGFuY2VTdGF0ZSkgewogICAgICAgIHN1cGVyLm9uQ3JlYXRlKHNhdmVkSW5zdGFuY2VTdGF0ZSk7CiAgICAgICAgc2V0Q29udGVudFZpZXcoUi5sYXlvdXQuYWN0aXZpdHlfbWFpbik7CgogICAgICAgIC8vIEluaXRpYWxpemUgRGFnZ2VyCiAgICAgICAgRGFnZ2VyQXBwQ29tcG9uZW50LmNyZWF0ZSgpLmluamVjdCh0aGlzKTsKCiAgICAgICAgLy8gVXNlIHRoZSBpbmplY3RlZCBSZXRyb2ZpdCBpbnN0YW5jZQogICAgICAgIC8vIC4uLgogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MainActivity extends AppCompatActivity {
+    @Inject
+    Retrofit retrofit;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize Dagger
+        DaggerAppComponent.create().inject(this);
+
+        // Use the injected Retrofit instance
+        // ...
+    }
+}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<h2>Example: Injecting a Repository into a ViewModel</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define the Repository</strong>:</p>
+<pre><code class="language-java">public class UserRepository {
+    private final ApiService apiService;
+
+    @Inject
+    public UserRepository(ApiService apiService) {
+        this.apiService = apiService;
+    }
+
+    public LiveData&lt;User&gt; getUser(int userId) {
+        // Implementation to fetch user data
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Create the ViewModel</strong>:</p>
+<pre><code class="language-java">public class UserViewModel extends ViewModel {
+    private final UserRepository userRepository;
+
+    @Inject
+    public UserViewModel(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public LiveData&lt;User&gt; getUser(int userId) {
+        return userRepository.getUser(userId);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Define the Module</strong>:</p>
+<pre><code class="language-java">@Module
+public class AppModule {
+    @Provides
+    public ApiService provideApiService() {
+        return new Retrofit.Builder()
+                .baseUrl(&quot;https://api.example.com&quot;)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ApiService.class);
+    }
+
+    @Provides
+    public UserRepository provideUserRepository(ApiService apiService) {
+        return new UserRepository(apiService);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Create the Component</strong>:</p>
+<pre><code class="language-java">@Component(modules = {AppModule.class})
+public interface AppComponent {
+    void inject(UserViewModel userViewModel);
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Inject the ViewModel</strong>:</p>
+<pre><code class="language-java">public class MainActivity extends AppCompatActivity {
+    @Inject
+    UserViewModel userViewModel;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize Dagger
+        DaggerAppComponent.create().inject(this);
+
+        // Use the injected UserViewModel instance
+        // ...
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<h2>Exercise 1: Injecting a Service into an Activity</h2>
+<div class='content'><ol>
+<li>Create a <code>LoggingService</code> class that provides logging functionality.</li>
+<li>Define a Dagger module that provides an instance of <code>LoggingService</code>.</li>
+<li>Create a Dagger component that includes the module.</li>
+<li>Inject <code>LoggingService</code> into an <code>Activity</code> and use it to log a message.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>LoggingService</strong>:</p>
+<pre><code class="language-java">public class LoggingService {
+    public void log(String message) {
+        Log.d(&quot;LoggingService&quot;, message);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Module</strong>:</p>
+<pre><code class="language-java">@Module
+public class LoggingModule {
+    @Provides
+    public LoggingService provideLoggingService() {
+        return new LoggingService();
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Component</strong>:</p>
+<pre><code class="language-java">@Component(modules = {LoggingModule.class})
+public interface LoggingComponent {
+    void inject(MainActivity mainActivity);
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Activity</strong>:</p>
+<pre><code class="language-java">public class MainActivity extends AppCompatActivity {
+    @Inject
+    LoggingService loggingService;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize Dagger
+        DaggerLoggingComponent.create().inject(this);
+
+        // Use the injected LoggingService instance
+        loggingService.log(&quot;Hello, Dagger!&quot;);
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to Annotate with <code>@Inject</code></strong>: Ensure that fields, constructors, or methods that need injection are annotated with <code>@Inject</code>.</li>
+<li><strong>Not Including Modules in Components</strong>: Make sure all necessary modules are included in the component.</li>
+<li><strong>Circular Dependencies</strong>: Be cautious of circular dependencies, which can cause runtime errors.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned about Dependency Injection and how to use Dagger to manage dependencies in your Android projects. You set up Dagger, created modules and components, and injected dependencies into your classes. This knowledge will help you write cleaner, more maintainable, and testable code. In the next section, you will learn about Unit Testing and UI Testing to ensure the reliability of your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-implementing-mvvm-architecture' title="Implementing MVVM Architecture">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-unit-testing-and-ui-testing' title="Unit Testing and UI Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

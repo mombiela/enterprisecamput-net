@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working with XML and JSON</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/groovy/05-02-xml-json" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/groovy/05-02-xml-json" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/groovy/05-02-xml-json" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/groovy/05-02-xml-json" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/groovy/05-02-xml-json" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-file-io' title="File I/O">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Working with XML and JSON</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-database-access' title="Database Access">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to work with XML and JSON data in Groovy. These are common data formats used for configuration, data exchange, and storage. Groovy provides powerful and easy-to-use libraries to handle both XML and JSON.</p>
+</div><h1>Table of Contents</h1>
+<div class='content'><ol>
+<li><a href="#introduction-to-xml-and-json">Introduction to XML and JSON</a></li>
+<li><a href="#parsing-xml">Parsing XML</a></li>
+<li><a href="#generating-xml">Generating XML</a></li>
+<li><a href="#parsing-json">Parsing JSON</a></li>
+<li><a href="#generating-json">Generating JSON</a></li>
+<li><a href="#practical-exercises">Practical Exercises</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</div><h1>Introduction to XML and JSON</h1>
+<div class='content'></div><h2>XML (eXtensible Markup Language)</h2>
+<div class='content'><ul>
+<li><strong>Structure</strong>: Hierarchical, tag-based format.</li>
+<li><strong>Usage</strong>: Commonly used for configuration files, data interchange, and document storage.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-xml">&lt;person&gt;
+    &lt;name&gt;John Doe&lt;/name&gt;
+    &lt;age&gt;30&lt;/age&gt;
+&lt;/person&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>JSON (JavaScript Object Notation)</h2>
+<div class='content'><ul>
+<li><strong>Structure</strong>: Key-value pairs, array-based format.</li>
+<li><strong>Usage</strong>: Widely used for APIs, configuration files, and data interchange.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;age&quot;: 30
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Parsing XML</h1>
+<div class='content'><p>Groovy provides the <code>XmlSlurper</code> and <code>XmlParser</code> classes for parsing XML.</p>
+</div><h2>Using `XmlSlurper`</h2>
+<div class='content'><ul>
+<li><strong>Example</strong>:
+<pre><code class="language-groovy">def xml = '''
+&lt;person&gt;
+    &lt;name&gt;John Doe&lt;/name&gt;
+    &lt;age&gt;30&lt;/age&gt;
+&lt;/person&gt;
+'''
+def person = new XmlSlurper().parseText(xml)
+println &quot;Name: ${person.name.text()}&quot;
+println &quot;Age: ${person.age.text()}&quot;
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>XmlSlurper</code> is used to parse the XML string.</li>
+<li><code>parseText</code> method parses the XML content.</li>
+<li>Accessing elements is straightforward using dot notation.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Using `XmlParser`</h2>
+<div class='content'><ul>
+<li><strong>Example</strong>:
+<pre><code class="language-groovy">def xml = '''
+&lt;person&gt;
+    &lt;name&gt;John Doe&lt;/name&gt;
+    &lt;age&gt;30&lt;/age&gt;
+&lt;/person&gt;
+'''
+def person = new XmlParser().parseText(xml)
+println &quot;Name: ${person.name.text()}&quot;
+println &quot;Age: ${person.age.text()}&quot;
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>XmlParser</code> is another way to parse XML.</li>
+<li>Similar to <code>XmlSlurper</code>, but provides a more DOM-like structure.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Generating XML</h1>
+<div class='content'><p>Groovy's <code>MarkupBuilder</code> class is used to generate XML.</p>
+</div><h2>Using `MarkupBuilder`</h2>
+<div class='content'><ul>
+<li><strong>Example</strong>:
+<pre><code class="language-groovy">def writer = new StringWriter()
+def xml = new groovy.xml.MarkupBuilder(writer)
+xml.person {
+    name 'John Doe'
+    age 30
+}
+println writer.toString()
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>MarkupBuilder</code> is used to create XML content.</li>
+<li>The XML structure is defined using a builder pattern.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Parsing JSON</h1>
+<div class='content'><p>Groovy provides the <code>JsonSlurper</code> class for parsing JSON.</p>
+</div><h2>Using `JsonSlurper`</h2>
+<div class='content'><ul>
+<li><strong>Example</strong>:
+<pre><code class="language-groovy">def json = '''
+{
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;age&quot;: 30
+}
+'''
+def person = new groovy.json.JsonSlurper().parseText(json)
+println &quot;Name: ${person.name}&quot;
+println &quot;Age: ${person.age}&quot;
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>JsonSlurper</code> is used to parse the JSON string.</li>
+<li><code>parseText</code> method parses the JSON content.</li>
+<li>Accessing elements is done using dot notation.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Generating JSON</h1>
+<div class='content'><p>Groovy's <code>JsonBuilder</code> class is used to generate JSON.</p>
+</div><h2>Using `JsonBuilder`</h2>
+<div class='content'><ul>
+<li><strong>Example</strong>:
+<pre><code class="language-groovy">def builder = new groovy.json.JsonBuilder()
+builder.person {
+    name 'John Doe'
+    age 30
+}
+println builder.toPrettyString()
+</code></pre>
+</li>
+<li><strong>Explanation</strong>:
+<ul>
+<li><code>JsonBuilder</code> is used to create JSON content.</li>
+<li>The JSON structure is defined using a builder pattern.</li>
+<li><code>toPrettyString</code> method formats the JSON output.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Parse and Print XML</h2>
+<div class='content'><ul>
+<li><strong>Task</strong>: Parse the following XML and print the name and age.
+<pre><code class="language-xml">&lt;person&gt;
+    &lt;name&gt;Jane Doe&lt;/name&gt;
+    &lt;age&gt;25&lt;/age&gt;
+&lt;/person&gt;
+</code></pre>
+</li>
+<li><strong>Solution</strong>:
+<pre><code class="language-groovy">def xml = '''
+&lt;person&gt;
+    &lt;name&gt;Jane Doe&lt;/name&gt;
+    &lt;age&gt;25&lt;/age&gt;
+&lt;/person&gt;
+'''
+def person = new XmlSlurper().parseText(xml)
+println &quot;Name: ${person.name.text()}&quot;
+println &quot;Age: ${person.age.text()}&quot;
+</code></pre>
+</li>
+</ul>
+</div><h2>Exercise 2: Generate JSON</h2>
+<div class='content'><ul>
+<li><strong>Task</strong>: Generate JSON for a person with name &quot;Alice&quot; and age 28.</li>
+<li><strong>Solution</strong>:
+<pre><code class="language-groovy">def builder = new groovy.json.JsonBuilder()
+builder.person {
+    name 'Alice'
+    age 28
+}
+println builder.toPrettyString()
+</code></pre>
+</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered:</p>
+<ul>
+<li>The basics of XML and JSON.</li>
+<li>How to parse XML using <code>XmlSlurper</code> and <code>XmlParser</code>.</li>
+<li>How to generate XML using <code>MarkupBuilder</code>.</li>
+<li>How to parse JSON using <code>JsonSlurper</code>.</li>
+<li>How to generate JSON using <code>JsonBuilder</code>.</li>
+</ul>
+<p>Understanding how to work with XML and JSON is crucial for many programming tasks, including configuration management, data interchange, and API development. In the next section, we will explore database access in Groovy.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-file-io' title="File I/O">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-database-access' title="Database Access">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

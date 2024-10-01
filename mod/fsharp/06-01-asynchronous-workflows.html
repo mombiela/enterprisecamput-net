@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asynchronous Workflows</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/06-01-asynchronous-workflows" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/06-01-asynchronous-workflows" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/06-01-asynchronous-workflows" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fsharp/06-01-asynchronous-workflows" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/06-01-asynchronous-workflows" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-modules-namespaces' title="Modules and Namespaces">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Asynchronous Workflows</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-task-parallel-library' title="Task Parallel Library">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Asynchronous programming is a powerful feature in F# that allows you to write non-blocking code, which is essential for creating responsive applications. In this section, we will explore the basics of asynchronous workflows in F#, how to create and use them, and some practical examples.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Asynchronous Workflows</strong>: A way to write asynchronous code that looks synchronous.</li>
+<li><strong>Async Module</strong>: Provides functions and types for working with asynchronous computations.</li>
+<li><strong>Async Computation Expressions</strong>: A special syntax for writing asynchronous code.</li>
+</ol>
+</div><h1>Asynchronous Workflows in F#</h1>
+<div class='content'></div><h2>What is an Asynchronous Workflow?</h2>
+<div class='content'><p>An asynchronous workflow in F# allows you to perform operations that may take a long time to complete (like I/O operations) without blocking the main thread. This is achieved using the <code>async</code> keyword and computation expressions.</p>
+</div><h2>Basic Syntax</h2>
+<div class='content'><p>Here's a simple example of an asynchronous workflow:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0Kb3BlbiBTeXN0ZW0uVGhyZWFkaW5nLlRhc2tzCgpsZXQgYXN5bmNXb3JrZmxvdyA9IGFzeW5jIHsKICAgIHByaW50Zm4gIlN0YXJ0aW5nIGFzeW5jIHdvcmtmbG93Li4uIgogICAgZG8hIEFzeW5jLlNsZWVwIDEwMDAgLy8gQXN5bmNocm9ub3VzbHkgd2FpdCBmb3IgMSBzZWNvbmQKICAgIHByaW50Zm4gIkZpbmlzaGVkIGFzeW5jIHdvcmtmbG93ISIKfQoKQXN5bmMuUnVuU3luY2hyb25vdXNseSBhc3luY1dvcmtmbG93"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System
+open System.Threading.Tasks
+
+let asyncWorkflow = async {
+    printfn &quot;Starting async workflow...&quot;
+    do! Async.Sleep 1000 // Asynchronously wait for 1 second
+    printfn &quot;Finished async workflow!&quot;
+}
+
+Async.RunSynchronously asyncWorkflow</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>async { ... }</code>: Defines an asynchronous workflow.</li>
+<li><code>do! Async.Sleep 1000</code>: Asynchronously waits for 1 second without blocking the thread.</li>
+<li><code>Async.RunSynchronously asyncWorkflow</code>: Runs the asynchronous workflow synchronously for demonstration purposes.</li>
+</ul>
+</div><h2>Practical Example: Fetching Data from a Web API</h2>
+<div class='content'><p>Let's create a more practical example where we fetch data from a web API asynchronously.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uTmV0Lkh0dHAKb3BlbiBTeXN0ZW0uVGhyZWFkaW5nLlRhc2tzCgpsZXQgZmV0Y2hEYXRhQXN5bmMgKHVybDogc3RyaW5nKSA9IGFzeW5jIHsKICAgIHVzZSBjbGllbnQgPSBuZXcgSHR0cENsaWVudCgpCiAgICBsZXQhIHJlc3BvbnNlID0gY2xpZW50LkdldFN0cmluZ0FzeW5jKHVybCkgfD4gQXN5bmMuQXdhaXRUYXNrCiAgICByZXR1cm4gcmVzcG9uc2UKfQoKbGV0IHVybCA9ICJodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vcG9zdHMvMSIKbGV0IHJlc3VsdCA9IEFzeW5jLlJ1blN5bmNocm9ub3VzbHkgKGZldGNoRGF0YUFzeW5jIHVybCkKcHJpbnRmbiAiRmV0Y2hlZCBkYXRhOiAlcyIgcmVzdWx0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.Net.Http
+open System.Threading.Tasks
+
+let fetchDataAsync (url: string) = async {
+    use client = new HttpClient()
+    let! response = client.GetStringAsync(url) |&gt; Async.AwaitTask
+    return response
+}
+
+let url = &quot;https://jsonplaceholder.typicode.com/posts/1&quot;
+let result = Async.RunSynchronously (fetchDataAsync url)
+printfn &quot;Fetched data: %s&quot; result</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>use client = new HttpClient()</code>: Creates an instance of <code>HttpClient</code>.</li>
+<li><code>let! response = client.GetStringAsync(url) |&gt; Async.AwaitTask</code>: Asynchronously fetches data from the given URL.</li>
+<li><code>return response</code>: Returns the fetched data.</li>
+<li><code>Async.RunSynchronously (fetchDataAsync url)</code>: Runs the asynchronous workflow synchronously and prints the result.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Asynchronous File Reading</h2>
+<div class='content'><p>Write an asynchronous workflow to read the contents of a file asynchronously.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uSU8KCmxldCByZWFkRmlsZUFzeW5jIChmaWxlUGF0aDogc3RyaW5nKSA9IGFzeW5jIHsKICAgIHVzZSByZWFkZXIgPSBuZXcgU3RyZWFtUmVhZGVyKGZpbGVQYXRoKQogICAgbGV0ISBjb250ZW50ID0gcmVhZGVyLlJlYWRUb0VuZEFzeW5jKCkgfD4gQXN5bmMuQXdhaXRUYXNrCiAgICByZXR1cm4gY29udGVudAp9CgpsZXQgZmlsZVBhdGggPSAiZXhhbXBsZS50eHQiCmxldCBmaWxlQ29udGVudCA9IEFzeW5jLlJ1blN5bmNocm9ub3VzbHkgKHJlYWRGaWxlQXN5bmMgZmlsZVBhdGgpCnByaW50Zm4gIkZpbGUgY29udGVudDogJXMiIGZpbGVDb250ZW50"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.IO
+
+let readFileAsync (filePath: string) = async {
+    use reader = new StreamReader(filePath)
+    let! content = reader.ReadToEndAsync() |&gt; Async.AwaitTask
+    return content
+}
+
+let filePath = &quot;example.txt&quot;
+let fileContent = Async.RunSynchronously (readFileAsync filePath)
+printfn &quot;File content: %s&quot; fileContent</pre></div><div class='content'></div><h2>Exercise 2: Asynchronous Web Requests</h2>
+<div class='content'><p>Modify the <code>fetchDataAsync</code> function to fetch data from multiple URLs asynchronously and print the results.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uTmV0Lkh0dHAKb3BlbiBTeXN0ZW0uVGhyZWFkaW5nLlRhc2tzCgpsZXQgZmV0Y2hEYXRhQXN5bmMgKHVybDogc3RyaW5nKSA9IGFzeW5jIHsKICAgIHVzZSBjbGllbnQgPSBuZXcgSHR0cENsaWVudCgpCiAgICBsZXQhIHJlc3BvbnNlID0gY2xpZW50LkdldFN0cmluZ0FzeW5jKHVybCkgfD4gQXN5bmMuQXdhaXRUYXNrCiAgICByZXR1cm4gcmVzcG9uc2UKfQoKbGV0IHVybHMgPSBbImh0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cy8xIjsgImh0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cy8yIl0KCmxldCBmZXRjaEFsbERhdGFBc3luYyB1cmxzID0gYXN5bmMgewogICAgbGV0ISByZXN1bHRzID0gdXJscyB8PiBMaXN0Lm1hcCBmZXRjaERhdGFBc3luYyB8PiBBc3luYy5QYXJhbGxlbAogICAgcmV0dXJuIHJlc3VsdHMKfQoKbGV0IHJlc3VsdHMgPSBBc3luYy5SdW5TeW5jaHJvbm91c2x5IChmZXRjaEFsbERhdGFBc3luYyB1cmxzKQpyZXN1bHRzIHw+IEFycmF5Lml0ZXJpIChmdW4gaSByZXN1bHQgLT4gcHJpbnRmbiAiUmVzdWx0ICVkOiAlcyIgKGkgKyAxKSByZXN1bHQp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.Net.Http
+open System.Threading.Tasks
+
+let fetchDataAsync (url: string) = async {
+    use client = new HttpClient()
+    let! response = client.GetStringAsync(url) |&gt; Async.AwaitTask
+    return response
+}
+
+let urls = [&quot;https://jsonplaceholder.typicode.com/posts/1&quot;; &quot;https://jsonplaceholder.typicode.com/posts/2&quot;]
+
+let fetchAllDataAsync urls = async {
+    let! results = urls |&gt; List.map fetchDataAsync |&gt; Async.Parallel
+    return results
+}
+
+let results = Async.RunSynchronously (fetchAllDataAsync urls)
+results |&gt; Array.iteri (fun i result -&gt; printfn &quot;Result %d: %s&quot; (i + 1) result)</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Blocking the Main Thread</strong>: Avoid using <code>Async.RunSynchronously</code> in production code as it blocks the main thread. Use <code>Async.Start</code> or other non-blocking methods.</li>
+<li><strong>Error Handling</strong>: Always handle exceptions in asynchronous workflows to avoid unhandled exceptions.</li>
+<li><strong>Resource Management</strong>: Use <code>use</code> keyword to properly dispose of resources like <code>HttpClient</code> and <code>StreamReader</code>.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of asynchronous workflows in F#. We learned how to create and run asynchronous workflows, and we explored practical examples like fetching data from a web API and reading files asynchronously. Asynchronous programming is a crucial skill for building responsive and efficient applications, and F# provides powerful tools to make it easier.</p>
+<p>Next, we will delve into the Task Parallel Library (TPL) to further enhance our understanding of parallel programming in F#.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-modules-namespaces' title="Modules and Namespaces">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-task-parallel-library' title="Task Parallel Library">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Security</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/08-03-network-security" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/08-03-network-security" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/08-03-network-security" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/08-03-network-security" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/08-03-network-security" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-pod-security-policies' title="Pod Security Policies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Network Security</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-image-security' title="Image Security">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Network security in Kubernetes is crucial to ensure that your cluster and applications are protected from unauthorized access and potential threats. This section will cover the key aspects of network security in Kubernetes, including network policies, securing communication, and best practices.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Network Policies</strong>: Define how pods are allowed to communicate with each other and with other network endpoints.</li>
+<li><strong>Securing Communication</strong>: Use encryption and secure protocols to protect data in transit.</li>
+<li><strong>Best Practices</strong>: Implement security measures and follow guidelines to maintain a secure Kubernetes environment.</li>
+</ol>
+</div><h1>Network Policies</h1>
+<div class='content'><p>Network policies in Kubernetes are used to control the traffic flow between pods. They are implemented using the <code>NetworkPolicy</code> resource.</p>
+</div><h2>Example: Basic Network Policy</h2>
+<div class='content'><p>The following example demonstrates a basic network policy that allows traffic only from pods with the label <code>app: frontend</code> to pods with the label <code>app: backend</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogbmV0d29ya2luZy5rOHMuaW8vdjEKa2luZDogTmV0d29ya1BvbGljeQptZXRhZGF0YToKICBuYW1lOiBhbGxvdy1mcm9udGVuZC10by1iYWNrZW5kCiAgbmFtZXNwYWNlOiBkZWZhdWx0CnNwZWM6CiAgcG9kU2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBiYWNrZW5kCiAgaW5ncmVzczoKICAtIGZyb206CiAgICAtIHBvZFNlbGVjdG9yOgogICAgICAgIG1hdGNoTGFiZWxzOgogICAgICAgICAgYXBwOiBmcm9udGVuZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: Specifies the API version.</li>
+<li><strong>kind</strong>: Defines the resource type, which is <code>NetworkPolicy</code>.</li>
+<li><strong>metadata</strong>: Contains the name and namespace of the network policy.</li>
+<li><strong>spec</strong>: Defines the policy specifications.
+<ul>
+<li><strong>podSelector</strong>: Selects the pods to which the policy applies.</li>
+<li><strong>ingress</strong>: Specifies the allowed incoming traffic.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Task</strong>: Create a network policy that allows traffic only from pods with the label <code>role: database</code> to pods with the label <code>role: web</code>.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogbmV0d29ya2luZy5rOHMuaW8vdjEKa2luZDogTmV0d29ya1BvbGljeQptZXRhZGF0YToKICBuYW1lOiBhbGxvdy1kYXRhYmFzZS10by13ZWIKICBuYW1lc3BhY2U6IGRlZmF1bHQKc3BlYzoKICBwb2RTZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICByb2xlOiB3ZWIKICBpbmdyZXNzOgogIC0gZnJvbToKICAgIC0gcG9kU2VsZWN0b3I6CiAgICAgICAgbWF0Y2hMYWJlbHM6CiAgICAgICAgICByb2xlOiBkYXRhYmFzZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-database-to-web
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: web
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          role: database</pre></div><div class='content'></div><h1>Securing Communication</h1>
+<div class='content'></div><h2>TLS/SSL Encryption</h2>
+<div class='content'><p>To secure communication between services, use TLS/SSL encryption. This ensures that data transmitted over the network is encrypted and protected from eavesdropping.</p>
+</div><h2>Example: Enabling TLS for a Service</h2>
+<div class='content'><ol>
+<li><strong>Generate Certificates</strong>: Use tools like OpenSSL to generate certificates.</li>
+<li><strong>Create Kubernetes Secrets</strong>: Store the certificates as secrets in Kubernetes.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBjcmVhdGUgc2VjcmV0IHRscyBteS10bHMtc2VjcmV0IC0tY2VydD1wYXRoL3RvL3Rscy5jcnQgLS1rZXk9cGF0aC90by90bHMua2V5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl create secret tls my-tls-secret --cert=path/to/tls.crt --key=path/to/tls.key</pre></div><div class='content'><ol start="3">
+<li><strong>Configure the Service</strong>: Update the service to use the TLS secret.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1zZXJ2aWNlCnNwZWM6CiAgcG9ydHM6CiAgLSBwb3J0OiA0NDMKICAgIHRhcmdldFBvcnQ6IDg0NDMKICAgIHByb3RvY29sOiBUQ1AKICBzZWxlY3RvcjoKICAgIGFwcDogbXktYXBwCiAgdHlwZTogQ2x1c3RlcklQ"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+    protocol: TCP
+  selector:
+    app: my-app
+  type: ClusterIP</pre></div><div class='content'><ol start="4">
+<li><strong>Update the Deployment</strong>: Ensure the application is configured to use TLS.</li>
+</ol>
+</div><h1>Best Practices</h1>
+<div class='content'><ol>
+<li><strong>Use Network Policies</strong>: Always define network policies to control traffic flow.</li>
+<li><strong>Encrypt Communication</strong>: Use TLS/SSL to encrypt data in transit.</li>
+<li><strong>Isolate Sensitive Workloads</strong>: Use namespaces and network policies to isolate sensitive workloads.</li>
+<li><strong>Regularly Update and Patch</strong>: Keep your Kubernetes cluster and applications up to date with the latest security patches.</li>
+<li><strong>Monitor and Audit</strong>: Continuously monitor network traffic and audit logs for suspicious activity.</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Defining Network Policies</strong>: Without network policies, all pods can communicate with each other, which can lead to security vulnerabilities.</li>
+<li><strong>Improper Certificate Management</strong>: Ensure certificates are securely stored and managed.</li>
+<li><strong>Ignoring Namespace Isolation</strong>: Use namespaces to logically separate and secure different environments (e.g., development, staging, production).</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essentials of network security in Kubernetes, including network policies, securing communication, and best practices. By implementing these measures, you can significantly enhance the security of your Kubernetes cluster and protect your applications from potential threats. In the next section, we will delve into the topic of image security, which is another critical aspect of securing your Kubernetes environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-pod-security-policies' title="Pod Security Policies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-image-security' title="Image Security">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

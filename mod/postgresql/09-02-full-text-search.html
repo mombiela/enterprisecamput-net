@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Text Search</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/09-02-full-text-search" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/09-02-full-text-search" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/09-02-full-text-search" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/09-02-full-text-search" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/09-02-full-text-search" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-postgis-for-geospatial-data' title="PostGIS for Geospatial Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Full-Text Search</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-foreign-data-wrappers' title="Foreign Data Wrappers">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Full-text search (FTS) in PostgreSQL is a powerful feature that allows you to search for text within a database in a more flexible and efficient manner than using simple <code>LIKE</code> queries. This module will cover the basics of full-text search, including how to set it up, use it, and optimize it for your needs.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Text Search Types</strong>: Understanding the different types of text search in PostgreSQL.</li>
+<li><strong>Text Search Configuration</strong>: Setting up the necessary configurations for full-text search.</li>
+<li><strong>Creating and Using Text Search Dictionaries</strong>: Customizing how text is processed and searched.</li>
+<li><strong>Indexing for Full-Text Search</strong>: Using indexes to improve search performance.</li>
+<li><strong>Practical Examples</strong>: Implementing full-text search in real-world scenarios.</li>
+</ol>
+</div><h1>Text Search Types</h1>
+<div class='content'><p>PostgreSQL supports two main types of text search:</p>
+<ul>
+<li><strong>Plain Text Search</strong>: Searches for exact matches of the input text.</li>
+<li><strong>Full-Text Search</strong>: Searches for words and phrases within the text, allowing for more flexible and powerful queries.</li>
+</ul>
+</div><h1>Text Search Configuration</h1>
+<div class='content'><p>Before you can use full-text search, you need to configure PostgreSQL to handle text search operations. This involves setting up text search configurations, which define how text is processed and searched.</p>
+</div><h2>Example: Setting Up a Text Search Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXRlIGEgdGV4dCBzZWFyY2ggY29uZmlndXJhdGlvbgpDUkVBVEUgVEVYVCBTRUFSQ0ggQ09ORklHVVJBVElPTiBteV9jb25maWcgKENPUFkgPSBwZ19jYXRhbG9nLmVuZ2xpc2gpOwoKLS0gQWRkIGEgbWFwcGluZyBmb3IgdGhlIGNvbmZpZ3VyYXRpb24KQUxURVIgVEVYVCBTRUFSQ0ggQ09ORklHVVJBVElPTiBteV9jb25maWcKICAgIEFERCBNQVBQSU5HIEZPUiBhc2NpaXdvcmQgV0lUSCBzaW1wbGU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Create a text search configuration
+CREATE TEXT SEARCH CONFIGURATION my_config (COPY = pg_catalog.english);
+
+-- Add a mapping for the configuration
+ALTER TEXT SEARCH CONFIGURATION my_config
+    ADD MAPPING FOR asciiword WITH simple;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>CREATE TEXT SEARCH CONFIGURATION</code>: Creates a new text search configuration based on an existing one (<code>pg_catalog.english</code>).</li>
+<li><code>ALTER TEXT SEARCH CONFIGURATION</code>: Adds a mapping to the configuration, specifying how certain types of text (e.g., <code>asciiword</code>) should be processed (<code>simple</code>).</li>
+</ul>
+</div><h1>Creating and Using Text Search Dictionaries</h1>
+<div class='content'><p>Text search dictionaries define how text is normalized and indexed. You can create custom dictionaries to handle specific types of text.</p>
+</div><h2>Example: Creating a Custom Dictionary</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXRlIGEgc2ltcGxlIGRpY3Rpb25hcnkKQ1JFQVRFIFRFWFQgU0VBUkNIIERJQ1RJT05BUlkgc2ltcGxlX2RpY3QgKAogICAgVEVNUExBVEUgPSBzaW1wbGUKKTsKCi0tIFVzZSB0aGUgZGljdGlvbmFyeSBpbiBhIHRleHQgc2VhcmNoIGNvbmZpZ3VyYXRpb24KQUxURVIgVEVYVCBTRUFSQ0ggQ09ORklHVVJBVElPTiBteV9jb25maWcKICAgIEFERCBNQVBQSU5HIEZPUiBhc2NpaXdvcmQgV0lUSCBzaW1wbGVfZGljdDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Create a simple dictionary
+CREATE TEXT SEARCH DICTIONARY simple_dict (
+    TEMPLATE = simple
+);
+
+-- Use the dictionary in a text search configuration
+ALTER TEXT SEARCH CONFIGURATION my_config
+    ADD MAPPING FOR asciiword WITH simple_dict;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>CREATE TEXT SEARCH DICTIONARY</code>: Creates a new text search dictionary using the <code>simple</code> template.</li>
+<li><code>ALTER TEXT SEARCH CONFIGURATION</code>: Adds the custom dictionary to the text search configuration.</li>
+</ul>
+</div><h1>Indexing for Full-Text Search</h1>
+<div class='content'><p>To improve the performance of full-text search queries, you should create indexes on the text columns you want to search.</p>
+</div><h2>Example: Creating a Full-Text Search Index</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXRlIGEgdGFibGUgd2l0aCBhIHRleHQgY29sdW1uCkNSRUFURSBUQUJMRSBkb2N1bWVudHMgKAogICAgaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgY29udGVudCBURVhUCik7CgotLSBDcmVhdGUgYSBmdWxsLXRleHQgc2VhcmNoIGluZGV4IG9uIHRoZSBjb250ZW50IGNvbHVtbgpDUkVBVEUgSU5ERVggY29udGVudF9pZHggT04gZG9jdW1lbnRzIFVTSU5HIGdpbih0b190c3ZlY3RvcignZW5nbGlzaCcsIGNvbnRlbnQpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Create a table with a text column
+CREATE TABLE documents (
+    id SERIAL PRIMARY KEY,
+    content TEXT
+);
+
+-- Create a full-text search index on the content column
+CREATE INDEX content_idx ON documents USING gin(to_tsvector('english', content));</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>CREATE TABLE</code>: Creates a table with a <code>content</code> column to store text.</li>
+<li><code>CREATE INDEX</code>: Creates a GIN (Generalized Inverted Index) on the <code>content</code> column, using the <code>to_tsvector</code> function to convert the text to a searchable format.</li>
+</ul>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example: Performing a Full-Text Search</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5zZXJ0IHNvbWUgc2FtcGxlIGRhdGEKSU5TRVJUIElOVE8gZG9jdW1lbnRzIChjb250ZW50KSBWQUxVRVMKKCdQb3N0Z3JlU1FMIGlzIGEgcG93ZXJmdWwsIG9wZW4tc291cmNlIG9iamVjdC1yZWxhdGlvbmFsIGRhdGFiYXNlIHN5c3RlbS4nKSwKKCdGdWxsLXRleHQgc2VhcmNoIGluIFBvc3RncmVTUUwgaXMgdmVyeSBlZmZpY2llbnQgYW5kIGZsZXhpYmxlLicpLAooJ0xlYXJuIGhvdyB0byB1c2UgZnVsbC10ZXh0IHNlYXJjaCBpbiBQb3N0Z3JlU1FMLicpOwoKLS0gUGVyZm9ybSBhIGZ1bGwtdGV4dCBzZWFyY2gKU0VMRUNUICogRlJPTSBkb2N1bWVudHMKV0hFUkUgdG9fdHN2ZWN0b3IoJ2VuZ2xpc2gnLCBjb250ZW50KSBAQCB0b190c3F1ZXJ5KCdQb3N0Z3JlU1FMICYgZnVsbC10ZXh0Jyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Insert some sample data
+INSERT INTO documents (content) VALUES
+('PostgreSQL is a powerful, open-source object-relational database system.'),
+('Full-text search in PostgreSQL is very efficient and flexible.'),
+('Learn how to use full-text search in PostgreSQL.');
+
+-- Perform a full-text search
+SELECT * FROM documents
+WHERE to_tsvector('english', content) @@ to_tsquery('PostgreSQL &amp; full-text');</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>INSERT INTO</code>: Adds sample data to the <code>documents</code> table.</li>
+<li><code>SELECT</code>: Performs a full-text search on the <code>content</code> column, looking for documents that contain both &quot;PostgreSQL&quot; and &quot;full-text&quot;.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Setting Up Full-Text Search</h2>
+<div class='content'><ol>
+<li>Create a new table called <code>articles</code> with columns <code>id</code> (serial primary key) and <code>body</code> (text).</li>
+<li>Insert three sample articles into the <code>articles</code> table.</li>
+<li>Create a full-text search index on the <code>body</code> column.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU3RlcCAxOiBDcmVhdGUgdGhlIGFydGljbGVzIHRhYmxlCkNSRUFURSBUQUJMRSBhcnRpY2xlcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBib2R5IFRFWFQKKTsKCi0tIFN0ZXAgMjogSW5zZXJ0IHNhbXBsZSBhcnRpY2xlcwpJTlNFUlQgSU5UTyBhcnRpY2xlcyAoYm9keSkgVkFMVUVTCignUG9zdGdyZVNRTCBwcm92aWRlcyByb2J1c3QgZnVsbC10ZXh0IHNlYXJjaCBjYXBhYmlsaXRpZXMuJyksCignWW91IGNhbiBzZWFyY2ggZm9yIHRleHQgd2l0aGluIHlvdXIgZGF0YWJhc2UgZWZmaWNpZW50bHkuJyksCignRnVsbC10ZXh0IHNlYXJjaCBpcyBhIHBvd2VyZnVsIGZlYXR1cmUgb2YgUG9zdGdyZVNRTC4nKTsKCi0tIFN0ZXAgMzogQ3JlYXRlIGEgZnVsbC10ZXh0IHNlYXJjaCBpbmRleApDUkVBVEUgSU5ERVggYm9keV9pZHggT04gYXJ0aWNsZXMgVVNJTkcgZ2luKHRvX3RzdmVjdG9yKCdlbmdsaXNoJywgYm9keSkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Step 1: Create the articles table
+CREATE TABLE articles (
+    id SERIAL PRIMARY KEY,
+    body TEXT
+);
+
+-- Step 2: Insert sample articles
+INSERT INTO articles (body) VALUES
+('PostgreSQL provides robust full-text search capabilities.'),
+('You can search for text within your database efficiently.'),
+('Full-text search is a powerful feature of PostgreSQL.');
+
+-- Step 3: Create a full-text search index
+CREATE INDEX body_idx ON articles USING gin(to_tsvector('english', body));</pre></div><div class='content'></div><h2>Exercise 2: Performing a Full-Text Search</h2>
+<div class='content'><ol>
+<li>Perform a full-text search on the <code>articles</code> table to find articles that contain the words &quot;search&quot; and &quot;PostgreSQL&quot;.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gUGVyZm9ybSBhIGZ1bGwtdGV4dCBzZWFyY2gKU0VMRUNUICogRlJPTSBhcnRpY2xlcwpXSEVSRSB0b190c3ZlY3RvcignZW5nbGlzaCcsIGJvZHkpIEBAIHRvX3RzcXVlcnkoJ3NlYXJjaCAmIFBvc3RncmVTUUwnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Perform a full-text search
+SELECT * FROM articles
+WHERE to_tsvector('english', body) @@ to_tsquery('search &amp; PostgreSQL');</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Common Mistake</strong>: Forgetting to create an index for full-text search, leading to slow query performance.
+<ul>
+<li><strong>Tip</strong>: Always create a GIN or GIST index on the text columns you want to search.</li>
+</ul>
+</li>
+<li><strong>Common Mistake</strong>: Using the wrong text search configuration for your language or text type.
+<ul>
+<li><strong>Tip</strong>: Choose the appropriate text search configuration based on your data and language requirements.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this module, you learned about the basics of full-text search in PostgreSQL, including how to set it up, use it, and optimize it. Full-text search is a powerful feature that can greatly enhance the search capabilities of your PostgreSQL database. By understanding and implementing the concepts covered in this module, you can efficiently search and retrieve text data in your applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-postgis-for-geospatial-data' title="PostGIS for Geospatial Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-foreign-data-wrappers' title="Foreign Data Wrappers">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

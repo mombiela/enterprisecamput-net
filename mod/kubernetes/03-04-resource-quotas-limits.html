@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Quotas and Limits</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/03-04-resource-quotas-limits" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/03-04-resource-quotas-limits" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/03-04-resource-quotas-limits" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/03-04-resource-quotas-limits" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/03-04-resource-quotas-limits" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-environment-variables' title="Environment Variables">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Resource Quotas and Limits</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-cluster-networking' title="Cluster Networking">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In Kubernetes, managing resources efficiently is crucial to ensure that applications run smoothly and that the cluster remains stable. Resource quotas and limits are mechanisms provided by Kubernetes to control the resource consumption of pods and namespaces. This section will cover the following topics:</p>
+<ol>
+<li><strong>Understanding Resource Quotas</strong></li>
+<li><strong>Understanding Resource Limits</strong></li>
+<li><strong>Setting Resource Quotas</strong></li>
+<li><strong>Setting Resource Limits</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. Understanding Resource Quotas</h1>
+<div class='content'><p>Resource quotas are used to limit the total amount of resources (such as CPU and memory) that can be consumed by all the pods in a namespace. This helps in preventing a single namespace from consuming all the resources of the cluster.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Resource Quota Object</strong>: Defines the resource limits for a namespace.</li>
+<li><strong>Resource Types</strong>: CPU, memory, storage, etc.</li>
+<li><strong>Namespace Scope</strong>: Quotas are applied at the namespace level.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>A resource quota can limit the total CPU and memory usage for a namespace.</p>
+</div><h1>2. Understanding Resource Limits</h1>
+<div class='content'><p>Resource limits are used to control the maximum amount of resources that a single container can use. This ensures that no single container can consume more than its fair share of resources.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Requests</strong>: The amount of resources a container is guaranteed to get.</li>
+<li><strong>Limits</strong>: The maximum amount of resources a container can use.</li>
+<li><strong>Container Scope</strong>: Limits are applied at the container level within a pod.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>A container can be limited to use a maximum of 500m CPU and 256Mi memory.</p>
+</div><h1>3. Setting Resource Quotas</h1>
+<div class='content'><p>To set resource quotas, you need to create a <code>ResourceQuota</code> object in the namespace where you want to apply the quotas.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUmVzb3VyY2VRdW90YQptZXRhZGF0YToKICBuYW1lOiBleGFtcGxlLXF1b3RhCiAgbmFtZXNwYWNlOiBleGFtcGxlLW5hbWVzcGFjZQpzcGVjOgogIGhhcmQ6CiAgICBwb2RzOiAiMTAiCiAgICByZXF1ZXN0cy5jcHU6ICI0IgogICAgcmVxdWVzdHMubWVtb3J5OiAiOEdpIgogICAgbGltaXRzLmNwdTogIjgiCiAgICBsaW1pdHMubWVtb3J5OiAiMTZHaSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: example-quota
+  namespace: example-namespace
+spec:
+  hard:
+    pods: &quot;10&quot;
+    requests.cpu: &quot;4&quot;
+    requests.memory: &quot;8Gi&quot;
+    limits.cpu: &quot;8&quot;
+    limits.memory: &quot;16Gi&quot;</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>metadata.name</strong>: The name of the resource quota.</li>
+<li><strong>metadata.namespace</strong>: The namespace where the quota is applied.</li>
+<li><strong>spec.hard</strong>: The hard limits for various resources.</li>
+</ul>
+</div><h1>4. Setting Resource Limits</h1>
+<div class='content'><p>To set resource limits, you need to specify the <code>resources</code> field in the container specification of a pod.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcG9kCiAgbmFtZXNwYWNlOiBleGFtcGxlLW5hbWVzcGFjZQpzcGVjOgogIGNvbnRhaW5lcnM6CiAgLSBuYW1lOiBleGFtcGxlLWNvbnRhaW5lcgogICAgaW1hZ2U6IG5naW54CiAgICByZXNvdXJjZXM6CiAgICAgIHJlcXVlc3RzOgogICAgICAgIG1lbW9yeTogIjY0TWkiCiAgICAgICAgY3B1OiAiMjUwbSIKICAgICAgbGltaXRzOgogICAgICAgIG1lbW9yeTogIjEyOE1pIgogICAgICAgIGNwdTogIjUwMG0i"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+  namespace: example-namespace
+spec:
+  containers:
+  - name: example-container
+    image: nginx
+    resources:
+      requests:
+        memory: &quot;64Mi&quot;
+        cpu: &quot;250m&quot;
+      limits:
+        memory: &quot;128Mi&quot;
+        cpu: &quot;500m&quot;</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>resources.requests</strong>: The guaranteed amount of resources.</li>
+<li><strong>resources.limits</strong>: The maximum amount of resources.</li>
+</ul>
+</div><h1>5. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Creating a Resource Quota</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUmVzb3VyY2VRdW90YQptZXRhZGF0YToKICBuYW1lOiBjb21wdXRlLXJlc291cmNlcwogIG5hbWVzcGFjZTogZGV2CnNwZWM6CiAgaGFyZDoKICAgIHJlcXVlc3RzLmNwdTogIjIiCiAgICByZXF1ZXN0cy5tZW1vcnk6ICI0R2kiCiAgICBsaW1pdHMuY3B1OiAiNCIKICAgIGxpbWl0cy5tZW1vcnk6ICI4R2ki"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: compute-resources
+  namespace: dev
+spec:
+  hard:
+    requests.cpu: &quot;2&quot;
+    requests.memory: &quot;4Gi&quot;
+    limits.cpu: &quot;4&quot;
+    limits.memory: &quot;8Gi&quot;</pre></div><div class='content'></div><h2>Example 2: Applying Resource Limits to a Pod</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGxpbWl0ZWQtcG9kCiAgbmFtZXNwYWNlOiBkZXYKc3BlYzoKICBjb250YWluZXJzOgogIC0gbmFtZTogYnVzeWJveAogICAgaW1hZ2U6IGJ1c3lib3gKICAgIGNvbW1hbmQ6IFsic2giLCAiLWMiLCAic2xlZXAgMzYwMCJdCiAgICByZXNvdXJjZXM6CiAgICAgIHJlcXVlc3RzOgogICAgICAgIG1lbW9yeTogIjMyTWkiCiAgICAgICAgY3B1OiAiMTAwbSIKICAgICAgbGltaXRzOgogICAgICAgIG1lbW9yeTogIjY0TWkiCiAgICAgICAgY3B1OiAiMjAwbSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: limited-pod
+  namespace: dev
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: [&quot;sh&quot;, &quot;-c&quot;, &quot;sleep 3600&quot;]
+    resources:
+      requests:
+        memory: &quot;32Mi&quot;
+        cpu: &quot;100m&quot;
+      limits:
+        memory: &quot;64Mi&quot;
+        cpu: &quot;200m&quot;</pre></div><div class='content'></div><h1>6. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Resource Quota</h2>
+<div class='content'><p>Create a resource quota named <code>test-quota</code> in the <code>test</code> namespace with the following specifications:</p>
+<ul>
+<li>Maximum of 5 pods</li>
+<li>Total CPU requests of 2</li>
+<li>Total memory requests of 4Gi</li>
+<li>Total CPU limits of 4</li>
+<li>Total memory limits of 8Gi</li>
+</ul>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUmVzb3VyY2VRdW90YQptZXRhZGF0YToKICBuYW1lOiB0ZXN0LXF1b3RhCiAgbmFtZXNwYWNlOiB0ZXN0CnNwZWM6CiAgaGFyZDoKICAgIHBvZHM6ICI1IgogICAgcmVxdWVzdHMuY3B1OiAiMiIKICAgIHJlcXVlc3RzLm1lbW9yeTogIjRHaSIKICAgIGxpbWl0cy5jcHU6ICI0IgogICAgbGltaXRzLm1lbW9yeTogIjhHaSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: test-quota
+  namespace: test
+spec:
+  hard:
+    pods: &quot;5&quot;
+    requests.cpu: &quot;2&quot;
+    requests.memory: &quot;4Gi&quot;
+    limits.cpu: &quot;4&quot;
+    limits.memory: &quot;8Gi&quot;</pre></div><div class='content'></div><h2>Exercise 2: Apply Resource Limits to a Pod</h2>
+<div class='content'><p>Create a pod named <code>resource-limited-pod</code> in the <code>test</code> namespace with the following specifications:</p>
+<ul>
+<li>Container name: <code>nginx</code></li>
+<li>Image: <code>nginx</code></li>
+<li>CPU request: 100m</li>
+<li>Memory request: 128Mi</li>
+<li>CPU limit: 200m</li>
+<li>Memory limit: 256Mi</li>
+</ul>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IHJlc291cmNlLWxpbWl0ZWQtcG9kCiAgbmFtZXNwYWNlOiB0ZXN0CnNwZWM6CiAgY29udGFpbmVyczoKICAtIG5hbWU6IG5naW54CiAgICBpbWFnZTogbmdpbngKICAgIHJlc291cmNlczoKICAgICAgcmVxdWVzdHM6CiAgICAgICAgbWVtb3J5OiAiMTI4TWkiCiAgICAgICAgY3B1OiAiMTAwbSIKICAgICAgbGltaXRzOgogICAgICAgIG1lbW9yeTogIjI1Nk1pIgogICAgICAgIGNwdTogIjIwMG0i"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: resource-limited-pod
+  namespace: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      requests:
+        memory: &quot;128Mi&quot;
+        cpu: &quot;100m&quot;
+      limits:
+        memory: &quot;256Mi&quot;
+        cpu: &quot;200m&quot;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of resource quotas and limits in Kubernetes. We learned how to set resource quotas at the namespace level and resource limits at the container level. By managing resources effectively, you can ensure that your Kubernetes cluster remains stable and that no single application consumes more than its fair share of resources. In the next module, we will dive into networking in Kubernetes, exploring how to manage and configure network resources within your cluster.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-environment-variables' title="Environment Variables">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-cluster-networking' title="Cluster Networking">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

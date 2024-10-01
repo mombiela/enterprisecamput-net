@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Building a Weather App</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apache_cordova/06-02-case-study-weather-app" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apache_cordova/06-02-case-study-weather-app" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apache_cordova/06-02-case-study-weather-app" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apache_cordova/06-02-case-study-weather-app" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apache_cordova/06-02-case-study-weather-app" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-case-study-todo-app' title="Case Study: Building a To-Do List App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Case Study: Building a Weather App</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-case-study-social-media-app' title="Case Study: Building a Social Media App">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this case study, we will walk through the process of building a weather app using Apache Cordova. This app will fetch weather data from an external API and display it to the user. By the end of this module, you will have a solid understanding of how to integrate external APIs, manage data, and create a user-friendly interface in a Cordova application.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand how to integrate external APIs in a Cordova app.</li>
+<li>Learn how to manage and display data fetched from an API.</li>
+<li>Create a user-friendly interface to display weather information.</li>
+<li>Implement error handling for network requests.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><ul>
+<li>Basic knowledge of JavaScript, HTML, and CSS.</li>
+<li>Familiarity with Cordova project structure and core concepts.</li>
+</ul>
+</div><h1>Steps to Build the Weather App</h1>
+<div class='content'></div><h2>1. Setting Up the Project</h2>
+<div class='content'><h4>Step 1: Create a New Cordova Project</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBjcmVhdGUgd2VhdGhlckFwcCBjb20uZXhhbXBsZS53ZWF0aGVyQXBwIFdlYXRoZXJBcHAKY2Qgd2VhdGhlckFwcApjb3Jkb3ZhIHBsYXRmb3JtIGFkZCBhbmRyb2lk"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova create weatherApp com.example.weatherApp WeatherApp
+cd weatherApp
+cordova platform add android</pre></div><div class='content'><p>This command creates a new Cordova project named <code>WeatherApp</code> with the package name <code>com.example.weatherApp</code> and adds the Android platform.</p>
+<h4>Step 2: Add Required Plugins</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBwbHVnaW4gYWRkIGNvcmRvdmEtcGx1Z2luLXdoaXRlbGlzdApjb3Jkb3ZhIHBsdWdpbiBhZGQgY29yZG92YS1wbHVnaW4tZ2VvbG9jYXRpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova plugin add cordova-plugin-whitelist
+cordova plugin add cordova-plugin-geolocation</pre></div><div class='content'><ul>
+<li><code>cordova-plugin-whitelist</code>: Allows the app to make network requests.</li>
+<li><code>cordova-plugin-geolocation</code>: Provides access to the device's GPS.</li>
+</ul>
+</div><h2>2. Integrating the Weather API</h2>
+<div class='content'><h4>Step 1: Choose a Weather API</h4>
+<p>For this case study, we will use the OpenWeatherMap API. Sign up at <a href="https://openweathermap.org/">OpenWeatherMap</a> to get an API key.</p>
+<h4>Step 2: Fetch Weather Data</h4>
+<p>Create a new JavaScript file <code>www/js/weather.js</code> and add the following code to fetch weather data:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignZGV2aWNlcmVhZHknLCBmdW5jdGlvbigpIHsKICAgIG5hdmlnYXRvci5nZW9sb2NhdGlvbi5nZXRDdXJyZW50UG9zaXRpb24ob25TdWNjZXNzLCBvbkVycm9yKTsKCiAgICBmdW5jdGlvbiBvblN1Y2Nlc3MocG9zaXRpb24pIHsKICAgICAgICB2YXIgbGF0ID0gcG9zaXRpb24uY29vcmRzLmxhdGl0dWRlOwogICAgICAgIHZhciBsb24gPSBwb3NpdGlvbi5jb29yZHMubG9uZ2l0dWRlOwogICAgICAgIHZhciBhcGlLZXkgPSAnWU9VUl9BUElfS0VZJzsKICAgICAgICB2YXIgdXJsID0gYGh0dHBzOi8vYXBpLm9wZW53ZWF0aGVybWFwLm9yZy9kYXRhLzIuNS93ZWF0aGVyP2xhdD0ke2xhdH0mbG9uPSR7bG9ufSZhcHBpZD0ke2FwaUtleX0mdW5pdHM9bWV0cmljYDsKCiAgICAgICAgZmV0Y2godXJsKQogICAgICAgICAgICAudGhlbihyZXNwb25zZSA9PiByZXNwb25zZS5qc29uKCkpCiAgICAgICAgICAgIC50aGVuKGRhdGEgPT4gZGlzcGxheVdlYXRoZXIoZGF0YSkpCiAgICAgICAgICAgIC5jYXRjaChlcnJvciA9PiBjb25zb2xlLmVycm9yKCdFcnJvciBmZXRjaGluZyB3ZWF0aGVyIGRhdGE6JywgZXJyb3IpKTsKICAgIH0KCiAgICBmdW5jdGlvbiBvbkVycm9yKGVycm9yKSB7CiAgICAgICAgY29uc29sZS5lcnJvcignRXJyb3IgZ2V0dGluZyBsb2NhdGlvbjonLCBlcnJvcik7CiAgICB9CgogICAgZnVuY3Rpb24gZGlzcGxheVdlYXRoZXIoZGF0YSkgewogICAgICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdsb2NhdGlvbicpLmlubmVyVGV4dCA9IGRhdGEubmFtZTsKICAgICAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgndGVtcGVyYXR1cmUnKS5pbm5lclRleHQgPSBgJHtkYXRhLm1haW4udGVtcH0gwrBDYDsKICAgICAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnZGVzY3JpcHRpb24nKS5pbm5lclRleHQgPSBkYXRhLndlYXRoZXJbMF0uZGVzY3JpcHRpb247CiAgICB9Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener('deviceready', function() {
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+
+    function onSuccess(position) {
+        var lat = position.coords.latitude;
+        var lon = position.coords.longitude;
+        var apiKey = 'YOUR_API_KEY';
+        var url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&amp;lon=${lon}&amp;appid=${apiKey}&amp;units=metric`;
+
+        fetch(url)
+            .then(response =&gt; response.json())
+            .then(data =&gt; displayWeather(data))
+            .catch(error =&gt; console.error('Error fetching weather data:', error));
+    }
+
+    function onError(error) {
+        console.error('Error getting location:', error);
+    }
+
+    function displayWeather(data) {
+        document.getElementById('location').innerText = data.name;
+        document.getElementById('temperature').innerText = `${data.main.temp} &deg;C`;
+        document.getElementById('description').innerText = data.weather[0].description;
+    }
+});</pre></div><div class='content'><p>Replace <code>YOUR_API_KEY</code> with your actual API key from OpenWeatherMap.</p>
+</div><h2>3. Creating the User Interface</h2>
+<div class='content'><h4>Step 1: Update <code>index.html</code></h4>
+<p>Modify <code>www/index.html</code> to include elements for displaying weather information:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDxtZXRhIGNoYXJzZXQ9InV0Zi04Ij4KICAgIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MSI+CiAgICA8dGl0bGU+V2VhdGhlciBBcHA8L3RpdGxlPgogICAgPGxpbmsgcmVsPSJzdHlsZXNoZWV0IiBocmVmPSJjc3MvaW5kZXguY3NzIj4KPC9oZWFkPgo8Ym9keT4KICAgIDxkaXYgY2xhc3M9ImFwcCI+CiAgICAgICAgPGgxPldlYXRoZXIgQXBwPC9oMT4KICAgICAgICA8ZGl2IGlkPSJ3ZWF0aGVyIj4KICAgICAgICAgICAgPHAgaWQ9ImxvY2F0aW9uIj5GZXRjaGluZyBsb2NhdGlvbi4uLjwvcD4KICAgICAgICAgICAgPHAgaWQ9InRlbXBlcmF0dXJlIj48L3A+CiAgICAgICAgICAgIDxwIGlkPSJkZXNjcmlwdGlvbiI+PC9wPgogICAgICAgIDwvZGl2PgogICAgPC9kaXY+CiAgICA8c2NyaXB0IHNyYz0iY29yZG92YS5qcyI+PC9zY3JpcHQ+CiAgICA8c2NyaXB0IHNyYz0ianMvd2VhdGhlci5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Weather App&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;css/index.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;app&quot;&gt;
+        &lt;h1&gt;Weather App&lt;/h1&gt;
+        &lt;div id=&quot;weather&quot;&gt;
+            &lt;p id=&quot;location&quot;&gt;Fetching location...&lt;/p&gt;
+            &lt;p id=&quot;temperature&quot;&gt;&lt;/p&gt;
+            &lt;p id=&quot;description&quot;&gt;&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;script src=&quot;cordova.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/weather.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><h4>Step 2: Style the App</h4>
+<p>Create a new CSS file <code>www/css/index.css</code> and add the following styles:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ym9keSB7CiAgICBmb250LWZhbWlseTogQXJpYWwsIHNhbnMtc2VyaWY7CiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjBmMGYwOwogICAgbWFyZ2luOiAwOwogICAgcGFkZGluZzogMDsKfQoKLmFwcCB7CiAgICBtYXJnaW4tdG9wOiA1MHB4Owp9Cgojd2VhdGhlciB7CiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZmZmOwogICAgcGFkZGluZzogMjBweDsKICAgIGJvcmRlci1yYWRpdXM6IDEwcHg7CiAgICBib3gtc2hhZG93OiAwIDAgMTBweCByZ2JhKDAsIDAsIDAsIDAuMSk7CiAgICBkaXNwbGF5OiBpbmxpbmUtYmxvY2s7Cn0KCiNsb2NhdGlvbiB7CiAgICBmb250LXNpemU6IDEuNWVtOwogICAgbWFyZ2luLWJvdHRvbTogMTBweDsKfQoKI3RlbXBlcmF0dXJlIHsKICAgIGZvbnQtc2l6ZTogMmVtOwogICAgbWFyZ2luLWJvdHRvbTogMTBweDsKfQoKI2Rlc2NyaXB0aW9uIHsKICAgIGZvbnQtc2l6ZTogMS4yZW07CiAgICBjb2xvcjogIzU1NTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.app {
+    margin-top: 50px;
+}
+
+#weather {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+#location {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+#temperature {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+#description {
+    font-size: 1.2em;
+    color: #555;
+}</pre></div><div class='content'></div><h2>4. Testing the App</h2>
+<div class='content'><h4>Step 1: Run the App on an Emulator or Device</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBydW4gYW5kcm9pZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova run android</pre></div><div class='content'><p>This command builds and runs the app on an Android emulator or connected device.</p>
+</div><h2>5. Error Handling and Optimization</h2>
+<div class='content'><h4>Step 1: Handle Network Errors</h4>
+<p>Update <code>www/js/weather.js</code> to handle network errors:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmV0Y2godXJsKQogICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICAgIGlmICghcmVzcG9uc2Uub2spIHsKICAgICAgICAgICAgdGhyb3cgbmV3IEVycm9yKCdOZXR3b3JrIHJlc3BvbnNlIHdhcyBub3Qgb2snKTsKICAgICAgICB9CiAgICAgICAgcmV0dXJuIHJlc3BvbnNlLmpzb24oKTsKICAgIH0pCiAgICAudGhlbihkYXRhID0+IGRpc3BsYXlXZWF0aGVyKGRhdGEpKQogICAgLmNhdGNoKGVycm9yID0+IHsKICAgICAgICBjb25zb2xlLmVycm9yKCdFcnJvciBmZXRjaGluZyB3ZWF0aGVyIGRhdGE6JywgZXJyb3IpOwogICAgICAgIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdsb2NhdGlvbicpLmlubmVyVGV4dCA9ICdFcnJvciBmZXRjaGluZyB3ZWF0aGVyIGRhdGEnOwogICAgfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fetch(url)
+    .then(response =&gt; {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data =&gt; displayWeather(data))
+    .catch(error =&gt; {
+        console.error('Error fetching weather data:', error);
+        document.getElementById('location').innerText = 'Error fetching weather data';
+    });</pre></div><div class='content'></div><h2>6. Conclusion</h2>
+<div class='content'><p>In this case study, we built a simple weather app using Apache Cordova. We covered the following key concepts:</p>
+<ul>
+<li>Setting up a Cordova project.</li>
+<li>Integrating an external API to fetch weather data.</li>
+<li>Displaying data in a user-friendly interface.</li>
+<li>Handling errors and optimizing the app.</li>
+</ul>
+<p>By completing this case study, you have gained practical experience in building a real-world application with Cordova. This knowledge can be applied to more complex projects and different types of applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-case-study-todo-app' title="Case Study: Building a To-Do List App">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-case-study-social-media-app' title="Case Study: Building a Social Media App">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

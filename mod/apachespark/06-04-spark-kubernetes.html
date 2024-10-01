@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark with Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/06-04-spark-kubernetes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/06-04-spark-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/06-04-spark-kubernetes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/06-04-spark-kubernetes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/06-04-spark-kubernetes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-running-spark-google-cloud' title="Running Spark on Google Cloud">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Spark with Kubernetes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-time-data-processing' title="Real-Time Data Processing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to run Apache Spark on Kubernetes. Kubernetes is an open-source platform designed to automate deploying, scaling, and operating application containers. Running Spark on Kubernetes allows for better resource management, scalability, and integration with cloud-native environments.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Kubernetes Overview</strong>:</p>
+<ul>
+<li><strong>Kubernetes Cluster</strong>: A set of nodes (machines) that run containerized applications managed by Kubernetes.</li>
+<li><strong>Pods</strong>: The smallest deployable units in Kubernetes, which can contain one or more containers.</li>
+<li><strong>Services</strong>: Abstractions that define a logical set of Pods and a policy by which to access them.</li>
+<li><strong>ConfigMaps and Secrets</strong>: Mechanisms to manage configuration data and sensitive information.</li>
+</ul>
+</li>
+<li>
+<p><strong>Spark on Kubernetes</strong>:</p>
+<ul>
+<li><strong>Spark Driver</strong>: The process that runs the main() function of the application and creates SparkContext.</li>
+<li><strong>Spark Executors</strong>: Processes launched by the driver to run individual tasks.</li>
+<li><strong>Cluster Mode</strong>: The driver runs inside a Kubernetes pod.</li>
+<li><strong>Client Mode</strong>: The driver runs on the local machine, and executors run on Kubernetes pods.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up Spark on Kubernetes</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>A running Kubernetes cluster.</li>
+<li><code>kubectl</code> command-line tool configured to communicate with your Kubernetes cluster.</li>
+<li>Docker installed to build container images.</li>
+<li>Apache Spark distribution with Kubernetes support.</li>
+</ul>
+</div><h2>Steps to Run Spark on Kubernetes</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Build Docker Image for Spark</strong>:</p>
+<ul>
+<li>Create a Dockerfile for Spark:
+<pre><code class="language-dockerfile">FROM spark:latest
+COPY your-spark-application.jar /opt/spark/jars/
+</code></pre>
+</li>
+<li>Build and push the Docker image:
+<pre><code class="language-sh">docker build -t your-docker-repo/spark-app:latest .
+docker push your-docker-repo/spark-app:latest
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Create Kubernetes Resources</strong>:</p>
+<ul>
+<li>Define a YAML file for the Spark driver and executor pods:
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: spark-driver
+spec:
+  containers:
+  - name: spark-driver
+    image: your-docker-repo/spark-app:latest
+    args: [&quot;spark-submit&quot;, &quot;--master&quot;, &quot;k8s://https://&lt;k8s-master-url&gt;:6443&quot;, &quot;--deploy-mode&quot;, &quot;cluster&quot;, &quot;--class&quot;, &quot;org.apache.spark.examples.SparkPi&quot;, &quot;local:///opt/spark/jars/your-spark-application.jar&quot;]
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Submit Spark Application</strong>:</p>
+<ul>
+<li>Use <code>spark-submit</code> to deploy the application:
+<pre><code class="language-sh">./bin/spark-submit <br>       --master k8s://https://&lt;k8s-master-url&gt;:6443 <br>       --deploy-mode cluster <br>       --name spark-pi <br>       --class org.apache.spark.examples.SparkPi <br>       --conf spark.executor.instances=2 <br>       --conf spark.kubernetes.container.image=your-docker-repo/spark-app:latest <br>       local:///opt/spark/jars/your-spark-application.jar
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Practical Example</h2>
+<div class='content'><p>Let's run a simple Spark application that calculates Pi using Kubernetes.</p>
+<ol>
+<li>
+<p><strong>Dockerfile</strong>:</p>
+<pre><code class="language-dockerfile">FROM bitnami/spark:latest
+COPY spark-examples_2.12-3.0.1.jar /opt/spark/jars/
+</code></pre>
+</li>
+<li>
+<p><strong>Build and Push Docker Image</strong>:</p>
+<pre><code class="language-sh">docker build -t your-docker-repo/spark-pi:latest .
+docker push your-docker-repo/spark-pi:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Submit Spark Application</strong>:</p>
+<pre><code class="language-sh">./bin/spark-submit <br>     --master k8s://https://&lt;k8s-master-url&gt;:6443 <br>     --deploy-mode cluster <br>     --name spark-pi <br>     --class org.apache.spark.examples.SparkPi <br>     --conf spark.executor.instances=2 <br>     --conf spark.kubernetes.container.image=your-docker-repo/spark-pi:latest <br>     local:///opt/spark/jars/spark-examples_2.12-3.0.1.jar
+</code></pre>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Image Pull Errors</strong>: Ensure your Docker image is accessible from the Kubernetes cluster.</li>
+<li><strong>Configuration Issues</strong>: Double-check the Kubernetes master URL and Spark configurations.</li>
+<li><strong>Resource Management</strong>: Properly configure resource requests and limits for Spark driver and executor pods.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Running Apache Spark on Kubernetes provides a robust and scalable environment for big data processing. By leveraging Kubernetes' orchestration capabilities, you can efficiently manage Spark applications, ensuring high availability and resource optimization. In the next module, we will explore real-world applications and case studies to see how Spark is used in various industries.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-running-spark-google-cloud' title="Running Spark on Google Cloud">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-time-data-processing' title="Real-Time Data Processing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Macros and Reflection</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/06-03-macros-and-reflection" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/06-03-macros-and-reflection" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/06-03-macros-and-reflection" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/scala/06-03-macros-and-reflection" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/06-03-macros-and-reflection" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-type-classes-and-polymorphism' title="Type Classes and Polymorphism">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Macros and Reflection</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-concurrency-in-scala' title="Concurrency in Scala">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into two advanced features of Scala: Macros and Reflection. These powerful tools allow for metaprogramming, enabling you to write code that can generate and manipulate other code at compile-time and runtime.</p>
+</div><h1>Table of Contents</h1>
+<div class='content'><ol>
+<li>Introduction to Macros</li>
+<li>Writing and Using Macros</li>
+<li>Introduction to Reflection</li>
+<li>Using Reflection in Scala</li>
+<li>Practical Exercises</li>
+<li>Summary</li>
+</ol>
+</div><h1>1. Introduction to Macros</h1>
+<div class='content'><p>Macros in Scala are a way to perform metaprogramming by allowing code to be generated at compile-time. This can be useful for optimizing performance, reducing boilerplate code, and creating domain-specific languages (DSLs).</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Compile-time Code Generation</strong>: Macros generate code during the compilation process.</li>
+<li><strong>Abstract Syntax Trees (ASTs)</strong>: Macros work by manipulating the ASTs of the code.</li>
+<li><strong>Macro Annotations</strong>: Special annotations that trigger macro expansion.</li>
+</ul>
+</div><h1>2. Writing and Using Macros</h1>
+<div class='content'><p>To write a macro in Scala, you need to define a method that generates code. This method is then invoked at compile-time to produce the desired code.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmxhbmd1YWdlLmV4cGVyaW1lbnRhbC5tYWNyb3MKaW1wb3J0IHNjYWxhLnJlZmxlY3QubWFjcm9zLmJsYWNrYm94LkNvbnRleHQKCm9iamVjdCBNYWNyb3MgewogIGRlZiBoZWxsb01hY3JvKCk6IFVuaXQgPSBtYWNybyBoZWxsb01hY3JvSW1wbAoKICBkZWYgaGVsbG9NYWNyb0ltcGwoYzogQ29udGV4dCkoKTogYy5FeHByW1VuaXRdID0gewogICAgaW1wb3J0IGMudW5pdmVyc2UuXwogICAgYy5FeHByW1VuaXRdKHEiIiJwcmludGxuKCJIZWxsbywgTWFjcm9zISIpIiIiKQogIH0KfQoKb2JqZWN0IE1haW4gZXh0ZW5kcyBBcHAgewogIE1hY3Jvcy5oZWxsb01hY3JvKCkKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.language.experimental.macros
+import scala.reflect.macros.blackbox.Context
+
+object Macros {
+  def helloMacro(): Unit = macro helloMacroImpl
+
+  def helloMacroImpl(c: Context)(): c.Expr[Unit] = {
+    import c.universe._
+    c.Expr[Unit](q&quot;&quot;&quot;println(&quot;Hello, Macros!&quot;)&quot;&quot;&quot;)
+  }
+}
+
+object Main extends App {
+  Macros.helloMacro()
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>helloMacro</strong>: A method that will be replaced by the macro implementation.</li>
+<li><strong>helloMacroImpl</strong>: The macro implementation that generates the code to print &quot;Hello, Macros!&quot;.</li>
+<li><strong>c.universe._</strong>: Imports the necessary tools to manipulate the AST.</li>
+</ul>
+</div><h2>Practical Exercise:</h2>
+<div class='content'><ol>
+<li>Create a macro that takes a string and prints it in uppercase.</li>
+<li>Use the macro in a Scala application.</li>
+</ol>
+</div><h1>3. Introduction to Reflection</h1>
+<div class='content'><p>Reflection in Scala allows you to inspect and manipulate objects at runtime. This can be useful for tasks such as serialization, deserialization, and dynamic method invocation.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Runtime Type Information</strong>: Accessing type information at runtime.</li>
+<li><strong>Mirror</strong>: A reflection API that provides access to runtime type information.</li>
+<li><strong>TypeTags and ClassTags</strong>: Tools to capture type information.</li>
+</ul>
+</div><h1>4. Using Reflection in Scala</h1>
+<div class='content'><p>To use reflection in Scala, you typically use the <code>scala.reflect</code> package.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLnJlZmxlY3QucnVudGltZS51bml2ZXJzZS5fCgpjYXNlIGNsYXNzIFBlcnNvbihuYW1lOiBTdHJpbmcsIGFnZTogSW50KQoKb2JqZWN0IFJlZmxlY3Rpb25FeGFtcGxlIGV4dGVuZHMgQXBwIHsKICB2YWwgcGVyc29uID0gUGVyc29uKCJBbGljZSIsIDMwKQogIHZhbCBtaXJyb3IgPSBydW50aW1lTWlycm9yKHBlcnNvbi5nZXRDbGFzcy5nZXRDbGFzc0xvYWRlcikKICB2YWwgY2xhc3NTeW1ib2wgPSBtaXJyb3IuY2xhc3NTeW1ib2wocGVyc29uLmdldENsYXNzKQogIHZhbCBjbGFzc01pcnJvciA9IG1pcnJvci5yZWZsZWN0Q2xhc3MoY2xhc3NTeW1ib2wpCiAgdmFsIGNvbnN0cnVjdG9yID0gY2xhc3NTeW1ib2wucHJpbWFyeUNvbnN0cnVjdG9yLmFzTWV0aG9kCiAgdmFsIGNvbnN0cnVjdG9yTWlycm9yID0gY2xhc3NNaXJyb3IucmVmbGVjdENvbnN0cnVjdG9yKGNvbnN0cnVjdG9yKQogIHZhbCBuZXdQZXJzb24gPSBjb25zdHJ1Y3Rvck1pcnJvcigiQm9iIiwgMjUpLmFzSW5zdGFuY2VPZltQZXJzb25dCgogIHByaW50bG4obmV3UGVyc29uKSAvLyBPdXRwdXQ6IFBlcnNvbihCb2IsMjUpCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.reflect.runtime.universe._
+
+case class Person(name: String, age: Int)
+
+object ReflectionExample extends App {
+  val person = Person(&quot;Alice&quot;, 30)
+  val mirror = runtimeMirror(person.getClass.getClassLoader)
+  val classSymbol = mirror.classSymbol(person.getClass)
+  val classMirror = mirror.reflectClass(classSymbol)
+  val constructor = classSymbol.primaryConstructor.asMethod
+  val constructorMirror = classMirror.reflectConstructor(constructor)
+  val newPerson = constructorMirror(&quot;Bob&quot;, 25).asInstanceOf[Person]
+
+  println(newPerson) // Output: Person(Bob,25)
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>runtimeMirror</strong>: Obtains a mirror for the runtime environment.</li>
+<li><strong>classSymbol</strong>: Represents the class of the object.</li>
+<li><strong>reflectClass</strong>: Reflects the class to obtain a class mirror.</li>
+<li><strong>primaryConstructor</strong>: Accesses the primary constructor of the class.</li>
+<li><strong>reflectConstructor</strong>: Reflects the constructor to create new instances.</li>
+</ul>
+</div><h2>Practical Exercise:</h2>
+<div class='content'><ol>
+<li>Use reflection to dynamically invoke a method on an object.</li>
+<li>Create a function that uses reflection to print all the fields and their values of a given object.</li>
+</ol>
+</div><h1>5. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Uppercase Macro</h2>
+<div class='content'><p>Create a macro that takes a string and prints it in uppercase.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmxhbmd1YWdlLmV4cGVyaW1lbnRhbC5tYWNyb3MKaW1wb3J0IHNjYWxhLnJlZmxlY3QubWFjcm9zLmJsYWNrYm94LkNvbnRleHQKCm9iamVjdCBVcHBlcmNhc2VNYWNybyB7CiAgZGVmIHByaW50VXBwZXJjYXNlKHN0cjogU3RyaW5nKTogVW5pdCA9IG1hY3JvIHByaW50VXBwZXJjYXNlSW1wbAoKICBkZWYgcHJpbnRVcHBlcmNhc2VJbXBsKGM6IENvbnRleHQpKHN0cjogYy5FeHByW1N0cmluZ10pOiBjLkV4cHJbVW5pdF0gPSB7CiAgICBpbXBvcnQgYy51bml2ZXJzZS5fCiAgICB2YWwgTGl0ZXJhbChDb25zdGFudChzOiBTdHJpbmcpKSA9IHN0ci50cmVlCiAgICBjLkV4cHJbVW5pdF0ocSIiInByaW50bG4oJHtzLnRvVXBwZXJDYXNlfSkiIiIpCiAgfQp9CgpvYmplY3QgTWFpbiBleHRlbmRzIEFwcCB7CiAgVXBwZXJjYXNlTWFjcm8ucHJpbnRVcHBlcmNhc2UoImhlbGxvLCBtYWNyb3MhIikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.language.experimental.macros
+import scala.reflect.macros.blackbox.Context
+
+object UppercaseMacro {
+  def printUppercase(str: String): Unit = macro printUppercaseImpl
+
+  def printUppercaseImpl(c: Context)(str: c.Expr[String]): c.Expr[Unit] = {
+    import c.universe._
+    val Literal(Constant(s: String)) = str.tree
+    c.Expr[Unit](q&quot;&quot;&quot;println(${s.toUpperCase})&quot;&quot;&quot;)
+  }
+}
+
+object Main extends App {
+  UppercaseMacro.printUppercase(&quot;hello, macros!&quot;)
+}</pre></div><div class='content'></div><h2>Exercise 2: Dynamic Method Invocation</h2>
+<div class='content'><p>Use reflection to dynamically invoke a method on an object.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLnJlZmxlY3QucnVudGltZS51bml2ZXJzZS5fCgpjbGFzcyBHcmVldGVyIHsKICBkZWYgZ3JlZXQobmFtZTogU3RyaW5nKTogU3RyaW5nID0gcyJIZWxsbywgJG5hbWUhIgp9CgpvYmplY3QgUmVmbGVjdGlvbkludm9rZUV4YW1wbGUgZXh0ZW5kcyBBcHAgewogIHZhbCBncmVldGVyID0gbmV3IEdyZWV0ZXIKICB2YWwgbWlycm9yID0gcnVudGltZU1pcnJvcihncmVldGVyLmdldENsYXNzLmdldENsYXNzTG9hZGVyKQogIHZhbCBpbnN0YW5jZU1pcnJvciA9IG1pcnJvci5yZWZsZWN0KGdyZWV0ZXIpCiAgdmFsIG1ldGhvZFN5bWJvbCA9IHR5cGVPZltHcmVldGVyXS5kZWNsKFRlcm1OYW1lKCJncmVldCIpKS5hc01ldGhvZAogIHZhbCBtZXRob2QgPSBpbnN0YW5jZU1pcnJvci5yZWZsZWN0TWV0aG9kKG1ldGhvZFN5bWJvbCkKICB2YWwgcmVzdWx0ID0gbWV0aG9kKCJTY2FsYSIpCiAgCiAgcHJpbnRsbihyZXN1bHQpIC8vIE91dHB1dDogSGVsbG8sIFNjYWxhIQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.reflect.runtime.universe._
+
+class Greeter {
+  def greet(name: String): String = s&quot;Hello, $name!&quot;
+}
+
+object ReflectionInvokeExample extends App {
+  val greeter = new Greeter
+  val mirror = runtimeMirror(greeter.getClass.getClassLoader)
+  val instanceMirror = mirror.reflect(greeter)
+  val methodSymbol = typeOf[Greeter].decl(TermName(&quot;greet&quot;)).asMethod
+  val method = instanceMirror.reflectMethod(methodSymbol)
+  val result = method(&quot;Scala&quot;)
+  
+  println(result) // Output: Hello, Scala!
+}</pre></div><div class='content'></div><h1>6. Summary</h1>
+<div class='content'><p>In this section, we explored the powerful features of Macros and Reflection in Scala. We learned how to:</p>
+<ul>
+<li>Write and use macros for compile-time code generation.</li>
+<li>Use reflection to inspect and manipulate objects at runtime.</li>
+</ul>
+<p>These tools can significantly enhance your ability to write flexible and efficient Scala code. In the next section, we will delve into concurrency in Scala, exploring how to write concurrent and parallel programs effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-type-classes-and-polymorphism' title="Type Classes and Polymorphism">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-concurrency-in-scala' title="Concurrency in Scala">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

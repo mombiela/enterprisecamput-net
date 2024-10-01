@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indexes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/04-04-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/04-04-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/04-04-indexes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/04-04-indexes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/04-04-indexes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-primary-and-foreign-keys' title="Primary and Foreign Keys">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Indexes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-views' title="Views">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='index'><p>Indexes are a crucial component of database performance optimization. They allow the database to find and retrieve specific rows much faster than it could do by scanning the entire table. In this section, we will cover the following topics:</p>
+<ol>
+<li><strong>What are Indexes?</strong></li>
+<li><strong>Types of Indexes in PostgreSQL</strong></li>
+<li><strong>Creating Indexes</strong></li>
+<li><strong>Using Indexes</strong></li>
+<li><strong>Managing Indexes</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h2>1. What are Indexes?</h2>
+<div class='index'><p>Indexes are special lookup tables that the database search engine can use to speed up data retrieval. They are created on columns of a table and can significantly improve the performance of SELECT queries.</p>
+</div><h2>Key Points:</h2>
+<div class='index'><ul>
+<li><strong>Purpose</strong>: Speed up data retrieval.</li>
+<li><strong>Structure</strong>: Similar to the index of a book, allowing quick location of data.</li>
+<li><strong>Trade-off</strong>: While indexes speed up read operations, they can slow down write operations (INSERT, UPDATE, DELETE) because the index must be updated.</li>
+</ul>
+</div><h2>2. Types of Indexes in PostgreSQL</h2>
+<div class='index'><p>PostgreSQL supports several types of indexes, each suited for different types of queries and data.</p>
+<table>
+<thead>
+<tr>
+<th>Index Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>B-tree</strong></td>
+<td>Default index type, suitable for most queries.</td>
+</tr>
+<tr>
+<td><strong>Hash</strong></td>
+<td>Useful for equality comparisons.</td>
+</tr>
+<tr>
+<td><strong>GIN</strong></td>
+<td>Generalized Inverted Index, used for full-text search and JSONB data types.</td>
+</tr>
+<tr>
+<td><strong>GiST</strong></td>
+<td>Generalized Search Tree, used for complex data types like geometric data.</td>
+</tr>
+<tr>
+<td><strong>SP-GiST</strong></td>
+<td>Space-partitioned Generalized Search Tree, used for non-balanced data.</td>
+</tr>
+<tr>
+<td><strong>BRIN</strong></td>
+<td>Block Range INdex, used for large tables with naturally ordered data.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>3. Creating Indexes</h2>
+<div class='index'><p>Creating an index in PostgreSQL is straightforward. The basic syntax is:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGluZGV4X25hbWUgT04gdGFibGVfbmFtZSAoY29sdW1uX25hbWUpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX index_name ON table_name (column_name);</pre></div><div class='index'></div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF91c2Vyc19sYXN0bmFtZSBPTiB1c2VycyAobGFzdG5hbWUpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_users_lastname ON users (lastname);</pre></div><div class='index'><p>This command creates an index named <code>idx_users_lastname</code> on the <code>lastname</code> column of the <code>users</code> table.</p>
+</div><h2>4. Using Indexes</h2>
+<div class='index'><p>Indexes are used automatically by PostgreSQL when executing queries. The query planner decides whether to use an index based on the query and the data distribution.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSBsYXN0bmFtZSA9ICdTbWl0aCc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM users WHERE lastname = 'Smith';</pre></div><div class='index'><p>If an index exists on the <code>lastname</code> column, PostgreSQL will use it to quickly find rows where <code>lastname</code> is 'Smith'.</p>
+</div><h2>5. Managing Indexes</h2>
+<div class='index'></div><h2>Viewing Indexes:</h2>
+<div class='index'><p>You can view the indexes on a table using the <code>\d</code> command in <code>psql</code> or querying the <code>pg_indexes</code> system catalog.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGluZGV4bmFtZSwgaW5kZXhkZWYgRlJPTSBwZ19pbmRleGVzIFdIRVJFIHRhYmxlbmFtZSA9ICd1c2Vycyc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'users';</pre></div><div class='index'></div><h2>Dropping Indexes:</h2>
+<div class='index'><p>Indexes can be dropped if they are no longer needed.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RFJPUCBJTkRFWCBpbmRleF9uYW1lOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DROP INDEX index_name;</pre></div><div class='index'></div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RFJPUCBJTkRFWCBpZHhfdXNlcnNfbGFzdG5hbWU7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DROP INDEX idx_users_lastname;</pre></div><div class='index'></div><h2>6. Practical Examples</h2>
+<div class='index'></div><h2>Example 1: Creating a B-tree Index</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcnNfZGF0ZSBPTiBvcmRlcnMgKG9yZGVyX2RhdGUpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_orders_date ON orders (order_date);</pre></div><div class='index'><p>This creates a B-tree index on the <code>order_date</code> column of the <code>orders</code> table, speeding up queries that filter by <code>order_date</code>.</p>
+</div><h2>Example 2: Creating a GIN Index for Full-Text Search</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9hcnRpY2xlc19jb250ZW50IE9OIGFydGljbGVzIFVTSU5HIEdJTiAodG9fdHN2ZWN0b3IoJ2VuZ2xpc2gnLCBjb250ZW50KSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_articles_content ON articles USING GIN (to_tsvector('english', content));</pre></div><div class='index'><p>This creates a GIN index on the <code>content</code> column of the <code>articles</code> table, optimized for full-text search.</p>
+</div><h2>7. Exercises</h2>
+<div class='index'></div><h2>Exercise 1: Creating an Index</h2>
+<div class='index'><p>Create an index on the <code>email</code> column of the <code>customers</code> table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gWW91ciBzb2x1dGlvbiBoZXJl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Your solution here</pre></div><div class='index'></div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9jdXN0b21lcnNfZW1haWwgT04gY3VzdG9tZXJzIChlbWFpbCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_customers_email ON customers (email);</pre></div><div class='index'></div><h2>Exercise 2: Dropping an Index</h2>
+<div class='index'><p>Drop the index <code>idx_customers_email</code> created in the previous exercise.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gWW91ciBzb2x1dGlvbiBoZXJl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Your solution here</pre></div><div class='index'></div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RFJPUCBJTkRFWCBpZHhfY3VzdG9tZXJzX2VtYWlsOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DROP INDEX idx_customers_email;</pre></div><div class='index'></div><h2>Exercise 3: Viewing Indexes</h2>
+<div class='index'><p>List all indexes on the <code>orders</code> table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gWW91ciBzb2x1dGlvbiBoZXJl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Your solution here</pre></div><div class='index'></div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGluZGV4bmFtZSwgaW5kZXhkZWYgRlJPTSBwZ19pbmRleGVzIFdIRVJFIHRhYmxlbmFtZSA9ICdvcmRlcnMnOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT indexname, indexdef FROM pg_indexes WHERE tablename = 'orders';</pre></div><div class='index'></div><h2>Conclusion</h2>
+<div class='index'><p>Indexes are a powerful tool for optimizing database performance. By understanding the different types of indexes and how to create and manage them, you can significantly improve the efficiency of your queries. Remember that while indexes speed up read operations, they can slow down write operations, so use them judiciously. In the next section, we will delve into more advanced PostgreSQL features, such as views and triggers.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-primary-and-foreign-keys' title="Primary and Foreign Keys">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-views' title="Views">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

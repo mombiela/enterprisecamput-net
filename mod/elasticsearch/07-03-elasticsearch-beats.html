@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch with Beats</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/07-03-elasticsearch-beats" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/07-03-elasticsearch-beats" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/07-03-elasticsearch-beats" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/07-03-elasticsearch-beats" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/07-03-elasticsearch-beats" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-elasticsearch-kibana' title="Elasticsearch with Kibana">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Elasticsearch with Beats</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-elasticsearch-other-tools' title="Elasticsearch with Other Tools">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Beats are lightweight data shippers that you install on your servers to send operational data to Elasticsearch. They are designed to be simple, efficient, and easy to use. Beats can collect various types of data, such as logs, metrics, network data, and more, and ship them to Elasticsearch for analysis and visualization.</p>
+<p>In this section, we will cover:</p>
+<ol>
+<li>What Beats are and their types.</li>
+<li>Installing and configuring Beats.</li>
+<li>Sending data to Elasticsearch using Beats.</li>
+<li>Practical examples and exercises.</li>
+</ol>
+</div><h1>What are Beats?</h1>
+<div class='content'><p>Beats are a family of data shippers for Elasticsearch. Each Beat is a single-purpose agent that collects data and sends it to Elasticsearch. The most commonly used Beats include:</p>
+<ul>
+<li><strong>Filebeat</strong>: Collects and ships log files.</li>
+<li><strong>Metricbeat</strong>: Collects and ships system and service metrics.</li>
+<li><strong>Packetbeat</strong>: Collects and ships network data.</li>
+<li><strong>Winlogbeat</strong>: Collects and ships Windows event logs.</li>
+<li><strong>Heartbeat</strong>: Monitors services for their availability.</li>
+</ul>
+</div><h2>Comparison of Beats</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Beat</th>
+<th>Purpose</th>
+<th>Data Collected</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Filebeat</td>
+<td>Log file collection</td>
+<td>Log files from various sources</td>
+</tr>
+<tr>
+<td>Metricbeat</td>
+<td>System and service metrics</td>
+<td>CPU, memory, disk, network metrics</td>
+</tr>
+<tr>
+<td>Packetbeat</td>
+<td>Network data</td>
+<td>Network packets, flows, transactions</td>
+</tr>
+<tr>
+<td>Winlogbeat</td>
+<td>Windows event logs</td>
+<td>Windows event logs</td>
+</tr>
+<tr>
+<td>Heartbeat</td>
+<td>Service availability monitoring</td>
+<td>Uptime and response time of services</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Installing and Configuring Beats</h1>
+<div class='content'></div><h2>Step-by-Step Installation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Download and Install</strong>:</p>
+<ul>
+<li>Download the Beat you need from the <a href="https://www.elastic.co/downloads/beats">Elastic website</a>.</li>
+<li>Extract the downloaded file and navigate to the Beat directory.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration</strong>:</p>
+<ul>
+<li>Each Beat comes with a default configuration file (<code>beatname.yml</code>). Open this file in a text editor.</li>
+<li>Configure the output to Elasticsearch by specifying the Elasticsearch host and port.</li>
+</ul>
+<p>Example configuration for Filebeat (<code>filebeat.yml</code>):</p>
+<pre><code class="language-yaml">output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Start the Beat</strong>:</p>
+<ul>
+<li>Start the Beat using the command line.</li>
+</ul>
+<pre><code class="language-sh">./filebeat -e
+</code></pre>
+</li>
+</ol>
+</div><h2>Example: Configuring Filebeat</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Download Filebeat</strong>:</p>
+<pre><code class="language-sh">curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.10.0-linux-x86_64.tar.gz
+tar xzvf filebeat-7.10.0-linux-x86_64.tar.gz
+cd filebeat-7.10.0-linux-x86_64/
+</code></pre>
+</li>
+<li>
+<p><strong>Edit the Configuration File</strong>:</p>
+<pre><code class="language-yaml">filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Start Filebeat</strong>:</p>
+<pre><code class="language-sh">./filebeat -e
+</code></pre>
+</li>
+</ol>
+</div><h1>Sending Data to Elasticsearch Using Beats</h1>
+<div class='content'><p>Once Beats are installed and configured, they will start collecting data and sending it to Elasticsearch. You can verify the data in Elasticsearch using Kibana or by querying Elasticsearch directly.</p>
+</div><h2>Example: Verifying Data in Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Using Kibana</strong>:</p>
+<ul>
+<li>Open Kibana and navigate to the &quot;Discover&quot; tab.</li>
+<li>Select the index pattern that matches the data sent by Beats (e.g., <code>filebeat-*</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Using Elasticsearch Query</strong>:</p>
+<pre><code class="language-sh">curl -X GET &quot;localhost:9200/filebeat-*/_search?pretty&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Examples and Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Install and Configure Metricbeat</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Download and Install Metricbeat</strong>:</p>
+<pre><code class="language-sh">curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.10.0-linux-x86_64.tar.gz
+tar xzvf metricbeat-7.10.0-linux-x86_64.tar.gz
+cd metricbeat-7.10.0-linux-x86_64/
+</code></pre>
+</li>
+<li>
+<p><strong>Edit the Configuration File</strong>:</p>
+<pre><code class="language-yaml">metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - memory
+    - network
+  enabled: true
+  period: 10s
+  processes: ['.*']
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Start Metricbeat</strong>:</p>
+<pre><code class="language-sh">./metricbeat -e
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Data in Elasticsearch</strong>:</p>
+<ul>
+<li>Use Kibana or Elasticsearch query to verify the data.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Download and Install Metricbeat</strong>:</p>
+<pre><code class="language-sh">curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.10.0-linux-x86_64.tar.gz
+tar xzvf metricbeat-7.10.0-linux-x86_64.tar.gz
+cd metricbeat-7.10.0-linux-x86_64/
+</code></pre>
+</li>
+<li>
+<p><strong>Edit the Configuration File</strong>:</p>
+<pre><code class="language-yaml">metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - memory
+    - network
+  enabled: true
+  period: 10s
+  processes: ['.*']
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Start Metricbeat</strong>:</p>
+<pre><code class="language-sh">./metricbeat -e
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Data in Elasticsearch</strong>:</p>
+<ul>
+<li>Open Kibana and navigate to the &quot;Discover&quot; tab.</li>
+<li>Select the index pattern <code>metricbeat-*</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Beats, including what they are, how to install and configure them, and how to send data to Elasticsearch. We also provided practical examples and exercises to help you get hands-on experience with Beats. In the next section, we will explore integrating Elasticsearch with other tools in the Elastic Stack.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-elasticsearch-kibana' title="Elasticsearch with Kibana">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-elasticsearch-other-tools' title="Elasticsearch with Other Tools">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profiling and Debugging</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/05-04-profiling-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/05-04-profiling-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/05-04-profiling-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/open_gl/05-04-profiling-debugging" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/05-04-profiling-debugging" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-memory-management' title="Efficient Memory Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Profiling and Debugging</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-particle-systems' title="Particle Systems">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore techniques and tools for profiling and debugging OpenGL applications. Profiling helps identify performance bottlenecks, while debugging ensures that your code runs correctly. Both are crucial for developing efficient and reliable OpenGL applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Profiling</strong>:</p>
+<ul>
+<li>Identifying performance bottlenecks.</li>
+<li>Measuring frame rates and rendering times.</li>
+<li>Analyzing GPU and CPU usage.</li>
+</ul>
+</li>
+<li>
+<p><strong>Debugging</strong>:</p>
+<ul>
+<li>Detecting and fixing errors in your code.</li>
+<li>Using debugging tools and techniques.</li>
+<li>Understanding common OpenGL errors and their solutions.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Profiling Techniques</h1>
+<div class='content'></div><h2>1. Measuring Frame Rates</h2>
+<div class='content'><p>Frame rate (frames per second, FPS) is a critical metric for real-time applications. Higher FPS indicates smoother rendering.</p>
+<p><strong>Example Code: Measuring FPS</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGlvc3RyZWFtPgojaW5jbHVkZSA8R0xGVy9nbGZ3My5oPgoKaW50IG1haW4oKSB7CiAgICBpZiAoIWdsZndJbml0KCkpIHsKICAgICAgICBzdGQ6OmNlcnIgPDwgIkZhaWxlZCB0byBpbml0aWFsaXplIEdMRlciIDw8IHN0ZDo6ZW5kbDsKICAgICAgICByZXR1cm4gLTE7CiAgICB9CgogICAgR0xGV3dpbmRvdyogd2luZG93ID0gZ2xmd0NyZWF0ZVdpbmRvdyg4MDAsIDYwMCwgIk9wZW5HTCBQcm9maWxpbmciLCBudWxscHRyLCBudWxscHRyKTsKICAgIGlmICghd2luZG93KSB7CiAgICAgICAgc3RkOjpjZXJyIDw8ICJGYWlsZWQgdG8gY3JlYXRlIEdMRlcgd2luZG93IiA8PCBzdGQ6OmVuZGw7CiAgICAgICAgZ2xmd1Rlcm1pbmF0ZSgpOwogICAgICAgIHJldHVybiAtMTsKICAgIH0KCiAgICBnbGZ3TWFrZUNvbnRleHRDdXJyZW50KHdpbmRvdyk7CgogICAgZG91YmxlIGxhc3RUaW1lID0gZ2xmd0dldFRpbWUoKTsKICAgIGludCBuYkZyYW1lcyA9IDA7CgogICAgd2hpbGUgKCFnbGZ3V2luZG93U2hvdWxkQ2xvc2Uod2luZG93KSkgewogICAgICAgIGRvdWJsZSBjdXJyZW50VGltZSA9IGdsZndHZXRUaW1lKCk7CiAgICAgICAgbmJGcmFtZXMrKzsKICAgICAgICBpZiAoY3VycmVudFRpbWUgLSBsYXN0VGltZSA+PSAxLjApIHsgLy8gSWYgbGFzdCBwcmludCB3YXMgbW9yZSB0aGFuIDEgc2VjIGFnbwogICAgICAgICAgICBzdGQ6OmNvdXQgPDwgMTAwMC4wIC8gZG91YmxlKG5iRnJhbWVzKSA8PCAiIG1zL2ZyYW1lIiA8PCBzdGQ6OmVuZGw7CiAgICAgICAgICAgIG5iRnJhbWVzID0gMDsKICAgICAgICAgICAgbGFzdFRpbWUgKz0gMS4wOwogICAgICAgIH0KCiAgICAgICAgLy8gUmVuZGVyIGhlcmUKICAgICAgICBnbENsZWFyKEdMX0NPTE9SX0JVRkZFUl9CSVQpOwoKICAgICAgICAvLyBTd2FwIGJ1ZmZlcnMKICAgICAgICBnbGZ3U3dhcEJ1ZmZlcnMod2luZG93KTsKICAgICAgICBnbGZ3UG9sbEV2ZW50cygpOwogICAgfQoKICAgIGdsZndEZXN0cm95V2luZG93KHdpbmRvdyk7CiAgICBnbGZ3VGVybWluYXRlKCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;iostream&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+int main() {
+    if (!glfwInit()) {
+        std::cerr &lt;&lt; &quot;Failed to initialize GLFW&quot; &lt;&lt; std::endl;
+        return -1;
+    }
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, &quot;OpenGL Profiling&quot;, nullptr, nullptr);
+    if (!window) {
+        std::cerr &lt;&lt; &quot;Failed to create GLFW window&quot; &lt;&lt; std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+
+    double lastTime = glfwGetTime();
+    int nbFrames = 0;
+
+    while (!glfwWindowShouldClose(window)) {
+        double currentTime = glfwGetTime();
+        nbFrames++;
+        if (currentTime - lastTime &gt;= 1.0) { // If last print was more than 1 sec ago
+            std::cout &lt;&lt; 1000.0 / double(nbFrames) &lt;&lt; &quot; ms/frame&quot; &lt;&lt; std::endl;
+            nbFrames = 0;
+            lastTime += 1.0;
+        }
+
+        // Render here
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Swap buffers
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+}</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>glfwGetTime()</code> is used to get the current time.</li>
+<li>The frame count is incremented each frame.</li>
+<li>Every second, the average frame time is printed.</li>
+</ul>
+</div><h2>2. Using Profiling Tools</h2>
+<div class='content'><p>Several tools can help profile OpenGL applications:</p>
+<ul>
+<li><strong>NVIDIA Nsight</strong>: A powerful tool for GPU profiling and debugging.</li>
+<li><strong>AMD GPU PerfStudio</strong>: Provides real-time profiling and debugging for AMD GPUs.</li>
+<li><strong>Intel GPA</strong>: A suite of tools for analyzing and optimizing graphics performance.</li>
+</ul>
+</div><h2>3. Analyzing GPU and CPU Usage</h2>
+<div class='content'><p>Profiling tools can help you understand how your application utilizes the GPU and CPU. Look for:</p>
+<ul>
+<li>High CPU usage: Indicates that the CPU is a bottleneck.</li>
+<li>High GPU usage: Indicates that the GPU is a bottleneck.</li>
+</ul>
+</div><h1>Debugging Techniques</h1>
+<div class='content'></div><h2>1. Using OpenGL Debug Output</h2>
+<div class='content'><p>OpenGL provides a debug output mechanism to get detailed error messages and performance warnings.</p>
+<p><strong>Example Code: Enabling Debug Output</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBBUElFTlRSWSBvcGVuZ2xDYWxsYmFja0Z1bmN0aW9uKEdMZW51bSBzb3VyY2UsIEdMZW51bSB0eXBlLCBHTHVpbnQgaWQsIEdMZW51bSBzZXZlcml0eSwgR0xzaXplaSBsZW5ndGgsIGNvbnN0IEdMY2hhciogbWVzc2FnZSwgY29uc3Qgdm9pZCogdXNlclBhcmFtKSB7CiAgICBzdGQ6OmNlcnIgPDwgIk9wZW5HTCBEZWJ1ZyBNZXNzYWdlOiAiIDw8IG1lc3NhZ2UgPDwgc3RkOjplbmRsOwp9CgppbnQgbWFpbigpIHsKICAgIC8vIEluaXRpYWxpemUgR0xGVyBhbmQgY3JlYXRlIGEgd2luZG93IChzYW1lIGFzIGJlZm9yZSkKCiAgICBnbEVuYWJsZShHTF9ERUJVR19PVVRQVVQpOwogICAgZ2xEZWJ1Z01lc3NhZ2VDYWxsYmFjayhvcGVuZ2xDYWxsYmFja0Z1bmN0aW9uLCBudWxscHRyKTsKCiAgICAvLyBNYWluIGxvb3AgKHNhbWUgYXMgYmVmb3JlKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+    std::cerr &lt;&lt; &quot;OpenGL Debug Message: &quot; &lt;&lt; message &lt;&lt; std::endl;
+}
+
+int main() {
+    // Initialize GLFW and create a window (same as before)
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(openglCallbackFunction, nullptr);
+
+    // Main loop (same as before)
+}</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>glEnable(GL_DEBUG_OUTPUT)</code> enables the debug output.</li>
+<li><code>glDebugMessageCallback</code> sets the callback function to handle debug messages.</li>
+</ul>
+</div><h2>2. Common OpenGL Errors</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Error Code</th>
+<th>Description</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GL_INVALID_ENUM</code></td>
+<td>An unacceptable value is specified for an enumerated argument.</td>
+<td>Check the values passed to OpenGL functions.</td>
+</tr>
+<tr>
+<td><code>GL_INVALID_VALUE</code></td>
+<td>A numeric argument is out of range.</td>
+<td>Ensure all numeric values are within valid ranges.</td>
+</tr>
+<tr>
+<td><code>GL_INVALID_OPERATION</code></td>
+<td>The specified operation is not allowed in the current state.</td>
+<td>Verify the state and sequence of OpenGL calls.</td>
+</tr>
+<tr>
+<td><code>GL_OUT_OF_MEMORY</code></td>
+<td>There is not enough memory left to execute the command.</td>
+<td>Optimize memory usage and check for leaks.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>3. Using Debugging Tools</h2>
+<div class='content'><ul>
+<li><strong>gDEBugger</strong>: A tool for debugging and profiling OpenGL applications.</li>
+<li><strong>RenderDoc</strong>: A frame-capture based debugger for analyzing rendering issues.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'><p><strong>Exercise</strong>: Implement a simple OpenGL application that measures and prints the frame rate. Enable OpenGL debug output and handle any errors that occur.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGlvc3RyZWFtPgojaW5jbHVkZSA8R0wvZ2xldy5oPgojaW5jbHVkZSA8R0xGVy9nbGZ3My5oPgoKdm9pZCBBUElFTlRSWSBvcGVuZ2xDYWxsYmFja0Z1bmN0aW9uKEdMZW51bSBzb3VyY2UsIEdMZW51bSB0eXBlLCBHTHVpbnQgaWQsIEdMZW51bSBzZXZlcml0eSwgR0xzaXplaSBsZW5ndGgsIGNvbnN0IEdMY2hhciogbWVzc2FnZSwgY29uc3Qgdm9pZCogdXNlclBhcmFtKSB7CiAgICBzdGQ6OmNlcnIgPDwgIk9wZW5HTCBEZWJ1ZyBNZXNzYWdlOiAiIDw8IG1lc3NhZ2UgPDwgc3RkOjplbmRsOwp9CgppbnQgbWFpbigpIHsKICAgIGlmICghZ2xmd0luaXQoKSkgewogICAgICAgIHN0ZDo6Y2VyciA8PCAiRmFpbGVkIHRvIGluaXRpYWxpemUgR0xGVyIgPDwgc3RkOjplbmRsOwogICAgICAgIHJldHVybiAtMTsKICAgIH0KCiAgICBHTEZXd2luZG93KiB3aW5kb3cgPSBnbGZ3Q3JlYXRlV2luZG93KDgwMCwgNjAwLCAiT3BlbkdMIFByb2ZpbGluZyBhbmQgRGVidWdnaW5nIiwgbnVsbHB0ciwgbnVsbHB0cik7CiAgICBpZiAoIXdpbmRvdykgewogICAgICAgIHN0ZDo6Y2VyciA8PCAiRmFpbGVkIHRvIGNyZWF0ZSBHTEZXIHdpbmRvdyIgPDwgc3RkOjplbmRsOwogICAgICAgIGdsZndUZXJtaW5hdGUoKTsKICAgICAgICByZXR1cm4gLTE7CiAgICB9CgogICAgZ2xmd01ha2VDb250ZXh0Q3VycmVudCh3aW5kb3cpOwogICAgZ2xld0luaXQoKTsKCiAgICBnbEVuYWJsZShHTF9ERUJVR19PVVRQVVQpOwogICAgZ2xEZWJ1Z01lc3NhZ2VDYWxsYmFjayhvcGVuZ2xDYWxsYmFja0Z1bmN0aW9uLCBudWxscHRyKTsKCiAgICBkb3VibGUgbGFzdFRpbWUgPSBnbGZ3R2V0VGltZSgpOwogICAgaW50IG5iRnJhbWVzID0gMDsKCiAgICB3aGlsZSAoIWdsZndXaW5kb3dTaG91bGRDbG9zZSh3aW5kb3cpKSB7CiAgICAgICAgZG91YmxlIGN1cnJlbnRUaW1lID0gZ2xmd0dldFRpbWUoKTsKICAgICAgICBuYkZyYW1lcysrOwogICAgICAgIGlmIChjdXJyZW50VGltZSAtIGxhc3RUaW1lID49IDEuMCkgewogICAgICAgICAgICBzdGQ6OmNvdXQgPDwgMTAwMC4wIC8gZG91YmxlKG5iRnJhbWVzKSA8PCAiIG1zL2ZyYW1lIiA8PCBzdGQ6OmVuZGw7CiAgICAgICAgICAgIG5iRnJhbWVzID0gMDsKICAgICAgICAgICAgbGFzdFRpbWUgKz0gMS4wOwogICAgICAgIH0KCiAgICAgICAgZ2xDbGVhcihHTF9DT0xPUl9CVUZGRVJfQklUKTsKCiAgICAgICAgZ2xmd1N3YXBCdWZmZXJzKHdpbmRvdyk7CiAgICAgICAgZ2xmd1BvbGxFdmVudHMoKTsKICAgIH0KCiAgICBnbGZ3RGVzdHJveVdpbmRvdyh3aW5kb3cpOwogICAgZ2xmd1Rlcm1pbmF0ZSgpOwogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;iostream&gt;
+#include &lt;GL/glew.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+void APIENTRY openglCallbackFunction(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+    std::cerr &lt;&lt; &quot;OpenGL Debug Message: &quot; &lt;&lt; message &lt;&lt; std::endl;
+}
+
+int main() {
+    if (!glfwInit()) {
+        std::cerr &lt;&lt; &quot;Failed to initialize GLFW&quot; &lt;&lt; std::endl;
+        return -1;
+    }
+
+    GLFWwindow* window = glfwCreateWindow(800, 600, &quot;OpenGL Profiling and Debugging&quot;, nullptr, nullptr);
+    if (!window) {
+        std::cerr &lt;&lt; &quot;Failed to create GLFW window&quot; &lt;&lt; std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    glfwMakeContextCurrent(window);
+    glewInit();
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(openglCallbackFunction, nullptr);
+
+    double lastTime = glfwGetTime();
+    int nbFrames = 0;
+
+    while (!glfwWindowShouldClose(window)) {
+        double currentTime = glfwGetTime();
+        nbFrames++;
+        if (currentTime - lastTime &gt;= 1.0) {
+            std::cout &lt;&lt; 1000.0 / double(nbFrames) &lt;&lt; &quot; ms/frame&quot; &lt;&lt; std::endl;
+            nbFrames = 0;
+            lastTime += 1.0;
+        }
+
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    return 0;
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of profiling and debugging OpenGL applications. We learned how to measure frame rates, use profiling tools, and enable OpenGL debug output. We also discussed common OpenGL errors and their solutions. Profiling and debugging are essential skills for optimizing and ensuring the correctness of your OpenGL applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-memory-management' title="Efficient Memory Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-particle-systems' title="Particle Systems">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

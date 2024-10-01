@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFS (Hadoop Distributed File System)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/02-02-hdfs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/02-02-hdfs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/02-02-hdfs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/02-02-hdfs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/02-02-hdfs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-hadoop-core-components' title="Hadoop Core Components">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">HDFS (Hadoop Distributed File System)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-mapreduce-framework' title="MapReduce Framework">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>HDFS (Hadoop Distributed File System) is the primary storage system used by Hadoop applications. It is designed to store large datasets reliably and to stream those datasets at high bandwidth to user applications. HDFS is highly fault-tolerant and is designed to be deployed on low-cost hardware.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Architecture</h2>
+<div class='content'><ul>
+<li><strong>NameNode</strong>: The master server that manages the file system namespace and regulates access to files by clients.</li>
+<li><strong>DataNode</strong>: The worker nodes that store and retrieve blocks when they are told to (by the NameNode).</li>
+<li><strong>Secondary NameNode</strong>: A helper to the primary NameNode, it performs housekeeping functions for the NameNode.</li>
+</ul>
+</div><h2>2. File System Namespace</h2>
+<div class='content'><ul>
+<li>HDFS supports a traditional hierarchical file organization. A user or an application can create directories and store files inside these directories.</li>
+<li>The file system namespace hierarchy is similar to most other existing file systems: it supports operations such as creating and deleting files, renaming files, and directories.</li>
+</ul>
+</div><h2>3. Data Replication</h2>
+<div class='content'><ul>
+<li>HDFS stores each file as a sequence of blocks; all blocks in a file except the last block are the same size.</li>
+<li>Blocks are replicated for fault tolerance. The block size and replication factor are configurable per file.</li>
+</ul>
+</div><h2>4. Fault Tolerance</h2>
+<div class='content'><ul>
+<li>HDFS is designed to detect faults and recover from them automatically.</li>
+<li>Data is replicated across multiple DataNodes to ensure data availability even if some nodes fail.</li>
+</ul>
+</div><h1>HDFS Architecture</h1>
+<div class='content'></div><h2>NameNode and DataNode Interaction</h2>
+<div class='content'><ul>
+<li>The NameNode maintains the file system namespace and the metadata for all the files and directories.</li>
+<li>The DataNodes are responsible for serving read and write requests from the file system’s clients.</li>
+<li>The DataNodes also perform block creation, deletion, and replication upon instruction from the NameNode.</li>
+</ul>
+</div><h2>Block Management</h2>
+<div class='content'><ul>
+<li>Files are split into one or more blocks, and these blocks are stored in a set of DataNodes.</li>
+<li>The NameNode maintains the mapping of blocks to DataNodes.</li>
+</ul>
+</div><h2>Heartbeats and Block Reports</h2>
+<div class='content'><ul>
+<li>DataNodes send periodic heartbeats to the NameNode to confirm their availability.</li>
+<li>DataNodes also send block reports to the NameNode to provide information about the blocks they are storing.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Writing a File to HDFS</h2>
+<div class='content'><ol>
+<li><strong>Client Request</strong>: A client requests to write a file to HDFS.</li>
+<li><strong>NameNode Interaction</strong>: The client contacts the NameNode to get the list of DataNodes to store the file blocks.</li>
+<li><strong>DataNode Interaction</strong>: The client writes the file blocks to the DataNodes.</li>
+<li><strong>Replication</strong>: The DataNodes replicate the blocks to other DataNodes as per the replication factor.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZTogV3JpdGluZyBhIGZpbGUgdG8gSERGUyB1c2luZyBKYXZhIEFQSQppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuY29uZi5Db25maWd1cmF0aW9uOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuZnMuRmlsZVN5c3RlbTsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmZzLlBhdGg7CmltcG9ydCBqYXZhLmlvLk91dHB1dFN0cmVhbTsKCnB1YmxpYyBjbGFzcyBIREZTV3JpdGVFeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgewogICAgICAgICAgICBDb25maWd1cmF0aW9uIGNvbmZpZ3VyYXRpb24gPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgICAgICBGaWxlU3lzdGVtIGhkZnMgPSBGaWxlU3lzdGVtLmdldChjb25maWd1cmF0aW9uKTsKICAgICAgICAgICAgUGF0aCBmaWxlID0gbmV3IFBhdGgoIi91c2VyL2hhZG9vcC9leGFtcGxlLnR4dCIpOwogICAgICAgICAgICBPdXRwdXRTdHJlYW0gb3MgPSBoZGZzLmNyZWF0ZShmaWxlKTsKICAgICAgICAgICAgb3Mud3JpdGUoIkhlbGxvIEhERlMhIi5nZXRCeXRlcygpKTsKICAgICAgICAgICAgb3MuY2xvc2UoKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example: Writing a file to HDFS using Java API
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import java.io.OutputStream;
+
+public class HDFSWriteExample {
+    public static void main(String[] args) {
+        try {
+            Configuration configuration = new Configuration();
+            FileSystem hdfs = FileSystem.get(configuration);
+            Path file = new Path(&quot;/user/hadoop/example.txt&quot;);
+            OutputStream os = hdfs.create(file);
+            os.write(&quot;Hello HDFS!&quot;.getBytes());
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Reading a File from HDFS</h2>
+<div class='content'><ol>
+<li><strong>Client Request</strong>: A client requests to read a file from HDFS.</li>
+<li><strong>NameNode Interaction</strong>: The client contacts the NameNode to get the list of DataNodes that store the file blocks.</li>
+<li><strong>DataNode Interaction</strong>: The client reads the file blocks from the DataNodes.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZTogUmVhZGluZyBhIGZpbGUgZnJvbSBIREZTIHVzaW5nIEphdmEgQVBJCmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5jb25mLkNvbmZpZ3VyYXRpb247CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5mcy5GaWxlU3lzdGVtOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuZnMuUGF0aDsKaW1wb3J0IGphdmEuaW8uSW5wdXRTdHJlYW07CgpwdWJsaWMgY2xhc3MgSERGU1JlYWRFeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgewogICAgICAgICAgICBDb25maWd1cmF0aW9uIGNvbmZpZ3VyYXRpb24gPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgICAgICBGaWxlU3lzdGVtIGhkZnMgPSBGaWxlU3lzdGVtLmdldChjb25maWd1cmF0aW9uKTsKICAgICAgICAgICAgUGF0aCBmaWxlID0gbmV3IFBhdGgoIi91c2VyL2hhZG9vcC9leGFtcGxlLnR4dCIpOwogICAgICAgICAgICBJbnB1dFN0cmVhbSBpcyA9IGhkZnMub3BlbihmaWxlKTsKICAgICAgICAgICAgYnl0ZVtdIGJ1ZmZlciA9IG5ldyBieXRlWzI1Nl07CiAgICAgICAgICAgIGludCBieXRlc1JlYWQgPSBpcy5yZWFkKGJ1ZmZlcik7CiAgICAgICAgICAgIHdoaWxlIChieXRlc1JlYWQgPiAwKSB7CiAgICAgICAgICAgICAgICBTeXN0ZW0ub3V0LndyaXRlKGJ1ZmZlciwgMCwgYnl0ZXNSZWFkKTsKICAgICAgICAgICAgICAgIGJ5dGVzUmVhZCA9IGlzLnJlYWQoYnVmZmVyKTsKICAgICAgICAgICAgfQogICAgICAgICAgICBpcy5jbG9zZSgpOwogICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example: Reading a file from HDFS using Java API
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import java.io.InputStream;
+
+public class HDFSReadExample {
+    public static void main(String[] args) {
+        try {
+            Configuration configuration = new Configuration();
+            FileSystem hdfs = FileSystem.get(configuration);
+            Path file = new Path(&quot;/user/hadoop/example.txt&quot;);
+            InputStream is = hdfs.open(file);
+            byte[] buffer = new byte[256];
+            int bytesRead = is.read(buffer);
+            while (bytesRead &gt; 0) {
+                System.out.write(buffer, 0, bytesRead);
+                bytesRead = is.read(buffer);
+            }
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Write a File to HDFS</h2>
+<div class='content'><p><strong>Task</strong>: Write a Java program to create a new file in HDFS and write the text &quot;Hello, Hadoop!&quot; into it.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmNvbmYuQ29uZmlndXJhdGlvbjsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmZzLkZpbGVTeXN0ZW07CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5mcy5QYXRoOwppbXBvcnQgamF2YS5pby5PdXRwdXRTdHJlYW07CgpwdWJsaWMgY2xhc3MgSERGU1dyaXRlRXhlcmNpc2UgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIENvbmZpZ3VyYXRpb24gY29uZmlndXJhdGlvbiA9IG5ldyBDb25maWd1cmF0aW9uKCk7CiAgICAgICAgICAgIEZpbGVTeXN0ZW0gaGRmcyA9IEZpbGVTeXN0ZW0uZ2V0KGNvbmZpZ3VyYXRpb24pOwogICAgICAgICAgICBQYXRoIGZpbGUgPSBuZXcgUGF0aCgiL3VzZXIvaGFkb29wL2V4ZXJjaXNlLnR4dCIpOwogICAgICAgICAgICBPdXRwdXRTdHJlYW0gb3MgPSBoZGZzLmNyZWF0ZShmaWxlKTsKICAgICAgICAgICAgb3Mud3JpdGUoIkhlbGxvLCBIYWRvb3AhIi5nZXRCeXRlcygpKTsKICAgICAgICAgICAgb3MuY2xvc2UoKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import java.io.OutputStream;
+
+public class HDFSWriteExercise {
+    public static void main(String[] args) {
+        try {
+            Configuration configuration = new Configuration();
+            FileSystem hdfs = FileSystem.get(configuration);
+            Path file = new Path(&quot;/user/hadoop/exercise.txt&quot;);
+            OutputStream os = hdfs.create(file);
+            os.write(&quot;Hello, Hadoop!&quot;.getBytes());
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Read a File from HDFS</h2>
+<div class='content'><p><strong>Task</strong>: Write a Java program to read the content of the file created in Exercise 1 from HDFS and print it to the console.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmNvbmYuQ29uZmlndXJhdGlvbjsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmZzLkZpbGVTeXN0ZW07CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5mcy5QYXRoOwppbXBvcnQgamF2YS5pby5JbnB1dFN0cmVhbTsKCnB1YmxpYyBjbGFzcyBIREZTUmVhZEV4ZXJjaXNlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgewogICAgICAgICAgICBDb25maWd1cmF0aW9uIGNvbmZpZ3VyYXRpb24gPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgICAgICBGaWxlU3lzdGVtIGhkZnMgPSBGaWxlU3lzdGVtLmdldChjb25maWd1cmF0aW9uKTsKICAgICAgICAgICAgUGF0aCBmaWxlID0gbmV3IFBhdGgoIi91c2VyL2hhZG9vcC9leGVyY2lzZS50eHQiKTsKICAgICAgICAgICAgSW5wdXRTdHJlYW0gaXMgPSBoZGZzLm9wZW4oZmlsZSk7CiAgICAgICAgICAgIGJ5dGVbXSBidWZmZXIgPSBuZXcgYnl0ZVsyNTZdOwogICAgICAgICAgICBpbnQgYnl0ZXNSZWFkID0gaXMucmVhZChidWZmZXIpOwogICAgICAgICAgICB3aGlsZSAoYnl0ZXNSZWFkID4gMCkgewogICAgICAgICAgICAgICAgU3lzdGVtLm91dC53cml0ZShidWZmZXIsIDAsIGJ5dGVzUmVhZCk7CiAgICAgICAgICAgICAgICBieXRlc1JlYWQgPSBpcy5yZWFkKGJ1ZmZlcik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgaXMuY2xvc2UoKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import java.io.InputStream;
+
+public class HDFSReadExercise {
+    public static void main(String[] args) {
+        try {
+            Configuration configuration = new Configuration();
+            FileSystem hdfs = FileSystem.get(configuration);
+            Path file = new Path(&quot;/user/hadoop/exercise.txt&quot;);
+            InputStream is = hdfs.open(file);
+            byte[] buffer = new byte[256];
+            int bytesRead = is.read(buffer);
+            while (bytesRead &gt; 0) {
+                System.out.write(buffer, 0, bytesRead);
+                bytesRead = is.read(buffer);
+            }
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of HDFS, including its architecture, key components, and how it handles data storage and replication. We also provided practical examples of writing and reading files to and from HDFS using Java. Understanding HDFS is crucial for working with Hadoop, as it forms the backbone of data storage in the Hadoop ecosystem. In the next module, we will delve deeper into the MapReduce framework, which is used for processing the data stored in HDFS.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-hadoop-core-components' title="Hadoop Core Components">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-mapreduce-framework' title="MapReduce Framework">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

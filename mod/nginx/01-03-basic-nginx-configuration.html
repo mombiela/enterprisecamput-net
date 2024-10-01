@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic NGINX Configuration</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/01-03-basic-nginx-configuration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/01-03-basic-nginx-configuration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/01-03-basic-nginx-configuration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/01-03-basic-nginx-configuration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/01-03-basic-nginx-configuration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-installing-nginx' title="Installing NGINX">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Basic NGINX Configuration</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-starting-stopping-nginx' title="Starting and Stopping NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the fundamental aspects of configuring NGINX. By the end of this module, you will understand how to set up a basic NGINX configuration file, define server blocks, and manage essential settings.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>NGINX Configuration File Structure</strong></li>
+<li><strong>Server Blocks</strong></li>
+<li><strong>Location Blocks</strong></li>
+<li><strong>Directives and Contexts</strong></li>
+</ol>
+</div><h1>1. NGINX Configuration File Structure</h1>
+<div class='content'><p>NGINX configuration files are typically located in the <code>/etc/nginx/</code> directory. The main configuration file is <code>nginx.conf</code>. The structure of an NGINX configuration file is hierarchical and consists of directives and contexts.</p>
+</div><h2>Example Configuration File</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlciAgbmdpbng7Cndvcmtlcl9wcm9jZXNzZXMgIDE7CgpldmVudHMgewogICAgd29ya2VyX2Nvbm5lY3Rpb25zICAxMDI0Owp9CgpodHRwIHsKICAgIGluY2x1ZGUgICAgICAgbWltZS50eXBlczsKICAgIGRlZmF1bHRfdHlwZSAgYXBwbGljYXRpb24vb2N0ZXQtc3RyZWFtOwoKICAgIHNlbmRmaWxlICAgICAgICBvbjsKICAgIGtlZXBhbGl2ZV90aW1lb3V0ICA2NTsKCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiAgICAgICA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSAgbG9jYWxob3N0OwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcm9vdCAgIC91c3Ivc2hhcmUvbmdpbngvaHRtbDsKICAgICAgICAgICAgaW5kZXggIGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgICAgIH0KCiAgICAgICAgZXJyb3JfcGFnZSAgNTAwIDUwMiA1MDMgNTA0ICAvNTB4Lmh0bWw7CiAgICAgICAgbG9jYXRpb24gPSAvNTB4Lmh0bWwgewogICAgICAgICAgICByb290ICAgL3Vzci9zaGFyZS9uZ2lueC9odG1sOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>user  nginx;
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+        }
+
+        error_page  500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>user</strong>: Defines the user and group that the NGINX worker processes will run as.</li>
+<li><strong>worker_processes</strong>: Specifies the number of worker processes.</li>
+<li><strong>events</strong>: Contains directives that affect the NGINX event model.</li>
+<li><strong>http</strong>: This context includes directives for handling HTTP traffic.</li>
+</ul>
+</div><h1>2. Server Blocks</h1>
+<div class='content'><p>Server blocks are used to define different virtual servers. Each server block can handle requests for a specific domain or IP address.</p>
+</div><h2>Example Server Block</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiAgICAgICA4MDsKICAgIHNlcnZlcl9uYW1lICBleGFtcGxlLmNvbSB3d3cuZXhhbXBsZS5jb207CgogICAgbG9jYXRpb24gLyB7CiAgICAgICAgcm9vdCAgIC92YXIvd3d3L2h0bWw7CiAgICAgICAgaW5kZXggIGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQoKICAgIGVycm9yX3BhZ2UgIDQwNCAvNDA0Lmh0bWw7CiAgICBsb2NhdGlvbiA9IC80MDQuaHRtbCB7CiAgICAgICAgcm9vdCAgIC92YXIvd3d3L2h0bWw7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen       80;
+    server_name  example.com www.example.com;
+
+    location / {
+        root   /var/www/html;
+        index  index.html index.htm;
+    }
+
+    error_page  404 /404.html;
+    location = /404.html {
+        root   /var/www/html;
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>listen</strong>: Specifies the port that the server will listen on.</li>
+<li><strong>server_name</strong>: Defines the domain names that this server block will respond to.</li>
+<li><strong>location</strong>: Defines how to process requests for a specific URI.</li>
+</ul>
+</div><h1>3. Location Blocks</h1>
+<div class='content'><p>Location blocks are used to define how NGINX should process requests for specific URIs.</p>
+</div><h2>Example Location Block</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9jYXRpb24gL2ltYWdlcy8gewogICAgcm9vdCAvZGF0YTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>location /images/ {
+    root /data;
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>location</strong>: The URI prefix that this block will match.</li>
+<li><strong>root</strong>: The directory where the content is located.</li>
+</ul>
+</div><h1>4. Directives and Contexts</h1>
+<div class='content'><p>Directives are instructions that tell NGINX how to behave. They can be placed in different contexts, such as <code>http</code>, <code>server</code>, and <code>location</code>.</p>
+</div><h2>Common Directives</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Directive</th>
+<th>Contexts</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>listen</code></td>
+<td><code>server</code></td>
+<td>Specifies the port and address to listen on.</td>
+</tr>
+<tr>
+<td><code>server_name</code></td>
+<td><code>server</code></td>
+<td>Defines the domain names for the server block.</td>
+</tr>
+<tr>
+<td><code>root</code></td>
+<td><code>http</code>, <code>server</code>, <code>location</code></td>
+<td>Sets the root directory for requests.</td>
+</tr>
+<tr>
+<td><code>index</code></td>
+<td><code>http</code>, <code>server</code>, <code>location</code></td>
+<td>Specifies the index file for directories.</td>
+</tr>
+<tr>
+<td><code>error_page</code></td>
+<td><code>http</code>, <code>server</code>, <code>location</code></td>
+<td>Defines custom error pages.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>Create a new server block in the <code>nginx.conf</code> file that listens on port 8080 and serves content from <code>/var/www/test</code>.</li>
+<li>Define a custom 404 error page located at <code>/var/www/test/404.html</code>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiAgICAgICA4MDgwOwogICAgc2VydmVyX25hbWUgIHRlc3QuZXhhbXBsZS5jb207CgogICAgbG9jYXRpb24gLyB7CiAgICAgICAgcm9vdCAgIC92YXIvd3d3L3Rlc3Q7CiAgICAgICAgaW5kZXggIGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQoKICAgIGVycm9yX3BhZ2UgIDQwNCAvNDA0Lmh0bWw7CiAgICBsb2NhdGlvbiA9IC80MDQuaHRtbCB7CiAgICAgICAgcm9vdCAgIC92YXIvd3d3L3Rlc3Q7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen       8080;
+    server_name  test.example.com;
+
+    location / {
+        root   /var/www/test;
+        index  index.html index.htm;
+    }
+
+    error_page  404 /404.html;
+    location = /404.html {
+        root   /var/www/test;
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>listen</code> directive is set to <code>8080</code> to listen on port 8080.</li>
+<li>The <code>server_name</code> is set to <code>test.example.com</code>.</li>
+<li>The <code>location /</code> block serves content from <code>/var/www/test</code>.</li>
+<li>The <code>error_page</code> directive defines a custom 404 error page.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting Semicolons</strong>: Each directive must end with a semicolon.</li>
+<li><strong>Incorrect Contexts</strong>: Ensure directives are placed in the correct context.</li>
+<li><strong>File Permissions</strong>: Make sure NGINX has the necessary permissions to access the files and directories specified.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of NGINX configuration, including the structure of the configuration file, server blocks, location blocks, and common directives. Understanding these fundamentals is crucial for effectively managing and configuring NGINX. In the next module, we will explore how to use NGINX as a web server to serve static content and more.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-installing-nginx' title="Installing NGINX">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-starting-stopping-nginx' title="Starting and Stopping NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

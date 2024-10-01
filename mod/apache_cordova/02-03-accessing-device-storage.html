@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessing Device Storage</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apache_cordova/02-03-accessing-device-storage" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apache_cordova/02-03-accessing-device-storage" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apache_cordova/02-03-accessing-device-storage" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apache_cordova/02-03-accessing-device-storage" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apache_cordova/02-03-accessing-device-storage" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-using-device-api' title="Using the Device API">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Accessing Device Storage</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-handling-network-information' title="Handling Network Information">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to access and manipulate device storage using Apache Cordova. This is a crucial feature for many mobile applications that need to store data locally on the device.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>File System API</strong>: Cordova provides a File System API that allows you to read, write, and navigate the file system on the device.</li>
+<li><strong>File Plugin</strong>: To use the File System API, you need to install the Cordova File Plugin.</li>
+<li><strong>Directories and Files</strong>: Understanding how to create, read, and write directories and files.</li>
+<li><strong>Permissions</strong>: Managing permissions to access the file system.</li>
+</ol>
+</div><h1>Installing the Cordova File Plugin</h1>
+<div class='content'><p>Before you can use the File System API, you need to install the Cordova File Plugin. You can do this using the Cordova CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBwbHVnaW4gYWRkIGNvcmRvdmEtcGx1Z2luLWZpbGU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova plugin add cordova-plugin-file</pre></div><div class='content'></div><h1>Basic File Operations</h1>
+<div class='content'></div><h2>1. Requesting a File System</h2>
+<div class='content'><p>To start working with the file system, you need to request access to it. Cordova provides two types of file systems: <code>LocalFileSystem.PERSISTENT</code> and <code>LocalFileSystem.TEMPORARY</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignZGV2aWNlcmVhZHknLCBmdW5jdGlvbigpIHsKICAgIHdpbmRvdy5yZXF1ZXN0RmlsZVN5c3RlbShMb2NhbEZpbGVTeXN0ZW0uUEVSU0lTVEVOVCwgMCwgb25GaWxlU3lzdGVtU3VjY2Vzcywgb25FcnJvcik7Cn0sIGZhbHNlKTsKCmZ1bmN0aW9uIG9uRmlsZVN5c3RlbVN1Y2Nlc3MoZmlsZVN5c3RlbSkgewogICAgY29uc29sZS5sb2coIkZpbGUgc3lzdGVtIG5hbWU6ICIgKyBmaWxlU3lzdGVtLm5hbWUpOwogICAgY29uc29sZS5sb2coIlJvb3QgZGlyZWN0b3J5IG5hbWU6ICIgKyBmaWxlU3lzdGVtLnJvb3QubmFtZSk7Cn0KCmZ1bmN0aW9uIG9uRXJyb3IoZXJyb3IpIHsKICAgIGNvbnNvbGUubG9nKCJFcnJvcjogIiArIGVycm9yLmNvZGUpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener('deviceready', function() {
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, onError);
+}, false);
+
+function onFileSystemSuccess(fileSystem) {
+    console.log(&quot;File system name: &quot; + fileSystem.name);
+    console.log(&quot;Root directory name: &quot; + fileSystem.root.name);
+}
+
+function onError(error) {
+    console.log(&quot;Error: &quot; + error.code);
+}</pre></div><div class='content'></div><h2>2. Creating and Writing to a File</h2>
+<div class='content'><p>Once you have access to the file system, you can create and write to a file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gb25GaWxlU3lzdGVtU3VjY2VzcyhmaWxlU3lzdGVtKSB7CiAgICBmaWxlU3lzdGVtLnJvb3QuZ2V0RmlsZSgiZXhhbXBsZS50eHQiLCB7IGNyZWF0ZTogdHJ1ZSwgZXhjbHVzaXZlOiBmYWxzZSB9LCBvbkZpbGVFbnRyeVN1Y2Nlc3MsIG9uRXJyb3IpOwp9CgpmdW5jdGlvbiBvbkZpbGVFbnRyeVN1Y2Nlc3MoZmlsZUVudHJ5KSB7CiAgICBmaWxlRW50cnkuY3JlYXRlV3JpdGVyKGZ1bmN0aW9uKGZpbGVXcml0ZXIpIHsKICAgICAgICBmaWxlV3JpdGVyLm9ud3JpdGVlbmQgPSBmdW5jdGlvbigpIHsKICAgICAgICAgICAgY29uc29sZS5sb2coIkZpbGUgd3JpdHRlbiBzdWNjZXNzZnVsbHkuIik7CiAgICAgICAgfTsKCiAgICAgICAgZmlsZVdyaXRlci5vbmVycm9yID0gZnVuY3Rpb24oZSkgewogICAgICAgICAgICBjb25zb2xlLmxvZygiV3JpdGUgZmFpbGVkOiAiICsgZS50b1N0cmluZygpKTsKICAgICAgICB9OwoKICAgICAgICB2YXIgZGF0YU9iaiA9IG5ldyBCbG9iKFsnSGVsbG8sIHdvcmxkISddLCB7IHR5cGU6ICd0ZXh0L3BsYWluJyB9KTsKICAgICAgICBmaWxlV3JpdGVyLndyaXRlKGRhdGFPYmopOwogICAgfSwgb25FcnJvcik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function onFileSystemSuccess(fileSystem) {
+    fileSystem.root.getFile(&quot;example.txt&quot;, { create: true, exclusive: false }, onFileEntrySuccess, onError);
+}
+
+function onFileEntrySuccess(fileEntry) {
+    fileEntry.createWriter(function(fileWriter) {
+        fileWriter.onwriteend = function() {
+            console.log(&quot;File written successfully.&quot;);
+        };
+
+        fileWriter.onerror = function(e) {
+            console.log(&quot;Write failed: &quot; + e.toString());
+        };
+
+        var dataObj = new Blob(['Hello, world!'], { type: 'text/plain' });
+        fileWriter.write(dataObj);
+    }, onError);
+}</pre></div><div class='content'></div><h2>3. Reading from a File</h2>
+<div class='content'><p>To read from a file, you need to get a <code>FileEntry</code> object and then use a <code>FileReader</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gb25GaWxlU3lzdGVtU3VjY2VzcyhmaWxlU3lzdGVtKSB7CiAgICBmaWxlU3lzdGVtLnJvb3QuZ2V0RmlsZSgiZXhhbXBsZS50eHQiLCB7IGNyZWF0ZTogZmFsc2UsIGV4Y2x1c2l2ZTogZmFsc2UgfSwgb25GaWxlRW50cnlTdWNjZXNzLCBvbkVycm9yKTsKfQoKZnVuY3Rpb24gb25GaWxlRW50cnlTdWNjZXNzKGZpbGVFbnRyeSkgewogICAgZmlsZUVudHJ5LmZpbGUoZnVuY3Rpb24oZmlsZSkgewogICAgICAgIHZhciByZWFkZXIgPSBuZXcgRmlsZVJlYWRlcigpOwoKICAgICAgICByZWFkZXIub25sb2FkZW5kID0gZnVuY3Rpb24oKSB7CiAgICAgICAgICAgIGNvbnNvbGUubG9nKCJGaWxlIHJlYWQgc3VjY2Vzc2Z1bGx5LiIpOwogICAgICAgICAgICBjb25zb2xlLmxvZygiRmlsZSBjb250ZW50OiAiICsgdGhpcy5yZXN1bHQpOwogICAgICAgIH07CgogICAgICAgIHJlYWRlci5yZWFkQXNUZXh0KGZpbGUpOwogICAgfSwgb25FcnJvcik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function onFileSystemSuccess(fileSystem) {
+    fileSystem.root.getFile(&quot;example.txt&quot;, { create: false, exclusive: false }, onFileEntrySuccess, onError);
+}
+
+function onFileEntrySuccess(fileEntry) {
+    fileEntry.file(function(file) {
+        var reader = new FileReader();
+
+        reader.onloadend = function() {
+            console.log(&quot;File read successfully.&quot;);
+            console.log(&quot;File content: &quot; + this.result);
+        };
+
+        reader.readAsText(file);
+    }, onError);
+}</pre></div><div class='content'></div><h2>4. Deleting a File</h2>
+<div class='content'><p>To delete a file, you can use the <code>remove</code> method on a <code>FileEntry</code> object.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gb25GaWxlU3lzdGVtU3VjY2VzcyhmaWxlU3lzdGVtKSB7CiAgICBmaWxlU3lzdGVtLnJvb3QuZ2V0RmlsZSgiZXhhbXBsZS50eHQiLCB7IGNyZWF0ZTogZmFsc2UsIGV4Y2x1c2l2ZTogZmFsc2UgfSwgZnVuY3Rpb24oZmlsZUVudHJ5KSB7CiAgICAgICAgZmlsZUVudHJ5LnJlbW92ZShmdW5jdGlvbigpIHsKICAgICAgICAgICAgY29uc29sZS5sb2coIkZpbGUgcmVtb3ZlZCBzdWNjZXNzZnVsbHkuIik7CiAgICAgICAgfSwgb25FcnJvcik7CiAgICB9LCBvbkVycm9yKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function onFileSystemSuccess(fileSystem) {
+    fileSystem.root.getFile(&quot;example.txt&quot;, { create: false, exclusive: false }, function(fileEntry) {
+        fileEntry.remove(function() {
+            console.log(&quot;File removed successfully.&quot;);
+        }, onError);
+    }, onError);
+}</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create, Write, Read, and Delete a File</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create a file named <code>test.txt</code>, write &quot;Cordova File API&quot; to it, read the content, and then delete the file.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Request the file system.</li>
+<li>Create and write to <code>test.txt</code>.</li>
+<li>Read the content of <code>test.txt</code>.</li>
+<li>Delete <code>test.txt</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignZGV2aWNlcmVhZHknLCBmdW5jdGlvbigpIHsKICAgIHdpbmRvdy5yZXF1ZXN0RmlsZVN5c3RlbShMb2NhbEZpbGVTeXN0ZW0uUEVSU0lTVEVOVCwgMCwgb25GaWxlU3lzdGVtU3VjY2Vzcywgb25FcnJvcik7Cn0sIGZhbHNlKTsKCmZ1bmN0aW9uIG9uRmlsZVN5c3RlbVN1Y2Nlc3MoZmlsZVN5c3RlbSkgewogICAgZmlsZVN5c3RlbS5yb290LmdldEZpbGUoInRlc3QudHh0IiwgeyBjcmVhdGU6IHRydWUsIGV4Y2x1c2l2ZTogZmFsc2UgfSwgZnVuY3Rpb24oZmlsZUVudHJ5KSB7CiAgICAgICAgLy8gV3JpdGUgdG8gdGhlIGZpbGUKICAgICAgICBmaWxlRW50cnkuY3JlYXRlV3JpdGVyKGZ1bmN0aW9uKGZpbGVXcml0ZXIpIHsKICAgICAgICAgICAgZmlsZVdyaXRlci5vbndyaXRlZW5kID0gZnVuY3Rpb24oKSB7CiAgICAgICAgICAgICAgICBjb25zb2xlLmxvZygiRmlsZSB3cml0dGVuIHN1Y2Nlc3NmdWxseS4iKTsKCiAgICAgICAgICAgICAgICAvLyBSZWFkIHRoZSBmaWxlCiAgICAgICAgICAgICAgICBmaWxlRW50cnkuZmlsZShmdW5jdGlvbihmaWxlKSB7CiAgICAgICAgICAgICAgICAgICAgdmFyIHJlYWRlciA9IG5ldyBGaWxlUmVhZGVyKCk7CgogICAgICAgICAgICAgICAgICAgIHJlYWRlci5vbmxvYWRlbmQgPSBmdW5jdGlvbigpIHsKICAgICAgICAgICAgICAgICAgICAgICAgY29uc29sZS5sb2coIkZpbGUgcmVhZCBzdWNjZXNzZnVsbHkuIik7CiAgICAgICAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCJGaWxlIGNvbnRlbnQ6ICIgKyB0aGlzLnJlc3VsdCk7CgogICAgICAgICAgICAgICAgICAgICAgICAvLyBEZWxldGUgdGhlIGZpbGUKICAgICAgICAgICAgICAgICAgICAgICAgZmlsZUVudHJ5LnJlbW92ZShmdW5jdGlvbigpIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnNvbGUubG9nKCJGaWxlIHJlbW92ZWQgc3VjY2Vzc2Z1bGx5LiIpOwogICAgICAgICAgICAgICAgICAgICAgICB9LCBvbkVycm9yKTsKICAgICAgICAgICAgICAgICAgICB9OwoKICAgICAgICAgICAgICAgICAgICByZWFkZXIucmVhZEFzVGV4dChmaWxlKTsKICAgICAgICAgICAgICAgIH0sIG9uRXJyb3IpOwogICAgICAgICAgICB9OwoKICAgICAgICAgICAgZmlsZVdyaXRlci5vbmVycm9yID0gZnVuY3Rpb24oZSkgewogICAgICAgICAgICAgICAgY29uc29sZS5sb2coIldyaXRlIGZhaWxlZDogIiArIGUudG9TdHJpbmcoKSk7CiAgICAgICAgICAgIH07CgogICAgICAgICAgICB2YXIgZGF0YU9iaiA9IG5ldyBCbG9iKFsnQ29yZG92YSBGaWxlIEFQSSddLCB7IHR5cGU6ICd0ZXh0L3BsYWluJyB9KTsKICAgICAgICAgICAgZmlsZVdyaXRlci53cml0ZShkYXRhT2JqKTsKICAgICAgICB9LCBvbkVycm9yKTsKICAgIH0sIG9uRXJyb3IpOwp9CgpmdW5jdGlvbiBvbkVycm9yKGVycm9yKSB7CiAgICBjb25zb2xlLmxvZygiRXJyb3I6ICIgKyBlcnJvci5jb2RlKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener('deviceready', function() {
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, onFileSystemSuccess, onError);
+}, false);
+
+function onFileSystemSuccess(fileSystem) {
+    fileSystem.root.getFile(&quot;test.txt&quot;, { create: true, exclusive: false }, function(fileEntry) {
+        // Write to the file
+        fileEntry.createWriter(function(fileWriter) {
+            fileWriter.onwriteend = function() {
+                console.log(&quot;File written successfully.&quot;);
+
+                // Read the file
+                fileEntry.file(function(file) {
+                    var reader = new FileReader();
+
+                    reader.onloadend = function() {
+                        console.log(&quot;File read successfully.&quot;);
+                        console.log(&quot;File content: &quot; + this.result);
+
+                        // Delete the file
+                        fileEntry.remove(function() {
+                            console.log(&quot;File removed successfully.&quot;);
+                        }, onError);
+                    };
+
+                    reader.readAsText(file);
+                }, onError);
+            };
+
+            fileWriter.onerror = function(e) {
+                console.log(&quot;Write failed: &quot; + e.toString());
+            };
+
+            var dataObj = new Blob(['Cordova File API'], { type: 'text/plain' });
+            fileWriter.write(dataObj);
+        }, onError);
+    }, onError);
+}
+
+function onError(error) {
+    console.log(&quot;Error: &quot; + error.code);
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Permissions</strong>: Ensure that your app has the necessary permissions to access the file system, especially on Android and iOS.</li>
+<li><strong>Error Handling</strong>: Always include error handling to manage potential issues like permission denials or file not found errors.</li>
+<li><strong>File Paths</strong>: Be cautious with file paths and ensure they are correctly specified.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of accessing device storage using Apache Cordova. You learned how to install the Cordova File Plugin, request a file system, create and write to files, read from files, and delete files. These skills are fundamental for building mobile applications that require local data storage. In the next section, we will explore handling network information using Cordova.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-using-device-api' title="Using the Device API">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-handling-network-information' title="Handling Network Information">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

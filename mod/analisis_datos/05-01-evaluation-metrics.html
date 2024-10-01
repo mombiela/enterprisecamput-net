@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Evaluation Metrics</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/analisis_datos/05-01-metricas-evaluacion" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/analisis_datos/05-01-metrics-avaluacio" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/analisis_datos/05-01-evaluation-metrics" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/analisis_datos/05-01-evaluation-metrics" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/analisis_datos/05-01-evaluation-metrics" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-trees-forests' title="Decision Trees and Random Forests">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Model Evaluation Metrics</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-cross-validation' title="Cross-Validation and Validation Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore various metrics used to evaluate the performance of data models. Understanding these metrics is crucial for assessing how well your model is performing and identifying areas for improvement.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Accuracy</strong>: The ratio of correctly predicted observations to the total observations.</li>
+<li><strong>Precision</strong>: The ratio of correctly predicted positive observations to the total predicted positives.</li>
+<li><strong>Recall (Sensitivity)</strong>: The ratio of correctly predicted positive observations to all observations in the actual class.</li>
+<li><strong>F1 Score</strong>: The weighted average of Precision and Recall.</li>
+<li><strong>Confusion Matrix</strong>: A table used to describe the performance of a classification model.</li>
+<li><strong>ROC Curve and AUC</strong>: Graphical representation of a model's diagnostic ability.</li>
+</ol>
+</div><h1>Accuracy</h1>
+<div class='content'><p>Accuracy is a simple and intuitive metric but can be misleading in cases of imbalanced datasets.</p>
+<p><strong>Formula:</strong>
+\[ \text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}} \]</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3JlCgojIFRydWUgbGFiZWxzCnlfdHJ1ZSA9IFsxLCAwLCAxLCAxLCAwLCAxLCAwLCAwLCAxLCAwXQoKIyBQcmVkaWN0ZWQgbGFiZWxzCnlfcHJlZCA9IFsxLCAwLCAxLCAwLCAwLCAxLCAwLCAwLCAxLCAxXQoKIyBDYWxjdWxhdGUgYWNjdXJhY3kKYWNjdXJhY3kgPSBhY2N1cmFjeV9zY29yZSh5X3RydWUsIHlfcHJlZCkKcHJpbnQoZiJBY2N1cmFjeToge2FjY3VyYWN5Oi4yZn0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import accuracy_score
+
+# True labels
+y_true = [1, 0, 1, 1, 0, 1, 0, 0, 1, 0]
+
+# Predicted labels
+y_pred = [1, 0, 1, 0, 0, 1, 0, 0, 1, 1]
+
+# Calculate accuracy
+accuracy = accuracy_score(y_true, y_pred)
+print(f&quot;Accuracy: {accuracy:.2f}&quot;)</pre></div><div class='content'></div><h1>Precision</h1>
+<div class='content'><p>Precision is useful when the cost of false positives is high.</p>
+<p><strong>Formula:</strong>
+\[ \text{Precision} = \frac{\text{True Positives}}{\text{True Positives + False Positives}} \]</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IHByZWNpc2lvbl9zY29yZQoKIyBDYWxjdWxhdGUgcHJlY2lzaW9uCnByZWNpc2lvbiA9IHByZWNpc2lvbl9zY29yZSh5X3RydWUsIHlfcHJlZCkKcHJpbnQoZiJQcmVjaXNpb246IHtwcmVjaXNpb246LjJmfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import precision_score
+
+# Calculate precision
+precision = precision_score(y_true, y_pred)
+print(f&quot;Precision: {precision:.2f}&quot;)</pre></div><div class='content'></div><h1>Recall (Sensitivity)</h1>
+<div class='content'><p>Recall is useful when the cost of false negatives is high.</p>
+<p><strong>Formula:</strong>
+\[ \text{Recall} = \frac{\text{True Positives}}{\text{True Positives + False Negatives}} \]</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IHJlY2FsbF9zY29yZQoKIyBDYWxjdWxhdGUgcmVjYWxsCnJlY2FsbCA9IHJlY2FsbF9zY29yZSh5X3RydWUsIHlfcHJlZCkKcHJpbnQoZiJSZWNhbGw6IHtyZWNhbGw6LjJmfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import recall_score
+
+# Calculate recall
+recall = recall_score(y_true, y_pred)
+print(f&quot;Recall: {recall:.2f}&quot;)</pre></div><div class='content'></div><h1>F1 Score</h1>
+<div class='content'><p>The F1 Score is the harmonic mean of Precision and Recall, providing a balance between the two.</p>
+<p><strong>Formula:</strong>
+\[ \text{F1 Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision + Recall}} \]</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGYxX3Njb3JlCgojIENhbGN1bGF0ZSBGMSBTY29yZQpmMSA9IGYxX3Njb3JlKHlfdHJ1ZSwgeV9wcmVkKQpwcmludChmIkYxIFNjb3JlOiB7ZjE6LjJmfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import f1_score
+
+# Calculate F1 Score
+f1 = f1_score(y_true, y_pred)
+print(f&quot;F1 Score: {f1:.2f}&quot;)</pre></div><div class='content'></div><h1>Confusion Matrix</h1>
+<div class='content'><p>A confusion matrix provides a detailed breakdown of correct and incorrect classifications.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGNvbmZ1c2lvbl9tYXRyaXgKCiMgQ2FsY3VsYXRlIGNvbmZ1c2lvbiBtYXRyaXgKY29uZl9tYXRyaXggPSBjb25mdXNpb25fbWF0cml4KHlfdHJ1ZSwgeV9wcmVkKQpwcmludCgiQ29uZnVzaW9uIE1hdHJpeDoiKQpwcmludChjb25mX21hdHJpeCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import confusion_matrix
+
+# Calculate confusion matrix
+conf_matrix = confusion_matrix(y_true, y_pred)
+print(&quot;Confusion Matrix:&quot;)
+print(conf_matrix)</pre></div><div class='content'><p><strong>Output:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q29uZnVzaW9uIE1hdHJpeDoKW1s0IDFdCiBbMSA0XV0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Confusion Matrix:
+[[4 1]
+ [1 4]]</pre></div><div class='content'></div><h1>ROC Curve and AUC</h1>
+<div class='content'><p>The ROC Curve plots the True Positive Rate (Recall) against the False Positive Rate. The AUC (Area Under the Curve) provides a single metric to summarize the performance.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IHJvY19jdXJ2ZSwgcm9jX2F1Y19zY29yZQppbXBvcnQgbWF0cGxvdGxpYi5weXBsb3QgYXMgcGx0CgojIENhbGN1bGF0ZSBST0MgQ3VydmUKZnByLCB0cHIsIHRocmVzaG9sZHMgPSByb2NfY3VydmUoeV90cnVlLCB5X3ByZWQpCgojIENhbGN1bGF0ZSBBVUMKYXVjID0gcm9jX2F1Y19zY29yZSh5X3RydWUsIHlfcHJlZCkKcHJpbnQoZiJBVUM6IHthdWM6LjJmfSIpCgojIFBsb3QgUk9DIEN1cnZlCnBsdC5maWd1cmUoKQpwbHQucGxvdChmcHIsIHRwciwgbGFiZWw9ZidST0MgY3VydmUgKGFyZWEgPSB7YXVjOi4yZn0pJykKcGx0LnBsb3QoWzAsIDFdLCBbMCwgMV0sICdrLS0nKQpwbHQueGxhYmVsKCdGYWxzZSBQb3NpdGl2ZSBSYXRlJykKcGx0LnlsYWJlbCgnVHJ1ZSBQb3NpdGl2ZSBSYXRlJykKcGx0LnRpdGxlKCdST0MgQ3VydmUnKQpwbHQubGVnZW5kKGxvYz0ibG93ZXIgcmlnaHQiKQpwbHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+# Calculate ROC Curve
+fpr, tpr, thresholds = roc_curve(y_true, y_pred)
+
+# Calculate AUC
+auc = roc_auc_score(y_true, y_pred)
+print(f&quot;AUC: {auc:.2f}&quot;)
+
+# Plot ROC Curve
+plt.figure()
+plt.plot(fpr, tpr, label=f'ROC curve (area = {auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend(loc=&quot;lower right&quot;)
+plt.show()</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'><p><strong>Exercise:</strong></p>
+<p>Given the following true labels and predicted labels, calculate the Accuracy, Precision, Recall, F1 Score, Confusion Matrix, and plot the ROC Curve.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eV90cnVlID0gWzAsIDEsIDEsIDAsIDEsIDAsIDEsIDAsIDEsIDFdCnlfcHJlZCA9IFswLCAxLCAwLCAwLCAxLCAwLCAxLCAxLCAxLCAwXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>y_true = [0, 1, 1, 0, 1, 0, 1, 0, 1, 1]
+y_pred = [0, 1, 0, 0, 1, 0, 1, 1, 1, 0]</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3JlLCBwcmVjaXNpb25fc2NvcmUsIHJlY2FsbF9zY29yZSwgZjFfc2NvcmUsIGNvbmZ1c2lvbl9tYXRyaXgsIHJvY19jdXJ2ZSwgcm9jX2F1Y19zY29yZQppbXBvcnQgbWF0cGxvdGxpYi5weXBsb3QgYXMgcGx0CgojIFRydWUgbGFiZWxzCnlfdHJ1ZSA9IFswLCAxLCAxLCAwLCAxLCAwLCAxLCAwLCAxLCAxXQoKIyBQcmVkaWN0ZWQgbGFiZWxzCnlfcHJlZCA9IFswLCAxLCAwLCAwLCAxLCAwLCAxLCAxLCAxLCAwXQoKIyBDYWxjdWxhdGUgbWV0cmljcwphY2N1cmFjeSA9IGFjY3VyYWN5X3Njb3JlKHlfdHJ1ZSwgeV9wcmVkKQpwcmVjaXNpb24gPSBwcmVjaXNpb25fc2NvcmUoeV90cnVlLCB5X3ByZWQpCnJlY2FsbCA9IHJlY2FsbF9zY29yZSh5X3RydWUsIHlfcHJlZCkKZjEgPSBmMV9zY29yZSh5X3RydWUsIHlfcHJlZCkKY29uZl9tYXRyaXggPSBjb25mdXNpb25fbWF0cml4KHlfdHJ1ZSwgeV9wcmVkKQpmcHIsIHRwciwgdGhyZXNob2xkcyA9IHJvY19jdXJ2ZSh5X3RydWUsIHlfcHJlZCkKYXVjID0gcm9jX2F1Y19zY29yZSh5X3RydWUsIHlfcHJlZCkKCiMgUHJpbnQgbWV0cmljcwpwcmludChmIkFjY3VyYWN5OiB7YWNjdXJhY3k6LjJmfSIpCnByaW50KGYiUHJlY2lzaW9uOiB7cHJlY2lzaW9uOi4yZn0iKQpwcmludChmIlJlY2FsbDoge3JlY2FsbDouMmZ9IikKcHJpbnQoZiJGMSBTY29yZToge2YxOi4yZn0iKQpwcmludCgiQ29uZnVzaW9uIE1hdHJpeDoiKQpwcmludChjb25mX21hdHJpeCkKCiMgUGxvdCBST0MgQ3VydmUKcGx0LmZpZ3VyZSgpCnBsdC5wbG90KGZwciwgdHByLCBsYWJlbD1mJ1JPQyBjdXJ2ZSAoYXJlYSA9IHthdWM6LjJmfSknKQpwbHQucGxvdChbMCwgMV0sIFswLCAxXSwgJ2stLScpCnBsdC54bGFiZWwoJ0ZhbHNlIFBvc2l0aXZlIFJhdGUnKQpwbHQueWxhYmVsKCdUcnVlIFBvc2l0aXZlIFJhdGUnKQpwbHQudGl0bGUoJ1JPQyBDdXJ2ZScpCnBsdC5sZWdlbmQobG9jPSJsb3dlciByaWdodCIpCnBsdC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_curve, roc_auc_score
+import matplotlib.pyplot as plt
+
+# True labels
+y_true = [0, 1, 1, 0, 1, 0, 1, 0, 1, 1]
+
+# Predicted labels
+y_pred = [0, 1, 0, 0, 1, 0, 1, 1, 1, 0]
+
+# Calculate metrics
+accuracy = accuracy_score(y_true, y_pred)
+precision = precision_score(y_true, y_pred)
+recall = recall_score(y_true, y_pred)
+f1 = f1_score(y_true, y_pred)
+conf_matrix = confusion_matrix(y_true, y_pred)
+fpr, tpr, thresholds = roc_curve(y_true, y_pred)
+auc = roc_auc_score(y_true, y_pred)
+
+# Print metrics
+print(f&quot;Accuracy: {accuracy:.2f}&quot;)
+print(f&quot;Precision: {precision:.2f}&quot;)
+print(f&quot;Recall: {recall:.2f}&quot;)
+print(f&quot;F1 Score: {f1:.2f}&quot;)
+print(&quot;Confusion Matrix:&quot;)
+print(conf_matrix)
+
+# Plot ROC Curve
+plt.figure()
+plt.plot(fpr, tpr, label=f'ROC curve (area = {auc:.2f})')
+plt.plot([0, 1], [0, 1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve')
+plt.legend(loc=&quot;lower right&quot;)
+plt.show()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered various metrics used to evaluate the performance of data models, including Accuracy, Precision, Recall, F1 Score, Confusion Matrix, and ROC Curve with AUC. Understanding these metrics is essential for assessing model performance and making informed decisions about model improvements. In the next section, we will delve into Cross-Validation and Validation Techniques to further enhance model reliability.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-trees-forests' title="Decision Trees and Random Forests">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-cross-validation' title="Cross-Validation and Validation Techniques">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

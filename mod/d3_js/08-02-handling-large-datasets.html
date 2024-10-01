@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Large Datasets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/08-02-handling-large-datasets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/08-02-handling-large-datasets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/08-02-handling-large-datasets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/d3_js/08-02-handling-large-datasets" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/08-02-handling-large-datasets" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-optimizing-performance' title="Optimizing D3.js Performance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Large Datasets</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-efficient-data-binding' title="Efficient Data Binding">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Handling large datasets efficiently is crucial when working with D3.js, as it ensures that your visualizations remain responsive and performant. In this section, we will cover techniques and best practices for managing and visualizing large datasets.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Data Aggregation</strong>: Summarizing data to reduce its size.</li>
+<li><strong>Data Sampling</strong>: Selecting a representative subset of the data.</li>
+<li><strong>Efficient Data Structures</strong>: Using data structures that optimize performance.</li>
+<li><strong>Lazy Loading</strong>: Loading data incrementally as needed.</li>
+<li><strong>Web Workers</strong>: Offloading heavy computations to background threads.</li>
+</ol>
+</div><h1>Data Aggregation</h1>
+<div class='content'><p>Data aggregation involves summarizing data to reduce its size. This can be done by grouping data points and calculating summary statistics such as mean, median, or sum.</p>
+</div><h2>Example: Aggregating Data</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2FtcGxlIGRhdGFzZXQKY29uc3QgZGF0YSA9IFsKICB7IGNhdGVnb3J5OiAnQScsIHZhbHVlOiAxMCB9LAogIHsgY2F0ZWdvcnk6ICdBJywgdmFsdWU6IDIwIH0sCiAgeyBjYXRlZ29yeTogJ0InLCB2YWx1ZTogMzAgfSwKICB7IGNhdGVnb3J5OiAnQicsIHZhbHVlOiA0MCB9LAogIHsgY2F0ZWdvcnk6ICdDJywgdmFsdWU6IDUwIH0KXTsKCi8vIEFnZ3JlZ2F0aW5nIGRhdGEgYnkgY2F0ZWdvcnkKY29uc3QgYWdncmVnYXRlZERhdGEgPSBkMy5yb2xsdXAoCiAgZGF0YSwKICB2ID0+IGQzLnN1bSh2LCBkID0+IGQudmFsdWUpLAogIGQgPT4gZC5jYXRlZ29yeQopOwoKLy8gQ29udmVydGluZyBNYXAgdG8gQXJyYXkgZm9yIEQzLmpzCmNvbnN0IGFnZ3JlZ2F0ZWRBcnJheSA9IEFycmF5LmZyb20oYWdncmVnYXRlZERhdGEsIChbY2F0ZWdvcnksIHZhbHVlXSkgPT4gKHsgY2F0ZWdvcnksIHZhbHVlIH0pKTsKCmNvbnNvbGUubG9nKGFnZ3JlZ2F0ZWRBcnJheSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Sample dataset
+const data = [
+  { category: 'A', value: 10 },
+  { category: 'A', value: 20 },
+  { category: 'B', value: 30 },
+  { category: 'B', value: 40 },
+  { category: 'C', value: 50 }
+];
+
+// Aggregating data by category
+const aggregatedData = d3.rollup(
+  data,
+  v =&gt; d3.sum(v, d =&gt; d.value),
+  d =&gt; d.category
+);
+
+// Converting Map to Array for D3.js
+const aggregatedArray = Array.from(aggregatedData, ([category, value]) =&gt; ({ category, value }));
+
+console.log(aggregatedArray);</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>d3.rollup</strong>: Groups data by a specified key and applies a summary function.</li>
+<li><strong>d3.sum</strong>: Calculates the sum of values in each group.</li>
+<li><strong>Array.from</strong>: Converts the Map returned by <code>d3.rollup</code> into an array.</li>
+</ul>
+</div><h1>Data Sampling</h1>
+<div class='content'><p>Data sampling involves selecting a representative subset of the data to visualize. This can help reduce the amount of data processed and displayed.</p>
+</div><h2>Example: Random Sampling</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2FtcGxlIGRhdGFzZXQKY29uc3QgZGF0YSA9IGQzLnJhbmdlKDEwMDApLm1hcChkID0+ICh7IHZhbHVlOiBkIH0pKTsKCi8vIFJhbmRvbWx5IHNhbXBsZSAxMDAgZGF0YSBwb2ludHMKY29uc3Qgc2FtcGxlZERhdGEgPSBkMy5zaHVmZmxlKGRhdGEpLnNsaWNlKDAsIDEwMCk7Cgpjb25zb2xlLmxvZyhzYW1wbGVkRGF0YSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Sample dataset
+const data = d3.range(1000).map(d =&gt; ({ value: d }));
+
+// Randomly sample 100 data points
+const sampledData = d3.shuffle(data).slice(0, 100);
+
+console.log(sampledData);</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>d3.range</strong>: Generates an array of numbers.</li>
+<li><strong>d3.shuffle</strong>: Randomly shuffles the array.</li>
+<li><strong>slice</strong>: Selects the first 100 elements from the shuffled array.</li>
+</ul>
+</div><h1>Efficient Data Structures</h1>
+<div class='content'><p>Using efficient data structures can significantly improve performance when handling large datasets. For example, using typed arrays can be more memory-efficient and faster for numerical data.</p>
+</div><h2>Example: Using Typed Arrays</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2FtcGxlIGRhdGFzZXQKY29uc3QgZGF0YSA9IG5ldyBGbG9hdDMyQXJyYXkoMTAwMCk7CgovLyBGaWxsIHRoZSBhcnJheSB3aXRoIHJhbmRvbSB2YWx1ZXMKZm9yIChsZXQgaSA9IDA7IGkgPCBkYXRhLmxlbmd0aDsgaSsrKSB7CiAgZGF0YVtpXSA9IE1hdGgucmFuZG9tKCk7Cn0KCmNvbnNvbGUubG9nKGRhdGEpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Sample dataset
+const data = new Float32Array(1000);
+
+// Fill the array with random values
+for (let i = 0; i &lt; data.length; i++) {
+  data[i] = Math.random();
+}
+
+console.log(data);</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Float32Array</strong>: A typed array that stores 32-bit floating-point numbers.</li>
+<li><strong>for loop</strong>: Fills the array with random values.</li>
+</ul>
+</div><h1>Lazy Loading</h1>
+<div class='content'><p>Lazy loading involves loading data incrementally as needed, rather than all at once. This can help manage memory usage and improve performance.</p>
+</div><h2>Example: Lazy Loading with Intersection Observer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRpdiBpZD0iY29udGFpbmVyIj48L2Rpdj4KPHNjcmlwdD4KICBjb25zdCBjb250YWluZXIgPSBkMy5zZWxlY3QoIiNjb250YWluZXIiKTsKCiAgLy8gRnVuY3Rpb24gdG8gbG9hZCBkYXRhIGluY3JlbWVudGFsbHkKICBmdW5jdGlvbiBsb2FkRGF0YShzdGFydCwgZW5kKSB7CiAgICBjb25zdCBkYXRhID0gZDMucmFuZ2Uoc3RhcnQsIGVuZCkubWFwKGQgPT4gKHsgdmFsdWU6IGQgfSkpOwogICAgY29udGFpbmVyLnNlbGVjdEFsbCgiZGl2IikKICAgICAgLmRhdGEoZGF0YSkKICAgICAgLmVudGVyKCkKICAgICAgLmFwcGVuZCgiZGl2IikKICAgICAgLnRleHQoZCA9PiBkLnZhbHVlKTsKICB9CgogIC8vIEluaXRpYWwgbG9hZAogIGxvYWREYXRhKDAsIDEwMCk7CgogIC8vIEludGVyc2VjdGlvbiBPYnNlcnZlciB0byBsb2FkIG1vcmUgZGF0YSB3aGVuIHNjcm9sbGluZwogIGNvbnN0IG9ic2VydmVyID0gbmV3IEludGVyc2VjdGlvbk9ic2VydmVyKGVudHJpZXMgPT4gewogICAgaWYgKGVudHJpZXNbMF0uaXNJbnRlcnNlY3RpbmcpIHsKICAgICAgY29uc3QgbGFzdFZhbHVlID0gY29udGFpbmVyLnNlbGVjdEFsbCgiZGl2Iikuc2l6ZSgpOwogICAgICBsb2FkRGF0YShsYXN0VmFsdWUsIGxhc3RWYWx1ZSArIDEwMCk7CiAgICB9CiAgfSk7CgogIC8vIFRhcmdldCBlbGVtZW50IHRvIG9ic2VydmUKICBjb25zdCB0YXJnZXQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCJkaXYiKTsKICBjb250YWluZXIubm9kZSgpLmFwcGVuZENoaWxkKHRhcmdldCk7CiAgb2JzZXJ2ZXIub2JzZXJ2ZSh0YXJnZXQpOwo8L3NjcmlwdD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;div id=&quot;container&quot;&gt;&lt;/div&gt;
+&lt;script&gt;
+  const container = d3.select(&quot;#container&quot;);
+
+  // Function to load data incrementally
+  function loadData(start, end) {
+    const data = d3.range(start, end).map(d =&gt; ({ value: d }));
+    container.selectAll(&quot;div&quot;)
+      .data(data)
+      .enter()
+      .append(&quot;div&quot;)
+      .text(d =&gt; d.value);
+  }
+
+  // Initial load
+  loadData(0, 100);
+
+  // Intersection Observer to load more data when scrolling
+  const observer = new IntersectionObserver(entries =&gt; {
+    if (entries[0].isIntersecting) {
+      const lastValue = container.selectAll(&quot;div&quot;).size();
+      loadData(lastValue, lastValue + 100);
+    }
+  });
+
+  // Target element to observe
+  const target = document.createElement(&quot;div&quot;);
+  container.node().appendChild(target);
+  observer.observe(target);
+&lt;/script&gt;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>IntersectionObserver</strong>: Observes when the target element is in view and triggers data loading.</li>
+<li><strong>loadData</strong>: Function to load and append data to the container.</li>
+</ul>
+</div><h1>Web Workers</h1>
+<div class='content'><p>Web Workers allow you to run scripts in background threads, preventing heavy computations from blocking the main thread.</p>
+</div><h2>Example: Using Web Workers</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd29ya2VyLmpzCnNlbGYub25tZXNzYWdlID0gZnVuY3Rpb24oZXZlbnQpIHsKICBjb25zdCBkYXRhID0gZXZlbnQuZGF0YTsKICBjb25zdCByZXN1bHQgPSBkYXRhLm1hcChkID0+IGQgKiAyKTsgLy8gRXhhbXBsZSBjb21wdXRhdGlvbgogIHNlbGYucG9zdE1lc3NhZ2UocmVzdWx0KTsKfTsKCi8vIG1haW4uanMKY29uc3Qgd29ya2VyID0gbmV3IFdvcmtlcignd29ya2VyLmpzJyk7CmNvbnN0IGRhdGEgPSBkMy5yYW5nZSgxMDAwMDAwKTsKCndvcmtlci5wb3N0TWVzc2FnZShkYXRhKTsKCndvcmtlci5vbm1lc3NhZ2UgPSBmdW5jdGlvbihldmVudCkgewogIGNvbnN0IHJlc3VsdCA9IGV2ZW50LmRhdGE7CiAgY29uc29sZS5sb2cocmVzdWx0KTsKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// worker.js
+self.onmessage = function(event) {
+  const data = event.data;
+  const result = data.map(d =&gt; d * 2); // Example computation
+  self.postMessage(result);
+};
+
+// main.js
+const worker = new Worker('worker.js');
+const data = d3.range(1000000);
+
+worker.postMessage(data);
+
+worker.onmessage = function(event) {
+  const result = event.data;
+  console.log(result);
+};</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Web Worker</strong>: Runs computations in a separate thread.</li>
+<li><strong>postMessage</strong>: Sends data to the worker.</li>
+<li><strong>onmessage</strong>: Receives data from the worker.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Visualizing a Large Dataset</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create a bar chart that visualizes a large dataset using data aggregation and lazy loading.</li>
+<li><strong>Dataset</strong>: Use a dataset with 10,000 data points.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Aggregate the data by grouping every 100 data points.</li>
+<li>Implement lazy loading to load data in chunks of 1,000 points.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDx0aXRsZT5MYXJnZSBEYXRhc2V0IFZpc3VhbGl6YXRpb248L3RpdGxlPgogIDxzY3JpcHQgc3JjPSJodHRwczovL2QzanMub3JnL2QzLnY3Lm1pbi5qcyI+PC9zY3JpcHQ+CiAgPHN0eWxlPgogICAgLmJhciB7CiAgICAgIGZpbGw6IHN0ZWVsYmx1ZTsKICAgIH0KICA8L3N0eWxlPgo8L2hlYWQ+Cjxib2R5PgogIDxzdmcgd2lkdGg9IjgwMCIgaGVpZ2h0PSI0MDAiPjwvc3ZnPgogIDxzY3JpcHQ+CiAgICBjb25zdCBzdmcgPSBkMy5zZWxlY3QoInN2ZyIpOwogICAgY29uc3QgbWFyZ2luID0geyB0b3A6IDIwLCByaWdodDogMzAsIGJvdHRvbTogNDAsIGxlZnQ6IDQwIH07CiAgICBjb25zdCB3aWR0aCA9ICtzdmcuYXR0cigid2lkdGgiKSAtIG1hcmdpbi5sZWZ0IC0gbWFyZ2luLnJpZ2h0OwogICAgY29uc3QgaGVpZ2h0ID0gK3N2Zy5hdHRyKCJoZWlnaHQiKSAtIG1hcmdpbi50b3AgLSBtYXJnaW4uYm90dG9tOwogICAgY29uc3QgZyA9IHN2Zy5hcHBlbmQoImciKS5hdHRyKCJ0cmFuc2Zvcm0iLCBgdHJhbnNsYXRlKCR7bWFyZ2luLmxlZnR9LCR7bWFyZ2luLnRvcH0pYCk7CgogICAgY29uc3QgeCA9IGQzLnNjYWxlQmFuZCgpLnJhbmdlUm91bmQoWzAsIHdpZHRoXSkucGFkZGluZygwLjEpOwogICAgY29uc3QgeSA9IGQzLnNjYWxlTGluZWFyKCkucmFuZ2VSb3VuZChbaGVpZ2h0LCAwXSk7CgogICAgZnVuY3Rpb24gbG9hZERhdGEoc3RhcnQsIGVuZCkgewogICAgICBjb25zdCBkYXRhID0gZDMucmFuZ2Uoc3RhcnQsIGVuZCkubWFwKGQgPT4gKHsgdmFsdWU6IE1hdGgucmFuZG9tKCkgKiAxMDAgfSkpOwoKICAgICAgY29uc3QgYWdncmVnYXRlZERhdGEgPSBkMy5yb2xsdXAoCiAgICAgICAgZGF0YSwKICAgICAgICB2ID0+IGQzLm1lYW4odiwgZCA9PiBkLnZhbHVlKSwKICAgICAgICAoZCwgaSkgPT4gTWF0aC5mbG9vcihpIC8gMTAwKQogICAgICApOwoKICAgICAgY29uc3QgYWdncmVnYXRlZEFycmF5ID0gQXJyYXkuZnJvbShhZ2dyZWdhdGVkRGF0YSwgKFtrZXksIHZhbHVlXSkgPT4gKHsga2V5LCB2YWx1ZSB9KSk7CgogICAgICB4LmRvbWFpbihhZ2dyZWdhdGVkQXJyYXkubWFwKGQgPT4gZC5rZXkpKTsKICAgICAgeS5kb21haW4oWzAsIGQzLm1heChhZ2dyZWdhdGVkQXJyYXksIGQgPT4gZC52YWx1ZSldKTsKCiAgICAgIGcuc2VsZWN0QWxsKCIuYmFyIikKICAgICAgICAuZGF0YShhZ2dyZWdhdGVkQXJyYXkpCiAgICAgICAgLmVudGVyKCkuYXBwZW5kKCJyZWN0IikKICAgICAgICAuYXR0cigiY2xhc3MiLCAiYmFyIikKICAgICAgICAuYXR0cigieCIsIGQgPT4geChkLmtleSkpCiAgICAgICAgLmF0dHIoInkiLCBkID0+IHkoZC52YWx1ZSkpCiAgICAgICAgLmF0dHIoIndpZHRoIiwgeC5iYW5kd2lkdGgoKSkKICAgICAgICAuYXR0cigiaGVpZ2h0IiwgZCA9PiBoZWlnaHQgLSB5KGQudmFsdWUpKTsKICAgIH0KCiAgICBsb2FkRGF0YSgwLCAxMDAwMCk7CiAgPC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Large Dataset Visualization&lt;/title&gt;
+  &lt;script src=&quot;https://d3js.org/d3.v7.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    .bar {
+      fill: steelblue;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;svg width=&quot;800&quot; height=&quot;400&quot;&gt;&lt;/svg&gt;
+  &lt;script&gt;
+    const svg = d3.select(&quot;svg&quot;);
+    const margin = { top: 20, right: 30, bottom: 40, left: 40 };
+    const width = +svg.attr(&quot;width&quot;) - margin.left - margin.right;
+    const height = +svg.attr(&quot;height&quot;) - margin.top - margin.bottom;
+    const g = svg.append(&quot;g&quot;).attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
+    const y = d3.scaleLinear().rangeRound([height, 0]);
+
+    function loadData(start, end) {
+      const data = d3.range(start, end).map(d =&gt; ({ value: Math.random() * 100 }));
+
+      const aggregatedData = d3.rollup(
+        data,
+        v =&gt; d3.mean(v, d =&gt; d.value),
+        (d, i) =&gt; Math.floor(i / 100)
+      );
+
+      const aggregatedArray = Array.from(aggregatedData, ([key, value]) =&gt; ({ key, value }));
+
+      x.domain(aggregatedArray.map(d =&gt; d.key));
+      y.domain([0, d3.max(aggregatedArray, d =&gt; d.value)]);
+
+      g.selectAll(&quot;.bar&quot;)
+        .data(aggregatedArray)
+        .enter().append(&quot;rect&quot;)
+        .attr(&quot;class&quot;, &quot;bar&quot;)
+        .attr(&quot;x&quot;, d =&gt; x(d.key))
+        .attr(&quot;y&quot;, d =&gt; y(d.value))
+        .attr(&quot;width&quot;, x.bandwidth())
+        .attr(&quot;height&quot;, d =&gt; height - y(d.value));
+    }
+
+    loadData(0, 10000);
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Aggregation</strong>: Groups data points and calculates the mean value for every 100 points.</li>
+<li><strong>Lazy Loading</strong>: Loads data in chunks of 1,000 points (not fully implemented in this example for simplicity).</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Handling large datasets in D3.js requires a combination of techniques to ensure performance and responsiveness. By using data aggregation, sampling, efficient data structures, lazy loading, and web workers, you can create visualizations that handle large datasets effectively. Practice these techniques with the provided exercises to reinforce your understanding and prepare for more advanced topics.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-optimizing-performance' title="Optimizing D3.js Performance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-efficient-data-binding' title="Efficient Data Binding">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

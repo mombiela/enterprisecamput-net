@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Access Control</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/06-03-role-based-access-control" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/06-03-role-based-access-control" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/06-03-role-based-access-control" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/06-03-role-based-access-control" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/06-03-role-based-access-control" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-user-authentication-authorization' title="User Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Role-Based Access Control</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-auditing-compliance' title="Auditing and Compliance">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Role-Based Access Control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within an organization. In Elasticsearch, RBAC is crucial for ensuring that users have the appropriate permissions to access and manipulate data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Roles</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: A role is a collection of permissions that can be assigned to users.</li>
+<li><strong>Permissions</strong>: These can include actions like reading, writing, or deleting data, as well as administrative tasks.</li>
+</ul>
+</div><h2>Users</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Users are entities that interact with Elasticsearch. Each user can be assigned one or more roles.</li>
+<li><strong>Authentication</strong>: Users must authenticate themselves to Elasticsearch, typically using a username and password.</li>
+</ul>
+</div><h2>Role Mappings</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Role mappings link users to roles. This can be done directly or through groups.</li>
+</ul>
+</div><h1>Setting Up RBAC in Elasticsearch</h1>
+<div class='content'></div><h2>Step 1: Define Roles</h2>
+<div class='content'><p>Roles are defined in the <code>roles.yml</code> file or through the Elasticsearch API.</p>
+<h4>Example Role Definition</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByb2xlcy55bWwKYWRtaW46CiAgY2x1c3RlcjoKICAgIC0gYWxsCiAgaW5kaWNlczoKICAgIC0gbmFtZXM6ICcqJwogICAgICBwcml2aWxlZ2VzOgogICAgICAgIC0gYWxsCgpyZWFkX29ubHk6CiAgY2x1c3RlcjoKICAgIC0gbW9uaXRvcgogIGluZGljZXM6CiAgICAtIG5hbWVzOiAnbG9ncy0qJwogICAgICBwcml2aWxlZ2VzOgogICAgICAgIC0gcmVhZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># roles.yml
+admin:
+  cluster:
+    - all
+  indices:
+    - names: '*'
+      privileges:
+        - all
+
+read_only:
+  cluster:
+    - monitor
+  indices:
+    - names: 'logs-*'
+      privileges:
+        - read</pre></div><div class='content'><ul>
+<li><strong>admin</strong>: This role has full access to all cluster and index operations.</li>
+<li><strong>read_only</strong>: This role can only read data from indices that match the pattern <code>logs-*</code>.</li>
+</ul>
+</div><h2>Step 2: Create Users</h2>
+<div class='content'><p>Users can be created using the Elasticsearch API or through the <code>users</code> file.</p>
+<h4>Example User Creation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSB1c2VyIHdpdGggdGhlICdhZG1pbicgcm9sZQpjdXJsIC1YIFBPU1QgImxvY2FsaG9zdDo5MjAwL19zZWN1cml0eS91c2VyL2FkbWluX3VzZXIiIC1IICdDb250ZW50LVR5cGU6IGFwcGxpY2F0aW9uL2pzb24nIC1kJwp7CiAgInBhc3N3b3JkIiA6ICJhZG1pbl9wYXNzd29yZCIsCiAgInJvbGVzIiA6IFsgImFkbWluIiBdLAogICJmdWxsX25hbWUiIDogIkFkbWluIFVzZXIiLAogICJlbWFpbCIgOiAiYWRtaW5AZXhhbXBsZS5jb20iCn0KJw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a user with the 'admin' role
+curl -X POST &quot;localhost:9200/_security/user/admin_user&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;password&quot; : &quot;admin_password&quot;,
+  &quot;roles&quot; : [ &quot;admin&quot; ],
+  &quot;full_name&quot; : &quot;Admin User&quot;,
+  &quot;email&quot; : &quot;admin@example.com&quot;
+}
+'</pre></div><div class='content'></div><h2>Step 3: Map Users to Roles</h2>
+<div class='content'><p>Role mappings can be defined in the <code>role_mapping.yml</code> file or through the Elasticsearch API.</p>
+<h4>Example Role Mapping</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByb2xlX21hcHBpbmcueW1sCmFkbWluOgogIC0gImNuPWFkbWluX3VzZXIsZGM9ZXhhbXBsZSxkYz1jb20iCnJlYWRfb25seToKICAtICJjbj1yZWFkX29ubHlfdXNlcixkYz1leGFtcGxlLGRjPWNvbSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># role_mapping.yml
+admin:
+  - &quot;cn=admin_user,dc=example,dc=com&quot;
+read_only:
+  - &quot;cn=read_only_user,dc=example,dc=com&quot;</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'></div><h2>Scenario</h2>
+<div class='content'><p>You have two types of users: administrators who need full access and analysts who only need read access to log data.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define Roles</strong>:</p>
+<pre><code class="language-yaml"># roles.yml
+admin:
+  cluster:
+    - all
+  indices:
+    - names: '*'
+      privileges:
+        - all
+
+analyst:
+  cluster:
+    - monitor
+  indices:
+    - names: 'logs-*'
+      privileges:
+        - read
+</code></pre>
+</li>
+<li>
+<p><strong>Create Users</strong>:</p>
+<pre><code class="language-bash"># Create an admin user
+curl -X POST &quot;localhost:9200/_security/user/admin_user&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;password&quot; : &quot;admin_password&quot;,
+  &quot;roles&quot; : [ &quot;admin&quot; ],
+  &quot;full_name&quot; : &quot;Admin User&quot;,
+  &quot;email&quot; : &quot;admin@example.com&quot;
+}
+'
+
+# Create an analyst user
+curl -X POST &quot;localhost:9200/_security/user/analyst_user&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;password&quot; : &quot;analyst_password&quot;,
+  &quot;roles&quot; : [ &quot;analyst&quot; ],
+  &quot;full_name&quot; : &quot;Analyst User&quot;,
+  &quot;email&quot; : &quot;analyst@example.com&quot;
+}
+'
+</code></pre>
+</li>
+<li>
+<p><strong>Map Users to Roles</strong>:</p>
+<pre><code class="language-yaml"># role_mapping.yml
+admin:
+  - &quot;cn=admin_user,dc=example,dc=com&quot;
+analyst:
+  - &quot;cn=analyst_user,dc=example,dc=com&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a New Role</h2>
+<div class='content'><ol>
+<li>Define a new role called <code>data_scientist</code> that has read and write access to indices starting with <code>data-</code>.</li>
+<li>Create a user <code>data_scientist_user</code> with the <code>data_scientist</code> role.</li>
+<li>Map the user to the role.</li>
+</ol>
+<h4>Solution</h4>
+<ol>
+<li>
+<p><strong>Define Role</strong>:</p>
+<pre><code class="language-yaml"># roles.yml
+data_scientist:
+  cluster:
+    - monitor
+  indices:
+    - names: 'data-*'
+      privileges:
+        - read
+        - write
+</code></pre>
+</li>
+<li>
+<p><strong>Create User</strong>:</p>
+<pre><code class="language-bash">curl -X POST &quot;localhost:9200/_security/user/data_scientist_user&quot; -H 'Content-Type: application/json' -d'
+{
+  &quot;password&quot; : &quot;data_scientist_password&quot;,
+  &quot;roles&quot; : [ &quot;data_scientist&quot; ],
+  &quot;full_name&quot; : &quot;Data Scientist User&quot;,
+  &quot;email&quot; : &quot;data_scientist@example.com&quot;
+}
+'
+</code></pre>
+</li>
+<li>
+<p><strong>Map User to Role</strong>:</p>
+<pre><code class="language-yaml"># role_mapping.yml
+data_scientist:
+  - &quot;cn=data_scientist_user,dc=example,dc=com&quot;
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Modify an Existing Role</h2>
+<div class='content'><ol>
+<li>Modify the <code>analyst</code> role to also have write access to indices starting with <code>reports-</code>.</li>
+<li>Verify the changes by checking the role's permissions.</li>
+</ol>
+<h4>Solution</h4>
+<ol>
+<li>
+<p><strong>Modify Role</strong>:</p>
+<pre><code class="language-yaml"># roles.yml
+analyst:
+  cluster:
+    - monitor
+  indices:
+    - names: 'logs-*'
+      privileges:
+        - read
+    - names: 'reports-*'
+      privileges:
+        - read
+        - write
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Changes</strong>:</p>
+<pre><code class="language-bash">curl -X GET &quot;localhost:9200/_security/role/analyst&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Forgetting to reload the security settings after modifying the <code>roles.yml</code> or <code>role_mapping.yml</code> files.
+<ul>
+<li><strong>Tip</strong>: Use the <code>_reload_secure_settings</code> API to apply changes without restarting Elasticsearch.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Assigning too many privileges to a role, which can lead to security vulnerabilities.
+<ul>
+<li><strong>Tip</strong>: Follow the principle of least privilege, granting only the necessary permissions.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Role-Based Access Control in Elasticsearch, including defining roles, creating users, and mapping users to roles. By implementing RBAC, you can ensure that users have the appropriate permissions to access and manipulate data, enhancing the security and manageability of your Elasticsearch cluster.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-user-authentication-authorization' title="User Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-auditing-compliance' title="Auditing and Compliance">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

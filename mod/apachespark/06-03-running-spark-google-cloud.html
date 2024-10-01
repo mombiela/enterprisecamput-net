@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Running Spark on Google Cloud</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/06-03-running-spark-google-cloud" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/06-03-running-spark-google-cloud" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/06-03-running-spark-google-cloud" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/06-03-running-spark-google-cloud" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/06-03-running-spark-google-cloud" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-running-spark-azure' title="Running Spark on Azure">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Running Spark on Google Cloud</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-spark-kubernetes' title="Spark with Kubernetes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to run Apache Spark on Google Cloud Platform (GCP). Google Cloud offers several services that can be used to deploy and manage Spark applications, such as Google Cloud Dataproc, which is a fully managed and highly scalable service for running Apache Spark and other big data applications.</p>
+</div><h1>Objectives</h1>
+<div class='content'><p>By the end of this section, you will be able to:</p>
+<ol>
+<li>Understand the basics of Google Cloud Platform.</li>
+<li>Set up a Google Cloud account and project.</li>
+<li>Deploy a Spark cluster using Google Cloud Dataproc.</li>
+<li>Run Spark jobs on the Dataproc cluster.</li>
+<li>Monitor and manage your Spark applications on GCP.</li>
+</ol>
+</div><h1>1. Introduction to Google Cloud Platform</h1>
+<div class='content'><p>Google Cloud Platform (GCP) is a suite of cloud computing services that runs on the same infrastructure that Google uses internally for its end-user products. GCP offers a range of services including computing, storage, and data analytics.</p>
+</div><h2>Key Services for Spark</h2>
+<div class='content'><ul>
+<li><strong>Google Cloud Dataproc</strong>: A fast, easy-to-use, fully managed cloud service for running Apache Spark and Apache Hadoop clusters.</li>
+<li><strong>Google Cloud Storage</strong>: Object storage service for storing and accessing data.</li>
+<li><strong>Google BigQuery</strong>: A fully managed, serverless data warehouse that enables super-fast SQL queries using the processing power of Google's infrastructure.</li>
+</ul>
+</div><h1>2. Setting Up Google Cloud Account and Project</h1>
+<div class='content'></div><h2>Step 1: Create a Google Cloud Account</h2>
+<div class='content'><ol>
+<li>Go to the <a href="https://console.cloud.google.com/">Google Cloud Console</a>.</li>
+<li>Sign in with your Google account or create a new one.</li>
+<li>Follow the prompts to set up your billing information. Google Cloud offers a free tier with some credits to get started.</li>
+</ol>
+</div><h2>Step 2: Create a New Project</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, click on the project drop-down menu at the top of the page.</li>
+<li>Click on &quot;New Project&quot;.</li>
+<li>Enter a project name and select your billing account.</li>
+<li>Click &quot;Create&quot;.</li>
+</ol>
+</div><h1>3. Deploying a Spark Cluster Using Google Cloud Dataproc</h1>
+<div class='content'></div><h2>Step 1: Enable the Dataproc API</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, navigate to the &quot;APIs &amp; Services&quot; &gt; &quot;Library&quot;.</li>
+<li>Search for &quot;Dataproc&quot; and click on &quot;Google Cloud Dataproc API&quot;.</li>
+<li>Click &quot;Enable&quot;.</li>
+</ol>
+</div><h2>Step 2: Create a Dataproc Cluster</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, navigate to &quot;Dataproc&quot; &gt; &quot;Clusters&quot;.</li>
+<li>Click &quot;Create Cluster&quot;.</li>
+<li>Configure the cluster settings:
+<ul>
+<li><strong>Cluster Name</strong>: Enter a name for your cluster.</li>
+<li><strong>Region</strong>: Select a region close to your data.</li>
+<li><strong>Zone</strong>: Select a zone within the region.</li>
+<li><strong>Cluster Mode</strong>: Choose &quot;Standard&quot; for a multi-node cluster or &quot;Single Node&quot; for a single-node cluster.</li>
+<li><strong>Node Configuration</strong>: Choose the machine types and number of nodes for your cluster.</li>
+</ul>
+</li>
+<li>Click &quot;Create&quot; to deploy the cluster.</li>
+</ol>
+</div><h1>4. Running Spark Jobs on Dataproc Cluster</h1>
+<div class='content'></div><h2>Step 1: Submit a Spark Job</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, navigate to &quot;Dataproc&quot; &gt; &quot;Jobs&quot;.</li>
+<li>Click &quot;Submit Job&quot;.</li>
+<li>Configure the job settings:
+<ul>
+<li><strong>Job Type</strong>: Select &quot;Spark&quot;.</li>
+<li><strong>Main Class or Jar</strong>: Specify the main class or the path to the JAR file containing your Spark application.</li>
+<li><strong>Arguments</strong>: Provide any arguments required by your Spark application.</li>
+</ul>
+</li>
+<li>Click &quot;Submit&quot; to run the job.</li>
+</ol>
+</div><h2>Example: Submitting a Simple Spark Job</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYXZlIHRoaXMgc2NyaXB0IGFzIHdvcmRjb3VudC5weQpmcm9tIHB5c3BhcmsgaW1wb3J0IFNwYXJrQ29udGV4dAoKc2MgPSBTcGFya0NvbnRleHQoInlhcm4iLCAiV29yZENvdW50IikKdGV4dF9maWxlID0gc2MudGV4dEZpbGUoImdzOi8veW91ci1idWNrZXQvaW5wdXQudHh0IikKY291bnRzID0gdGV4dF9maWxlLmZsYXRNYXAobGFtYmRhIGxpbmU6IGxpbmUuc3BsaXQoIiAiKSkgXAogICAgICAgICAgICAgICAgICAubWFwKGxhbWJkYSB3b3JkOiAod29yZCwgMSkpIFwKICAgICAgICAgICAgICAgICAgLnJlZHVjZUJ5S2V5KGxhbWJkYSBhLCBiOiBhICsgYikKY291bnRzLnNhdmVBc1RleHRGaWxlKCJnczovL3lvdXItYnVja2V0L291dHB1dCIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Save this script as wordcount.py
+from pyspark import SparkContext
+
+sc = SparkContext(&quot;yarn&quot;, &quot;WordCount&quot;)
+text_file = sc.textFile(&quot;gs://your-bucket/input.txt&quot;)
+counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) \
+                  .map(lambda word: (word, 1)) \
+                  .reduceByKey(lambda a, b: a + b)
+counts.saveAsTextFile(&quot;gs://your-bucket/output&quot;)</pre></div><div class='content'><p>To submit this job:</p>
+<ol>
+<li>Upload <code>wordcount.py</code> to a Google Cloud Storage bucket.</li>
+<li>Submit the job with the following settings:
+<ul>
+<li><strong>Main Class or Jar</strong>: <code>gs://your-bucket/wordcount.py</code></li>
+<li><strong>Arguments</strong>: Leave empty.</li>
+</ul>
+</li>
+</ol>
+</div><h1>5. Monitoring and Managing Spark Applications</h1>
+<div class='content'></div><h2>Monitoring Jobs</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, navigate to &quot;Dataproc&quot; &gt; &quot;Jobs&quot;.</li>
+<li>Click on the job ID to view the job details, including logs and status.</li>
+</ol>
+</div><h2>Managing Clusters</h2>
+<div class='content'><ol>
+<li>In the Google Cloud Console, navigate to &quot;Dataproc&quot; &gt; &quot;Clusters&quot;.</li>
+<li>Click on the cluster name to view cluster details, including configuration and monitoring metrics.</li>
+<li>You can also resize the cluster, add or remove nodes, and delete the cluster when it is no longer needed.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to run Apache Spark on Google Cloud Platform using Google Cloud Dataproc. We started with setting up a Google Cloud account and project, then moved on to deploying a Spark cluster, running Spark jobs, and monitoring and managing those jobs. This knowledge will enable you to leverage the power of Google Cloud for your big data processing needs.</p>
+<p>Next, we will explore running Spark on Kubernetes in the following section.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-running-spark-azure' title="Running Spark on Azure">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-spark-kubernetes' title="Spark with Kubernetes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

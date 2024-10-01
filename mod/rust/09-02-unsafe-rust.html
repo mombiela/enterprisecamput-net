@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unsafe Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/09-02-unsafe-rust" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/09-02-unsafe-rust" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/09-02-unsafe-rust" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rust/09-02-unsafe-rust" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/09-02-unsafe-rust" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-macros' title="Macros">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Unsafe Rust</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-ffi' title="FFI (Foreign Function Interface)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Rust is designed to be a safe systems programming language, but there are times when you need to perform operations that the Rust compiler cannot guarantee to be safe. For these situations, Rust provides an <code>unsafe</code> keyword that allows you to bypass some of Rust's safety checks. This module will cover the following:</p>
+<ol>
+<li><strong>What is Unsafe Rust?</strong></li>
+<li><strong>When to Use Unsafe Rust</strong></li>
+<li><strong>Unsafe Functions and Blocks</strong></li>
+<li><strong>Dereferencing Raw Pointers</strong></li>
+<li><strong>Calling Unsafe Functions or Methods</strong></li>
+<li><strong>Accessing or Modifying Mutable Static Variables</strong></li>
+<li><strong>Implementing Unsafe Traits</strong></li>
+<li><strong>Accessing Fields of Unions</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. What is Unsafe Rust?</h1>
+<div class='content'><p>Unsafe Rust allows you to perform operations that are not checked by the Rust compiler for safety. These operations include:</p>
+<ul>
+<li>Dereferencing raw pointers</li>
+<li>Calling unsafe functions or methods</li>
+<li>Accessing or modifying mutable static variables</li>
+<li>Implementing unsafe traits</li>
+<li>Accessing fields of unions</li>
+</ul>
+</div><h1>2. When to Use Unsafe Rust</h1>
+<div class='content'><p>You should use unsafe Rust sparingly and only when absolutely necessary. Common scenarios include:</p>
+<ul>
+<li>Interfacing with hardware</li>
+<li>Writing low-level code</li>
+<li>Interfacing with other programming languages (FFI)</li>
+<li>Optimizing performance-critical sections of code</li>
+</ul>
+</div><h1>3. Unsafe Functions and Blocks</h1>
+<div class='content'><p>To use unsafe code, you need to wrap it in an <code>unsafe</code> block or define an <code>unsafe</code> function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgbnVtID0gNTsKCiAgICAvLyBVbnNhZmUgYmxvY2sKICAgIHVuc2FmZSB7CiAgICAgICAgbGV0IHIxID0gJm11dCBudW0gYXMgKm11dCBpMzI7CiAgICAgICAgKnIxID0gMTA7CiAgICB9CgogICAgcHJpbnRsbiEoIm51bToge30iLCBudW0pOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut num = 5;
+
+    // Unsafe block
+    unsafe {
+        let r1 = &amp;mut num as *mut i32;
+        *r1 = 10;
+    }
+
+    println!(&quot;num: {}&quot;, num);
+}</pre></div><div class='content'><p>In this example, the <code>unsafe</code> block allows us to dereference a raw pointer and modify the value it points to.</p>
+</div><h1>4. Dereferencing Raw Pointers</h1>
+<div class='content'><p>Raw pointers are similar to references but are not guaranteed to be safe. They can be created using <code>as</code> keyword.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgbnVtID0gNTsKICAgIGxldCByMSA9ICZudW0gYXMgKmNvbnN0IGkzMjsKICAgIGxldCByMiA9ICZtdXQgbnVtIGFzICptdXQgaTMyOwoKICAgIHVuc2FmZSB7CiAgICAgICAgcHJpbnRsbiEoInIxOiB7fSIsICpyMSk7CiAgICAgICAgKnIyID0gMTA7CiAgICB9CgogICAgcHJpbnRsbiEoIm51bToge30iLCBudW0pOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut num = 5;
+    let r1 = &amp;num as *const i32;
+    let r2 = &amp;mut num as *mut i32;
+
+    unsafe {
+        println!(&quot;r1: {}&quot;, *r1);
+        *r2 = 10;
+    }
+
+    println!(&quot;num: {}&quot;, num);
+}</pre></div><div class='content'></div><h1>5. Calling Unsafe Functions or Methods</h1>
+<div class='content'><p>Some functions are marked as <code>unsafe</code> because they perform operations that could violate memory safety. You must call these functions within an <code>unsafe</code> block.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIGZuIGRhbmdlcm91cygpIHsKICAgIC8vIERhbmdlcm91cyBvcGVyYXRpb25zCn0KCmZuIG1haW4oKSB7CiAgICB1bnNhZmUgewogICAgICAgIGRhbmdlcm91cygpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe fn dangerous() {
+    // Dangerous operations
+}
+
+fn main() {
+    unsafe {
+        dangerous();
+    }
+}</pre></div><div class='content'></div><h1>6. Accessing or Modifying Mutable Static Variables</h1>
+<div class='content'><p>Static variables can be accessed globally, but mutable static variables are inherently unsafe due to potential data races.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RhdGljIG11dCBDT1VOVEVSOiBpMzIgPSAwOwoKZm4gYWRkX3RvX2NvdW50ZXIoaW5jOiBpMzIpIHsKICAgIHVuc2FmZSB7CiAgICAgICAgQ09VTlRFUiArPSBpbmM7CiAgICB9Cn0KCmZuIG1haW4oKSB7CiAgICBhZGRfdG9fY291bnRlcigzKTsKCiAgICB1bnNhZmUgewogICAgICAgIHByaW50bG4hKCJDT1VOVEVSOiB7fSIsIENPVU5URVIpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>static mut COUNTER: i32 = 0;
+
+fn add_to_counter(inc: i32) {
+    unsafe {
+        COUNTER += inc;
+    }
+}
+
+fn main() {
+    add_to_counter(3);
+
+    unsafe {
+        println!(&quot;COUNTER: {}&quot;, COUNTER);
+    }
+}</pre></div><div class='content'></div><h1>7. Implementing Unsafe Traits</h1>
+<div class='content'><p>Some traits are unsafe to implement because they have invariants that the compiler cannot check.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIHRyYWl0IFVuc2FmZVRyYWl0IHsKICAgIC8vIE1ldGhvZHMKfQoKdW5zYWZlIGltcGwgVW5zYWZlVHJhaXQgZm9yIGkzMiB7CiAgICAvLyBJbXBsZW1lbnRhdGlvbgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe trait UnsafeTrait {
+    // Methods
+}
+
+unsafe impl UnsafeTrait for i32 {
+    // Implementation
+}</pre></div><div class='content'></div><h1>8. Accessing Fields of Unions</h1>
+<div class='content'><p>Unions are similar to structs but can only store one of their fields at a time. Accessing union fields is unsafe.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5pb24gTXlVbmlvbiB7CiAgICBmMTogdTMyLAogICAgZjI6IGYzMiwKfQoKZm4gbWFpbigpIHsKICAgIGxldCB1ID0gTXlVbmlvbiB7IGYxOiAxIH07CgogICAgdW5zYWZlIHsKICAgICAgICBwcmludGxuISgidS5mMToge30iLCB1LmYxKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>union MyUnion {
+    f1: u32,
+    f2: f32,
+}
+
+fn main() {
+    let u = MyUnion { f1: 1 };
+
+    unsafe {
+        println!(&quot;u.f1: {}&quot;, u.f1);
+    }
+}</pre></div><div class='content'></div><h1>9. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Interfacing with C Code</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXh0ZXJuICJDIiB7CiAgICBmbiBhYnMoaW5wdXQ6IGkzMikgLT4gaTMyOwp9CgpmbiBtYWluKCkgewogICAgdW5zYWZlIHsKICAgICAgICBwcmludGxuISgiQWJzb2x1dGUgdmFsdWUgb2YgLTMgYWNjb3JkaW5nIHRvIEM6IHt9IiwgYWJzKC0zKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>extern &quot;C&quot; {
+    fn abs(input: i32) -&gt; i32;
+}
+
+fn main() {
+    unsafe {
+        println!(&quot;Absolute value of -3 according to C: {}&quot;, abs(-3));
+    }
+}</pre></div><div class='content'></div><h2>Example 2: Optimizing Performance</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDVdOwogICAgbGV0IHB0ciA9IGFyci5hc19tdXRfcHRyKCk7CgogICAgdW5zYWZlIHsKICAgICAgICBmb3IgaSBpbiAwLi5hcnIubGVuKCkgewogICAgICAgICAgICAqcHRyLmFkZChpKSAqPSAyOwogICAgICAgIH0KICAgIH0KCiAgICBwcmludGxuISgiezo/fSIsIGFycik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    let ptr = arr.as_mut_ptr();
+
+    unsafe {
+        for i in 0..arr.len() {
+            *ptr.add(i) *= 2;
+        }
+    }
+
+    println!(&quot;{:?}&quot;, arr);
+}</pre></div><div class='content'></div><h1>10. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Dereferencing Raw Pointers</h2>
+<div class='content'><p>Create a program that uses raw pointers to swap the values of two integers.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYSA9IDU7CiAgICBsZXQgbXV0IGIgPSAxMDsKCiAgICB1bnNhZmUgewogICAgICAgIGxldCBwMSA9ICZtdXQgYSBhcyAqbXV0IGkzMjsKICAgICAgICBsZXQgcDIgPSAmbXV0IGIgYXMgKm11dCBpMzI7CgogICAgICAgIGxldCB0ZW1wID0gKnAxOwogICAgICAgICpwMSA9ICpwMjsKICAgICAgICAqcDIgPSB0ZW1wOwogICAgfQoKICAgIHByaW50bG4hKCJhOiB7fSwgYjoge30iLCBhLCBiKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut a = 5;
+    let mut b = 10;
+
+    unsafe {
+        let p1 = &amp;mut a as *mut i32;
+        let p2 = &amp;mut b as *mut i32;
+
+        let temp = *p1;
+        *p1 = *p2;
+        *p2 = temp;
+    }
+
+    println!(&quot;a: {}, b: {}&quot;, a, b);
+}</pre></div><div class='content'></div><h2>Exercise 2: Calling an Unsafe Function</h2>
+<div class='content'><p>Write an unsafe function that takes a raw pointer to an integer and increments its value by 1.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIGZuIGluY3JlbWVudChwdHI6ICptdXQgaTMyKSB7CiAgICAqcHRyICs9IDE7Cn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbXV0IG51bSA9IDU7CgogICAgdW5zYWZlIHsKICAgICAgICBpbmNyZW1lbnQoJm11dCBudW0gYXMgKm11dCBpMzIpOwogICAgfQoKICAgIHByaW50bG4hKCJudW06IHt9IiwgbnVtKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe fn increment(ptr: *mut i32) {
+    *ptr += 1;
+}
+
+fn main() {
+    let mut num = 5;
+
+    unsafe {
+        increment(&amp;mut num as *mut i32);
+    }
+
+    println!(&quot;num: {}&quot;, num);
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the concept of unsafe Rust and its various applications. While unsafe Rust allows for more flexibility and control, it should be used with caution to avoid introducing bugs and vulnerabilities. Understanding when and how to use unsafe Rust is crucial for writing efficient and safe low-level code.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-macros' title="Macros">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-ffi' title="FFI (Foreign Function Interface)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

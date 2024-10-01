@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Requests and Responses</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/03-03-manejo-peticiones-respuestas" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/03-03-manejo-peticiones-respuestas" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/03-03-handling-requests-responses" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rest_api/03-03-handling-requests-responses" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/03-03-handling-requests-responses" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-creating-basic-server' title="Creating a Basic Server">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Requests and Responses</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-authentication-authorization' title="Authentication and Authorization">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the core of RESTful API development: handling requests and responses. This involves understanding how to process incoming requests from clients and how to formulate appropriate responses. We'll cover the following key concepts:</p>
+<ol>
+<li><strong>Understanding HTTP Requests and Responses</strong></li>
+<li><strong>Parsing Request Data</strong></li>
+<li><strong>Formulating Responses</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. Understanding HTTP Requests and Responses</h1>
+<div class='content'></div><h2>HTTP Requests</h2>
+<div class='content'><p>An HTTP request is a message sent by a client to a server to perform a specific action. It consists of:</p>
+<ul>
+<li><strong>Request Line</strong>: Contains the HTTP method (e.g., GET, POST), the URI, and the HTTP version.</li>
+<li><strong>Headers</strong>: Provide metadata about the request (e.g., content type, authorization).</li>
+<li><strong>Body</strong>: Contains the data sent to the server (used mainly in POST, PUT, PATCH methods).</li>
+</ul>
+</div><h2>HTTP Responses</h2>
+<div class='content'><p>An HTTP response is a message sent by the server back to the client. It consists of:</p>
+<ul>
+<li><strong>Status Line</strong>: Contains the HTTP version, status code, and status message.</li>
+<li><strong>Headers</strong>: Provide metadata about the response (e.g., content type, content length).</li>
+<li><strong>Body</strong>: Contains the data sent back to the client.</li>
+</ul>
+</div><h1>2. Parsing Request Data</h1>
+<div class='content'><p>When a server receives a request, it needs to parse the data to understand what the client is asking for. This involves:</p>
+<ul>
+<li><strong>Extracting Path Parameters</strong>: Parameters included in the URL path.</li>
+<li><strong>Extracting Query Parameters</strong>: Parameters included in the URL query string.</li>
+<li><strong>Extracting Headers</strong>: Metadata included in the request headers.</li>
+<li><strong>Extracting Body Data</strong>: Data included in the request body (usually in JSON format).</li>
+</ul>
+</div><h2>Example: Extracting Data in Node.js with Express</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLnVzZShleHByZXNzLmpzb24oKSk7IC8vIE1pZGRsZXdhcmUgdG8gcGFyc2UgSlNPTiBib2R5CgphcHAuZ2V0KCcvdXNlcnMvOmlkJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCB1c2VySWQgPSByZXEucGFyYW1zLmlkOyAvLyBFeHRyYWN0aW5nIHBhdGggcGFyYW1ldGVyCiAgICBjb25zdCBmaWx0ZXIgPSByZXEucXVlcnkuZmlsdGVyOyAvLyBFeHRyYWN0aW5nIHF1ZXJ5IHBhcmFtZXRlcgogICAgY29uc3QgYXV0aEhlYWRlciA9IHJlcS5oZWFkZXJzWydhdXRob3JpemF0aW9uJ107IC8vIEV4dHJhY3RpbmcgaGVhZGVyCgogICAgcmVzLnNlbmQoYFVzZXIgSUQ6ICR7dXNlcklkfSwgRmlsdGVyOiAke2ZpbHRlcn0sIEF1dGhvcml6YXRpb246ICR7YXV0aEhlYWRlcn1gKTsKfSk7CgphcHAucG9zdCgnL3VzZXJzJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCB1c2VyRGF0YSA9IHJlcS5ib2R5OyAvLyBFeHRyYWN0aW5nIGJvZHkgZGF0YQogICAgcmVzLnNlbmQoYFVzZXIgRGF0YTogJHtKU09OLnN0cmluZ2lmeSh1c2VyRGF0YSl9YCk7Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgICBjb25zb2xlLmxvZygnU2VydmVyIGlzIHJ1bm5pbmcgb24gcG9ydCAzMDAwJyk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+
+app.use(express.json()); // Middleware to parse JSON body
+
+app.get('/users/:id', (req, res) =&gt; {
+    const userId = req.params.id; // Extracting path parameter
+    const filter = req.query.filter; // Extracting query parameter
+    const authHeader = req.headers['authorization']; // Extracting header
+
+    res.send(`User ID: ${userId}, Filter: ${filter}, Authorization: ${authHeader}`);
+});
+
+app.post('/users', (req, res) =&gt; {
+    const userData = req.body; // Extracting body data
+    res.send(`User Data: ${JSON.stringify(userData)}`);
+});
+
+app.listen(3000, () =&gt; {
+    console.log('Server is running on port 3000');
+});</pre></div><div class='content'></div><h1>3. Formulating Responses</h1>
+<div class='content'><p>Once the server processes the request, it needs to send back a response. This involves:</p>
+<ul>
+<li><strong>Setting Status Codes</strong>: Indicating the result of the request (e.g., 200 OK, 404 Not Found).</li>
+<li><strong>Setting Headers</strong>: Providing metadata about the response.</li>
+<li><strong>Sending Body Data</strong>: Sending the actual data back to the client.</li>
+</ul>
+</div><h2>Example: Sending Responses in Node.js with Express</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL3VzZXJzLzppZCcsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgdXNlcklkID0gcmVxLnBhcmFtcy5pZDsKCiAgICAvLyBTaW11bGF0ZSBmZXRjaGluZyB1c2VyIGRhdGEKICAgIGNvbnN0IHVzZXIgPSB7IGlkOiB1c2VySWQsIG5hbWU6ICdKb2huIERvZScgfTsKCiAgICBpZiAodXNlcikgewogICAgICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHVzZXIpOyAvLyBTZW5kaW5nIGEgMjAwIE9LIHJlc3BvbnNlIHdpdGggSlNPTiBkYXRhCiAgICB9IGVsc2UgewogICAgICAgIHJlcy5zdGF0dXMoNDA0KS5zZW5kKCdVc2VyIG5vdCBmb3VuZCcpOyAvLyBTZW5kaW5nIGEgNDA0IE5vdCBGb3VuZCByZXNwb25zZQogICAgfQp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/users/:id', (req, res) =&gt; {
+    const userId = req.params.id;
+
+    // Simulate fetching user data
+    const user = { id: userId, name: 'John Doe' };
+
+    if (user) {
+        res.status(200).json(user); // Sending a 200 OK response with JSON data
+    } else {
+        res.status(404).send('User not found'); // Sending a 404 Not Found response
+    }
+});</pre></div><div class='content'></div><h1>4. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Handling a GET Request</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL3Byb2R1Y3RzJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCBwcm9kdWN0cyA9IFsKICAgICAgICB7IGlkOiAxLCBuYW1lOiAnTGFwdG9wJyB9LAogICAgICAgIHsgaWQ6IDIsIG5hbWU6ICdQaG9uZScgfQogICAgXTsKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHByb2R1Y3RzKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/products', (req, res) =&gt; {
+    const products = [
+        { id: 1, name: 'Laptop' },
+        { id: 2, name: 'Phone' }
+    ];
+    res.status(200).json(products);
+});</pre></div><div class='content'></div><h2>Example 2: Handling a POST Request</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnBvc3QoJy9wcm9kdWN0cycsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgbmV3UHJvZHVjdCA9IHJlcS5ib2R5OwogICAgLy8gU2ltdWxhdGUgc2F2aW5nIHRoZSBwcm9kdWN0CiAgICBuZXdQcm9kdWN0LmlkID0gRGF0ZS5ub3coKTsKICAgIHJlcy5zdGF0dXMoMjAxKS5qc29uKG5ld1Byb2R1Y3QpOyAvLyBTZW5kaW5nIGEgMjAxIENyZWF0ZWQgcmVzcG9uc2UKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.post('/products', (req, res) =&gt; {
+    const newProduct = req.body;
+    // Simulate saving the product
+    newProduct.id = Date.now();
+    res.status(201).json(newProduct); // Sending a 201 Created response
+});</pre></div><div class='content'></div><h1>5. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Handling PUT Requests</h2>
+<div class='content'><p>Create an endpoint to update a product's information.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnB1dCgnL3Byb2R1Y3RzLzppZCcsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgcHJvZHVjdElkID0gcmVxLnBhcmFtcy5pZDsKICAgIGNvbnN0IHVwZGF0ZWRQcm9kdWN0ID0gcmVxLmJvZHk7CgogICAgLy8gU2ltdWxhdGUgdXBkYXRpbmcgdGhlIHByb2R1Y3QKICAgIHVwZGF0ZWRQcm9kdWN0LmlkID0gcHJvZHVjdElkOwoKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHVwZGF0ZWRQcm9kdWN0KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.put('/products/:id', (req, res) =&gt; {
+    const productId = req.params.id;
+    const updatedProduct = req.body;
+
+    // Simulate updating the product
+    updatedProduct.id = productId;
+
+    res.status(200).json(updatedProduct);
+});</pre></div><div class='content'></div><h2>Exercise 2: Handling DELETE Requests</h2>
+<div class='content'><p>Create an endpoint to delete a product.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmRlbGV0ZSgnL3Byb2R1Y3RzLzppZCcsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgcHJvZHVjdElkID0gcmVxLnBhcmFtcy5pZDsKCiAgICAvLyBTaW11bGF0ZSBkZWxldGluZyB0aGUgcHJvZHVjdAogICAgcmVzLnN0YXR1cygyMDQpLnNlbmQoKTsgLy8gU2VuZGluZyBhIDIwNCBObyBDb250ZW50IHJlc3BvbnNlCn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.delete('/products/:id', (req, res) =&gt; {
+    const productId = req.params.id;
+
+    // Simulate deleting the product
+    res.status(204).send(); // Sending a 204 No Content response
+});</pre></div><div class='content'></div><h2>Solutions</h2>
+<div class='content'><h4>Solution 1: Handling PUT Requests</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnB1dCgnL3Byb2R1Y3RzLzppZCcsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgcHJvZHVjdElkID0gcmVxLnBhcmFtcy5pZDsKICAgIGNvbnN0IHVwZGF0ZWRQcm9kdWN0ID0gcmVxLmJvZHk7CgogICAgLy8gU2ltdWxhdGUgdXBkYXRpbmcgdGhlIHByb2R1Y3QKICAgIHVwZGF0ZWRQcm9kdWN0LmlkID0gcHJvZHVjdElkOwoKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHVwZGF0ZWRQcm9kdWN0KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.put('/products/:id', (req, res) =&gt; {
+    const productId = req.params.id;
+    const updatedProduct = req.body;
+
+    // Simulate updating the product
+    updatedProduct.id = productId;
+
+    res.status(200).json(updatedProduct);
+});</pre></div><div class='content'><h4>Solution 2: Handling DELETE Requests</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmRlbGV0ZSgnL3Byb2R1Y3RzLzppZCcsIChyZXEsIHJlcykgPT4gewogICAgY29uc3QgcHJvZHVjdElkID0gcmVxLnBhcmFtcy5pZDsKCiAgICAvLyBTaW11bGF0ZSBkZWxldGluZyB0aGUgcHJvZHVjdAogICAgcmVzLnN0YXR1cygyMDQpLnNlbmQoKTsgLy8gU2VuZGluZyBhIDIwNCBObyBDb250ZW50IHJlc3BvbnNlCn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.delete('/products/:id', (req, res) =&gt; {
+    const productId = req.params.id;
+
+    // Simulate deleting the product
+    res.status(204).send(); // Sending a 204 No Content response
+});</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essentials of handling requests and responses in a RESTful API. We learned how to parse request data, formulate responses, and implemented practical examples using Node.js and Express. By mastering these concepts, you are now equipped to handle various types of requests and responses in your RESTful API development. Next, we will explore authentication and authorization to secure your API endpoints.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-creating-basic-server' title="Creating a Basic Server">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-authentication-authorization' title="Authentication and Authorization">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

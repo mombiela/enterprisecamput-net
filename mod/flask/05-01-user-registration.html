@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/05-01-user-registration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/05-01-user-registration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/05-01-user-registration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/05-01-user-registration" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/05-01-user-registration" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-database-migrations' title="Database Migrations with Flask-Migrate">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">User Registration</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-user-login-logout' title="User Login and Logout">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to implement user registration in a Flask application. User registration is a fundamental feature for any web application that requires user accounts. We will use Flask-WTF for form handling and WTForms for form validation.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>User Registration Form</strong>: Creating a form for users to input their registration details.</li>
+<li><strong>Form Validation</strong>: Ensuring the data entered by the user is valid.</li>
+<li><strong>Storing User Data</strong>: Saving the user data in a database.</li>
+<li><strong>Flask-WTF</strong>: A Flask extension that simplifies form handling and validation.</li>
+</ol>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Setting Up the User Registration Form</h2>
+<div class='content'><p>First, we need to create a form for user registration. We'll use Flask-WTF and WTForms to create and validate the form.</p>
+<p><strong>Install Flask-WTF:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2stV1RG"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask-WTF</pre></div><div class='content'><p><strong>Create the Registration Form:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBmb3Jtcy5weQpmcm9tIGZsYXNrX3d0ZiBpbXBvcnQgRmxhc2tGb3JtCmZyb20gd3Rmb3JtcyBpbXBvcnQgU3RyaW5nRmllbGQsIFBhc3N3b3JkRmllbGQsIFN1Ym1pdEZpZWxkCmZyb20gd3Rmb3Jtcy52YWxpZGF0b3JzIGltcG9ydCBEYXRhUmVxdWlyZWQsIEVtYWlsLCBFcXVhbFRvLCBMZW5ndGgKCmNsYXNzIFJlZ2lzdHJhdGlvbkZvcm0oRmxhc2tGb3JtKToKICAgIHVzZXJuYW1lID0gU3RyaW5nRmllbGQoJ1VzZXJuYW1lJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCksIExlbmd0aChtaW49MiwgbWF4PTIwKV0pCiAgICBlbWFpbCA9IFN0cmluZ0ZpZWxkKCdFbWFpbCcsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpLCBFbWFpbCgpXSkKICAgIHBhc3N3b3JkID0gUGFzc3dvcmRGaWVsZCgnUGFzc3dvcmQnLCB2YWxpZGF0b3JzPVtEYXRhUmVxdWlyZWQoKV0pCiAgICBjb25maXJtX3Bhc3N3b3JkID0gUGFzc3dvcmRGaWVsZCgnQ29uZmlybSBQYXNzd29yZCcsIHZhbGlkYXRvcnM9W0RhdGFSZXF1aXJlZCgpLCBFcXVhbFRvKCdwYXNzd29yZCcpXSkKICAgIHN1Ym1pdCA9IFN1Ym1pdEZpZWxkKCdTaWduIFVwJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># forms.py
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+from wtforms.validators import DataRequired, Email, EqualTo, Length
+
+class RegistrationForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Sign Up')</pre></div><div class='content'></div><h2>2. Creating the Registration Route</h2>
+<div class='content'><p>Next, we need to create a route in our Flask application to handle the registration form.</p>
+<p><strong>Create the Registration Route:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByb3V0ZXMucHkKZnJvbSBmbGFzayBpbXBvcnQgcmVuZGVyX3RlbXBsYXRlLCB1cmxfZm9yLCBmbGFzaCwgcmVkaXJlY3QKZnJvbSBhcHAgaW1wb3J0IGFwcCwgZGIKZnJvbSBhcHAuZm9ybXMgaW1wb3J0IFJlZ2lzdHJhdGlvbkZvcm0KZnJvbSBhcHAubW9kZWxzIGltcG9ydCBVc2VyCgpAYXBwLnJvdXRlKCIvcmVnaXN0ZXIiLCBtZXRob2RzPVsnR0VUJywgJ1BPU1QnXSkKZGVmIHJlZ2lzdGVyKCk6CiAgICBmb3JtID0gUmVnaXN0cmF0aW9uRm9ybSgpCiAgICBpZiBmb3JtLnZhbGlkYXRlX29uX3N1Ym1pdCgpOgogICAgICAgIHVzZXIgPSBVc2VyKHVzZXJuYW1lPWZvcm0udXNlcm5hbWUuZGF0YSwgZW1haWw9Zm9ybS5lbWFpbC5kYXRhLCBwYXNzd29yZD1mb3JtLnBhc3N3b3JkLmRhdGEpCiAgICAgICAgZGIuc2Vzc2lvbi5hZGQodXNlcikKICAgICAgICBkYi5zZXNzaW9uLmNvbW1pdCgpCiAgICAgICAgZmxhc2goJ1lvdXIgYWNjb3VudCBoYXMgYmVlbiBjcmVhdGVkISBZb3UgYXJlIG5vdyBhYmxlIHRvIGxvZyBpbicsICdzdWNjZXNzJykKICAgICAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcignbG9naW4nKSkKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3JlZ2lzdGVyLmh0bWwnLCB0aXRsZT0nUmVnaXN0ZXInLCBmb3JtPWZvcm0p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># routes.py
+from flask import render_template, url_for, flash, redirect
+from app import app, db
+from app.forms import RegistrationForm
+from app.models import User
+
+@app.route(&quot;/register&quot;, methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(username=form.username.data, email=form.email.data, password=form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('Your account has been created! You are now able to log in', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)</pre></div><div class='content'></div><h2>3. Creating the User Model</h2>
+<div class='content'><p>We need a User model to store user data in the database. We'll use Flask-SQLAlchemy for database operations.</p>
+<p><strong>Create the User Model:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBtb2RlbHMucHkKZnJvbSBhcHAgaW1wb3J0IGRiCgpjbGFzcyBVc2VyKGRiLk1vZGVsKToKICAgIGlkID0gZGIuQ29sdW1uKGRiLkludGVnZXIsIHByaW1hcnlfa2V5PVRydWUpCiAgICB1c2VybmFtZSA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMjApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBlbWFpbCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoMTIwKSwgdW5pcXVlPVRydWUsIG51bGxhYmxlPUZhbHNlKQogICAgcGFzc3dvcmQgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDYwKSwgbnVsbGFibGU9RmFsc2UpCgogICAgZGVmIF9fcmVwcl9fKHNlbGYpOgogICAgICAgIHJldHVybiBmIlVzZXIoJ3tzZWxmLnVzZXJuYW1lfScsICd7c2VsZi5lbWFpbH0nKSI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># models.py
+from app import db
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+    def __repr__(self):
+        return f&quot;User('{self.username}', '{self.email}')&quot;</pre></div><div class='content'></div><h2>4. Creating the Registration Template</h2>
+<div class='content'><p>Finally, we need to create an HTML template for the registration form.</p>
+<p><strong>Create the Registration Template:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvcmVnaXN0ZXIuaHRtbCAtLT4KPCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+UmVnaXN0ZXI8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPlJlZ2lzdGVyPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIiPgogICAgICAgIHt7IGZvcm0uaGlkZGVuX3RhZygpIH19CiAgICAgICAgPGRpdj4KICAgICAgICAgICAge3sgZm9ybS51c2VybmFtZS5sYWJlbCB9fTxicj4KICAgICAgICAgICAge3sgZm9ybS51c2VybmFtZShzaXplPTMyKSB9fTxicj4KICAgICAgICAgICAgeyUgZm9yIGVycm9yIGluIGZvcm0udXNlcm5hbWUuZXJyb3JzICV9CiAgICAgICAgICAgICAgICA8c3BhbiBzdHlsZT0iY29sb3I6IHJlZDsiPlt7eyBlcnJvciB9fV08L3NwYW4+CiAgICAgICAgICAgIHslIGVuZGZvciAlfQogICAgICAgIDwvZGl2PgogICAgICAgIDxkaXY+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHslIGZvciBlcnJvciBpbiBmb3JtLmVtYWlsLmVycm9ycyAlfQogICAgICAgICAgICAgICAgPHNwYW4gc3R5bGU9ImNvbG9yOiByZWQ7Ij5be3sgZXJyb3IgfX1dPC9zcGFuPgogICAgICAgICAgICB7JSBlbmRmb3IgJX0KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2PgogICAgICAgICAgICB7eyBmb3JtLnBhc3N3b3JkLmxhYmVsIH19PGJyPgogICAgICAgICAgICB7eyBmb3JtLnBhc3N3b3JkKHNpemU9MzIpIH19PGJyPgogICAgICAgICAgICB7JSBmb3IgZXJyb3IgaW4gZm9ybS5wYXNzd29yZC5lcnJvcnMgJX0KICAgICAgICAgICAgICAgIDxzcGFuIHN0eWxlPSJjb2xvcjogcmVkOyI+W3t7IGVycm9yIH19XTwvc3Bhbj4KICAgICAgICAgICAgeyUgZW5kZm9yICV9CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdj4KICAgICAgICAgICAge3sgZm9ybS5jb25maXJtX3Bhc3N3b3JkLmxhYmVsIH19PGJyPgogICAgICAgICAgICB7eyBmb3JtLmNvbmZpcm1fcGFzc3dvcmQoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgICAgIHslIGZvciBlcnJvciBpbiBmb3JtLmNvbmZpcm1fcGFzc3dvcmQuZXJyb3JzICV9CiAgICAgICAgICAgICAgICA8c3BhbiBzdHlsZT0iY29sb3I6IHJlZDsiPlt7eyBlcnJvciB9fV08L3NwYW4+CiAgICAgICAgICAgIHslIGVuZGZvciAlfQogICAgICAgIDwvZGl2PgogICAgICAgIDxkaXY+CiAgICAgICAgICAgIHt7IGZvcm0uc3VibWl0KCkgfX0KICAgICAgICA8L2Rpdj4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/register.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Register&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;&quot;&gt;
+        {{ form.hidden_tag() }}
+        &lt;div&gt;
+            {{ form.username.label }}&lt;br&gt;
+            {{ form.username(size=32) }}&lt;br&gt;
+            {% for error in form.username.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.email.label }}&lt;br&gt;
+            {{ form.email(size=32) }}&lt;br&gt;
+            {% for error in form.email.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.password.label }}&lt;br&gt;
+            {{ form.password(size=32) }}&lt;br&gt;
+            {% for error in form.password.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.confirm_password.label }}&lt;br&gt;
+            {{ form.confirm_password(size=32) }}&lt;br&gt;
+            {% for error in form.confirm_password.errors %}
+                &lt;span style=&quot;color: red;&quot;&gt;[{{ error }}]&lt;/span&gt;
+            {% endfor %}
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.submit() }}
+        &lt;/div&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement User Registration</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Implement a user registration feature in your Flask application.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Create a <code>RegistrationForm</code> class in <code>forms.py</code>.</li>
+<li>Create a <code>/register</code> route in <code>routes.py</code>.</li>
+<li>Create a <code>User</code> model in <code>models.py</code>.</li>
+<li>Create a <code>register.html</code> template in the <code>templates</code> directory.</li>
+</ul>
+</li>
+<li><strong>Expected Outcome</strong>: Users should be able to register by filling out the form, and their data should be stored in the database.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>Follow the steps outlined in the guide above to implement the user registration feature.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Form Validation</strong>: Ensure that the form validation is correctly set up to prevent invalid data from being submitted.</li>
+<li><strong>Database Commit</strong>: Don't forget to commit the session after adding a new user to the database.</li>
+<li><strong>Password Security</strong>: In a real application, never store passwords in plain text. Use a library like <code>werkzeug.security</code> to hash passwords before storing them.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to implement user registration in a Flask application. We covered creating a registration form, handling form validation, storing user data in a database, and creating the necessary routes and templates. This foundational knowledge will be crucial as we move on to more advanced topics like user authentication and session management.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-database-migrations' title="Database Migrations with Flask-Migrate">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-user-login-logout' title="User Login and Logout">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

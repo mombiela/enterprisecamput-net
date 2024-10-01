@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creating a Vue.js Plugin</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/07-02-creating-vuejs-plugin" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/07-02-creating-vuejs-plugin" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/07-02-creating-vuejs-plugin" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/vuejs/07-02-creating-vuejs-plugin" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/07-02-creating-vuejs-plugin" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-using-vuejs-plugins' title="Using Vue.js Plugins">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creating a Vue.js Plugin</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-unit-testing-vue-test-utils' title="Unit Testing with Vue Test Utils">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to create a Vue.js plugin from scratch. Vue.js plugins are a powerful way to extend the functionality of your Vue applications. They can be used to add global methods, directives, mixins, and more.</p>
+</div><h1>What is a Vue.js Plugin?</h1>
+<div class='content'><p>A Vue.js plugin is essentially an object or a function that adds global-level functionality to a Vue application. Plugins can be used to:</p>
+<ul>
+<li>Add global methods or properties.</li>
+<li>Add global assets like directives, filters, and components.</li>
+<li>Add Vue instance methods by attaching them to <code>Vue.prototype</code>.</li>
+<li>Add a mixin to all Vue instances.</li>
+<li>Add a custom directive.</li>
+</ul>
+</div><h1>Steps to Create a Vue.js Plugin</h1>
+<div class='content'></div><h2>1. Create the Plugin File</h2>
+<div class='content'><p>First, create a new JavaScript file for your plugin. Let's call it <code>myPlugin.js</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbXlQbHVnaW4uanMKZXhwb3J0IGRlZmF1bHQgewogIGluc3RhbGwoVnVlLCBvcHRpb25zKSB7CiAgICAvLyBBZGQgYSBnbG9iYWwgbWV0aG9kCiAgICBWdWUubXlHbG9iYWxNZXRob2QgPSBmdW5jdGlvbiAoKSB7CiAgICAgIGNvbnNvbGUubG9nKCdUaGlzIGlzIGEgZ2xvYmFsIG1ldGhvZCcpOwogICAgfTsKCiAgICAvLyBBZGQgYSBnbG9iYWwgZGlyZWN0aXZlCiAgICBWdWUuZGlyZWN0aXZlKCdteS1kaXJlY3RpdmUnLCB7CiAgICAgIGJpbmQoZWwsIGJpbmRpbmcsIHZub2RlKSB7CiAgICAgICAgZWwuc3R5bGUuY29sb3IgPSBiaW5kaW5nLnZhbHVlOwogICAgICB9CiAgICB9KTsKCiAgICAvLyBBZGQgYW4gaW5zdGFuY2UgbWV0aG9kCiAgICBWdWUucHJvdG90eXBlLiRteU1ldGhvZCA9IGZ1bmN0aW9uIChtZXRob2RPcHRpb25zKSB7CiAgICAgIGNvbnNvbGUubG9nKCdUaGlzIGlzIGFuIGluc3RhbmNlIG1ldGhvZCcpOwogICAgfTsKICB9Cn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// myPlugin.js
+export default {
+  install(Vue, options) {
+    // Add a global method
+    Vue.myGlobalMethod = function () {
+      console.log('This is a global method');
+    };
+
+    // Add a global directive
+    Vue.directive('my-directive', {
+      bind(el, binding, vnode) {
+        el.style.color = binding.value;
+      }
+    });
+
+    // Add an instance method
+    Vue.prototype.$myMethod = function (methodOptions) {
+      console.log('This is an instance method');
+    };
+  }
+};</pre></div><div class='content'></div><h2>2. Register the Plugin</h2>
+<div class='content'><p>To use the plugin in your Vue application, you need to register it. Open your main JavaScript file (usually <code>main.js</code>) and import the plugin.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi5qcwppbXBvcnQgVnVlIGZyb20gJ3Z1ZSc7CmltcG9ydCBBcHAgZnJvbSAnLi9BcHAudnVlJzsKaW1wb3J0IE15UGx1Z2luIGZyb20gJy4vbXlQbHVnaW4nOwoKVnVlLmNvbmZpZy5wcm9kdWN0aW9uVGlwID0gZmFsc2U7CgovLyBSZWdpc3RlciB0aGUgcGx1Z2luClZ1ZS51c2UoTXlQbHVnaW4pOwoKbmV3IFZ1ZSh7CiAgcmVuZGVyOiBoID0+IGgoQXBwKSwKfSkuJG1vdW50KCcjYXBwJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.js
+import Vue from 'vue';
+import App from './App.vue';
+import MyPlugin from './myPlugin';
+
+Vue.config.productionTip = false;
+
+// Register the plugin
+Vue.use(MyPlugin);
+
+new Vue({
+  render: h =&gt; h(App),
+}).$mount('#app');</pre></div><div class='content'></div><h2>3. Use the Plugin Features</h2>
+<div class='content'><p>Now that the plugin is registered, you can use its features in your Vue components.</p>
+<h4>Using the Global Method</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW4gYW55IGNvbXBvbmVudApWdWUubXlHbG9iYWxNZXRob2QoKTsgLy8gVGhpcyB3aWxsIGxvZyAnVGhpcyBpcyBhIGdsb2JhbCBtZXRob2Qn"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// In any component
+Vue.myGlobalMethod(); // This will log 'This is a global method'</pre></div><div class='content'><h4>Using the Global Directive</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBJbiBhbnkgY29tcG9uZW50IHRlbXBsYXRlIC0tPgo8ZGl2IHYtbXktZGlyZWN0aXZlPSIncmVkJyI+VGhpcyB0ZXh0IHdpbGwgYmUgcmVkPC9kaXY+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- In any component template --&gt;
+&lt;div v-my-directive=&quot;'red'&quot;&gt;This text will be red&lt;/div&gt;</pre></div><div class='content'><h4>Using the Instance Method</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW4gYW55IGNvbXBvbmVudApleHBvcnQgZGVmYXVsdCB7CiAgbW91bnRlZCgpIHsKICAgIHRoaXMuJG15TWV0aG9kKCk7IC8vIFRoaXMgd2lsbCBsb2cgJ1RoaXMgaXMgYW4gaW5zdGFuY2UgbWV0aG9kJwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// In any component
+export default {
+  mounted() {
+    this.$myMethod(); // This will log 'This is an instance method'
+  }
+};</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create a Custom Plugin</h2>
+<div class='content'><ol>
+<li>Create a new file named <code>customPlugin.js</code>.</li>
+<li>Add a global method that logs a custom message.</li>
+<li>Add a global directive that changes the background color of an element.</li>
+<li>Add an instance method that alerts a custom message.</li>
+<li>Register the plugin in your <code>main.js</code>.</li>
+<li>Use the plugin features in a Vue component.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>customPlugin.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY3VzdG9tUGx1Z2luLmpzCmV4cG9ydCBkZWZhdWx0IHsKICBpbnN0YWxsKFZ1ZSwgb3B0aW9ucykgewogICAgLy8gQWRkIGEgZ2xvYmFsIG1ldGhvZAogICAgVnVlLm15Q3VzdG9tR2xvYmFsTWV0aG9kID0gZnVuY3Rpb24gKCkgewogICAgICBjb25zb2xlLmxvZygnVGhpcyBpcyBhIGN1c3RvbSBnbG9iYWwgbWV0aG9kJyk7CiAgICB9OwoKICAgIC8vIEFkZCBhIGdsb2JhbCBkaXJlY3RpdmUKICAgIFZ1ZS5kaXJlY3RpdmUoJ2JhY2tncm91bmQnLCB7CiAgICAgIGJpbmQoZWwsIGJpbmRpbmcsIHZub2RlKSB7CiAgICAgICAgZWwuc3R5bGUuYmFja2dyb3VuZENvbG9yID0gYmluZGluZy52YWx1ZTsKICAgICAgfQogICAgfSk7CgogICAgLy8gQWRkIGFuIGluc3RhbmNlIG1ldGhvZAogICAgVnVlLnByb3RvdHlwZS4kYWxlcnRNZXNzYWdlID0gZnVuY3Rpb24gKG1lc3NhZ2UpIHsKICAgICAgYWxlcnQobWVzc2FnZSk7CiAgICB9OwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// customPlugin.js
+export default {
+  install(Vue, options) {
+    // Add a global method
+    Vue.myCustomGlobalMethod = function () {
+      console.log('This is a custom global method');
+    };
+
+    // Add a global directive
+    Vue.directive('background', {
+      bind(el, binding, vnode) {
+        el.style.backgroundColor = binding.value;
+      }
+    });
+
+    // Add an instance method
+    Vue.prototype.$alertMessage = function (message) {
+      alert(message);
+    };
+  }
+};</pre></div><div class='content'><h4>main.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi5qcwppbXBvcnQgVnVlIGZyb20gJ3Z1ZSc7CmltcG9ydCBBcHAgZnJvbSAnLi9BcHAudnVlJzsKaW1wb3J0IEN1c3RvbVBsdWdpbiBmcm9tICcuL2N1c3RvbVBsdWdpbic7CgpWdWUuY29uZmlnLnByb2R1Y3Rpb25UaXAgPSBmYWxzZTsKCi8vIFJlZ2lzdGVyIHRoZSBwbHVnaW4KVnVlLnVzZShDdXN0b21QbHVnaW4pOwoKbmV3IFZ1ZSh7CiAgcmVuZGVyOiBoID0+IGgoQXBwKSwKfSkuJG1vdW50KCcjYXBwJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.js
+import Vue from 'vue';
+import App from './App.vue';
+import CustomPlugin from './customPlugin';
+
+Vue.config.productionTip = false;
+
+// Register the plugin
+Vue.use(CustomPlugin);
+
+new Vue({
+  render: h =&gt; h(App),
+}).$mount('#app');</pre></div><div class='content'><h4>Using the Plugin Features</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW4gYW55IGNvbXBvbmVudApleHBvcnQgZGVmYXVsdCB7CiAgbW91bnRlZCgpIHsKICAgIC8vIFVzaW5nIHRoZSBnbG9iYWwgbWV0aG9kCiAgICBWdWUubXlDdXN0b21HbG9iYWxNZXRob2QoKTsgLy8gVGhpcyB3aWxsIGxvZyAnVGhpcyBpcyBhIGN1c3RvbSBnbG9iYWwgbWV0aG9kJwoKICAgIC8vIFVzaW5nIHRoZSBpbnN0YW5jZSBtZXRob2QKICAgIHRoaXMuJGFsZXJ0TWVzc2FnZSgnSGVsbG8gZnJvbSBpbnN0YW5jZSBtZXRob2QhJyk7IC8vIFRoaXMgd2lsbCBhbGVydCAnSGVsbG8gZnJvbSBpbnN0YW5jZSBtZXRob2QhJwogIH0KfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// In any component
+export default {
+  mounted() {
+    // Using the global method
+    Vue.myCustomGlobalMethod(); // This will log 'This is a custom global method'
+
+    // Using the instance method
+    this.$alertMessage('Hello from instance method!'); // This will alert 'Hello from instance method!'
+  }
+};</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBJbiBhbnkgY29tcG9uZW50IHRlbXBsYXRlIC0tPgo8ZGl2IHYtYmFja2dyb3VuZD0iJ3llbGxvdyciPlRoaXMgYmFja2dyb3VuZCB3aWxsIGJlIHllbGxvdzwvZGl2Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- In any component template --&gt;
+&lt;div v-background=&quot;'yellow'&quot;&gt;This background will be yellow&lt;/div&gt;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to create a Vue.js plugin, register it, and use its features in a Vue application. Plugins are a powerful way to extend the functionality of your Vue applications and can be used to add global methods, directives, and instance methods. In the next module, we will explore testing in Vue.js, starting with unit testing using Vue Test Utils.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-using-vuejs-plugins' title="Using Vue.js Plugins">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-unit-testing-vue-test-utils' title="Unit Testing with Vue Test Utils">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

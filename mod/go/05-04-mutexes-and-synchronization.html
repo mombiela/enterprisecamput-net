@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutexes and Synchronization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/05-04-mutexes-and-synchronization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/05-04-mutexes-and-synchronization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/05-04-mutexes-and-synchronization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/go/05-04-mutexes-and-synchronization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/go/05-04-mutexes-and-synchronization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-select-statement' title="Select Statement">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mutexes and Synchronization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-interfaces' title="Interfaces">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the concepts of mutexes and synchronization in Go. Concurrency is a powerful feature in Go, but it also introduces the challenge of managing shared resources safely. Mutexes (short for mutual exclusions) are a common way to handle this.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Mutex</strong>: A mutex is a synchronization primitive that can be used to protect shared data from being simultaneously accessed by multiple goroutines.</li>
+<li><strong>Lock and Unlock</strong>: These are the primary operations on a mutex. Locking a mutex prevents other goroutines from accessing the shared resource until it is unlocked.</li>
+<li><strong>Deadlock</strong>: A situation where two or more goroutines are waiting for each other to release a resource, causing them to be stuck indefinitely.</li>
+</ol>
+</div><h1>Using Mutexes in Go</h1>
+<div class='content'><p>Go provides the <code>sync</code> package, which includes the <code>Mutex</code> type. Here’s how you can use it:</p>
+</div><h2>Example: Basic Mutex Usage</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAoJImZtdCIKCSJzeW5jIgopCgp2YXIgKAoJY291bnRlciBpbnQKCW11ICAgICAgc3luYy5NdXRleAopCgpmdW5jIGluY3JlbWVudCh3ZyAqc3luYy5XYWl0R3JvdXApIHsKCWRlZmVyIHdnLkRvbmUoKQoJbXUuTG9jaygpCgljb3VudGVyKysKCW11LlVubG9jaygpCn0KCmZ1bmMgbWFpbigpIHsKCXZhciB3ZyBzeW5jLldhaXRHcm91cAoKCWZvciBpIDo9IDA7IGkgPCAxMDAwOyBpKysgewoJCXdnLkFkZCgxKQoJCWdvIGluY3JlbWVudCgmd2cpCgl9CgoJd2cuV2FpdCgpCglmbXQuUHJpbnRsbigiRmluYWwgQ291bnRlcjoiLCBjb3VudGVyKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+var (
+	counter int
+	mu      sync.Mutex
+)
+
+func increment(wg *sync.WaitGroup) {
+	defer wg.Done()
+	mu.Lock()
+	counter++
+	mu.Unlock()
+}
+
+func main() {
+	var wg sync.WaitGroup
+
+	for i := 0; i &lt; 1000; i++ {
+		wg.Add(1)
+		go increment(&amp;wg)
+	}
+
+	wg.Wait()
+	fmt.Println(&quot;Final Counter:&quot;, counter)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Variables</strong>:</p>
+<ul>
+<li><code>counter</code>: A shared variable that multiple goroutines will increment.</li>
+<li><code>mu</code>: A <code>sync.Mutex</code> to protect the <code>counter</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>increment Function</strong>:</p>
+<ul>
+<li><code>defer wg.Done()</code>: Ensures that the <code>WaitGroup</code> counter is decremented when the function completes.</li>
+<li><code>mu.Lock()</code>: Locks the mutex to ensure exclusive access to the <code>counter</code>.</li>
+<li><code>counter++</code>: Safely increments the counter.</li>
+<li><code>mu.Unlock()</code>: Unlocks the mutex, allowing other goroutines to access the <code>counter</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>main Function</strong>:</p>
+<ul>
+<li>Creates a <code>WaitGroup</code> to wait for all goroutines to finish.</li>
+<li>Spawns 1000 goroutines, each incrementing the counter.</li>
+<li>Waits for all goroutines to complete using <code>wg.Wait()</code>.</li>
+<li>Prints the final value of the counter.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Common Mistakes</h2>
+<div class='content'><ol>
+<li><strong>Forgetting to Unlock</strong>: Always ensure that <code>Unlock</code> is called after <code>Lock</code>. Using <code>defer</code> can help avoid this mistake.</li>
+<li><strong>Deadlocks</strong>: Be cautious of situations where multiple goroutines are waiting for each other to release locks.</li>
+</ol>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise</strong>: Modify the above example to decrement the counter as well. Ensure that the final counter value is zero.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAoJImZtdCIKCSJzeW5jIgopCgp2YXIgKAoJY291bnRlciBpbnQKCW11ICAgICAgc3luYy5NdXRleAopCgpmdW5jIGluY3JlbWVudCh3ZyAqc3luYy5XYWl0R3JvdXApIHsKCWRlZmVyIHdnLkRvbmUoKQoJbXUuTG9jaygpCgljb3VudGVyKysKCW11LlVubG9jaygpCn0KCmZ1bmMgZGVjcmVtZW50KHdnICpzeW5jLldhaXRHcm91cCkgewoJZGVmZXIgd2cuRG9uZSgpCgltdS5Mb2NrKCkKCWNvdW50ZXItLQoJbXUuVW5sb2NrKCkKfQoKZnVuYyBtYWluKCkgewoJdmFyIHdnIHN5bmMuV2FpdEdyb3VwCgoJZm9yIGkgOj0gMDsgaSA8IDEwMDA7IGkrKyB7CgkJd2cuQWRkKDEpCgkJZ28gaW5jcmVtZW50KCZ3ZykKCX0KCglmb3IgaSA6PSAwOyBpIDwgMTAwMDsgaSsrIHsKCQl3Zy5BZGQoMSkKCQlnbyBkZWNyZW1lbnQoJndnKQoJfQoKCXdnLldhaXQoKQoJZm10LlByaW50bG4oIkZpbmFsIENvdW50ZXI6IiwgY291bnRlcikKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+	&quot;fmt&quot;
+	&quot;sync&quot;
+)
+
+var (
+	counter int
+	mu      sync.Mutex
+)
+
+func increment(wg *sync.WaitGroup) {
+	defer wg.Done()
+	mu.Lock()
+	counter++
+	mu.Unlock()
+}
+
+func decrement(wg *sync.WaitGroup) {
+	defer wg.Done()
+	mu.Lock()
+	counter--
+	mu.Unlock()
+}
+
+func main() {
+	var wg sync.WaitGroup
+
+	for i := 0; i &lt; 1000; i++ {
+		wg.Add(1)
+		go increment(&amp;wg)
+	}
+
+	for i := 0; i &lt; 1000; i++ {
+		wg.Add(1)
+		go decrement(&amp;wg)
+	}
+
+	wg.Wait()
+	fmt.Println(&quot;Final Counter:&quot;, counter)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>decrement Function</strong>:</p>
+<ul>
+<li>Similar to <code>increment</code>, but decrements the counter.</li>
+</ul>
+</li>
+<li>
+<p><strong>main Function</strong>:</p>
+<ul>
+<li>Spawns 1000 goroutines to increment the counter.</li>
+<li>Spawns another 1000 goroutines to decrement the counter.</li>
+<li>Waits for all goroutines to complete.</li>
+<li>The final counter value should be zero.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned about mutexes and how they can be used to synchronize access to shared resources in Go. We covered the basic usage of <code>sync.Mutex</code>, common mistakes, and provided a practical exercise to reinforce the concepts. Understanding and correctly using mutexes is crucial for writing safe and efficient concurrent programs in Go.</p>
+<p>Next, we will delve into more advanced synchronization techniques and tools provided by Go, such as channels and the <code>select</code> statement.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-select-statement' title="Select Statement">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-interfaces' title="Interfaces">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

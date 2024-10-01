@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding State</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/03-01-understanding-state" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/03-01-understanding-state" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/03-01-understanding-state" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/03-01-understanding-state" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/03-01-understanding-state" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-providers' title="Providers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Understanding State</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-state-files' title="State Files">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the concept of state in Terraform, which is crucial for managing your infrastructure as code. Understanding how Terraform handles state will help you manage your resources more effectively and avoid common pitfalls.</p>
+</div><h1>What is State?</h1>
+<div class='content'><p>State is a critical concept in Terraform that keeps track of the resources it manages. Here are the key points to understand:</p>
+<ul>
+<li><strong>State File</strong>: Terraform uses a state file to map real-world resources to your configuration. This file is typically named <code>terraform.tfstate</code>.</li>
+<li><strong>Resource Tracking</strong>: The state file contains information about the resources Terraform manages, including their current status and attributes.</li>
+<li><strong>Dependency Management</strong>: State helps Terraform understand resource dependencies, ensuring that changes are applied in the correct order.</li>
+</ul>
+</div><h1>Why is State Important?</h1>
+<div class='content'><p>State is essential for several reasons:</p>
+<ol>
+<li><strong>Mapping Configuration to Real Resources</strong>: State allows Terraform to know which resources it manages and their current state.</li>
+<li><strong>Performance</strong>: By storing the state, Terraform can quickly determine what changes need to be made without querying the cloud provider for every operation.</li>
+<li><strong>Collaboration</strong>: State files can be shared among team members, enabling collaborative infrastructure management.</li>
+</ol>
+</div><h1>How State Works</h1>
+<div class='content'><p>When you run <code>terraform apply</code>, Terraform performs the following steps:</p>
+<ol>
+<li><strong>Read State</strong>: Terraform reads the current state from the state file.</li>
+<li><strong>Plan</strong>: It compares the current state with the desired state defined in your configuration files.</li>
+<li><strong>Apply</strong>: Terraform makes the necessary changes to achieve the desired state and updates the state file.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's look at a simple example to understand how state works in practice.</p>
+</div><h2>Step 1: Initial Configuration</h2>
+<div class='content'><p>Create a file named <code>main.tf</code> with the following content:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgYW1pICAgICAgICAgICA9ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiCiAgaW5zdGFuY2VfdHlwZSA9ICJ0Mi5taWNybyIKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}</pre></div><div class='content'></div><h2>Step 2: Initialize and Apply</h2>
+<div class='content'><p>Initialize Terraform and apply the configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQKdGVycmFmb3JtIGFwcGx5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init
+terraform apply</pre></div><div class='content'><p>After applying, Terraform creates a state file named <code>terraform.tfstate</code> in your working directory.</p>
+</div><h2>Step 3: Inspect the State File</h2>
+<div class='content'><p>Open the <code>terraform.tfstate</code> file to see its contents. It will look something like this:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ2ZXJzaW9uIjogNCwKICAidGVycmFmb3JtX3ZlcnNpb24iOiAiMS4wLjAiLAogICJyZXNvdXJjZXMiOiBbCiAgICB7CiAgICAgICJtb2RlIjogIm1hbmFnZWQiLAogICAgICAidHlwZSI6ICJhd3NfaW5zdGFuY2UiLAogICAgICAibmFtZSI6ICJleGFtcGxlIiwKICAgICAgInByb3ZpZGVyIjogInByb3ZpZGVyW1wicmVnaXN0cnkudGVycmFmb3JtLmlvL2hhc2hpY29ycC9hd3NcIl0iLAogICAgICAiaW5zdGFuY2VzIjogWwogICAgICAgIHsKICAgICAgICAgICJzY2hlbWFfdmVyc2lvbiI6IDEsCiAgICAgICAgICAiYXR0cmlidXRlcyI6IHsKICAgICAgICAgICAgImFtaSI6ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiLAogICAgICAgICAgICAiaW5zdGFuY2VfdHlwZSI6ICJ0Mi5taWNybyIsCiAgICAgICAgICAgICJpZCI6ICJpLTBhYmNkMTIzNGVmZ2g1Njc4IgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgXQogICAgfQogIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;version&quot;: 4,
+  &quot;terraform_version&quot;: &quot;1.0.0&quot;,
+  &quot;resources&quot;: [
+    {
+      &quot;mode&quot;: &quot;managed&quot;,
+      &quot;type&quot;: &quot;aws_instance&quot;,
+      &quot;name&quot;: &quot;example&quot;,
+      &quot;provider&quot;: &quot;provider[\&quot;registry.terraform.io/hashicorp/aws\&quot;]&quot;,
+      &quot;instances&quot;: [
+        {
+          &quot;schema_version&quot;: 1,
+          &quot;attributes&quot;: {
+            &quot;ami&quot;: &quot;ami-0c55b159cbfafe1f0&quot;,
+            &quot;instance_type&quot;: &quot;t2.micro&quot;,
+            &quot;id&quot;: &quot;i-0abcd1234efgh5678&quot;
+          }
+        }
+      ]
+    }
+  ]
+}</pre></div><div class='content'></div><h2>Step 4: Modify the Configuration</h2>
+<div class='content'><p>Update <code>main.tf</code> to change the instance type:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19pbnN0YW5jZSIgImV4YW1wbGUiIHsKICBhbWkgICAgICAgICAgID0gImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIKICBpbnN0YW5jZV90eXBlID0gInQyLnNtYWxsIgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.small&quot;
+}</pre></div><div class='content'></div><h2>Step 5: Apply Changes</h2>
+<div class='content'><p>Run <code>terraform apply</code> again. Terraform will:</p>
+<ol>
+<li>Read the current state.</li>
+<li>Compare it with the updated configuration.</li>
+<li>Plan and apply the necessary changes.</li>
+<li>Update the state file.</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Manual State File Edits</strong>: Avoid manually editing the state file. Use Terraform commands to manage state.</li>
+<li><strong>State File Security</strong>: Ensure your state file is secure, as it may contain sensitive information.</li>
+<li><strong>Remote State</strong>: For collaboration, consider using remote state storage (e.g., AWS S3, Terraform Cloud).</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>Understanding state is fundamental to using Terraform effectively. The state file tracks your resources, manages dependencies, and ensures efficient operations. By following best practices and leveraging state management features, you can maintain robust and scalable infrastructure as code.</p>
+<p>In the next section, we will explore state files in more detail, including how to manage and secure them.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-providers' title="Providers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-state-files' title="State Files">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

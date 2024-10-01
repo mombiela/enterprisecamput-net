@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Network Information</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apache_cordova/02-04-handling-network-information" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apache_cordova/02-04-handling-network-information" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apache_cordova/02-04-handling-network-information" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apache_cordova/02-04-handling-network-information" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apache_cordova/02-04-handling-network-information" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-accessing-device-storage' title="Accessing Device Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Network Information</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-interacting-with-camera' title="Interacting with the Camera">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to handle network information in Apache Cordova applications. Understanding the network status of a device is crucial for creating robust mobile applications that can handle offline scenarios gracefully.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Network Information API</strong>: Cordova provides a Network Information API that allows you to determine the type of network connection (e.g., Wi-Fi, cellular) and monitor changes in network status.</li>
+<li><strong>Event Listeners</strong>: You can set up event listeners to detect changes in network connectivity.</li>
+<li><strong>Offline Handling</strong>: Implement strategies to handle offline scenarios, such as caching data and providing user feedback.</li>
+</ol>
+</div><h1>Network Information API</h1>
+<div class='content'><p>The Network Information API is part of the Cordova <code>cordova-plugin-network-information</code> plugin. This plugin provides information about the device's cellular and Wi-Fi connection.</p>
+</div><h2>Installing the Plugin</h2>
+<div class='content'><p>First, you need to install the plugin in your Cordova project:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBwbHVnaW4gYWRkIGNvcmRvdmEtcGx1Z2luLW5ldHdvcmstaW5mb3JtYXRpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova plugin add cordova-plugin-network-information</pre></div><div class='content'></div><h2>Checking Network Connection</h2>
+<div class='content'><p>You can check the current network connection type using the <code>navigator.connection.type</code> property. Here is a simple example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigiZGV2aWNlcmVhZHkiLCBmdW5jdGlvbigpIHsKICAgIHZhciBuZXR3b3JrU3RhdGUgPSBuYXZpZ2F0b3IuY29ubmVjdGlvbi50eXBlOwoKICAgIHZhciBzdGF0ZXMgPSB7fTsKICAgIHN0YXRlc1tDb25uZWN0aW9uLlVOS05PV05dICA9ICdVbmtub3duIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uRVRIRVJORVRdID0gJ0V0aGVybmV0IGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uV0lGSV0gICAgID0gJ1dpRmkgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXzJHXSAgPSAnQ2VsbCAyRyBjb25uZWN0aW9uJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExfM0ddICA9ICdDZWxsIDNHIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uQ0VMTF80R10gID0gJ0NlbGwgNEcgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXSAgICAgPSAnQ2VsbCBnZW5lcmljIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uTk9ORV0gICAgID0gJ05vIG5ldHdvcmsgY29ubmVjdGlvbic7CgogICAgYWxlcnQoJ0Nvbm5lY3Rpb24gdHlwZTogJyArIHN0YXRlc1tuZXR3b3JrU3RhdGVdKTsKfSwgZmFsc2UpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener(&quot;deviceready&quot;, function() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    alert('Connection type: ' + states[networkState]);
+}, false);</pre></div><div class='content'></div><h2>Monitoring Network Changes</h2>
+<div class='content'><p>You can monitor changes in network connectivity by listening to the <code>online</code> and <code>offline</code> events:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigiZGV2aWNlcmVhZHkiLCBmdW5jdGlvbigpIHsKICAgIGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoIm9ubGluZSIsIG9uT25saW5lLCBmYWxzZSk7CiAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCJvZmZsaW5lIiwgb25PZmZsaW5lLCBmYWxzZSk7Cn0sIGZhbHNlKTsKCmZ1bmN0aW9uIG9uT25saW5lKCkgewogICAgYWxlcnQoIllvdSBhcmUgbm93IG9ubGluZSEiKTsKfQoKZnVuY3Rpb24gb25PZmZsaW5lKCkgewogICAgYWxlcnQoIllvdSBhcmUgbm93IG9mZmxpbmUhIik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener(&quot;deviceready&quot;, function() {
+    document.addEventListener(&quot;online&quot;, onOnline, false);
+    document.addEventListener(&quot;offline&quot;, onOffline, false);
+}, false);
+
+function onOnline() {
+    alert(&quot;You are now online!&quot;);
+}
+
+function onOffline() {
+    alert(&quot;You are now offline!&quot;);
+}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple example that displays the current network status and updates it when the network changes.</p>
+</div><h2>HTML</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT5OZXR3b3JrIEluZm9ybWF0aW9uIEV4YW1wbGU8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPk5ldHdvcmsgSW5mb3JtYXRpb248L2gxPgogICAgPHAgaWQ9Im5ldHdvcmstc3RhdHVzIj5DaGVja2luZyBuZXR3b3JrIHN0YXR1cy4uLjwvcD4KICAgIDxzY3JpcHQgc3JjPSJjb3Jkb3ZhLmpzIj48L3NjcmlwdD4KICAgIDxzY3JpcHQgc3JjPSJqcy9pbmRleC5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Network Information Example&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Network Information&lt;/h1&gt;
+    &lt;p id=&quot;network-status&quot;&gt;Checking network status...&lt;/p&gt;
+    &lt;script src=&quot;cordova.js&quot;&gt;&lt;/script&gt;
+    &lt;script src=&quot;js/index.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>JavaScript (index.js)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigiZGV2aWNlcmVhZHkiLCBmdW5jdGlvbigpIHsKICAgIHVwZGF0ZU5ldHdvcmtTdGF0dXMoKTsKCiAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCJvbmxpbmUiLCB1cGRhdGVOZXR3b3JrU3RhdHVzLCBmYWxzZSk7CiAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCJvZmZsaW5lIiwgdXBkYXRlTmV0d29ya1N0YXR1cywgZmFsc2UpOwp9LCBmYWxzZSk7CgpmdW5jdGlvbiB1cGRhdGVOZXR3b3JrU3RhdHVzKCkgewogICAgdmFyIG5ldHdvcmtTdGF0ZSA9IG5hdmlnYXRvci5jb25uZWN0aW9uLnR5cGU7CgogICAgdmFyIHN0YXRlcyA9IHt9OwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uVU5LTk9XTl0gID0gJ1Vua25vd24gY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5FVEhFUk5FVF0gPSAnRXRoZXJuZXQgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5XSUZJXSAgICAgPSAnV2lGaSBjb25uZWN0aW9uJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExfMkddICA9ICdDZWxsIDJHIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uQ0VMTF8zR10gID0gJ0NlbGwgM0cgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXzRHXSAgPSAnQ2VsbCA0RyBjb25uZWN0aW9uJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExdICAgICA9ICdDZWxsIGdlbmVyaWMgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5OT05FXSAgICAgPSAnTm8gbmV0d29yayBjb25uZWN0aW9uJzsKCiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbmV0d29yay1zdGF0dXMnKS5pbm5lckhUTUwgPSAnQ29ubmVjdGlvbiB0eXBlOiAnICsgc3RhdGVzW25ldHdvcmtTdGF0ZV07Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener(&quot;deviceready&quot;, function() {
+    updateNetworkStatus();
+
+    document.addEventListener(&quot;online&quot;, updateNetworkStatus, false);
+    document.addEventListener(&quot;offline&quot;, updateNetworkStatus, false);
+}, false);
+
+function updateNetworkStatus() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    document.getElementById('network-status').innerHTML = 'Connection type: ' + states[networkState];
+}</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Display Network Speed</h2>
+<div class='content'><p>Modify the example above to display an estimated network speed based on the connection type.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gdXBkYXRlTmV0d29ya1N0YXR1cygpIHsKICAgIHZhciBuZXR3b3JrU3RhdGUgPSBuYXZpZ2F0b3IuY29ubmVjdGlvbi50eXBlOwoKICAgIHZhciBzdGF0ZXMgPSB7fTsKICAgIHN0YXRlc1tDb25uZWN0aW9uLlVOS05PV05dICA9ICdVbmtub3duIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uRVRIRVJORVRdID0gJ0V0aGVybmV0IGNvbm5lY3Rpb24gKEhpZ2ggc3BlZWQpJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLldJRkldICAgICA9ICdXaUZpIGNvbm5lY3Rpb24gKEhpZ2ggc3BlZWQpJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExfMkddICA9ICdDZWxsIDJHIGNvbm5lY3Rpb24gKExvdyBzcGVlZCknOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uQ0VMTF8zR10gID0gJ0NlbGwgM0cgY29ubmVjdGlvbiAoTWVkaXVtIHNwZWVkKSc7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXzRHXSAgPSAnQ2VsbCA0RyBjb25uZWN0aW9uIChIaWdoIHNwZWVkKSc7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXSAgICAgPSAnQ2VsbCBnZW5lcmljIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uTk9ORV0gICAgID0gJ05vIG5ldHdvcmsgY29ubmVjdGlvbic7CgogICAgZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ25ldHdvcmstc3RhdHVzJykuaW5uZXJIVE1MID0gJ0Nvbm5lY3Rpb24gdHlwZTogJyArIHN0YXRlc1tuZXR3b3JrU3RhdGVdOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function updateNetworkStatus() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection (High speed)';
+    states[Connection.WIFI]     = 'WiFi connection (High speed)';
+    states[Connection.CELL_2G]  = 'Cell 2G connection (Low speed)';
+    states[Connection.CELL_3G]  = 'Cell 3G connection (Medium speed)';
+    states[Connection.CELL_4G]  = 'Cell 4G connection (High speed)';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    document.getElementById('network-status').innerHTML = 'Connection type: ' + states[networkState];
+}</pre></div><div class='content'></div><h2>Exercise 2: Offline Data Caching</h2>
+<div class='content'><p>Implement a simple caching mechanism that stores data locally when the device is offline and syncs it when the device is back online.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIGRhdGFDYWNoZSA9IFtdOwoKZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigiZGV2aWNlcmVhZHkiLCBmdW5jdGlvbigpIHsKICAgIHVwZGF0ZU5ldHdvcmtTdGF0dXMoKTsKCiAgICBkb2N1bWVudC5hZGRFdmVudExpc3RlbmVyKCJvbmxpbmUiLCBzeW5jRGF0YSwgZmFsc2UpOwogICAgZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcigib2ZmbGluZSIsIGZ1bmN0aW9uKCkgewogICAgICAgIGFsZXJ0KCJZb3UgYXJlIG5vdyBvZmZsaW5lISBEYXRhIHdpbGwgYmUgY2FjaGVkLiIpOwogICAgfSwgZmFsc2UpOwp9LCBmYWxzZSk7CgpmdW5jdGlvbiB1cGRhdGVOZXR3b3JrU3RhdHVzKCkgewogICAgdmFyIG5ldHdvcmtTdGF0ZSA9IG5hdmlnYXRvci5jb25uZWN0aW9uLnR5cGU7CgogICAgdmFyIHN0YXRlcyA9IHt9OwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uVU5LTk9XTl0gID0gJ1Vua25vd24gY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5FVEhFUk5FVF0gPSAnRXRoZXJuZXQgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5XSUZJXSAgICAgPSAnV2lGaSBjb25uZWN0aW9uJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExfMkddICA9ICdDZWxsIDJHIGNvbm5lY3Rpb24nOwogICAgc3RhdGVzW0Nvbm5lY3Rpb24uQ0VMTF8zR10gID0gJ0NlbGwgM0cgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5DRUxMXzRHXSAgPSAnQ2VsbCA0RyBjb25uZWN0aW9uJzsKICAgIHN0YXRlc1tDb25uZWN0aW9uLkNFTExdICAgICA9ICdDZWxsIGdlbmVyaWMgY29ubmVjdGlvbic7CiAgICBzdGF0ZXNbQ29ubmVjdGlvbi5OT05FXSAgICAgPSAnTm8gbmV0d29yayBjb25uZWN0aW9uJzsKCiAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnbmV0d29yay1zdGF0dXMnKS5pbm5lckhUTUwgPSAnQ29ubmVjdGlvbiB0eXBlOiAnICsgc3RhdGVzW25ldHdvcmtTdGF0ZV07Cn0KCmZ1bmN0aW9uIHN5bmNEYXRhKCkgewogICAgaWYgKGRhdGFDYWNoZS5sZW5ndGggPiAwKSB7CiAgICAgICAgLy8gU2ltdWxhdGUgZGF0YSBzeW5jCiAgICAgICAgYWxlcnQoIlN5bmNpbmcgY2FjaGVkIGRhdGEuLi4iKTsKICAgICAgICBkYXRhQ2FjaGUgPSBbXTsKICAgIH0KICAgIGFsZXJ0KCJZb3UgYXJlIG5vdyBvbmxpbmUhIik7Cn0KCi8vIEV4YW1wbGUgZnVuY3Rpb24gdG8gY2FjaGUgZGF0YQpmdW5jdGlvbiBjYWNoZURhdGEoZGF0YSkgewogICAgaWYgKG5hdmlnYXRvci5jb25uZWN0aW9uLnR5cGUgPT09IENvbm5lY3Rpb24uTk9ORSkgewogICAgICAgIGRhdGFDYWNoZS5wdXNoKGRhdGEpOwogICAgfSBlbHNlIHsKICAgICAgICAvLyBTaW11bGF0ZSBkYXRhIHN5bmMKICAgICAgICBhbGVydCgiRGF0YSBzZW50IHRvIHNlcnZlcjogIiArIGRhdGEpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var dataCache = [];
+
+document.addEventListener(&quot;deviceready&quot;, function() {
+    updateNetworkStatus();
+
+    document.addEventListener(&quot;online&quot;, syncData, false);
+    document.addEventListener(&quot;offline&quot;, function() {
+        alert(&quot;You are now offline! Data will be cached.&quot;);
+    }, false);
+}, false);
+
+function updateNetworkStatus() {
+    var networkState = navigator.connection.type;
+
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'No network connection';
+
+    document.getElementById('network-status').innerHTML = 'Connection type: ' + states[networkState];
+}
+
+function syncData() {
+    if (dataCache.length &gt; 0) {
+        // Simulate data sync
+        alert(&quot;Syncing cached data...&quot;);
+        dataCache = [];
+    }
+    alert(&quot;You are now online!&quot;);
+}
+
+// Example function to cache data
+function cacheData(data) {
+    if (navigator.connection.type === Connection.NONE) {
+        dataCache.push(data);
+    } else {
+        // Simulate data sync
+        alert(&quot;Data sent to server: &quot; + data);
+    }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Handling Offline Scenarios</strong>: Always ensure your app can handle offline scenarios gracefully. Provide user feedback and cache data if necessary.</li>
+<li><strong>Ignoring Network Changes</strong>: Use event listeners to detect changes in network status and update your app's behavior accordingly.</li>
+<li><strong>Testing on Real Devices</strong>: Network conditions can vary greatly on real devices compared to emulators. Always test your network-related features on actual devices.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to handle network information in Apache Cordova applications. You learned how to check the current network connection, monitor changes in network status, and implement offline handling strategies. These skills are essential for creating robust mobile applications that provide a seamless user experience regardless of network conditions.</p>
+<p>Next, we will explore how to interact with the device's camera in the following section.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-accessing-device-storage' title="Accessing Device Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-interacting-with-camera' title="Interacting with the Camera">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

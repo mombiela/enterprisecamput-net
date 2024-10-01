@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Angular Services</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ionic/04-02-using-angular-services" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ionic/04-02-using-angular-services" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ionic/04-02-using-angular-services" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ionic/04-02-using-angular-services" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ionic/04-02-using-angular-services" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-data-binding' title="Introduction to Data Binding">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Angular Services</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-http-requests-apis' title="HTTP Requests and APIs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to use Angular services within an Ionic application. Angular services are a fundamental part of Angular applications, providing a way to share data and functionality across different parts of your app. They are especially useful for handling data operations, such as fetching data from an API or managing state.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>What is an Angular Service?</strong></p>
+<ul>
+<li>A service is a class with a specific purpose, typically used to share data, logic, or functions across components.</li>
+<li>Services are often used for data fetching, business logic, and other operations that need to be shared across multiple components.</li>
+</ul>
+</li>
+<li>
+<p><strong>Creating an Angular Service</strong></p>
+<ul>
+<li>Services are created using Angular's CLI or manually by creating a class and decorating it with the <code>@Injectable</code> decorator.</li>
+</ul>
+</li>
+<li>
+<p><strong>Injecting Services into Components</strong></p>
+<ul>
+<li>Services are injected into components using Angular's dependency injection system.</li>
+</ul>
+</li>
+<li>
+<p><strong>Using Services for Data Operations</strong></p>
+<ul>
+<li>Services can be used to perform HTTP requests, manage state, and handle other data operations.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Creating an Angular Service</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Generate a Service using Angular CLI</strong></p>
+<pre><code class="language-bash">ng generate service data
+</code></pre>
+<p>This command will create a new service file named <code>data.service.ts</code> in the <code>src/app</code> directory.</p>
+</li>
+<li>
+<p><strong>Service File Structure</strong></p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  constructor() { }
+}
+</code></pre>
+<ul>
+<li>The <code>@Injectable</code> decorator marks the class as a service that can be injected.</li>
+<li><code>providedIn: 'root'</code> ensures that the service is available application-wide.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Using the Service in a Component</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Inject the Service into a Component</strong></p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+})
+export class HomePage implements OnInit {
+  constructor(private dataService: DataService) { }
+
+  ngOnInit() {
+    // Use the service here
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Using the Service Methods</strong></p>
+<ul>
+<li>Add methods to the service to perform data operations.</li>
+</ul>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private data: any[] = [];
+
+  constructor() { }
+
+  getData() {
+    return this.data;
+  }
+
+  addData(item: any) {
+    this.data.push(item);
+  }
+}
+</code></pre>
+<ul>
+<li>Use these methods in the component.</li>
+</ul>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+})
+export class HomePage implements OnInit {
+  data: any[] = [];
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit() {
+    this.data = this.dataService.getData();
+  }
+
+  addItem(item: any) {
+    this.dataService.addData(item);
+    this.data = this.dataService.getData();
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Example: Fetching Data from an API</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Update the Service to Fetch Data</strong></p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) { }
+
+  fetchData(): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(this.apiUrl);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Service in a Component</strong></p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { DataService } from '../data.service';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+})
+export class HomePage implements OnInit {
+  data: any[] = [];
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit() {
+    this.dataService.fetchData().subscribe(response =&gt; {
+      this.data = response;
+    });
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Service to Manage a List of Items</h2>
+<div class='content'><ol>
+<li><strong>Create a new service named <code>item.service.ts</code></strong>.</li>
+<li><strong>Add methods to add, remove, and get items</strong>.</li>
+<li><strong>Inject the service into a component and use it to manage a list of items</strong>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create the Service</strong></p>
+<pre><code class="language-bash">ng generate service item
+</code></pre>
+</li>
+<li>
+<p><strong>Add Methods to the Service</strong></p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ItemService {
+  private items: string[] = [];
+
+  constructor() { }
+
+  addItem(item: string) {
+    this.items.push(item);
+  }
+
+  removeItem(index: number) {
+    this.items.splice(index, 1);
+  }
+
+  getItems() {
+    return this.items;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Service in a Component</strong></p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { ItemService } from '../item.service';
+
+@Component({
+  selector: 'app-home',
+  templateUrl: './home.page.html',
+  styleUrls: ['./home.page.scss'],
+})
+export class HomePage implements OnInit {
+  items: string[] = [];
+
+  constructor(private itemService: ItemService) { }
+
+  ngOnInit() {
+    this.items = this.itemService.getItems();
+  }
+
+  addItem(item: string) {
+    this.itemService.addItem(item);
+    this.items = this.itemService.getItems();
+  }
+
+  removeItem(index: number) {
+    this.itemService.removeItem(index);
+    this.items = this.itemService.getItems();
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to create and use Angular services within an Ionic application. We covered the basics of creating a service, injecting it into a component, and using it to manage data operations. Services are a powerful tool in Angular, enabling you to write clean, maintainable, and reusable code. In the next section, we will explore HTTP requests and APIs, building on the concepts learned here to fetch and manage data from external sources.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-data-binding' title="Introduction to Data Binding">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-http-requests-apis' title="HTTP Requests and APIs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

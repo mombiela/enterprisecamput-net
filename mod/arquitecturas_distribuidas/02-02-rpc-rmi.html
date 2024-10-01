@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPC and RMI</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/arquitecturas_distribuidas/02-02-rpc-rmi" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/arquitecturas_distribuidas/02-02-rpc-rmi" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/arquitecturas_distribuidas/02-02-rpc-rmi" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/arquitecturas_distribuidas/02-02-rpc-rmi" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/arquitecturas_distribuidas/02-02-rpc-rmi" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-communication-protocols' title="Communication Protocols">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">RPC and RMI</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-messaging-queues' title="Messaging and Message Queues">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Remote Procedure Call (RPC) and Remote Method Invocation (RMI) are two fundamental communication mechanisms in distributed systems. They allow a program to execute procedures or methods on a remote server as if they were local calls. This section will cover the basic concepts, differences, and practical examples of RPC and RMI.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Remote Procedure Call (RPC)</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: RPC is a protocol that one program can use to request a service from a program located on another computer in a network.</li>
+<li><strong>Mechanism</strong>:
+<ul>
+<li><strong>Client</strong>: Initiates the request.</li>
+<li><strong>Server</strong>: Executes the requested procedure and returns the result.</li>
+<li><strong>Stub</strong>: Client-side proxy that represents the remote procedure.</li>
+<li><strong>Skeleton</strong>: Server-side proxy that handles the actual execution of the procedure.</li>
+</ul>
+</li>
+<li><strong>Communication</strong>: Typically uses a request-response model over TCP/IP.</li>
+</ul>
+</div><h2>Remote Method Invocation (RMI)</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: RMI is a Java-specific implementation of RPC that allows invoking methods on remote objects.</li>
+<li><strong>Mechanism</strong>:
+<ul>
+<li><strong>Client</strong>: Invokes methods on remote objects.</li>
+<li><strong>Server</strong>: Hosts the remote objects.</li>
+<li><strong>Stub</strong>: Client-side proxy that represents the remote object.</li>
+<li><strong>Skeleton</strong>: Server-side proxy that handles the actual method invocation (in newer versions, the skeleton is not required).</li>
+</ul>
+</li>
+<li><strong>Communication</strong>: Uses Java's native serialization mechanism over TCP/IP.</li>
+</ul>
+</div><h1>Differences Between RPC and RMI</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>RPC</th>
+<th>RMI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Language Support</td>
+<td>Language-agnostic</td>
+<td>Java-specific</td>
+</tr>
+<tr>
+<td>Object-Oriented</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Serialization</td>
+<td>Custom serialization</td>
+<td>Java's native serialization</td>
+</tr>
+<tr>
+<td>Complexity</td>
+<td>Simpler, procedural</td>
+<td>More complex, object-oriented</td>
+</tr>
+<tr>
+<td>Use Case</td>
+<td>General-purpose, cross-language calls</td>
+<td>Java applications needing remote object access</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example of RPC</h2>
+<div class='content'><h4>Server Code (Python)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBycGNfc2VydmVyLnB5CmltcG9ydCB4bWxycGMuc2VydmVyCgpkZWYgYWRkKHgsIHkpOgogICAgcmV0dXJuIHggKyB5CgpzZXJ2ZXIgPSB4bWxycGMuc2VydmVyLlNpbXBsZVhNTFJQQ1NlcnZlcigoImxvY2FsaG9zdCIsIDgwMDApKQpwcmludCgiTGlzdGVuaW5nIG9uIHBvcnQgODAwMC4uLiIpCnNlcnZlci5yZWdpc3Rlcl9mdW5jdGlvbihhZGQsICJhZGQiKQpzZXJ2ZXIuc2VydmVfZm9yZXZlcigp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># rpc_server.py
+import xmlrpc.server
+
+def add(x, y):
+    return x + y
+
+server = xmlrpc.server.SimpleXMLRPCServer((&quot;localhost&quot;, 8000))
+print(&quot;Listening on port 8000...&quot;)
+server.register_function(add, &quot;add&quot;)
+server.serve_forever()</pre></div><div class='content'><h4>Client Code (Python)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBycGNfY2xpZW50LnB5CmltcG9ydCB4bWxycGMuY2xpZW50Cgpwcm94eSA9IHhtbHJwYy5jbGllbnQuU2VydmVyUHJveHkoImh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC8iKQpyZXN1bHQgPSBwcm94eS5hZGQoNSwgMykKcHJpbnQoZiJSZXN1bHQgb2YgYWRkKDUsIDMpOiB7cmVzdWx0fSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># rpc_client.py
+import xmlrpc.client
+
+proxy = xmlrpc.client.ServerProxy(&quot;http://localhost:8000/&quot;)
+result = proxy.add(5, 3)
+print(f&quot;Result of add(5, 3): {result}&quot;)</pre></div><div class='content'></div><h2>Example of RMI</h2>
+<div class='content'><h4>Server Code (Java)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUk1JU2VydmVyLmphdmEKaW1wb3J0IGphdmEucm1pLk5hbWluZzsKaW1wb3J0IGphdmEucm1pLlJlbW90ZUV4Y2VwdGlvbjsKaW1wb3J0IGphdmEucm1pLnNlcnZlci5VbmljYXN0UmVtb3RlT2JqZWN0OwoKcHVibGljIGNsYXNzIFJNSVNlcnZlciBleHRlbmRzIFVuaWNhc3RSZW1vdGVPYmplY3QgaW1wbGVtZW50cyBBZGRlciB7CiAgICBwdWJsaWMgUk1JU2VydmVyKCkgdGhyb3dzIFJlbW90ZUV4Y2VwdGlvbiB7CiAgICAgICAgc3VwZXIoKTsKICAgIH0KCiAgICBwdWJsaWMgaW50IGFkZChpbnQgeCwgaW50IHkpIHsKICAgICAgICByZXR1cm4geCArIHk7CiAgICB9CgogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIFJNSVNlcnZlciBzZXJ2ZXIgPSBuZXcgUk1JU2VydmVyKCk7CiAgICAgICAgICAgIE5hbWluZy5yZWJpbmQoInJtaTovL2xvY2FsaG9zdDo1MDAwL2FkZGVyIiwgc2VydmVyKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJTZXJ2ZXIgaXMgcmVhZHkuIik7CiAgICAgICAgfSBjYXRjaCAoRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKGUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// RMIServer.java
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class RMIServer extends UnicastRemoteObject implements Adder {
+    public RMIServer() throws RemoteException {
+        super();
+    }
+
+    public int add(int x, int y) {
+        return x + y;
+    }
+
+    public static void main(String[] args) {
+        try {
+            RMIServer server = new RMIServer();
+            Naming.rebind(&quot;rmi://localhost:5000/adder&quot;, server);
+            System.out.println(&quot;Server is ready.&quot;);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}</pre></div><div class='content'><h4>Client Code (Java)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUk1JQ2xpZW50LmphdmEKaW1wb3J0IGphdmEucm1pLk5hbWluZzsKCnB1YmxpYyBjbGFzcyBSTUlDbGllbnQgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIEFkZGVyIHN0dWIgPSAoQWRkZXIpIE5hbWluZy5sb29rdXAoInJtaTovL2xvY2FsaG9zdDo1MDAwL2FkZGVyIik7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiUmVzdWx0IG9mIGFkZCg1LCAzKTogIiArIHN0dWIuYWRkKDUsIDMpKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oZSk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// RMIClient.java
+import java.rmi.Naming;
+
+public class RMIClient {
+    public static void main(String[] args) {
+        try {
+            Adder stub = (Adder) Naming.lookup(&quot;rmi://localhost:5000/adder&quot;);
+            System.out.println(&quot;Result of add(5, 3): &quot; + stub.add(5, 3));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}</pre></div><div class='content'><h4>Interface Code (Java)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQWRkZXIuamF2YQppbXBvcnQgamF2YS5ybWkuUmVtb3RlOwppbXBvcnQgamF2YS5ybWkuUmVtb3RlRXhjZXB0aW9uOwoKcHVibGljIGludGVyZmFjZSBBZGRlciBleHRlbmRzIFJlbW90ZSB7CiAgICBpbnQgYWRkKGludCB4LCBpbnQgeSkgdGhyb3dzIFJlbW90ZUV4Y2VwdGlvbjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Adder.java
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Adder extends Remote {
+    int add(int x, int y) throws RemoteException;
+}</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implement a Simple RPC Service</h2>
+<div class='content'><ol>
+<li>Create an RPC server that provides a multiplication service.</li>
+<li>Write a client that uses this service to multiply two numbers.</li>
+</ol>
+<h4>Solution</h4>
+<p><strong>Server Code (Python)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBycGNfc2VydmVyLnB5CmltcG9ydCB4bWxycGMuc2VydmVyCgpkZWYgbXVsdGlwbHkoeCwgeSk6CiAgICByZXR1cm4geCAqIHkKCnNlcnZlciA9IHhtbHJwYy5zZXJ2ZXIuU2ltcGxlWE1MUlBDU2VydmVyKCgibG9jYWxob3N0IiwgODAwMCkpCnByaW50KCJMaXN0ZW5pbmcgb24gcG9ydCA4MDAwLi4uIikKc2VydmVyLnJlZ2lzdGVyX2Z1bmN0aW9uKG11bHRpcGx5LCAibXVsdGlwbHkiKQpzZXJ2ZXIuc2VydmVfZm9yZXZlcigp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># rpc_server.py
+import xmlrpc.server
+
+def multiply(x, y):
+    return x * y
+
+server = xmlrpc.server.SimpleXMLRPCServer((&quot;localhost&quot;, 8000))
+print(&quot;Listening on port 8000...&quot;)
+server.register_function(multiply, &quot;multiply&quot;)
+server.serve_forever()</pre></div><div class='content'><p><strong>Client Code (Python)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBycGNfY2xpZW50LnB5CmltcG9ydCB4bWxycGMuY2xpZW50Cgpwcm94eSA9IHhtbHJwYy5jbGllbnQuU2VydmVyUHJveHkoImh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC8iKQpyZXN1bHQgPSBwcm94eS5tdWx0aXBseSg1LCAzKQpwcmludChmIlJlc3VsdCBvZiBtdWx0aXBseSg1LCAzKToge3Jlc3VsdH0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># rpc_client.py
+import xmlrpc.client
+
+proxy = xmlrpc.client.ServerProxy(&quot;http://localhost:8000/&quot;)
+result = proxy.multiply(5, 3)
+print(f&quot;Result of multiply(5, 3): {result}&quot;)</pre></div><div class='content'></div><h2>Exercise 2: Implement a Simple RMI Service</h2>
+<div class='content'><ol>
+<li>Create an RMI server that provides a subtraction service.</li>
+<li>Write a client that uses this service to subtract two numbers.</li>
+</ol>
+<h4>Solution</h4>
+<p><strong>Server Code (Java)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUk1JU2VydmVyLmphdmEKaW1wb3J0IGphdmEucm1pLk5hbWluZzsKaW1wb3J0IGphdmEucm1pLlJlbW90ZUV4Y2VwdGlvbjsKaW1wb3J0IGphdmEucm1pLnNlcnZlci5VbmljYXN0UmVtb3RlT2JqZWN0OwoKcHVibGljIGNsYXNzIFJNSVNlcnZlciBleHRlbmRzIFVuaWNhc3RSZW1vdGVPYmplY3QgaW1wbGVtZW50cyBTdWJ0cmFjdG9yIHsKICAgIHB1YmxpYyBSTUlTZXJ2ZXIoKSB0aHJvd3MgUmVtb3RlRXhjZXB0aW9uIHsKICAgICAgICBzdXBlcigpOwogICAgfQoKICAgIHB1YmxpYyBpbnQgc3VidHJhY3QoaW50IHgsIGludCB5KSB7CiAgICAgICAgcmV0dXJuIHggLSB5OwogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgewogICAgICAgICAgICBSTUlTZXJ2ZXIgc2VydmVyID0gbmV3IFJNSVNlcnZlcigpOwogICAgICAgICAgICBOYW1pbmcucmViaW5kKCJybWk6Ly9sb2NhbGhvc3Q6NTAwMC9zdWJ0cmFjdG9yIiwgc2VydmVyKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJTZXJ2ZXIgaXMgcmVhZHkuIik7CiAgICAgICAgfSBjYXRjaCAoRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKGUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// RMIServer.java
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class RMIServer extends UnicastRemoteObject implements Subtractor {
+    public RMIServer() throws RemoteException {
+        super();
+    }
+
+    public int subtract(int x, int y) {
+        return x - y;
+    }
+
+    public static void main(String[] args) {
+        try {
+            RMIServer server = new RMIServer();
+            Naming.rebind(&quot;rmi://localhost:5000/subtractor&quot;, server);
+            System.out.println(&quot;Server is ready.&quot;);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}</pre></div><div class='content'><p><strong>Client Code (Java)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUk1JQ2xpZW50LmphdmEKaW1wb3J0IGphdmEucm1pLk5hbWluZzsKCnB1YmxpYyBjbGFzcyBSTUlDbGllbnQgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSB7CiAgICAgICAgICAgIFN1YnRyYWN0b3Igc3R1YiA9IChTdWJ0cmFjdG9yKSBOYW1pbmcubG9va3VwKCJybWk6Ly9sb2NhbGhvc3Q6NTAwMC9zdWJ0cmFjdG9yIik7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiUmVzdWx0IG9mIHN1YnRyYWN0KDUsIDMpOiAiICsgc3R1Yi5zdWJ0cmFjdCg1LCAzKSk7CiAgICAgICAgfSBjYXRjaCAoRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKGUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// RMIClient.java
+import java.rmi.Naming;
+
+public class RMIClient {
+    public static void main(String[] args) {
+        try {
+            Subtractor stub = (Subtractor) Naming.lookup(&quot;rmi://localhost:5000/subtractor&quot;);
+            System.out.println(&quot;Result of subtract(5, 3): &quot; + stub.subtract(5, 3));
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}</pre></div><div class='content'><p><strong>Interface Code (Java)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU3VidHJhY3Rvci5qYXZhCmltcG9ydCBqYXZhLnJtaS5SZW1vdGU7CmltcG9ydCBqYXZhLnJtaS5SZW1vdGVFeGNlcHRpb247CgpwdWJsaWMgaW50ZXJmYWNlIFN1YnRyYWN0b3IgZXh0ZW5kcyBSZW1vdGUgewogICAgaW50IHN1YnRyYWN0KGludCB4LCBpbnQgeSkgdGhyb3dzIFJlbW90ZUV4Y2VwdGlvbjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Subtractor.java
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Subtractor extends Remote {
+    int subtract(int x, int y) throws RemoteException;
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>RPC</strong>: Ensure that the server and client are using the same protocol and data serialization format.</li>
+<li><strong>RMI</strong>: Make sure the RMI registry is running and the correct URL is used for binding and lookup.</li>
+<li><strong>General</strong>: Handle network exceptions and ensure proper error handling in both client and server code.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the concepts of RPC and RMI, their differences, and practical examples. RPC is a language-agnostic protocol suitable for general-purpose remote procedure calls, while RMI is Java-specific and supports remote method invocation on objects. Understanding these mechanisms is crucial for designing and implementing distributed systems that require remote communication.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-communication-protocols' title="Communication Protocols">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-messaging-queues' title="Messaging and Message Queues">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hibernate</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/java/11-03-hibernate" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/java/11-03-hibernate" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/java/11-03-hibernate" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/java/11-03-hibernate" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/java/11-03-hibernate" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-spring-framework' title="Spring Framework">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Hibernate</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-junit' title="JUnit">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Hibernate is a powerful, high-performance Object-Relational Mapping (ORM) framework for Java. It simplifies the development of Java applications to interact with databases by mapping Java classes to database tables. This module will cover the basics of Hibernate, its configuration, and how to use it to perform CRUD (Create, Read, Update, Delete) operations.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>ORM (Object-Relational Mapping)</strong>: A technique that allows you to query and manipulate data from a database using an object-oriented paradigm.</li>
+<li><strong>Hibernate Configuration</strong>: Setting up Hibernate to connect to a database.</li>
+<li><strong>Hibernate Annotations</strong>: Using annotations to map Java classes to database tables.</li>
+<li><strong>Session Factory</strong>: A factory for <code>Session</code> objects.</li>
+<li><strong>Session</strong>: A single-threaded, short-lived object representing a conversation between the application and the database.</li>
+<li><strong>Transaction</strong>: A unit of work that is either completely performed or completely undone.</li>
+<li><strong>Query</strong>: An object-oriented representation of a database query.</li>
+</ol>
+</div><h1>Setting Up Hibernate</h1>
+<div class='content'></div><h2>Step 1: Add Hibernate Dependencies</h2>
+<div class='content'><p>To use Hibernate, you need to add the necessary dependencies to your project. If you are using Maven, add the following dependencies to your <code>pom.xml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY2llcz4KICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPm9yZy5oaWJlcm5hdGU8L2dyb3VwSWQ+CiAgICAgICAgPGFydGlmYWN0SWQ+aGliZXJuYXRlLWNvcmU8L2FydGlmYWN0SWQ+CiAgICAgICAgPHZlcnNpb24+NS40LjMwLkZpbmFsPC92ZXJzaW9uPgogICAgPC9kZXBlbmRlbmN5PgogICAgPGRlcGVuZGVuY3k+CiAgICAgICAgPGdyb3VwSWQ+b3JnLmhpYmVybmF0ZTwvZ3JvdXBJZD4KICAgICAgICA8YXJ0aWZhY3RJZD5oaWJlcm5hdGUtZW50aXR5bWFuYWdlcjwvYXJ0aWZhY3RJZD4KICAgICAgICA8dmVyc2lvbj41LjQuMzAuRmluYWw8L3ZlcnNpb24+CiAgICA8L2RlcGVuZGVuY3k+CiAgICA8ZGVwZW5kZW5jeT4KICAgICAgICA8Z3JvdXBJZD5teXNxbDwvZ3JvdXBJZD4KICAgICAgICA8YXJ0aWZhY3RJZD5teXNxbC1jb25uZWN0b3ItamF2YTwvYXJ0aWZhY3RJZD4KICAgICAgICA8dmVyc2lvbj44LjAuMjM8L3ZlcnNpb24+CiAgICA8L2RlcGVuZGVuY3k+CjwvZGVwZW5kZW5jaWVzPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+        &lt;artifactId&gt;hibernate-core&lt;/artifactId&gt;
+        &lt;version&gt;5.4.30.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+        &lt;artifactId&gt;hibernate-entitymanager&lt;/artifactId&gt;
+        &lt;version&gt;5.4.30.Final&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;mysql&lt;/groupId&gt;
+        &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+        &lt;version&gt;8.0.23&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre></div><div class='content'></div><h2>Step 2: Create Hibernate Configuration File</h2>
+<div class='content'><p>Create a <code>hibernate.cfg.xml</code> file in the <code>src/main/resources</code> directory:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGhpYmVybmF0ZS1jb25maWd1cmF0aW9uIFBVQkxJQyAiLS8vSGliZXJuYXRlL0hpYmVybmF0ZSBDb25maWd1cmF0aW9uIERURCAzLjAvL0VOIiAiaHR0cDovL2hpYmVybmF0ZS5zb3VyY2Vmb3JnZS5uZXQvaGliZXJuYXRlLWNvbmZpZ3VyYXRpb24tMy4wLmR0ZCI+CjxoaWJlcm5hdGUtY29uZmlndXJhdGlvbj4KICAgIDxzZXNzaW9uLWZhY3Rvcnk+CiAgICAgICAgPHByb3BlcnR5IG5hbWU9ImhpYmVybmF0ZS5kaWFsZWN0Ij5vcmcuaGliZXJuYXRlLmRpYWxlY3QuTXlTUUxEaWFsZWN0PC9wcm9wZXJ0eT4KICAgICAgICA8cHJvcGVydHkgbmFtZT0iaGliZXJuYXRlLmNvbm5lY3Rpb24uZHJpdmVyX2NsYXNzIj5jb20ubXlzcWwuY2ouamRiYy5Ecml2ZXI8L3Byb3BlcnR5PgogICAgICAgIDxwcm9wZXJ0eSBuYW1lPSJoaWJlcm5hdGUuY29ubmVjdGlvbi51cmwiPmpkYmM6bXlzcWw6Ly9sb2NhbGhvc3Q6MzMwNi95b3VyX2RhdGFiYXNlPC9wcm9wZXJ0eT4KICAgICAgICA8cHJvcGVydHkgbmFtZT0iaGliZXJuYXRlLmNvbm5lY3Rpb24udXNlcm5hbWUiPnlvdXJfdXNlcm5hbWU8L3Byb3BlcnR5PgogICAgICAgIDxwcm9wZXJ0eSBuYW1lPSJoaWJlcm5hdGUuY29ubmVjdGlvbi5wYXNzd29yZCI+eW91cl9wYXNzd29yZDwvcHJvcGVydHk+CiAgICAgICAgPHByb3BlcnR5IG5hbWU9ImhpYmVybmF0ZS5oYm0yZGRsLmF1dG8iPnVwZGF0ZTwvcHJvcGVydHk+CiAgICAgICAgPHByb3BlcnR5IG5hbWU9ImhpYmVybmF0ZS5zaG93X3NxbCI+dHJ1ZTwvcHJvcGVydHk+CiAgICAgICAgPHByb3BlcnR5IG5hbWU9ImhpYmVybmF0ZS5mb3JtYXRfc3FsIj50cnVlPC9wcm9wZXJ0eT4KICAgIDwvc2Vzc2lvbi1mYWN0b3J5Pgo8L2hpYmVybmF0ZS1jb25maWd1cmF0aW9uPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE hibernate-configuration PUBLIC &quot;-//Hibernate/Hibernate Configuration DTD 3.0//EN&quot; &quot;http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd&quot;&gt;
+&lt;hibernate-configuration&gt;
+    &lt;session-factory&gt;
+        &lt;property name=&quot;hibernate.dialect&quot;&gt;org.hibernate.dialect.MySQLDialect&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.driver_class&quot;&gt;com.mysql.cj.jdbc.Driver&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.url&quot;&gt;jdbc:mysql://localhost:3306/your_database&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.username&quot;&gt;your_username&lt;/property&gt;
+        &lt;property name=&quot;hibernate.connection.password&quot;&gt;your_password&lt;/property&gt;
+        &lt;property name=&quot;hibernate.hbm2ddl.auto&quot;&gt;update&lt;/property&gt;
+        &lt;property name=&quot;hibernate.show_sql&quot;&gt;true&lt;/property&gt;
+        &lt;property name=&quot;hibernate.format_sql&quot;&gt;true&lt;/property&gt;
+    &lt;/session-factory&gt;
+&lt;/hibernate-configuration&gt;</pre></div><div class='content'></div><h2>Step 3: Create Entity Classes</h2>
+<div class='content'><p>Create a simple entity class, <code>Student</code>, and annotate it with Hibernate annotations:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmF4LnBlcnNpc3RlbmNlLkVudGl0eTsKaW1wb3J0IGphdmF4LnBlcnNpc3RlbmNlLklkOwppbXBvcnQgamF2YXgucGVyc2lzdGVuY2UuVGFibGU7CgpARW50aXR5CkBUYWJsZShuYW1lID0gInN0dWRlbnRzIikKcHVibGljIGNsYXNzIFN0dWRlbnQgewogICAgQElkCiAgICBwcml2YXRlIGludCBpZDsKICAgIHByaXZhdGUgU3RyaW5nIG5hbWU7CiAgICBwcml2YXRlIFN0cmluZyBlbWFpbDsKCiAgICAvLyBHZXR0ZXJzIGFuZCBTZXR0ZXJzCiAgICBwdWJsaWMgaW50IGdldElkKCkgewogICAgICAgIHJldHVybiBpZDsKICAgIH0KCiAgICBwdWJsaWMgdm9pZCBzZXRJZChpbnQgaWQpIHsKICAgICAgICB0aGlzLmlkID0gaWQ7CiAgICB9CgogICAgcHVibGljIFN0cmluZyBnZXROYW1lKCkgewogICAgICAgIHJldHVybiBuYW1lOwogICAgfQoKICAgIHB1YmxpYyB2b2lkIHNldE5hbWUoU3RyaW5nIG5hbWUpIHsKICAgICAgICB0aGlzLm5hbWUgPSBuYW1lOwogICAgfQoKICAgIHB1YmxpYyBTdHJpbmcgZ2V0RW1haWwoKSB7CiAgICAgICAgcmV0dXJuIGVtYWlsOwogICAgfQoKICAgIHB1YmxpYyB2b2lkIHNldEVtYWlsKFN0cmluZyBlbWFpbCkgewogICAgICAgIHRoaXMuZW1haWwgPSBlbWFpbDsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = &quot;students&quot;)
+public class Student {
+    @Id
+    private int id;
+    private String name;
+    private String email;
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+}</pre></div><div class='content'></div><h2>Step 4: Create Hibernate Utility Class</h2>
+<div class='content'><p>Create a utility class to manage the Hibernate <code>SessionFactory</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbkZhY3Rvcnk7CmltcG9ydCBvcmcuaGliZXJuYXRlLmNmZy5Db25maWd1cmF0aW9uOwoKcHVibGljIGNsYXNzIEhpYmVybmF0ZVV0aWwgewogICAgcHJpdmF0ZSBzdGF0aWMgZmluYWwgU2Vzc2lvbkZhY3Rvcnkgc2Vzc2lvbkZhY3RvcnkgPSBidWlsZFNlc3Npb25GYWN0b3J5KCk7CgogICAgcHJpdmF0ZSBzdGF0aWMgU2Vzc2lvbkZhY3RvcnkgYnVpbGRTZXNzaW9uRmFjdG9yeSgpIHsKICAgICAgICB0cnkgewogICAgICAgICAgICByZXR1cm4gbmV3IENvbmZpZ3VyYXRpb24oKS5jb25maWd1cmUoKS5idWlsZFNlc3Npb25GYWN0b3J5KCk7CiAgICAgICAgfSBjYXRjaCAoVGhyb3dhYmxlIGV4KSB7CiAgICAgICAgICAgIHRocm93IG5ldyBFeGNlcHRpb25JbkluaXRpYWxpemVyRXJyb3IoZXgpOwogICAgICAgIH0KICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIFNlc3Npb25GYWN0b3J5IGdldFNlc3Npb25GYWN0b3J5KCkgewogICAgICAgIHJldHVybiBzZXNzaW9uRmFjdG9yeTsKICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIHZvaWQgc2h1dGRvd24oKSB7CiAgICAgICAgZ2V0U2Vzc2lvbkZhY3RvcnkoKS5jbG9zZSgpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
+public class HibernateUtil {
+    private static final SessionFactory sessionFactory = buildSessionFactory();
+
+    private static SessionFactory buildSessionFactory() {
+        try {
+            return new Configuration().configure().buildSessionFactory();
+        } catch (Throwable ex) {
+            throw new ExceptionInInitializerError(ex);
+        }
+    }
+
+    public static SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public static void shutdown() {
+        getSessionFactory().close();
+    }
+}</pre></div><div class='content'></div><h1>Performing CRUD Operations</h1>
+<div class='content'></div><h2>Create Operation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbjsKaW1wb3J0IG9yZy5oaWJlcm5hdGUuVHJhbnNhY3Rpb247CgpwdWJsaWMgY2xhc3MgQ3JlYXRlU3R1ZGVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CiAgICAgICAgVHJhbnNhY3Rpb24gdHJhbnNhY3Rpb24gPSBudWxsOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB0cmFuc2FjdGlvbiA9IHNlc3Npb24uYmVnaW5UcmFuc2FjdGlvbigpOwogICAgICAgICAgICBTdHVkZW50IHN0dWRlbnQgPSBuZXcgU3R1ZGVudCgpOwogICAgICAgICAgICBzdHVkZW50LnNldElkKDEpOwogICAgICAgICAgICBzdHVkZW50LnNldE5hbWUoIkpvaG4gRG9lIik7CiAgICAgICAgICAgIHN0dWRlbnQuc2V0RW1haWwoImpvaG4uZG9lQGV4YW1wbGUuY29tIik7CiAgICAgICAgICAgIHNlc3Npb24uc2F2ZShzdHVkZW50KTsKICAgICAgICAgICAgdHJhbnNhY3Rpb24uY29tbWl0KCk7CiAgICAgICAgfSBjYXRjaCAoRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgaWYgKHRyYW5zYWN0aW9uICE9IG51bGwpIHsKICAgICAgICAgICAgICAgIHRyYW5zYWN0aW9uLnJvbGxiYWNrKCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9IGZpbmFsbHkgewogICAgICAgICAgICBzZXNzaW9uLmNsb3NlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+public class CreateStudent {
+    public static void main(String[] args) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Student student = new Student();
+            student.setId(1);
+            student.setName(&quot;John Doe&quot;);
+            student.setEmail(&quot;john.doe@example.com&quot;);
+            session.save(student);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Read Operation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbjsKCnB1YmxpYyBjbGFzcyBSZWFkU3R1ZGVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CgogICAgICAgIHRyeSB7CiAgICAgICAgICAgIFN0dWRlbnQgc3R1ZGVudCA9IHNlc3Npb24uZ2V0KFN0dWRlbnQuY2xhc3MsIDEpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIklEOiAiICsgc3R1ZGVudC5nZXRJZCgpKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJOYW1lOiAiICsgc3R1ZGVudC5nZXROYW1lKCkpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIkVtYWlsOiAiICsgc3R1ZGVudC5nZXRFbWFpbCgpKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0gZmluYWxseSB7CiAgICAgICAgICAgIHNlc3Npb24uY2xvc2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.Session;
+
+public class ReadStudent {
+    public static void main(String[] args) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            Student student = session.get(Student.class, 1);
+            System.out.println(&quot;ID: &quot; + student.getId());
+            System.out.println(&quot;Name: &quot; + student.getName());
+            System.out.println(&quot;Email: &quot; + student.getEmail());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Update Operation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbjsKaW1wb3J0IG9yZy5oaWJlcm5hdGUuVHJhbnNhY3Rpb247CgpwdWJsaWMgY2xhc3MgVXBkYXRlU3R1ZGVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CiAgICAgICAgVHJhbnNhY3Rpb24gdHJhbnNhY3Rpb24gPSBudWxsOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB0cmFuc2FjdGlvbiA9IHNlc3Npb24uYmVnaW5UcmFuc2FjdGlvbigpOwogICAgICAgICAgICBTdHVkZW50IHN0dWRlbnQgPSBzZXNzaW9uLmdldChTdHVkZW50LmNsYXNzLCAxKTsKICAgICAgICAgICAgc3R1ZGVudC5zZXRFbWFpbCgibmV3LmVtYWlsQGV4YW1wbGUuY29tIik7CiAgICAgICAgICAgIHNlc3Npb24udXBkYXRlKHN0dWRlbnQpOwogICAgICAgICAgICB0cmFuc2FjdGlvbi5jb21taXQoKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBpZiAodHJhbnNhY3Rpb24gIT0gbnVsbCkgewogICAgICAgICAgICAgICAgdHJhbnNhY3Rpb24ucm9sbGJhY2soKTsKICAgICAgICAgICAgfQogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0gZmluYWxseSB7CiAgICAgICAgICAgIHNlc3Npb24uY2xvc2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+public class UpdateStudent {
+    public static void main(String[] args) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Student student = session.get(Student.class, 1);
+            student.setEmail(&quot;new.email@example.com&quot;);
+            session.update(student);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Delete Operation</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbjsKaW1wb3J0IG9yZy5oaWJlcm5hdGUuVHJhbnNhY3Rpb247CgpwdWJsaWMgY2xhc3MgRGVsZXRlU3R1ZGVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CiAgICAgICAgVHJhbnNhY3Rpb24gdHJhbnNhY3Rpb24gPSBudWxsOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB0cmFuc2FjdGlvbiA9IHNlc3Npb24uYmVnaW5UcmFuc2FjdGlvbigpOwogICAgICAgICAgICBTdHVkZW50IHN0dWRlbnQgPSBzZXNzaW9uLmdldChTdHVkZW50LmNsYXNzLCAxKTsKICAgICAgICAgICAgc2Vzc2lvbi5kZWxldGUoc3R1ZGVudCk7CiAgICAgICAgICAgIHRyYW5zYWN0aW9uLmNvbW1pdCgpOwogICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGlmICh0cmFuc2FjdGlvbiAhPSBudWxsKSB7CiAgICAgICAgICAgICAgICB0cmFuc2FjdGlvbi5yb2xsYmFjaygpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfSBmaW5hbGx5IHsKICAgICAgICAgICAgc2Vzc2lvbi5jbG9zZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+public class DeleteStudent {
+    public static void main(String[] args) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Student student = session.get(Student.class, 1);
+            session.delete(student);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a New Entity</h2>
+<div class='content'><ol>
+<li>Create a new entity class <code>Course</code> with fields <code>id</code>, <code>name</code>, and <code>description</code>.</li>
+<li>Annotate the class with Hibernate annotations.</li>
+<li>Write a program to save a new <code>Course</code> object to the database.</li>
+</ol>
+</div><h2>Exercise 2: Perform CRUD Operations</h2>
+<div class='content'><ol>
+<li>Write programs to perform CRUD operations on the <code>Course</code> entity.</li>
+<li>Ensure that you handle transactions and exceptions properly.</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Solution to Exercise 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmF4LnBlcnNpc3RlbmNlLkVudGl0eTsKaW1wb3J0IGphdmF4LnBlcnNpc3RlbmNlLklkOwppbXBvcnQgamF2YXgucGVyc2lzdGVuY2UuVGFibGU7CgpARW50aXR5CkBUYWJsZShuYW1lID0gImNvdXJzZXMiKQpwdWJsaWMgY2xhc3MgQ291cnNlIHsKICAgIEBJZAogICAgcHJpdmF0ZSBpbnQgaWQ7CiAgICBwcml2YXRlIFN0cmluZyBuYW1lOwogICAgcHJpdmF0ZSBTdHJpbmcgZGVzY3JpcHRpb247CgogICAgLy8gR2V0dGVycyBhbmQgU2V0dGVycwogICAgcHVibGljIGludCBnZXRJZCgpIHsKICAgICAgICByZXR1cm4gaWQ7CiAgICB9CgogICAgcHVibGljIHZvaWQgc2V0SWQoaW50IGlkKSB7CiAgICAgICAgdGhpcy5pZCA9IGlkOwogICAgfQoKICAgIHB1YmxpYyBTdHJpbmcgZ2V0TmFtZSgpIHsKICAgICAgICByZXR1cm4gbmFtZTsKICAgIH0KCiAgICBwdWJsaWMgdm9pZCBzZXROYW1lKFN0cmluZyBuYW1lKSB7CiAgICAgICAgdGhpcy5uYW1lID0gbmFtZTsKICAgIH0KCiAgICBwdWJsaWMgU3RyaW5nIGdldERlc2NyaXB0aW9uKCkgewogICAgICAgIHJldHVybiBkZXNjcmlwdGlvbjsKICAgIH0KCiAgICBwdWJsaWMgdm9pZCBzZXREZXNjcmlwdGlvbihTdHJpbmcgZGVzY3JpcHRpb24pIHsKICAgICAgICB0aGlzLmRlc2NyaXB0aW9uID0gZGVzY3JpcHRpb247CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = &quot;courses&quot;)
+public class Course {
+    @Id
+    private int id;
+    private String name;
+    private String description;
+
+    // Getters and Setters
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+}</pre></div><div class='content'><h4>Solution to Exercise 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5oaWJlcm5hdGUuU2Vzc2lvbjsKaW1wb3J0IG9yZy5oaWJlcm5hdGUuVHJhbnNhY3Rpb247CgpwdWJsaWMgY2xhc3MgQ291cnNlQ1JVRCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgLy8gQ3JlYXRlCiAgICAgICAgY3JlYXRlQ291cnNlKDEsICJKYXZhIFByb2dyYW1taW5nIiwgIkxlYXJuIEphdmEgZnJvbSBzY3JhdGNoIik7CgogICAgICAgIC8vIFJlYWQKICAgICAgICByZWFkQ291cnNlKDEpOwoKICAgICAgICAvLyBVcGRhdGUKICAgICAgICB1cGRhdGVDb3Vyc2UoMSwgIkFkdmFuY2VkIEphdmEgUHJvZ3JhbW1pbmciKTsKCiAgICAgICAgLy8gRGVsZXRlCiAgICAgICAgZGVsZXRlQ291cnNlKDEpOwogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBjcmVhdGVDb3Vyc2UoaW50IGlkLCBTdHJpbmcgbmFtZSwgU3RyaW5nIGRlc2NyaXB0aW9uKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CiAgICAgICAgVHJhbnNhY3Rpb24gdHJhbnNhY3Rpb24gPSBudWxsOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB0cmFuc2FjdGlvbiA9IHNlc3Npb24uYmVnaW5UcmFuc2FjdGlvbigpOwogICAgICAgICAgICBDb3Vyc2UgY291cnNlID0gbmV3IENvdXJzZSgpOwogICAgICAgICAgICBjb3Vyc2Uuc2V0SWQoaWQpOwogICAgICAgICAgICBjb3Vyc2Uuc2V0TmFtZShuYW1lKTsKICAgICAgICAgICAgY291cnNlLnNldERlc2NyaXB0aW9uKGRlc2NyaXB0aW9uKTsKICAgICAgICAgICAgc2Vzc2lvbi5zYXZlKGNvdXJzZSk7CiAgICAgICAgICAgIHRyYW5zYWN0aW9uLmNvbW1pdCgpOwogICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGlmICh0cmFuc2FjdGlvbiAhPSBudWxsKSB7CiAgICAgICAgICAgICAgICB0cmFuc2FjdGlvbi5yb2xsYmFjaygpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfSBmaW5hbGx5IHsKICAgICAgICAgICAgc2Vzc2lvbi5jbG9zZSgpOwogICAgICAgIH0KICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIHZvaWQgcmVhZENvdXJzZShpbnQgaWQpIHsKICAgICAgICBTZXNzaW9uIHNlc3Npb24gPSBIaWJlcm5hdGVVdGlsLmdldFNlc3Npb25GYWN0b3J5KCkub3BlblNlc3Npb24oKTsKCiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgQ291cnNlIGNvdXJzZSA9IHNlc3Npb24uZ2V0KENvdXJzZS5jbGFzcywgaWQpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIklEOiAiICsgY291cnNlLmdldElkKCkpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIk5hbWU6ICIgKyBjb3Vyc2UuZ2V0TmFtZSgpKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJEZXNjcmlwdGlvbjogIiArIGNvdXJzZS5nZXREZXNjcmlwdGlvbigpKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0gZmluYWxseSB7CiAgICAgICAgICAgIHNlc3Npb24uY2xvc2UoKTsKICAgICAgICB9CiAgICB9CgogICAgcHVibGljIHN0YXRpYyB2b2lkIHVwZGF0ZUNvdXJzZShpbnQgaWQsIFN0cmluZyBuZXdOYW1lKSB7CiAgICAgICAgU2Vzc2lvbiBzZXNzaW9uID0gSGliZXJuYXRlVXRpbC5nZXRTZXNzaW9uRmFjdG9yeSgpLm9wZW5TZXNzaW9uKCk7CiAgICAgICAgVHJhbnNhY3Rpb24gdHJhbnNhY3Rpb24gPSBudWxsOwoKICAgICAgICB0cnkgewogICAgICAgICAgICB0cmFuc2FjdGlvbiA9IHNlc3Npb24uYmVnaW5UcmFuc2FjdGlvbigpOwogICAgICAgICAgICBDb3Vyc2UgY291cnNlID0gc2Vzc2lvbi5nZXQoQ291cnNlLmNsYXNzLCBpZCk7CiAgICAgICAgICAgIGNvdXJzZS5zZXROYW1lKG5ld05hbWUpOwogICAgICAgICAgICBzZXNzaW9uLnVwZGF0ZShjb3Vyc2UpOwogICAgICAgICAgICB0cmFuc2FjdGlvbi5jb21taXQoKTsKICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICBpZiAodHJhbnNhY3Rpb24gIT0gbnVsbCkgewogICAgICAgICAgICAgICAgdHJhbnNhY3Rpb24ucm9sbGJhY2soKTsKICAgICAgICAgICAgfQogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0gZmluYWxseSB7CiAgICAgICAgICAgIHNlc3Npb24uY2xvc2UoKTsKICAgICAgICB9CiAgICB9CgogICAgcHVibGljIHN0YXRpYyB2b2lkIGRlbGV0ZUNvdXJzZShpbnQgaWQpIHsKICAgICAgICBTZXNzaW9uIHNlc3Npb24gPSBIaWJlcm5hdGVVdGlsLmdldFNlc3Npb25GYWN0b3J5KCkub3BlblNlc3Npb24oKTsKICAgICAgICBUcmFuc2FjdGlvbiB0cmFuc2FjdGlvbiA9IG51bGw7CgogICAgICAgIHRyeSB7CiAgICAgICAgICAgIHRyYW5zYWN0aW9uID0gc2Vzc2lvbi5iZWdpblRyYW5zYWN0aW9uKCk7CiAgICAgICAgICAgIENvdXJzZSBjb3Vyc2UgPSBzZXNzaW9uLmdldChDb3Vyc2UuY2xhc3MsIGlkKTsKICAgICAgICAgICAgc2Vzc2lvbi5kZWxldGUoY291cnNlKTsKICAgICAgICAgICAgdHJhbnNhY3Rpb24uY29tbWl0KCk7CiAgICAgICAgfSBjYXRjaCAoRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgaWYgKHRyYW5zYWN0aW9uICE9IG51bGwpIHsKICAgICAgICAgICAgICAgIHRyYW5zYWN0aW9uLnJvbGxiYWNrKCk7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9IGZpbmFsbHkgewogICAgICAgICAgICBzZXNzaW9uLmNsb3NlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+public class CourseCRUD {
+    public static void main(String[] args) {
+        // Create
+        createCourse(1, &quot;Java Programming&quot;, &quot;Learn Java from scratch&quot;);
+
+        // Read
+        readCourse(1);
+
+        // Update
+        updateCourse(1, &quot;Advanced Java Programming&quot;);
+
+        // Delete
+        deleteCourse(1);
+    }
+
+    public static void createCourse(int id, String name, String description) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Course course = new Course();
+            course.setId(id);
+            course.setName(name);
+            course.setDescription(description);
+            session.save(course);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void readCourse(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        try {
+            Course course = session.get(Course.class, id);
+            System.out.println(&quot;ID: &quot; + course.getId());
+            System.out.println(&quot;Name: &quot; + course.getName());
+            System.out.println(&quot;Description: &quot; + course.getDescription());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void updateCourse(int id, String newName) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Course course = session.get(Course.class, id);
+            course.setName(newName);
+            session.update(course);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public static void deleteCourse(int id) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = null;
+
+        try {
+            transaction = session.beginTransaction();
+            Course course = session.get(Course.class, id);
+            session.delete(course);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this module, you learned the basics of Hibernate, including how to set it up, configure it, and perform CRUD operations. Hibernate simplifies database interactions in Java applications by providing an ORM framework. You also practiced creating and manipulating entities using Hibernate. In the next module, you will learn about building real-world applications using Java frameworks and libraries.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-spring-framework' title="Spring Framework">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-junit' title="JUnit">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

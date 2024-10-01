@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrating Lua with Other Languages</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/lua/05-04-integrating-lua" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/lua/05-04-integrating-lua" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/lua/05-04-integrating-lua" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/lua/05-04-integrating-lua" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/lua/05-04-integrating-lua" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-automating-tasks' title="Automating Tasks with Lua">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integrating Lua with Other Languages</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-project-overview' title="Project Overview">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Integrating Lua with other programming languages can significantly enhance the capabilities of your applications. Lua is designed to be embedded into other programs, making it a powerful tool for extending the functionality of software written in languages like C, C++, and even Python. This section will guide you through the process of integrating Lua with other languages, focusing on practical examples and exercises.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Embedding Lua in C/C++</strong>:</p>
+<ul>
+<li><strong>Lua State</strong>: The central structure used to manage Lua execution.</li>
+<li><strong>Lua C API</strong>: A set of functions provided by Lua to interact with Lua states from C/C++.</li>
+</ul>
+</li>
+<li>
+<p><strong>Calling Lua from C/C++</strong>:</p>
+<ul>
+<li><strong>Loading and Executing Lua Scripts</strong>: How to load and run Lua scripts from C/C++.</li>
+<li><strong>Calling Lua Functions</strong>: How to call Lua functions from C/C++ and handle their return values.</li>
+</ul>
+</li>
+<li>
+<p><strong>Calling C/C++ from Lua</strong>:</p>
+<ul>
+<li><strong>Registering C Functions</strong>: How to make C functions available to Lua scripts.</li>
+<li><strong>Userdata and Metatables</strong>: How to pass complex data structures between Lua and C/C++.</li>
+</ul>
+</li>
+<li>
+<p><strong>Integrating Lua with Python</strong>:</p>
+<ul>
+<li><strong>Using Libraries</strong>: How to use libraries like <code>lupa</code> to integrate Lua with Python.</li>
+<li><strong>Interfacing</strong>: How to call Lua scripts from Python and vice versa.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Embedding Lua in C/C++</h1>
+<div class='content'></div><h2>Lua State</h2>
+<div class='content'><p>The Lua state (<code>lua_State</code>) is the central structure used to manage Lua execution. It represents the execution context of a Lua script.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+CgppbnQgbWFpbigpIHsKICAgIGx1YV9TdGF0ZSAqTCA9IGx1YUxfbmV3c3RhdGUoKTsgIC8vIENyZWF0ZSBhIG5ldyBMdWEgc3RhdGUKICAgIGx1YUxfb3BlbmxpYnMoTCk7ICAgICAgICAgICAgICAgIC8vIE9wZW4gdGhlIHN0YW5kYXJkIGxpYnJhcmllcwoKICAgIC8vIFlvdXIgY29kZSBoZXJlCgogICAgbHVhX2Nsb3NlKEwpOyAgICAgICAgICAgICAgICAgICAgLy8gQ2xvc2UgdGhlIEx1YSBzdGF0ZQogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+
+int main() {
+    lua_State *L = luaL_newstate();  // Create a new Lua state
+    luaL_openlibs(L);                // Open the standard libraries
+
+    // Your code here
+
+    lua_close(L);                    // Close the Lua state
+    return 0;
+}</pre></div><div class='content'></div><h2>Loading and Executing Lua Scripts</h2>
+<div class='content'><p>To load and execute a Lua script from C, you can use the <code>luaL_dofile</code> function.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+CgppbnQgbWFpbigpIHsKICAgIGx1YV9TdGF0ZSAqTCA9IGx1YUxfbmV3c3RhdGUoKTsKICAgIGx1YUxfb3BlbmxpYnMoTCk7CgogICAgaWYgKGx1YUxfZG9maWxlKEwsICJzY3JpcHQubHVhIikgIT0gTFVBX09LKSB7CiAgICAgICAgZnByaW50ZihzdGRlcnIsICJFcnJvcjogJXNcbiIsIGx1YV90b3N0cmluZyhMLCAtMSkpOwogICAgfQoKICAgIGx1YV9jbG9zZShMKTsKICAgIHJldHVybiAwOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    if (luaL_dofile(L, &quot;script.lua&quot;) != LUA_OK) {
+        fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+    }
+
+    lua_close(L);
+    return 0;
+}</pre></div><div class='content'></div><h2>Calling Lua Functions</h2>
+<div class='content'><p>To call a Lua function from C, you need to push the function onto the stack and then use <code>lua_pcall</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+CgppbnQgbWFpbigpIHsKICAgIGx1YV9TdGF0ZSAqTCA9IGx1YUxfbmV3c3RhdGUoKTsKICAgIGx1YUxfb3BlbmxpYnMoTCk7CgogICAgaWYgKGx1YUxfZG9maWxlKEwsICJzY3JpcHQubHVhIikgPT0gTFVBX09LKSB7CiAgICAgICAgbHVhX2dldGdsb2JhbChMLCAibXlfZnVuY3Rpb24iKTsgIC8vIFB1c2ggdGhlIGZ1bmN0aW9uIG9udG8gdGhlIHN0YWNrCiAgICAgICAgbHVhX3B1c2hudW1iZXIoTCwgMTApOyAgICAgICAgICAgIC8vIFB1c2ggdGhlIGFyZ3VtZW50CiAgICAgICAgaWYgKGx1YV9wY2FsbChMLCAxLCAxLCAwKSAhPSBMVUFfT0spIHsKICAgICAgICAgICAgZnByaW50ZihzdGRlcnIsICJFcnJvcjogJXNcbiIsIGx1YV90b3N0cmluZyhMLCAtMSkpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGRvdWJsZSByZXN1bHQgPSBsdWFfdG9udW1iZXIoTCwgLTEpOyAgLy8gR2V0IHRoZSByZXN1bHQKICAgICAgICAgICAgcHJpbnRmKCJSZXN1bHQ6ICVmXG4iLCByZXN1bHQpOwogICAgICAgIH0KICAgIH0KCiAgICBsdWFfY2xvc2UoTCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    if (luaL_dofile(L, &quot;script.lua&quot;) == LUA_OK) {
+        lua_getglobal(L, &quot;my_function&quot;);  // Push the function onto the stack
+        lua_pushnumber(L, 10);            // Push the argument
+        if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
+            fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+        } else {
+            double result = lua_tonumber(L, -1);  // Get the result
+            printf(&quot;Result: %f\n&quot;, result);
+        }
+    }
+
+    lua_close(L);
+    return 0;
+}</pre></div><div class='content'></div><h2>Registering C Functions</h2>
+<div class='content'><p>To call C functions from Lua, you need to register them with the Lua state.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+CgppbnQgbXlfY19mdW5jdGlvbihsdWFfU3RhdGUgKkwpIHsKICAgIGRvdWJsZSBhcmcgPSBsdWFfdG9udW1iZXIoTCwgMSk7CiAgICBsdWFfcHVzaG51bWJlcihMLCBhcmcgKiAyKTsKICAgIHJldHVybiAxOyAgLy8gTnVtYmVyIG9mIHJldHVybiB2YWx1ZXMKfQoKaW50IG1haW4oKSB7CiAgICBsdWFfU3RhdGUgKkwgPSBsdWFMX25ld3N0YXRlKCk7CiAgICBsdWFMX29wZW5saWJzKEwpOwoKICAgIGx1YV9yZWdpc3RlcihMLCAibXlfY19mdW5jdGlvbiIsIG15X2NfZnVuY3Rpb24pOwoKICAgIGlmIChsdWFMX2RvZmlsZShMLCAic2NyaXB0Lmx1YSIpICE9IExVQV9PSykgewogICAgICAgIGZwcmludGYoc3RkZXJyLCAiRXJyb3I6ICVzXG4iLCBsdWFfdG9zdHJpbmcoTCwgLTEpKTsKICAgIH0KCiAgICBsdWFfY2xvc2UoTCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+
+int my_c_function(lua_State *L) {
+    double arg = lua_tonumber(L, 1);
+    lua_pushnumber(L, arg * 2);
+    return 1;  // Number of return values
+}
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    lua_register(L, &quot;my_c_function&quot;, my_c_function);
+
+    if (luaL_dofile(L, &quot;script.lua&quot;) != LUA_OK) {
+        fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+    }
+
+    lua_close(L);
+    return 0;
+}</pre></div><div class='content'></div><h2>Userdata and Metatables</h2>
+<div class='content'><p>Userdata allows you to store C data in Lua variables. Metatables can be used to define operations on userdata.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+Cgp0eXBlZGVmIHN0cnVjdCB7CiAgICBkb3VibGUgeCwgeTsKfSBQb2ludDsKCmludCBjcmVhdGVfcG9pbnQobHVhX1N0YXRlICpMKSB7CiAgICBQb2ludCAqcCA9IChQb2ludCAqKWx1YV9uZXd1c2VyZGF0YShMLCBzaXplb2YoUG9pbnQpKTsKICAgIHAtPnggPSBsdWFMX2NoZWNrbnVtYmVyKEwsIDEpOwogICAgcC0+eSA9IGx1YUxfY2hlY2tudW1iZXIoTCwgMik7CgogICAgbHVhTF9nZXRtZXRhdGFibGUoTCwgIlBvaW50TWV0YVRhYmxlIik7CiAgICBsdWFfc2V0bWV0YXRhYmxlKEwsIC0yKTsKCiAgICByZXR1cm4gMTsKfQoKaW50IG1haW4oKSB7CiAgICBsdWFfU3RhdGUgKkwgPSBsdWFMX25ld3N0YXRlKCk7CiAgICBsdWFMX29wZW5saWJzKEwpOwoKICAgIGx1YUxfbmV3bWV0YXRhYmxlKEwsICJQb2ludE1ldGFUYWJsZSIpOwoKICAgIGx1YV9yZWdpc3RlcihMLCAiY3JlYXRlX3BvaW50IiwgY3JlYXRlX3BvaW50KTsKCiAgICBpZiAobHVhTF9kb2ZpbGUoTCwgInNjcmlwdC5sdWEiKSAhPSBMVUFfT0spIHsKICAgICAgICBmcHJpbnRmKHN0ZGVyciwgIkVycm9yOiAlc1xuIiwgbHVhX3Rvc3RyaW5nKEwsIC0xKSk7CiAgICB9CgogICAgbHVhX2Nsb3NlKEwpOwogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+
+typedef struct {
+    double x, y;
+} Point;
+
+int create_point(lua_State *L) {
+    Point *p = (Point *)lua_newuserdata(L, sizeof(Point));
+    p-&gt;x = luaL_checknumber(L, 1);
+    p-&gt;y = luaL_checknumber(L, 2);
+
+    luaL_getmetatable(L, &quot;PointMetaTable&quot;);
+    lua_setmetatable(L, -2);
+
+    return 1;
+}
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    luaL_newmetatable(L, &quot;PointMetaTable&quot;);
+
+    lua_register(L, &quot;create_point&quot;, create_point);
+
+    if (luaL_dofile(L, &quot;script.lua&quot;) != LUA_OK) {
+        fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+    }
+
+    lua_close(L);
+    return 0;
+}</pre></div><div class='content'></div><h1>Integrating Lua with Python</h1>
+<div class='content'></div><h2>Using Libraries</h2>
+<div class='content'><p>The <code>lupa</code> library is a powerful tool for integrating Lua with Python.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBsdXBhIGltcG9ydCBMdWFSdW50aW1lCgpsdWEgPSBMdWFSdW50aW1lKHVucGFja19yZXR1cm5lZF90dXBsZXM9VHJ1ZSkKCmx1YV9jb2RlID0gIiIiCmZ1bmN0aW9uIGFkZChhLCBiKQogICAgcmV0dXJuIGEgKyBiCmVuZAoiIiIKCmx1YS5leGVjdXRlKGx1YV9jb2RlKQphZGQgPSBsdWEuZ2xvYmFscygpLmFkZApyZXN1bHQgPSBhZGQoMTAsIDIwKQpwcmludCgiUmVzdWx0OiIsIHJlc3VsdCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from lupa import LuaRuntime
+
+lua = LuaRuntime(unpack_returned_tuples=True)
+
+lua_code = &quot;&quot;&quot;
+function add(a, b)
+    return a + b
+end
+&quot;&quot;&quot;
+
+lua.execute(lua_code)
+add = lua.globals().add
+result = add(10, 20)
+print(&quot;Result:&quot;, result)</pre></div><div class='content'></div><h2>Interfacing</h2>
+<div class='content'><p>You can call Lua scripts from Python and vice versa using <code>lupa</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBsdXBhIGltcG9ydCBMdWFSdW50aW1lCgpsdWEgPSBMdWFSdW50aW1lKHVucGFja19yZXR1cm5lZF90dXBsZXM9VHJ1ZSkKCmx1YV9jb2RlID0gIiIiCmZ1bmN0aW9uIGdyZWV0KG5hbWUpCiAgICByZXR1cm4gIkhlbGxvLCAiIC4uIG5hbWUKZW5kCiIiIgoKbHVhLmV4ZWN1dGUobHVhX2NvZGUpCmdyZWV0ID0gbHVhLmdsb2JhbHMoKS5ncmVldApwcmludChncmVldCgiV29ybGQiKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from lupa import LuaRuntime
+
+lua = LuaRuntime(unpack_returned_tuples=True)
+
+lua_code = &quot;&quot;&quot;
+function greet(name)
+    return &quot;Hello, &quot; .. name
+end
+&quot;&quot;&quot;
+
+lua.execute(lua_code)
+greet = lua.globals().greet
+print(greet(&quot;World&quot;))</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Integrate Lua with C</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create a C program that calls a Lua function to calculate the factorial of a number.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Write a Lua script (<code>factorial.lua</code>) that defines a function to calculate the factorial.</li>
+<li>Write a C program that loads the Lua script and calls the factorial function.</li>
+<li>Print the result in the C program.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Lua Script (factorial.lua)</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZmFjdG9yaWFsKG4pCiAgICBpZiBuID09IDAgdGhlbgogICAgICAgIHJldHVybiAxCiAgICBlbHNlCiAgICAgICAgcmV0dXJuIG4gKiBmYWN0b3JpYWwobiAtIDEpCiAgICBlbmQKZW5k"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function factorial(n)
+    if n == 0 then
+        return 1
+    else
+        return n * factorial(n - 1)
+    end
+end</pre></div><div class='content'><p><strong>C Program</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGx1YS5oPgojaW5jbHVkZSA8bHVhbGliLmg+CiNpbmNsdWRlIDxsYXV4bGliLmg+CiNpbmNsdWRlIDxzdGRpby5oPgoKaW50IG1haW4oKSB7CiAgICBsdWFfU3RhdGUgKkwgPSBsdWFMX25ld3N0YXRlKCk7CiAgICBsdWFMX29wZW5saWJzKEwpOwoKICAgIGlmIChsdWFMX2RvZmlsZShMLCAiZmFjdG9yaWFsLmx1YSIpID09IExVQV9PSykgewogICAgICAgIGx1YV9nZXRnbG9iYWwoTCwgImZhY3RvcmlhbCIpOwogICAgICAgIGx1YV9wdXNobnVtYmVyKEwsIDUpOyAgLy8gQ2FsY3VsYXRlIGZhY3RvcmlhbCBvZiA1CiAgICAgICAgaWYgKGx1YV9wY2FsbChMLCAxLCAxLCAwKSAhPSBMVUFfT0spIHsKICAgICAgICAgICAgZnByaW50ZihzdGRlcnIsICJFcnJvcjogJXNcbiIsIGx1YV90b3N0cmluZyhMLCAtMSkpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGludCByZXN1bHQgPSBsdWFfdG9pbnRlZ2VyKEwsIC0xKTsKICAgICAgICAgICAgcHJpbnRmKCJGYWN0b3JpYWw6ICVkXG4iLCByZXN1bHQpOwogICAgICAgIH0KICAgIH0KCiAgICBsdWFfY2xvc2UoTCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    if (luaL_dofile(L, &quot;factorial.lua&quot;) == LUA_OK) {
+        lua_getglobal(L, &quot;factorial&quot;);
+        lua_pushnumber(L, 5);  // Calculate factorial of 5
+        if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
+            fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+        } else {
+            int result = lua_tointeger(L, -1);
+            printf(&quot;Factorial: %d\n&quot;, result);
+        }
+    }
+
+    lua_close(L);
+    return 0;
+}</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Lua Script (factorial.lua)</strong>:</p>
+<pre><code class="language-lua">function factorial(n)
+    if n == 0 then
+        return 1
+    else
+        return n * factorial(n - 1)
+    end
+end
+</code></pre>
+</li>
+<li>
+<p><strong>C Program</strong>:</p>
+<pre><code class="language-c">#include &lt;lua.h&gt;
+#include &lt;lualib.h&gt;
+#include &lt;lauxlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+    lua_State *L = luaL_newstate();
+    luaL_openlibs(L);
+
+    if (luaL_dofile(L, &quot;factorial.lua&quot;) == LUA_OK) {
+        lua_getglobal(L, &quot;factorial&quot;);
+        lua_pushnumber(L, 5);  // Calculate factorial of 5
+        if (lua_pcall(L, 1, 1, 0) != LUA_OK) {
+            fprintf(stderr, &quot;Error: %s\n&quot;, lua_tostring(L, -1));
+        } else {
+            int result = lua_tointeger(L, -1);
+            printf(&quot;Factorial: %d\n&quot;, result);
+        }
+    }
+
+    lua_close(L);
+    return 0;
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Integrating Lua with other languages can greatly enhance the flexibility and functionality of your applications. By embedding Lua in C/C++ or interfacing it with Python, you can leverage Lua's simplicity and power to extend the capabilities of your software. This section covered the basics of embedding Lua in C/C++, calling Lua functions from C/C++, registering C functions in Lua, and integrating Lua with Python using the <code>lupa</code> library. The practical exercise provided hands-on experience in integrating Lua with C, reinforcing the learned concepts.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-automating-tasks' title="Automating Tasks with Lua">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-project-overview' title="Project Overview">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

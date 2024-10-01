@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kubernetes Architecture</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/01-02-kubernetes-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/01-02-kubernetes-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/01-02-kubernetes-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/01-02-kubernetes-architecture" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/01-02-kubernetes-architecture" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-01-what-is-kubernetes' title="What is Kubernetes?">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kubernetes Architecture</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-03-key-concepts-terminology' title="Key Concepts and Terminology">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the architecture of Kubernetes, which is essential for understanding how Kubernetes orchestrates containerized applications. We will cover the following key components:</p>
+<ol>
+<li><strong>Master Node</strong></li>
+<li><strong>Worker Nodes</strong></li>
+<li><strong>Kubernetes Control Plane</strong></li>
+<li><strong>Kubernetes Objects</strong></li>
+</ol>
+</div><h1>1. Master Node</h1>
+<div class='content'><p>The Master Node is the brain of the Kubernetes cluster. It manages the cluster and coordinates all activities, such as scheduling, scaling, and updating applications. The Master Node consists of several key components:</p>
+</div><h2>1.1. API Server</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The API Server is the front-end of the Kubernetes control plane. It exposes the Kubernetes API, which is used by all components to communicate with each other.</li>
+<li><strong>Function</strong>: It processes RESTful API requests, validates them, and updates the state of the cluster accordingly.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+  - name: example-container
+    image: nginx
+</code></pre>
+This YAML file is sent to the API Server to create a new Pod.</li>
+</ul>
+</div><h2>1.2. etcd</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: etcd is a distributed key-value store that stores all cluster data.</li>
+<li><strong>Function</strong>: It provides a reliable way to store data across a distributed system, ensuring consistency and availability.</li>
+<li><strong>Example</strong>: Cluster state, configuration data, and secrets are stored in etcd.</li>
+</ul>
+</div><h2>1.3. Scheduler</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The Scheduler is responsible for assigning newly created Pods to nodes in the cluster.</li>
+<li><strong>Function</strong>: It evaluates the resource requirements of Pods and the available resources on nodes to make scheduling decisions.</li>
+<li><strong>Example</strong>: If a new Pod requires 2 CPUs and 4GB of memory, the Scheduler will find a node that meets these requirements.</li>
+</ul>
+</div><h2>1.4. Controller Manager</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The Controller Manager runs various controllers that regulate the state of the cluster.</li>
+<li><strong>Function</strong>: Controllers ensure that the desired state of the cluster matches the actual state.</li>
+<li><strong>Example</strong>: The ReplicaSet controller ensures that the specified number of Pod replicas are running at all times.</li>
+</ul>
+</div><h1>2. Worker Nodes</h1>
+<div class='content'><p>Worker Nodes are the machines where the actual application workloads run. Each Worker Node contains the following components:</p>
+</div><h2>2.1. Kubelet</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The Kubelet is an agent that runs on each Worker Node.</li>
+<li><strong>Function</strong>: It ensures that containers are running in a Pod by communicating with the Master Node.</li>
+<li><strong>Example</strong>: The Kubelet receives Pod specifications from the API Server and ensures that the containers described in those specifications are running and healthy.</li>
+</ul>
+</div><h2>2.2. Kube-Proxy</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Kube-Proxy is a network proxy that runs on each Worker Node.</li>
+<li><strong>Function</strong>: It maintains network rules on nodes, allowing network communication to Pods from inside or outside the cluster.</li>
+<li><strong>Example</strong>: Kube-Proxy forwards traffic to the appropriate Pod based on the service configuration.</li>
+</ul>
+</div><h2>2.3. Container Runtime</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The Container Runtime is the software responsible for running containers.</li>
+<li><strong>Function</strong>: It pulls container images from a registry, starts, and stops containers.</li>
+<li><strong>Example</strong>: Docker, containerd, and CRI-O are popular container runtimes.</li>
+</ul>
+</div><h1>3. Kubernetes Control Plane</h1>
+<div class='content'><p>The Control Plane is a collection of processes that manage the state of the Kubernetes cluster. It includes the API Server, etcd, Scheduler, and Controller Manager. The Control Plane runs on the Master Node and is responsible for:</p>
+<ul>
+<li><strong>Cluster Management</strong>: Ensuring the cluster is in the desired state.</li>
+<li><strong>Scheduling</strong>: Assigning Pods to nodes.</li>
+<li><strong>Monitoring</strong>: Keeping track of the health and status of nodes and Pods.</li>
+<li><strong>Scaling</strong>: Adjusting the number of running Pods based on demand.</li>
+</ul>
+</div><h1>4. Kubernetes Objects</h1>
+<div class='content'><p>Kubernetes uses objects to represent the state of the cluster. These objects include:</p>
+</div><h2>4.1. Pods</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: The smallest and simplest Kubernetes object. A Pod represents a single instance of a running process in the cluster.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+</code></pre>
+</li>
+</ul>
+</div><h2>4.2. ReplicaSets</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Ensures that a specified number of Pod replicas are running at any given time.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: my-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-container
+        image: nginx
+</code></pre>
+</li>
+</ul>
+</div><h2>4.3. Services</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Defines a logical set of Pods and a policy by which to access them.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+</code></pre>
+</li>
+</ul>
+</div><h2>4.4. ConfigMaps and Secrets</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Used to manage configuration data and sensitive information, respectively.</li>
+<li><strong>Example</strong>:
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  key: value
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding the architecture of Kubernetes is crucial for effectively managing and deploying applications in a Kubernetes cluster. The Master Node and Worker Nodes work together to ensure that applications are running smoothly and efficiently. The Control Plane manages the overall state of the cluster, while Kubernetes objects like Pods, ReplicaSets, and Services define the desired state of applications.</p>
+<p>In the next section, we will delve into the key concepts and terminology used in Kubernetes, which will further solidify your understanding of how Kubernetes operates.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-01-what-is-kubernetes' title="What is Kubernetes?">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-03-key-concepts-terminology' title="Key Concepts and Terminology">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifying Interactions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/junit/06-04-verifying-interactions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/junit/06-04-verifying-interactions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/junit/06-04-verifying-interactions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/junit/06-04-verifying-interactions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/junit/06-04-verifying-interactions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-creating-mocks' title="Creating Mocks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Verifying Interactions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-timeouts-in-junit' title="Timeouts in JUnit">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to verify interactions with mocks using Mockito in JUnit. Verifying interactions is crucial to ensure that your code behaves as expected, especially when dealing with dependencies and side effects.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Mocking</strong>: Creating a mock object to simulate the behavior of real objects.</li>
+<li><strong>Verification</strong>: Checking if certain methods were called on the mock object with the expected arguments.</li>
+</ol>
+</div><h1>Why Verify Interactions?</h1>
+<div class='content'><p>Verifying interactions helps to:</p>
+<ul>
+<li>Ensure that the correct methods are called.</li>
+<li>Validate the sequence of method calls.</li>
+<li>Confirm that no unexpected interactions occur.</li>
+</ul>
+</div><h1>Setting Up Mockito</h1>
+<div class='content'><p>Before we dive into verifying interactions, ensure you have Mockito set up in your project. Add the following dependencies to your <code>pom.xml</code> if you are using Maven:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcubW9ja2l0bzwvZ3JvdXBJZD4KICAgIDxhcnRpZmFjdElkPm1vY2tpdG8tY29yZTwvYXJ0aWZhY3RJZD4KICAgIDx2ZXJzaW9uPjMuMTEuMjwvdmVyc2lvbj4KICAgIDxzY29wZT50ZXN0PC9zY29wZT4KPC9kZXBlbmRlbmN5Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.mockito&lt;/groupId&gt;
+    &lt;artifactId&gt;mockito-core&lt;/artifactId&gt;
+    &lt;version&gt;3.11.2&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h1>Basic Verification</h1>
+<div class='content'></div><h2>Example</h2>
+<div class='content'><p>Let's start with a simple example. Suppose we have a <code>Calculator</code> class with a method <code>add</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIENhbGN1bGF0b3IgewogICAgcHVibGljIGludCBhZGQoaW50IGEsIGludCBiKSB7CiAgICAgICAgcmV0dXJuIGEgKyBiOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}</pre></div><div class='content'><p>We want to verify that the <code>add</code> method is called with specific arguments.</p>
+</div><h2>Test Case</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHN0YXRpYyBvcmcubW9ja2l0by5Nb2NraXRvLio7CmltcG9ydCBzdGF0aWMgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLkFzc2VydGlvbnMuKjsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwoKcHVibGljIGNsYXNzIENhbGN1bGF0b3JUZXN0IHsKCiAgICBAVGVzdAogICAgcHVibGljIHZvaWQgdGVzdEFkZE1ldGhvZENhbGxlZCgpIHsKICAgICAgICAvLyBDcmVhdGUgYSBtb2NrIG9mIENhbGN1bGF0b3IKICAgICAgICBDYWxjdWxhdG9yIGNhbGN1bGF0b3IgPSBtb2NrKENhbGN1bGF0b3IuY2xhc3MpOwoKICAgICAgICAvLyBVc2UgdGhlIG1vY2sgb2JqZWN0CiAgICAgICAgY2FsY3VsYXRvci5hZGQoMTAsIDIwKTsKCiAgICAgICAgLy8gVmVyaWZ5IHRoYXQgdGhlIGFkZCBtZXRob2Qgd2FzIGNhbGxlZCB3aXRoIGFyZ3VtZW50cyAxMCBhbmQgMjAKICAgICAgICB2ZXJpZnkoY2FsY3VsYXRvcikuYWRkKDEwLCAyMCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    @Test
+    public void testAddMethodCalled() {
+        // Create a mock of Calculator
+        Calculator calculator = mock(Calculator.class);
+
+        // Use the mock object
+        calculator.add(10, 20);
+
+        // Verify that the add method was called with arguments 10 and 20
+        verify(calculator).add(10, 20);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Creating a Mock</strong>: <code>Calculator calculator = mock(Calculator.class);</code>
+<ul>
+<li>This creates a mock object of the <code>Calculator</code> class.</li>
+</ul>
+</li>
+<li><strong>Using the Mock</strong>: <code>calculator.add(10, 20);</code>
+<ul>
+<li>We call the <code>add</code> method on the mock object.</li>
+</ul>
+</li>
+<li><strong>Verifying the Interaction</strong>: <code>verify(calculator).add(10, 20);</code>
+<ul>
+<li>This verifies that the <code>add</code> method was called with the arguments <code>10</code> and <code>20</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Advanced Verification</h1>
+<div class='content'></div><h2>Verifying Call Count</h2>
+<div class='content'><p>You can also verify how many times a method was called:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyaWZ5KGNhbGN1bGF0b3IsIHRpbWVzKDEpKS5hZGQoMTAsIDIwKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>verify(calculator, times(1)).add(10, 20);</pre></div><div class='content'></div><h2>Verifying No Interactions</h2>
+<div class='content'><p>To ensure that no interactions have occurred with the mock:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyaWZ5Tm9JbnRlcmFjdGlvbnMoY2FsY3VsYXRvcik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>verifyNoInteractions(calculator);</pre></div><div class='content'></div><h2>Verifying No More Interactions</h2>
+<div class='content'><p>To verify that no other interactions have occurred after the specified calls:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyaWZ5KGNhbGN1bGF0b3IpLmFkZCgxMCwgMjApOwp2ZXJpZnlOb01vcmVJbnRlcmFjdGlvbnMoY2FsY3VsYXRvcik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>verify(calculator).add(10, 20);
+verifyNoMoreInteractions(calculator);</pre></div><div class='content'></div><h2>Verifying in Order</h2>
+<div class='content'><p>To verify that methods were called in a specific order:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHN0YXRpYyBvcmcubW9ja2l0by5Nb2NraXRvLio7CmltcG9ydCBvcmcubW9ja2l0by5Jbk9yZGVyOwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLlRlc3Q7CgpwdWJsaWMgY2xhc3MgQ2FsY3VsYXRvclRlc3QgewoKICAgIEBUZXN0CiAgICBwdWJsaWMgdm9pZCB0ZXN0TWV0aG9kQ2FsbE9yZGVyKCkgewogICAgICAgIENhbGN1bGF0b3IgY2FsY3VsYXRvciA9IG1vY2soQ2FsY3VsYXRvci5jbGFzcyk7CgogICAgICAgIC8vIFVzZSB0aGUgbW9jayBvYmplY3QKICAgICAgICBjYWxjdWxhdG9yLmFkZCgxMCwgMjApOwogICAgICAgIGNhbGN1bGF0b3IuYWRkKDMwLCA0MCk7CgogICAgICAgIC8vIENyZWF0ZSBhbiBJbk9yZGVyIHZlcmlmaWVyIGZvciB0aGUgbW9jawogICAgICAgIEluT3JkZXIgaW5PcmRlciA9IGluT3JkZXIoY2FsY3VsYXRvcik7CgogICAgICAgIC8vIFZlcmlmeSB0aGUgb3JkZXIgb2YgbWV0aG9kIGNhbGxzCiAgICAgICAgaW5PcmRlci52ZXJpZnkoY2FsY3VsYXRvcikuYWRkKDEwLCAyMCk7CiAgICAgICAgaW5PcmRlci52ZXJpZnkoY2FsY3VsYXRvcikuYWRkKDMwLCA0MCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import static org.mockito.Mockito.*;
+import org.mockito.InOrder;
+import org.junit.jupiter.api.Test;
+
+public class CalculatorTest {
+
+    @Test
+    public void testMethodCallOrder() {
+        Calculator calculator = mock(Calculator.class);
+
+        // Use the mock object
+        calculator.add(10, 20);
+        calculator.add(30, 40);
+
+        // Create an InOrder verifier for the mock
+        InOrder inOrder = inOrder(calculator);
+
+        // Verify the order of method calls
+        inOrder.verify(calculator).add(10, 20);
+        inOrder.verify(calculator).add(30, 40);
+    }
+}</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create a <code>UserService</code> class with a method <code>createUser(String username)</code>.</li>
+<li>Create a test case to verify that the <code>createUser</code> method is called with the argument <code>&quot;john_doe&quot;</code>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFVzZXJTZXJ2aWNlIHsKICAgIHB1YmxpYyB2b2lkIGNyZWF0ZVVzZXIoU3RyaW5nIHVzZXJuYW1lKSB7CiAgICAgICAgLy8gTG9naWMgdG8gY3JlYXRlIGEgdXNlcgogICAgfQp9CgppbXBvcnQgc3RhdGljIG9yZy5tb2NraXRvLk1vY2tpdG8uKjsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0OwoKcHVibGljIGNsYXNzIFVzZXJTZXJ2aWNlVGVzdCB7CgogICAgQFRlc3QKICAgIHB1YmxpYyB2b2lkIHRlc3RDcmVhdGVVc2VyQ2FsbGVkKCkgewogICAgICAgIC8vIENyZWF0ZSBhIG1vY2sgb2YgVXNlclNlcnZpY2UKICAgICAgICBVc2VyU2VydmljZSB1c2VyU2VydmljZSA9IG1vY2soVXNlclNlcnZpY2UuY2xhc3MpOwoKICAgICAgICAvLyBVc2UgdGhlIG1vY2sgb2JqZWN0CiAgICAgICAgdXNlclNlcnZpY2UuY3JlYXRlVXNlcigiam9obl9kb2UiKTsKCiAgICAgICAgLy8gVmVyaWZ5IHRoYXQgdGhlIGNyZWF0ZVVzZXIgbWV0aG9kIHdhcyBjYWxsZWQgd2l0aCBhcmd1bWVudCAiam9obl9kb2UiCiAgICAgICAgdmVyaWZ5KHVzZXJTZXJ2aWNlKS5jcmVhdGVVc2VyKCJqb2huX2RvZSIpOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class UserService {
+    public void createUser(String username) {
+        // Logic to create a user
+    }
+}
+
+import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.Test;
+
+public class UserServiceTest {
+
+    @Test
+    public void testCreateUserCalled() {
+        // Create a mock of UserService
+        UserService userService = mock(UserService.class);
+
+        // Use the mock object
+        userService.createUser(&quot;john_doe&quot;);
+
+        // Verify that the createUser method was called with argument &quot;john_doe&quot;
+        verify(userService).createUser(&quot;john_doe&quot;);
+    }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to Use <code>verify</code></strong>: Always use <code>verify</code> to check interactions.</li>
+<li><strong>Incorrect Argument Matching</strong>: Ensure the arguments in <code>verify</code> match exactly with the method call.</li>
+<li><strong>Overusing Verification</strong>: Verify only necessary interactions to keep tests maintainable.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to verify interactions with mocks using Mockito in JUnit. We covered basic verification, advanced verification techniques, and common mistakes. Verifying interactions is a powerful tool to ensure your code behaves as expected, especially when dealing with dependencies. In the next module, we will explore advanced JUnit features such as timeouts and exception testing.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-creating-mocks' title="Creating Mocks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-timeouts-in-junit' title="Timeouts in JUnit">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

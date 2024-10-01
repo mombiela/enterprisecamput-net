@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Testing with JUnit</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/06-02-unit-testing-junit" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/06-02-unit-testing-junit" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/06-02-unit-testing-junit" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/springboot/06-02-unit-testing-junit" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/06-02-unit-testing-junit" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-testing' title="Introduction to Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Unit Testing with JUnit</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-integration-testing' title="Integration Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Unit testing is a crucial part of software development that ensures individual components of your application work as expected. In this section, we will explore how to perform unit testing in a Spring Boot application using JUnit.</p>
+</div><h1>What is Unit Testing?</h1>
+<div class='content'><p>Unit testing involves testing individual units or components of a software application. The goal is to validate that each unit of the software performs as designed. A unit is the smallest testable part of any software, typically a function or method.</p>
+</div><h1>Why Use JUnit for Unit Testing?</h1>
+<div class='content'><p>JUnit is a popular testing framework for Java applications. It provides:</p>
+<ul>
+<li>Annotations to identify test methods.</li>
+<li>Assertions to test expected results.</li>
+<li>Test runners to execute tests and report results.</li>
+</ul>
+</div><h1>Setting Up JUnit in Spring Boot</h1>
+<div class='content'><p>Spring Boot projects typically include JUnit by default. If not, you can add it to your <code>pom.xml</code> (for Maven) or <code>build.gradle</code> (for Gradle).</p>
+</div><h2>Maven Dependency</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXRlc3Q8L2FydGlmYWN0SWQ+CiAgICA8c2NvcGU+dGVzdDwvc2NvcGU+CjwvZGVwZW5kZW5jeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Gradle Dependency</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVzdEltcGxlbWVudGF0aW9uICdvcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q6c3ByaW5nLWJvb3Qtc3RhcnRlci10ZXN0Jw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>testImplementation 'org.springframework.boot:spring-boot-starter-test'</pre></div><div class='content'></div><h1>Writing Your First Unit Test</h1>
+<div class='content'><p>Let's create a simple Spring Boot application and write a unit test for a service class.</p>
+</div><h2>Step 1: Create a Spring Boot Application</h2>
+<div class='content'><ol>
+<li>Create a new Spring Boot project.</li>
+<li>Add a simple service class.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zdGVyZW90eXBlLlNlcnZpY2U7CgpAU2VydmljZQpwdWJsaWMgY2xhc3MgQ2FsY3VsYXRvclNlcnZpY2UgewogICAgcHVibGljIGludCBhZGQoaW50IGEsIGludCBiKSB7CiAgICAgICAgcmV0dXJuIGEgKyBiOwogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CalculatorService {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}</pre></div><div class='content'></div><h2>Step 2: Write a Unit Test for the Service Class</h2>
+<div class='content'><ol>
+<li>Create a test class in the <code>src/test/java</code> directory.</li>
+<li>Use JUnit annotations to define test methods.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLlRlc3Q7CmltcG9ydCBzdGF0aWMgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLkFzc2VydGlvbnMuYXNzZXJ0RXF1YWxzOwoKcHVibGljIGNsYXNzIENhbGN1bGF0b3JTZXJ2aWNlVGVzdCB7CgogICAgcHJpdmF0ZSBmaW5hbCBDYWxjdWxhdG9yU2VydmljZSBjYWxjdWxhdG9yU2VydmljZSA9IG5ldyBDYWxjdWxhdG9yU2VydmljZSgpOwoKICAgIEBUZXN0CiAgICBwdWJsaWMgdm9pZCB0ZXN0QWRkKCkgewogICAgICAgIGludCByZXN1bHQgPSBjYWxjdWxhdG9yU2VydmljZS5hZGQoMiwgMyk7CiAgICAgICAgYXNzZXJ0RXF1YWxzKDUsIHJlc3VsdCwgIjIgKyAzIHNob3VsZCBlcXVhbCA1Iik7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+public class CalculatorServiceTest {
+
+    private final CalculatorService calculatorService = new CalculatorService();
+
+    @Test
+    public void testAdd() {
+        int result = calculatorService.add(2, 3);
+        assertEquals(5, result, &quot;2 + 3 should equal 5&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation of the Test Code</h2>
+<div class='content'><ul>
+<li><code>@Test</code>: Marks the method as a test method.</li>
+<li><code>assertEquals(expected, actual, message)</code>: Asserts that the expected value equals the actual value. If not, the test fails with the provided message.</li>
+</ul>
+</div><h1>Running the Tests</h1>
+<div class='content'><p>You can run the tests using your IDE, Maven, or Gradle.</p>
+</div><h2>Using IDE</h2>
+<div class='content'><p>Most IDEs like IntelliJ IDEA or Eclipse allow you to run tests directly from the editor.</p>
+</div><h2>Using Maven</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXZuIHRlc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mvn test</pre></div><div class='content'></div><h2>Using Gradle</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JhZGxlIHRlc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gradle test</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Write a Unit Test for a Subtraction Method</h2>
+<div class='content'><ol>
+<li>Add a <code>subtract</code> method to the <code>CalculatorService</code> class.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGludCBzdWJ0cmFjdChpbnQgYSwgaW50IGIpIHsKICAgIHJldHVybiBhIC0gYjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public int subtract(int a, int b) {
+    return a - b;
+}</pre></div><div class='content'><ol start="2">
+<li>Write a unit test for the <code>subtract</code> method.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QFRlc3QKcHVibGljIHZvaWQgdGVzdFN1YnRyYWN0KCkgewogICAgaW50IHJlc3VsdCA9IGNhbGN1bGF0b3JTZXJ2aWNlLnN1YnRyYWN0KDUsIDMpOwogICAgYXNzZXJ0RXF1YWxzKDIsIHJlc3VsdCwgIjUgLSAzIHNob3VsZCBlcXVhbCAyIik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Test
+public void testSubtract() {
+    int result = calculatorService.subtract(5, 3);
+    assertEquals(2, result, &quot;5 - 3 should equal 2&quot;);
+}</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QFRlc3QKcHVibGljIHZvaWQgdGVzdFN1YnRyYWN0KCkgewogICAgaW50IHJlc3VsdCA9IGNhbGN1bGF0b3JTZXJ2aWNlLnN1YnRyYWN0KDUsIDMpOwogICAgYXNzZXJ0RXF1YWxzKDIsIHJlc3VsdCwgIjUgLSAzIHNob3VsZCBlcXVhbCAyIik7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Test
+public void testSubtract() {
+    int result = calculatorService.subtract(5, 3);
+    assertEquals(2, result, &quot;5 - 3 should equal 2&quot;);
+}</pre></div><div class='content'></div><h2>Exercise 2: Test Edge Cases</h2>
+<div class='content'><ol>
+<li>Add edge case tests for the <code>add</code> and <code>subtract</code> methods.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QFRlc3QKcHVibGljIHZvaWQgdGVzdEFkZFdpdGhOZWdhdGl2ZU51bWJlcnMoKSB7CiAgICBpbnQgcmVzdWx0ID0gY2FsY3VsYXRvclNlcnZpY2UuYWRkKC0yLCAtMyk7CiAgICBhc3NlcnRFcXVhbHMoLTUsIHJlc3VsdCwgIi0yICsgLTMgc2hvdWxkIGVxdWFsIC01Iik7Cn0KCkBUZXN0CnB1YmxpYyB2b2lkIHRlc3RTdWJ0cmFjdFdpdGhOZWdhdGl2ZU51bWJlcnMoKSB7CiAgICBpbnQgcmVzdWx0ID0gY2FsY3VsYXRvclNlcnZpY2Uuc3VidHJhY3QoLTUsIC0zKTsKICAgIGFzc2VydEVxdWFscygtMiwgcmVzdWx0LCAiLTUgLSAtMyBzaG91bGQgZXF1YWwgLTIiKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Test
+public void testAddWithNegativeNumbers() {
+    int result = calculatorService.add(-2, -3);
+    assertEquals(-5, result, &quot;-2 + -3 should equal -5&quot;);
+}
+
+@Test
+public void testSubtractWithNegativeNumbers() {
+    int result = calculatorService.subtract(-5, -3);
+    assertEquals(-2, result, &quot;-5 - -3 should equal -2&quot;);
+}</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QFRlc3QKcHVibGljIHZvaWQgdGVzdEFkZFdpdGhOZWdhdGl2ZU51bWJlcnMoKSB7CiAgICBpbnQgcmVzdWx0ID0gY2FsY3VsYXRvclNlcnZpY2UuYWRkKC0yLCAtMyk7CiAgICBhc3NlcnRFcXVhbHMoLTUsIHJlc3VsdCwgIi0yICsgLTMgc2hvdWxkIGVxdWFsIC01Iik7Cn0KCkBUZXN0CnB1YmxpYyB2b2lkIHRlc3RTdWJ0cmFjdFdpdGhOZWdhdGl2ZU51bWJlcnMoKSB7CiAgICBpbnQgcmVzdWx0ID0gY2FsY3VsYXRvclNlcnZpY2Uuc3VidHJhY3QoLTUsIC0zKTsKICAgIGFzc2VydEVxdWFscygtMiwgcmVzdWx0LCAiLTUgLSAtMyBzaG91bGQgZXF1YWwgLTIiKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Test
+public void testAddWithNegativeNumbers() {
+    int result = calculatorService.add(-2, -3);
+    assertEquals(-5, result, &quot;-2 + -3 should equal -5&quot;);
+}
+
+@Test
+public void testSubtractWithNegativeNumbers() {
+    int result = calculatorService.subtract(-5, -3);
+    assertEquals(-2, result, &quot;-5 - -3 should equal -2&quot;);
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Isolating Tests</strong>: Ensure each test is independent and does not rely on the outcome of another test.</li>
+<li><strong>Ignoring Edge Cases</strong>: Always test edge cases, such as negative numbers, zero, and large values.</li>
+<li><strong>Not Using Assertions Properly</strong>: Use the appropriate assertion methods provided by JUnit to validate test outcomes.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of unit testing in Spring Boot using JUnit. We learned how to set up JUnit, write simple unit tests, and run them. We also explored practical exercises to reinforce the concepts. Unit testing is an essential skill for any developer, and mastering it will help you build robust and reliable applications.</p>
+<p>Next, we will delve into integration testing, where we will test how different parts of the application work together.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-testing' title="Introduction to Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-integration-testing' title="Integration Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

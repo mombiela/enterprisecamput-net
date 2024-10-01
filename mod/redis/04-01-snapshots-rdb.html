@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapshots (RDB)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/04-01-snapshots-rdb" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/04-01-snapshots-rdb" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/04-01-snapshots-rdb" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/04-01-snapshots-rdb" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/04-01-snapshots-rdb" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-pipelining' title="Pipelining">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Snapshots (RDB)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-append-only-files-aof' title="Append-Only Files (AOF)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Redis provides two primary mechanisms for persisting data to disk: Snapshots (RDB) and Append-Only Files (AOF). In this section, we will focus on Snapshots (RDB), which create point-in-time snapshots of your dataset.</p>
+</div><h1>What is RDB?</h1>
+<div class='content'><p>RDB (Redis Database Backup) is a persistence mechanism that saves the dataset to disk at specified intervals. This method creates a snapshot of the data, which can be used for backup or recovery purposes.</p>
+</div><h2>Key Characteristics of RDB:</h2>
+<div class='content'><ul>
+<li><strong>Point-in-Time Snapshots</strong>: RDB creates snapshots of the dataset at specific intervals.</li>
+<li><strong>Compact Storage</strong>: The RDB file is compact and efficient in terms of storage.</li>
+<li><strong>Fast Recovery</strong>: Loading an RDB file is faster compared to AOF, making it suitable for quick restarts.</li>
+<li><strong>Less Write-Intensive</strong>: Since snapshots are taken at intervals, RDB is less write-intensive compared to AOF.</li>
+</ul>
+</div><h1>How RDB Works</h1>
+<div class='content'><p>RDB works by forking the Redis process to create a child process. The child process writes the dataset to a temporary file, which is then renamed to the final RDB file once the write operation is complete. This ensures that the main Redis process is not blocked during the snapshot creation.</p>
+</div><h1>Configuring RDB</h1>
+<div class='content'><p>RDB snapshots can be configured in the <code>redis.conf</code> file. The configuration options allow you to specify the conditions under which snapshots are created.</p>
+</div><h2>Example Configuration:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYXZlIHRoZSBEQiBpZiBhdCBsZWFzdCBvbmUga2V5IGNoYW5nZXMgd2l0aGluIDkwMCBzZWNvbmRzICgxNSBtaW51dGVzKQpzYXZlIDkwMCAxCgojIFNhdmUgdGhlIERCIGlmIGF0IGxlYXN0IDEwIGtleXMgY2hhbmdlIHdpdGhpbiAzMDAgc2Vjb25kcyAoNSBtaW51dGVzKQpzYXZlIDMwMCAxMAoKIyBTYXZlIHRoZSBEQiBpZiBhdCBsZWFzdCAxMDAwMCBrZXlzIGNoYW5nZSB3aXRoaW4gNjAgc2Vjb25kcyAoMSBtaW51dGUpCnNhdmUgNjAgMTAwMDA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Save the DB if at least one key changes within 900 seconds (15 minutes)
+save 900 1
+
+# Save the DB if at least 10 keys change within 300 seconds (5 minutes)
+save 300 10
+
+# Save the DB if at least 10000 keys change within 60 seconds (1 minute)
+save 60 10000</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>save 900 1</code>: Save the dataset if at least one key changes within 900 seconds.</li>
+<li><code>save 300 10</code>: Save the dataset if at least 10 keys change within 300 seconds.</li>
+<li><code>save 60 10000</code>: Save the dataset if at least 10000 keys change within 60 seconds.</li>
+</ul>
+</div><h1>Creating Snapshots Manually</h1>
+<div class='content'><p>You can also create snapshots manually using the <code>BGSAVE</code> command.</p>
+</div><h2>Example:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xOjYzNzk+IEJHU0FWRQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1:6379&gt; BGSAVE</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>BGSAVE</code>: This command triggers a background save operation, creating an RDB snapshot without blocking the main Redis process.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple Redis dataset and trigger a manual snapshot.</p>
+</div><h2>Step-by-Step Example:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Start Redis Server</strong>:</p>
+<pre><code class="language-bash">redis-server
+</code></pre>
+</li>
+<li>
+<p><strong>Connect to Redis CLI</strong>:</p>
+<pre><code class="language-bash">redis-cli
+</code></pre>
+</li>
+<li>
+<p><strong>Add Some Data</strong>:</p>
+<pre><code class="language-plaintext">127.0.0.1:6379&gt; SET user:1 &quot;Alice&quot;
+OK
+127.0.0.1:6379&gt; SET user:2 &quot;Bob&quot;
+OK
+</code></pre>
+</li>
+<li>
+<p><strong>Trigger a Manual Snapshot</strong>:</p>
+<pre><code class="language-plaintext">127.0.0.1:6379&gt; BGSAVE
+Background saving started
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Snapshot Creation</strong>:
+Check the Redis log or the directory where Redis stores its data (usually <code>/var/lib/redis</code> or specified in <code>redis.conf</code>) for the <code>dump.rdb</code> file.</p>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Frequent Snapshots</strong>: Configuring very frequent snapshots can lead to performance issues. Balance the frequency based on your application's needs.</li>
+<li><strong>Disk Space</strong>: Ensure sufficient disk space is available for storing RDB files, especially for large datasets.</li>
+<li><strong>Backup Strategy</strong>: Regularly back up your RDB files to a remote location to prevent data loss in case of hardware failure.</li>
+</ul>
+</div><h1>Exercise</h1>
+<h2>Task:</h2>
+<div class='content'><ol>
+<li>Configure Redis to create a snapshot if at least 5 keys change within 600 seconds.</li>
+<li>Add 5 keys to the dataset.</li>
+<li>Verify that a snapshot is created.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Edit <code>redis.conf</code></strong>:</p>
+<pre><code class="language-plaintext">save 600 5
+</code></pre>
+</li>
+<li>
+<p><strong>Add 5 Keys</strong>:</p>
+<pre><code class="language-plaintext">127.0.0.1:6379&gt; SET key1 &quot;value1&quot;
+OK
+127.0.0.1:6379&gt; SET key2 &quot;value2&quot;
+OK
+127.0.0.1:6379&gt; SET key3 &quot;value3&quot;
+OK
+127.0.0.1:6379&gt; SET key4 &quot;value4&quot;
+OK
+127.0.0.1:6379&gt; SET key5 &quot;value5&quot;
+OK
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Snapshot</strong>:
+Check the Redis log or the data directory for the <code>dump.rdb</code> file.</p>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the RDB persistence mechanism in Redis, including its configuration, manual snapshot creation, and practical examples. Understanding RDB is crucial for ensuring data durability and quick recovery in Redis. In the next section, we will delve into Append-Only Files (AOF) for a more granular persistence approach.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-pipelining' title="Pipelining">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-append-only-files-aof' title="Append-Only Files (AOF)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear and Logistic Regression</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/analisis_datos/04-02-regresion" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/analisis_datos/04-02-regressio" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/analisis_datos/04-02-regression" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/analisis_datos/04-02-regression" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/analisis_datos/04-02-regression" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-statistical-models' title="Introduction to Statistical Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Linear and Logistic Regression</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-trees-forests' title="Decision Trees and Random Forests">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will delve into two fundamental types of regression analysis used in data modeling: Linear Regression and Logistic Regression. These techniques are essential for predicting outcomes and understanding relationships between variables.</p>
+</div><h1>Linear Regression</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Definition</strong>: Linear regression is a statistical method used to model the relationship between a dependent variable and one or more independent variables by fitting a linear equation to observed data.</li>
+<li><strong>Equation</strong>: The linear regression equation is typically written as:
+\[
+Y = \beta_0 + \beta_1X_1 + \beta_2X_2 + \ldots + \beta_nX_n + \epsilon
+\]
+where:
+<ul>
+<li>\(Y\) is the dependent variable.</li>
+<li>\(\beta_0\) is the intercept.</li>
+<li>\(\beta_1, \beta_2, \ldots, \beta_n\) are the coefficients.</li>
+<li>\(X_1, X_2, \ldots, X_n\) are the independent variables.</li>
+<li>\(\epsilon\) is the error term.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Let's consider a simple example where we predict the price of a house based on its size.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBwYW5kYXMgYXMgcGQKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdApmcm9tIHNrbGVhcm4ubGluZWFyX21vZGVsIGltcG9ydCBMaW5lYXJSZWdyZXNzaW9uCgojIFNhbXBsZSBkYXRhCmRhdGEgPSB7J1NpemUnOiBbMTUwMCwgMTYwMCwgMTcwMCwgMTgwMCwgMTkwMF0sCiAgICAgICAgJ1ByaWNlJzogWzMwMDAwMCwgMzIwMDAwLCAzNDAwMDAsIDM2MDAwMCwgMzgwMDAwXX0KZGYgPSBwZC5EYXRhRnJhbWUoZGF0YSkKCiMgSW5kZXBlbmRlbnQgdmFyaWFibGUgKFNpemUpClggPSBkZltbJ1NpemUnXV0KIyBEZXBlbmRlbnQgdmFyaWFibGUgKFByaWNlKQpZID0gZGZbJ1ByaWNlJ10KCiMgQ3JlYXRlIGxpbmVhciByZWdyZXNzaW9uIG1vZGVsCm1vZGVsID0gTGluZWFyUmVncmVzc2lvbigpCm1vZGVsLmZpdChYLCBZKQoKIyBQcmVkaWN0IHByaWNlcwpwcmVkaWN0ZWRfcHJpY2VzID0gbW9kZWwucHJlZGljdChYKQoKIyBQbG90IHRoZSByZXN1bHRzCnBsdC5zY2F0dGVyKFgsIFksIGNvbG9yPSdibHVlJykKcGx0LnBsb3QoWCwgcHJlZGljdGVkX3ByaWNlcywgY29sb3I9J3JlZCcpCnBsdC54bGFiZWwoJ1NpemUgKHNxIGZ0KScpCnBsdC55bGFiZWwoJ1ByaWNlICgkKScpCnBsdC50aXRsZSgnTGluZWFyIFJlZ3Jlc3Npb246IEhvdXNlIFByaWNlIFByZWRpY3Rpb24nKQpwbHQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+
+# Sample data
+data = {'Size': [1500, 1600, 1700, 1800, 1900],
+        'Price': [300000, 320000, 340000, 360000, 380000]}
+df = pd.DataFrame(data)
+
+# Independent variable (Size)
+X = df[['Size']]
+# Dependent variable (Price)
+Y = df['Price']
+
+# Create linear regression model
+model = LinearRegression()
+model.fit(X, Y)
+
+# Predict prices
+predicted_prices = model.predict(X)
+
+# Plot the results
+plt.scatter(X, Y, color='blue')
+plt.plot(X, predicted_prices, color='red')
+plt.xlabel('Size (sq ft)')
+plt.ylabel('Price ($)')
+plt.title('Linear Regression: House Price Prediction')
+plt.show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Data Preparation</strong>: We create a DataFrame with house sizes and prices.</li>
+<li><strong>Model Creation</strong>: We use <code>LinearRegression</code> from <code>sklearn</code> to create and fit the model.</li>
+<li><strong>Prediction</strong>: We predict house prices based on the model.</li>
+<li><strong>Visualization</strong>: We plot the actual data points and the regression line.</li>
+</ul>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise</strong>: Use linear regression to predict the weight of a person based on their height. Use the following data:</p>
+<table>
+<thead>
+<tr>
+<th>Height (inches)</th>
+<th>Weight (pounds)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>60</td>
+<td>115</td>
+</tr>
+<tr>
+<td>62</td>
+<td>120</td>
+</tr>
+<tr>
+<td>64</td>
+<td>130</td>
+</tr>
+<tr>
+<td>66</td>
+<td>140</td>
+</tr>
+<tr>
+<td>68</td>
+<td>150</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYW1wbGUgZGF0YQpkYXRhID0geydIZWlnaHQnOiBbNjAsIDYyLCA2NCwgNjYsIDY4XSwKICAgICAgICAnV2VpZ2h0JzogWzExNSwgMTIwLCAxMzAsIDE0MCwgMTUwXX0KZGYgPSBwZC5EYXRhRnJhbWUoZGF0YSkKCiMgSW5kZXBlbmRlbnQgdmFyaWFibGUgKEhlaWdodCkKWCA9IGRmW1snSGVpZ2h0J11dCiMgRGVwZW5kZW50IHZhcmlhYmxlIChXZWlnaHQpClkgPSBkZlsnV2VpZ2h0J10KCiMgQ3JlYXRlIGxpbmVhciByZWdyZXNzaW9uIG1vZGVsCm1vZGVsID0gTGluZWFyUmVncmVzc2lvbigpCm1vZGVsLmZpdChYLCBZKQoKIyBQcmVkaWN0IHdlaWdodHMKcHJlZGljdGVkX3dlaWdodHMgPSBtb2RlbC5wcmVkaWN0KFgpCgojIFBsb3QgdGhlIHJlc3VsdHMKcGx0LnNjYXR0ZXIoWCwgWSwgY29sb3I9J2JsdWUnKQpwbHQucGxvdChYLCBwcmVkaWN0ZWRfd2VpZ2h0cywgY29sb3I9J3JlZCcpCnBsdC54bGFiZWwoJ0hlaWdodCAoaW5jaGVzKScpCnBsdC55bGFiZWwoJ1dlaWdodCAocG91bmRzKScpCnBsdC50aXRsZSgnTGluZWFyIFJlZ3Jlc3Npb246IFdlaWdodCBQcmVkaWN0aW9uJykKcGx0LnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Sample data
+data = {'Height': [60, 62, 64, 66, 68],
+        'Weight': [115, 120, 130, 140, 150]}
+df = pd.DataFrame(data)
+
+# Independent variable (Height)
+X = df[['Height']]
+# Dependent variable (Weight)
+Y = df['Weight']
+
+# Create linear regression model
+model = LinearRegression()
+model.fit(X, Y)
+
+# Predict weights
+predicted_weights = model.predict(X)
+
+# Plot the results
+plt.scatter(X, Y, color='blue')
+plt.plot(X, predicted_weights, color='red')
+plt.xlabel('Height (inches)')
+plt.ylabel('Weight (pounds)')
+plt.title('Linear Regression: Weight Prediction')
+plt.show()</pre></div><div class='content'></div><h1>Logistic Regression</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Definition</strong>: Logistic regression is used for binary classification problems. It models the probability that a given input belongs to a particular category.</li>
+<li><strong>Equation</strong>: The logistic regression equation is:
+\[
+P(Y=1) = \frac{1}{1 + e^{-(\beta_0 + \beta_1X_1 + \beta_2X_2 + \ldots + \beta_nX_n)}}
+\]
+where:
+<ul>
+<li>\(P(Y=1)\) is the probability that the dependent variable \(Y\) equals 1.</li>
+<li>\(\beta_0, \beta_1, \ldots, \beta_n\) are the coefficients.</li>
+<li>\(X_1, X_2, \ldots, X_n\) are the independent variables.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Let's consider an example where we predict whether a student will pass or fail based on their study hours.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBwYW5kYXMgYXMgcGQKZnJvbSBza2xlYXJuLmxpbmVhcl9tb2RlbCBpbXBvcnQgTG9naXN0aWNSZWdyZXNzaW9uCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKCiMgU2FtcGxlIGRhdGEKZGF0YSA9IHsnSG91cnMnOiBbMSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTBdLAogICAgICAgICdQYXNzJzogWzAsIDAsIDAsIDAsIDEsIDEsIDEsIDEsIDEsIDFdfQpkZiA9IHBkLkRhdGFGcmFtZShkYXRhKQoKIyBJbmRlcGVuZGVudCB2YXJpYWJsZSAoSG91cnMpClggPSBkZltbJ0hvdXJzJ11dCiMgRGVwZW5kZW50IHZhcmlhYmxlIChQYXNzKQpZID0gZGZbJ1Bhc3MnXQoKIyBDcmVhdGUgbG9naXN0aWMgcmVncmVzc2lvbiBtb2RlbAptb2RlbCA9IExvZ2lzdGljUmVncmVzc2lvbigpCm1vZGVsLmZpdChYLCBZKQoKIyBQcmVkaWN0IHByb2JhYmlsaXRpZXMKcHJlZGljdGVkX3Byb2JhYmlsaXRpZXMgPSBtb2RlbC5wcmVkaWN0X3Byb2JhKFgpWzosIDFdCgojIFBsb3QgdGhlIHJlc3VsdHMKcGx0LnNjYXR0ZXIoWCwgWSwgY29sb3I9J2JsdWUnKQpwbHQucGxvdChYLCBwcmVkaWN0ZWRfcHJvYmFiaWxpdGllcywgY29sb3I9J3JlZCcpCnBsdC54bGFiZWwoJ0hvdXJzIFN0dWRpZWQnKQpwbHQueWxhYmVsKCdQcm9iYWJpbGl0eSBvZiBQYXNzaW5nJykKcGx0LnRpdGxlKCdMb2dpc3RpYyBSZWdyZXNzaW9uOiBQYXNzL0ZhaWwgUHJlZGljdGlvbicpCnBsdC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+import matplotlib.pyplot as plt
+
+# Sample data
+data = {'Hours': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        'Pass': [0, 0, 0, 0, 1, 1, 1, 1, 1, 1]}
+df = pd.DataFrame(data)
+
+# Independent variable (Hours)
+X = df[['Hours']]
+# Dependent variable (Pass)
+Y = df['Pass']
+
+# Create logistic regression model
+model = LogisticRegression()
+model.fit(X, Y)
+
+# Predict probabilities
+predicted_probabilities = model.predict_proba(X)[:, 1]
+
+# Plot the results
+plt.scatter(X, Y, color='blue')
+plt.plot(X, predicted_probabilities, color='red')
+plt.xlabel('Hours Studied')
+plt.ylabel('Probability of Passing')
+plt.title('Logistic Regression: Pass/Fail Prediction')
+plt.show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Data Preparation</strong>: We create a DataFrame with study hours and pass/fail outcomes.</li>
+<li><strong>Model Creation</strong>: We use <code>LogisticRegression</code> from <code>sklearn</code> to create and fit the model.</li>
+<li><strong>Prediction</strong>: We predict the probabilities of passing based on the model.</li>
+<li><strong>Visualization</strong>: We plot the actual data points and the logistic curve.</li>
+</ul>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise</strong>: Use logistic regression to predict whether a person will buy a product based on their age. Use the following data:</p>
+<table>
+<thead>
+<tr>
+<th>Age</th>
+<th>Buy (1=Yes, 0=No)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22</td>
+<td>0</td>
+</tr>
+<tr>
+<td>25</td>
+<td>0</td>
+</tr>
+<tr>
+<td>28</td>
+<td>0</td>
+</tr>
+<tr>
+<td>30</td>
+<td>1</td>
+</tr>
+<tr>
+<td>35</td>
+<td>1</td>
+</tr>
+<tr>
+<td>40</td>
+<td>1</td>
+</tr>
+<tr>
+<td>45</td>
+<td>1</td>
+</tr>
+<tr>
+<td>50</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTYW1wbGUgZGF0YQpkYXRhID0geydBZ2UnOiBbMjIsIDI1LCAyOCwgMzAsIDM1LCA0MCwgNDUsIDUwXSwKICAgICAgICAnQnV5JzogWzAsIDAsIDAsIDEsIDEsIDEsIDEsIDFdfQpkZiA9IHBkLkRhdGFGcmFtZShkYXRhKQoKIyBJbmRlcGVuZGVudCB2YXJpYWJsZSAoQWdlKQpYID0gZGZbWydBZ2UnXV0KIyBEZXBlbmRlbnQgdmFyaWFibGUgKEJ1eSkKWSA9IGRmWydCdXknXQoKIyBDcmVhdGUgbG9naXN0aWMgcmVncmVzc2lvbiBtb2RlbAptb2RlbCA9IExvZ2lzdGljUmVncmVzc2lvbigpCm1vZGVsLmZpdChYLCBZKQoKIyBQcmVkaWN0IHByb2JhYmlsaXRpZXMKcHJlZGljdGVkX3Byb2JhYmlsaXRpZXMgPSBtb2RlbC5wcmVkaWN0X3Byb2JhKFgpWzosIDFdCgojIFBsb3QgdGhlIHJlc3VsdHMKcGx0LnNjYXR0ZXIoWCwgWSwgY29sb3I9J2JsdWUnKQpwbHQucGxvdChYLCBwcmVkaWN0ZWRfcHJvYmFiaWxpdGllcywgY29sb3I9J3JlZCcpCnBsdC54bGFiZWwoJ0FnZScpCnBsdC55bGFiZWwoJ1Byb2JhYmlsaXR5IG9mIEJ1eWluZycpCnBsdC50aXRsZSgnTG9naXN0aWMgUmVncmVzc2lvbjogUHVyY2hhc2UgUHJlZGljdGlvbicpCnBsdC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Sample data
+data = {'Age': [22, 25, 28, 30, 35, 40, 45, 50],
+        'Buy': [0, 0, 0, 1, 1, 1, 1, 1]}
+df = pd.DataFrame(data)
+
+# Independent variable (Age)
+X = df[['Age']]
+# Dependent variable (Buy)
+Y = df['Buy']
+
+# Create logistic regression model
+model = LogisticRegression()
+model.fit(X, Y)
+
+# Predict probabilities
+predicted_probabilities = model.predict_proba(X)[:, 1]
+
+# Plot the results
+plt.scatter(X, Y, color='blue')
+plt.plot(X, predicted_probabilities, color='red')
+plt.xlabel('Age')
+plt.ylabel('Probability of Buying')
+plt.title('Logistic Regression: Purchase Prediction')
+plt.show()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the concepts of Linear and Logistic Regression, two powerful techniques for data modeling. We covered the basic equations, provided practical examples, and included exercises to reinforce the concepts. Understanding these regression techniques is crucial for making predictions and informed decisions based on data.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-statistical-models' title="Introduction to Statistical Models">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-trees-forests' title="Decision Trees and Random Forests">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

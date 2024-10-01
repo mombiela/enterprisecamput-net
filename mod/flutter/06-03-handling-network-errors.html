@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Network Errors</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/06-03-handling-network-errors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/06-03-handling-network-errors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/06-03-handling-network-errors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flutter/06-03-handling-network-errors" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/06-03-handling-network-errors" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-parsing-json-data' title="Parsing JSON Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Network Errors</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-using-rest-apis' title="Using REST APIs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to handle network errors in Flutter applications. Network errors are inevitable when dealing with APIs and remote servers, and it's crucial to handle them gracefully to provide a good user experience.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Types of Network Errors</strong>:</p>
+<ul>
+<li><strong>Timeouts</strong>: When a request takes too long to get a response.</li>
+<li><strong>Connection Errors</strong>: When the device is not connected to the internet.</li>
+<li><strong>Server Errors</strong>: When the server returns an error status code (e.g., 500 Internal Server Error).</li>
+<li><strong>Client Errors</strong>: When the client sends a bad request (e.g., 400 Bad Request).</li>
+</ul>
+</li>
+<li>
+<p><strong>Error Handling Strategies</strong>:</p>
+<ul>
+<li><strong>Retry Mechanism</strong>: Automatically retrying the request after a failure.</li>
+<li><strong>User Feedback</strong>: Informing the user about the error and possible actions.</li>
+<li><strong>Fallback Mechanism</strong>: Providing alternative data or actions when an error occurs.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple Flutter app that fetches data from an API and handles different types of network errors.</p>
+</div><h2>Step 1: Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p>Create a new Flutter project:</p>
+<pre><code class="language-bash">flutter create network_error_handling
+cd network_error_handling
+</code></pre>
+</li>
+<li>
+<p>Add the <code>http</code> package to your <code>pubspec.yaml</code>:</p>
+<pre><code class="language-yaml">dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.3
+</code></pre>
+</li>
+<li>
+<p>Run <code>flutter pub get</code> to install the dependencies.</p>
+</li>
+</ol>
+</div><h2>Step 2: Creating the Network Request</h2>
+<div class='content'><p>Create a new Dart file <code>network_service.dart</code> to handle the network request:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwppbXBvcnQgJ3BhY2thZ2U6aHR0cC9odHRwLmRhcnQnIGFzIGh0dHA7CgpjbGFzcyBOZXR3b3JrU2VydmljZSB7CiAgZmluYWwgU3RyaW5nIGFwaVVybCA9ICJodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vcG9zdHMiOwoKICBGdXR1cmU8TGlzdDxkeW5hbWljPj4gZmV0Y2hQb3N0cygpIGFzeW5jIHsKICAgIHRyeSB7CiAgICAgIGZpbmFsIHJlc3BvbnNlID0gYXdhaXQgaHR0cC5nZXQoVXJpLnBhcnNlKGFwaVVybCkpLnRpbWVvdXQoRHVyYXRpb24oc2Vjb25kczogMTApKTsKICAgICAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAwKSB7CiAgICAgICAgcmV0dXJuIGpzb24uZGVjb2RlKHJlc3BvbnNlLmJvZHkpOwogICAgICB9IGVsc2UgewogICAgICAgIHRocm93IEV4Y2VwdGlvbignRmFpbGVkIHRvIGxvYWQgcG9zdHMnKTsKICAgICAgfQogICAgfSBvbiBodHRwLkNsaWVudEV4Y2VwdGlvbiB7CiAgICAgIHRocm93IEV4Y2VwdGlvbignTm8gSW50ZXJuZXQgY29ubmVjdGlvbicpOwogICAgfSBvbiBodHRwLlRpbWVvdXRFeGNlcHRpb24gewogICAgICB0aHJvdyBFeGNlcHRpb24oJ1JlcXVlc3QgdGltZWQgb3V0Jyk7CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIHRocm93IEV4Y2VwdGlvbignVW5leHBlY3RlZCBlcnJvcjogJGUnKTsKICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class NetworkService {
+  final String apiUrl = &quot;https://jsonplaceholder.typicode.com/posts&quot;;
+
+  Future&lt;List&lt;dynamic&gt;&gt; fetchPosts() async {
+    try {
+      final response = await http.get(Uri.parse(apiUrl)).timeout(Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      } else {
+        throw Exception('Failed to load posts');
+      }
+    } on http.ClientException {
+      throw Exception('No Internet connection');
+    } on http.TimeoutException {
+      throw Exception('Request timed out');
+    } catch (e) {
+      throw Exception('Unexpected error: $e');
+    }
+  }
+}</pre></div><div class='content'></div><h2>Step 3: Handling Errors in the UI</h2>
+<div class='content'><p>Update the <code>main.dart</code> file to handle errors and display appropriate messages to the user:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAnbmV0d29ya19zZXJ2aWNlLmRhcnQnOwoKdm9pZCBtYWluKCkgewogIHJ1bkFwcChNeUFwcCgpKTsKfQoKY2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICB0aXRsZTogJ05ldHdvcmsgRXJyb3IgSGFuZGxpbmcnLAogICAgICB0aGVtZTogVGhlbWVEYXRhKAogICAgICAgIHByaW1hcnlTd2F0Y2g6IENvbG9ycy5ibHVlLAogICAgICApLAogICAgICBob21lOiBNeUhvbWVQYWdlKCksCiAgICApOwogIH0KfQoKY2xhc3MgTXlIb21lUGFnZSBleHRlbmRzIFN0YXRlZnVsV2lkZ2V0IHsKICBAb3ZlcnJpZGUKICBfTXlIb21lUGFnZVN0YXRlIGNyZWF0ZVN0YXRlKCkgPT4gX015SG9tZVBhZ2VTdGF0ZSgpOwp9CgpjbGFzcyBfTXlIb21lUGFnZVN0YXRlIGV4dGVuZHMgU3RhdGU8TXlIb21lUGFnZT4gewogIGZpbmFsIE5ldHdvcmtTZXJ2aWNlIF9uZXR3b3JrU2VydmljZSA9IE5ldHdvcmtTZXJ2aWNlKCk7CiAgRnV0dXJlPExpc3Q8ZHluYW1pYz4+PyBfcG9zdHM7CgogIEBvdmVycmlkZQogIHZvaWQgaW5pdFN0YXRlKCkgewogICAgc3VwZXIuaW5pdFN0YXRlKCk7CiAgICBfcG9zdHMgPSBfbmV0d29ya1NlcnZpY2UuZmV0Y2hQb3N0cygpOwogIH0KCiAgQG92ZXJyaWRlCiAgV2lkZ2V0IGJ1aWxkKEJ1aWxkQ29udGV4dCBjb250ZXh0KSB7CiAgICByZXR1cm4gU2NhZmZvbGQoCiAgICAgIGFwcEJhcjogQXBwQmFyKAogICAgICAgIHRpdGxlOiBUZXh0KCdOZXR3b3JrIEVycm9yIEhhbmRsaW5nJyksCiAgICAgICksCiAgICAgIGJvZHk6IEZ1dHVyZUJ1aWxkZXI8TGlzdDxkeW5hbWljPj4oCiAgICAgICAgZnV0dXJlOiBfcG9zdHMsCiAgICAgICAgYnVpbGRlcjogKGNvbnRleHQsIHNuYXBzaG90KSB7CiAgICAgICAgICBpZiAoc25hcHNob3QuY29ubmVjdGlvblN0YXRlID09IENvbm5lY3Rpb25TdGF0ZS53YWl0aW5nKSB7CiAgICAgICAgICAgIHJldHVybiBDZW50ZXIoY2hpbGQ6IENpcmN1bGFyUHJvZ3Jlc3NJbmRpY2F0b3IoKSk7CiAgICAgICAgICB9IGVsc2UgaWYgKHNuYXBzaG90Lmhhc0Vycm9yKSB7CiAgICAgICAgICAgIHJldHVybiBDZW50ZXIoY2hpbGQ6IFRleHQoJ0Vycm9yOiAke3NuYXBzaG90LmVycm9yfScpKTsKICAgICAgICAgIH0gZWxzZSBpZiAoIXNuYXBzaG90Lmhhc0RhdGEgfHwgc25hcHNob3QuZGF0YSEuaXNFbXB0eSkgewogICAgICAgICAgICByZXR1cm4gQ2VudGVyKGNoaWxkOiBUZXh0KCdObyBkYXRhIGF2YWlsYWJsZScpKTsKICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHJldHVybiBMaXN0Vmlldy5idWlsZGVyKAogICAgICAgICAgICAgIGl0ZW1Db3VudDogc25hcHNob3QuZGF0YSEubGVuZ3RoLAogICAgICAgICAgICAgIGl0ZW1CdWlsZGVyOiAoY29udGV4dCwgaW5kZXgpIHsKICAgICAgICAgICAgICAgIHJldHVybiBMaXN0VGlsZSgKICAgICAgICAgICAgICAgICAgdGl0bGU6IFRleHQoc25hcHNob3QuZGF0YSFbaW5kZXhdWyd0aXRsZSddKSwKICAgICAgICAgICAgICAgICk7CiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgKTsKICAgICAgICAgIH0KICAgICAgICB9LAogICAgICApLAogICAgKTsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'network_service.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Network Error Handling',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() =&gt; _MyHomePageState();
+}
+
+class _MyHomePageState extends State&lt;MyHomePage&gt; {
+  final NetworkService _networkService = NetworkService();
+  Future&lt;List&lt;dynamic&gt;&gt;? _posts;
+
+  @override
+  void initState() {
+    super.initState();
+    _posts = _networkService.fetchPosts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Network Error Handling'),
+      ),
+      body: FutureBuilder&lt;List&lt;dynamic&gt;&gt;(
+        future: _posts,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No data available'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(snapshot.data![index]['title']),
+                );
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h2>Step 4: Testing the Error Handling</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Simulate No Internet Connection</strong>:</p>
+<ul>
+<li>Turn off your internet connection and run the app. You should see an error message indicating no internet connection.</li>
+</ul>
+</li>
+<li>
+<p><strong>Simulate Timeout</strong>:</p>
+<ul>
+<li>Change the <code>apiUrl</code> to a slow or non-responsive endpoint and run the app. You should see a timeout error message.</li>
+</ul>
+</li>
+<li>
+<p><strong>Simulate Server Error</strong>:</p>
+<ul>
+<li>Change the <code>apiUrl</code> to an invalid endpoint (e.g., <code>https://jsonplaceholder.typicode.com/invalid</code>) and run the app. You should see a server error message.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned how to handle different types of network errors in a Flutter application. We covered:</p>
+<ul>
+<li>Types of network errors.</li>
+<li>Error handling strategies.</li>
+<li>Practical example with a network request and error handling in the UI.</li>
+</ul>
+<p>By implementing these strategies, you can ensure that your Flutter app provides a better user experience even when network issues occur.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-parsing-json-data' title="Parsing JSON Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-using-rest-apis' title="Using REST APIs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring with Prometheus</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-01-monitoring-prometheus" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-01-monitoring-prometheus" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-01-monitoring-prometheus" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/07-01-monitoring-prometheus" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/07-01-monitoring-prometheus" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-crds' title="Custom Resource Definitions (CRDs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Monitoring with Prometheus</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-logging-efk' title="Logging with Elasticsearch, Fluentd, and Kibana (EFK)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Monitoring is a critical aspect of managing and maintaining a Kubernetes cluster. Prometheus is a powerful open-source monitoring and alerting toolkit designed specifically for reliability and scalability. In this section, we will cover the basics of Prometheus, how to set it up in a Kubernetes cluster, and how to use it to monitor your applications and infrastructure.</p>
+</div><h1>What is Prometheus?</h1>
+<div class='content'><p>Prometheus is an open-source systems monitoring and alerting toolkit originally built at SoundCloud. It is now a standalone open-source project and maintained independently of any company. Prometheus is designed for reliability and scalability, making it a popular choice for monitoring Kubernetes clusters.</p>
+</div><h2>Key Features of Prometheus:</h2>
+<div class='content'><ul>
+<li><strong>Multi-dimensional data model</strong>: Time series data is identified by metric name and key/value pairs.</li>
+<li><strong>Flexible query language</strong>: PromQL (Prometheus Query Language) allows for powerful querying and aggregation.</li>
+<li><strong>Pull-based model</strong>: Prometheus scrapes metrics from instrumented jobs.</li>
+<li><strong>No reliance on distributed storage</strong>: Single server nodes are autonomous.</li>
+<li><strong>Built-in support for service discovery</strong>: Integrates with Kubernetes, Consul, and other service discovery mechanisms.</li>
+<li><strong>Alerting</strong>: Integrated alerting based on PromQL queries.</li>
+</ul>
+</div><h1>Setting Up Prometheus in Kubernetes</h1>
+<div class='content'><p>To set up Prometheus in a Kubernetes cluster, you can use the Prometheus Operator, which simplifies the deployment and management of Prometheus instances. The Prometheus Operator provides Kubernetes native deployment and management of Prometheus and related monitoring components.</p>
+</div><h2>Step-by-Step Setup:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Prometheus Operator</strong>:</p>
+<ul>
+<li>You can install the Prometheus Operator using Helm, a package manager for Kubernetes.</li>
+</ul>
+<pre><code class="language-bash">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/kube-prometheus-stack
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Installation</strong>:</p>
+<ul>
+<li>Check the status of the Prometheus pods to ensure they are running.</li>
+</ul>
+<pre><code class="language-bash">kubectl get pods -n default -l &quot;release=prometheus&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Access Prometheus Dashboard</strong>:</p>
+<ul>
+<li>Forward the Prometheus service port to your local machine to access the Prometheus dashboard.</li>
+</ul>
+<pre><code class="language-bash">kubectl port-forward svc/prometheus-kube-prometheus-prometheus 9090:9090
+</code></pre>
+<ul>
+<li>Open your browser and navigate to <code>http://localhost:9090</code> to access the Prometheus dashboard.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Using Prometheus to Monitor Kubernetes</h1>
+<div class='content'><p>Once Prometheus is set up, you can start monitoring your Kubernetes cluster and applications. Prometheus collects metrics from various sources, including Kubernetes components, application pods, and custom metrics.</p>
+</div><h2>Key Metrics to Monitor:</h2>
+<div class='content'><ul>
+<li><strong>Node Metrics</strong>: CPU usage, memory usage, disk I/O, network I/O.</li>
+<li><strong>Pod Metrics</strong>: CPU usage, memory usage, restart counts, pod status.</li>
+<li><strong>Cluster Metrics</strong>: API server request rates, scheduler performance, controller manager metrics.</li>
+</ul>
+</div><h2>Example PromQL Queries:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>CPU Usage of a Node</strong>:</p>
+<pre><code class="language-promql">sum(rate(node_cpu_seconds_total{mode!=&quot;idle&quot;}[5m])) by (instance)
+</code></pre>
+</li>
+<li>
+<p><strong>Memory Usage of a Pod</strong>:</p>
+<pre><code class="language-promql">sum(container_memory_usage_bytes{pod=&quot;your-pod-name&quot;}) by (container)
+</code></pre>
+</li>
+<li>
+<p><strong>Total Requests to the API Server</strong>:</p>
+<pre><code class="language-promql">sum(rate(apiserver_request_total[5m]))
+</code></pre>
+</li>
+</ol>
+</div><h2>Creating Alerts:</h2>
+<div class='content'><p>Prometheus allows you to create alerts based on specific conditions. Alerts are defined in a configuration file and evaluated at regular intervals.</p>
+<h4>Example Alert Rule:</h4>
+<p>Create a file named <code>alert-rules.yaml</code> with the following content:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JvdXBzOgotIG5hbWU6IGV4YW1wbGUKICBydWxlczoKICAtIGFsZXJ0OiBIaWdoQ1BVVXNhZ2UKICAgIGV4cHI6IHN1bShyYXRlKGNvbnRhaW5lcl9jcHVfdXNhZ2Vfc2Vjb25kc190b3RhbFsxbV0pKSBieSAocG9kKSA+IDAuOAogICAgZm9yOiAybQogICAgbGFiZWxzOgogICAgICBzZXZlcml0eTogd2FybmluZwogICAgYW5ub3RhdGlvbnM6CiAgICAgIHN1bW1hcnk6ICJIaWdoIENQVSB1c2FnZSBkZXRlY3RlZCIKICAgICAgZGVzY3JpcHRpb246ICJQb2Qge3sgJGxhYmVscy5wb2QgfX0gaXMgdXNpbmcgbW9yZSB0aGFuIDgwJSBDUFUgZm9yIG1vcmUgdGhhbiAyIG1pbnV0ZXMuIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>groups:
+- name: example
+  rules:
+  - alert: HighCPUUsage
+    expr: sum(rate(container_cpu_usage_seconds_total[1m])) by (pod) &gt; 0.8
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: &quot;High CPU usage detected&quot;
+      description: &quot;Pod {{ $labels.pod }} is using more than 80% CPU for more than 2 minutes.&quot;</pre></div><div class='content'><p>Apply the alert rule:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBhbGVydC1ydWxlcy55YW1s"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f alert-rules.yaml</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Monitor a Sample Application</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy a Sample Application</strong>:</p>
+<ul>
+<li>Deploy a sample Nginx application in your Kubernetes cluster.</li>
+</ul>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f nginx-deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Expose the Application</strong>:</p>
+<ul>
+<li>Create a service to expose the Nginx application.</li>
+</ul>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+</code></pre>
+<pre><code class="language-bash">kubectl apply -f nginx-service.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor the Application</strong>:</p>
+<ul>
+<li>Use Prometheus to monitor the CPU and memory usage of the Nginx pods.</li>
+</ul>
+<pre><code class="language-promql">sum(rate(container_cpu_usage_seconds_total{pod=~&quot;nginx-deployment-.*&quot;}[1m])) by (pod)
+</code></pre>
+<pre><code class="language-promql">sum(container_memory_usage_bytes{pod=~&quot;nginx-deployment-.*&quot;}) by (pod)
+</code></pre>
+</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><ul>
+<li>Deploy the Nginx application and expose it using the provided YAML files.</li>
+<li>Access the Prometheus dashboard and use the provided PromQL queries to monitor the CPU and memory usage of the Nginx pods.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of Prometheus, how to set it up in a Kubernetes cluster, and how to use it to monitor your applications and infrastructure. We also explored some key metrics to monitor and how to create alerts based on specific conditions. By the end of this section, you should have a good understanding of how to use Prometheus for monitoring in Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-crds' title="Custom Resource Definitions (CRDs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-logging-efk' title="Logging with Elasticsearch, Fluentd, and Kibana (EFK)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

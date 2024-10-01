@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup and Restore Scripts</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/07-03-backup-restore-scripts" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/07-03-backup-restore-scripts" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/07-03-backup-restore-scripts" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bash/07-03-backup-restore-scripts" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/07-03-backup-restore-scripts" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-automating-tasks' title="Automating Tasks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Backup and Restore Scripts</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-monitoring-logging' title="Monitoring and Logging">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to create and manage backup and restore scripts using Bash. This is an essential skill for system administrators and anyone who needs to ensure data integrity and availability.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the importance of backups.</li>
+<li>Learn how to create backup scripts.</li>
+<li>Learn how to restore data from backups.</li>
+<li>Implement automated backup and restore processes.</li>
+</ul>
+</div><h1>Importance of Backups</h1>
+<div class='content'><p>Backups are crucial for:</p>
+<ul>
+<li><strong>Data Recovery</strong>: In case of accidental deletion, corruption, or hardware failure.</li>
+<li><strong>Data Integrity</strong>: Ensuring that data remains consistent and unaltered.</li>
+<li><strong>Compliance</strong>: Meeting regulatory requirements for data retention.</li>
+</ul>
+</div><h1>Creating Backup Scripts</h1>
+<div class='content'></div><h2>Step 1: Define What to Backup</h2>
+<div class='content'><p>Identify the files and directories that need to be backed up. For example, user home directories, configuration files, and databases.</p>
+</div><h2>Step 2: Choose a Backup Location</h2>
+<div class='content'><p>Decide where to store the backups. This could be a local directory, an external drive, or a remote server.</p>
+</div><h2>Step 3: Write the Backup Script</h2>
+<div class='content'><p>Here is a simple example of a backup script:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRGVmaW5lIHZhcmlhYmxlcwpTT1VSQ0VfRElSPSIvaG9tZS91c2VyL2RhdGEiCkJBQ0tVUF9ESVI9Ii9tbnQvYmFja3VwIgpEQVRFPSQoZGF0ZSArJVktJW0tJWQpCkJBQ0tVUF9GSUxFPSIkQkFDS1VQX0RJUi9iYWNrdXAtJERBVEUudGFyLmd6IgoKIyBDcmVhdGUgYmFja3VwCmVjaG8gIlN0YXJ0aW5nIGJhY2t1cCBvZiAkU09VUkNFX0RJUiB0byAkQkFDS1VQX0ZJTEUiCnRhciAtY3pmICRCQUNLVVBfRklMRSAkU09VUkNFX0RJUgoKIyBWZXJpZnkgYmFja3VwCmlmIFsgJD8gLWVxIDAgXTsgdGhlbgogICAgZWNobyAiQmFja3VwIHN1Y2Nlc3NmdWwhIgplbHNlCiAgICBlY2hvICJCYWNrdXAgZmFpbGVkISIKZmk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Define variables
+SOURCE_DIR=&quot;/home/user/data&quot;
+BACKUP_DIR=&quot;/mnt/backup&quot;
+DATE=$(date +%Y-%m-%d)
+BACKUP_FILE=&quot;$BACKUP_DIR/backup-$DATE.tar.gz&quot;
+
+# Create backup
+echo &quot;Starting backup of $SOURCE_DIR to $BACKUP_FILE&quot;
+tar -czf $BACKUP_FILE $SOURCE_DIR
+
+# Verify backup
+if [ $? -eq 0 ]; then
+    echo &quot;Backup successful!&quot;
+else
+    echo &quot;Backup failed!&quot;
+fi</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>SOURCE_DIR</code>: The directory to be backed up.</li>
+<li><code>BACKUP_DIR</code>: The directory where the backup will be stored.</li>
+<li><code>DATE</code>: The current date, used to create a unique backup file name.</li>
+<li><code>tar -czf</code>: The command to create a compressed archive of the source directory.</li>
+</ul>
+</div><h2>Step 4: Make the Script Executable</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2htb2QgK3ggYmFja3VwLnNo"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>chmod +x backup.sh</pre></div><div class='content'></div><h2>Step 5: Run the Script</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9iYWNrdXAuc2g="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./backup.sh</pre></div><div class='content'></div><h1>Restoring Data from Backups</h1>
+<div class='content'></div><h2>Step 1: Identify the Backup File</h2>
+<div class='content'><p>Locate the backup file you want to restore from.</p>
+</div><h2>Step 2: Write the Restore Script</h2>
+<div class='content'><p>Here is a simple example of a restore script:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRGVmaW5lIHZhcmlhYmxlcwpCQUNLVVBfRklMRT0iL21udC9iYWNrdXAvYmFja3VwLTIwMjMtMTAtMDEudGFyLmd6IgpSRVNUT1JFX0RJUj0iL2hvbWUvdXNlci9kYXRhIgoKIyBSZXN0b3JlIGJhY2t1cAplY2hvICJSZXN0b3JpbmcgYmFja3VwIGZyb20gJEJBQ0tVUF9GSUxFIHRvICRSRVNUT1JFX0RJUiIKdGFyIC14emYgJEJBQ0tVUF9GSUxFIC1DICRSRVNUT1JFX0RJUgoKIyBWZXJpZnkgcmVzdG9yZQppZiBbICQ/IC1lcSAwIF07IHRoZW4KICAgIGVjaG8gIlJlc3RvcmUgc3VjY2Vzc2Z1bCEiCmVsc2UKICAgIGVjaG8gIlJlc3RvcmUgZmFpbGVkISIKZmk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Define variables
+BACKUP_FILE=&quot;/mnt/backup/backup-2023-10-01.tar.gz&quot;
+RESTORE_DIR=&quot;/home/user/data&quot;
+
+# Restore backup
+echo &quot;Restoring backup from $BACKUP_FILE to $RESTORE_DIR&quot;
+tar -xzf $BACKUP_FILE -C $RESTORE_DIR
+
+# Verify restore
+if [ $? -eq 0 ]; then
+    echo &quot;Restore successful!&quot;
+else
+    echo &quot;Restore failed!&quot;
+fi</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>BACKUP_FILE</code>: The backup file to be restored.</li>
+<li><code>RESTORE_DIR</code>: The directory where the data will be restored.</li>
+<li><code>tar -xzf</code>: The command to extract the compressed archive.</li>
+</ul>
+</div><h2>Step 3: Make the Script Executable</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2htb2QgK3ggcmVzdG9yZS5zaA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>chmod +x restore.sh</pre></div><div class='content'></div><h2>Step 4: Run the Script</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9yZXN0b3JlLnNo"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./restore.sh</pre></div><div class='content'></div><h1>Automating Backup and Restore Processes</h1>
+<div class='content'></div><h2>Using Cron Jobs for Automation</h2>
+<div class='content'><p>To automate the backup process, you can use cron jobs. Here’s how to set up a cron job to run the backup script daily at midnight:</p>
+<ol>
+<li>
+<p>Open the crontab file:</p>
+<pre><code class="language-bash">crontab -e
+</code></pre>
+</li>
+<li>
+<p>Add the following line to schedule the backup script:</p>
+<pre><code class="language-bash">0 0 * * * /path/to/backup.sh
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>0 0 * * *</code>: This cron expression means &quot;at midnight every day&quot;.</li>
+<li><code>/path/to/backup.sh</code>: The path to your backup script.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create and Automate a Backup Script</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Backup Script</strong>:</p>
+<ul>
+<li>Write a script to back up the <code>/home/user/documents</code> directory to <code>/mnt/backup</code>.</li>
+<li>Ensure the backup file is named with the current date.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a Restore Script</strong>:</p>
+<ul>
+<li>Write a script to restore the latest backup from <code>/mnt/backup</code> to <code>/home/user/documents</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Automate the Backup Script</strong>:</p>
+<ul>
+<li>Set up a cron job to run the backup script daily at 2 AM.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p><strong>Backup Script (<code>backup.sh</code>)</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKClNPVVJDRV9ESVI9Ii9ob21lL3VzZXIvZG9jdW1lbnRzIgpCQUNLVVBfRElSPSIvbW50L2JhY2t1cCIKREFURT0kKGRhdGUgKyVZLSVtLSVkKQpCQUNLVVBfRklMRT0iJEJBQ0tVUF9ESVIvYmFja3VwLSREQVRFLnRhci5neiIKCmVjaG8gIlN0YXJ0aW5nIGJhY2t1cCBvZiAkU09VUkNFX0RJUiB0byAkQkFDS1VQX0ZJTEUiCnRhciAtY3pmICRCQUNLVVBfRklMRSAkU09VUkNFX0RJUgoKaWYgWyAkPyAtZXEgMCBdOyB0aGVuCiAgICBlY2hvICJCYWNrdXAgc3VjY2Vzc2Z1bCEiCmVsc2UKICAgIGVjaG8gIkJhY2t1cCBmYWlsZWQhIgpmaQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+SOURCE_DIR=&quot;/home/user/documents&quot;
+BACKUP_DIR=&quot;/mnt/backup&quot;
+DATE=$(date +%Y-%m-%d)
+BACKUP_FILE=&quot;$BACKUP_DIR/backup-$DATE.tar.gz&quot;
+
+echo &quot;Starting backup of $SOURCE_DIR to $BACKUP_FILE&quot;
+tar -czf $BACKUP_FILE $SOURCE_DIR
+
+if [ $? -eq 0 ]; then
+    echo &quot;Backup successful!&quot;
+else
+    echo &quot;Backup failed!&quot;
+fi</pre></div><div class='content'><p><strong>Restore Script (<code>restore.sh</code>)</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCkJBQ0tVUF9GSUxFPSQobHMgLXQgL21udC9iYWNrdXAvYmFja3VwLSoudGFyLmd6IHwgaGVhZCAtMSkKUkVTVE9SRV9ESVI9Ii9ob21lL3VzZXIvZG9jdW1lbnRzIgoKZWNobyAiUmVzdG9yaW5nIGJhY2t1cCBmcm9tICRCQUNLVVBfRklMRSB0byAkUkVTVE9SRV9ESVIiCnRhciAteHpmICRCQUNLVVBfRklMRSAtQyAkUkVTVE9SRV9ESVIKCmlmIFsgJD8gLWVxIDAgXTsgdGhlbgogICAgZWNobyAiUmVzdG9yZSBzdWNjZXNzZnVsISIKZWxzZQogICAgZWNobyAiUmVzdG9yZSBmYWlsZWQhIgpmaQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+BACKUP_FILE=$(ls -t /mnt/backup/backup-*.tar.gz | head -1)
+RESTORE_DIR=&quot;/home/user/documents&quot;
+
+echo &quot;Restoring backup from $BACKUP_FILE to $RESTORE_DIR&quot;
+tar -xzf $BACKUP_FILE -C $RESTORE_DIR
+
+if [ $? -eq 0 ]; then
+    echo &quot;Restore successful!&quot;
+else
+    echo &quot;Restore failed!&quot;
+fi</pre></div><div class='content'><p><strong>Cron Job</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3JvbnRhYiAtZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>crontab -e</pre></div><div class='content'><p>Add the following line:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MCAyICogKiAqIC9wYXRoL3RvL2JhY2t1cC5zaA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>0 2 * * * /path/to/backup.sh</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, you learned how to create and manage backup and restore scripts using Bash. You also learned how to automate these processes using cron jobs. These skills are essential for maintaining data integrity and ensuring quick recovery in case of data loss.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-automating-tasks' title="Automating Tasks">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-monitoring-logging' title="Monitoring and Logging">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

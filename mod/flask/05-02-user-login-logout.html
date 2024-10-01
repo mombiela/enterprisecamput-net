@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login and Logout</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/05-02-user-login-logout" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/05-02-user-login-logout" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/05-02-user-login-logout" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/05-02-user-login-logout" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/05-02-user-login-logout" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-user-registration' title="User Registration">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">User Login and Logout</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-password-hashing' title="Password Hashing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to implement user login and logout functionality in a Flask application. This is a crucial part of any web application that requires user authentication. We will use Flask-Login, a popular extension that provides user session management for Flask.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Flask-Login</strong>: An extension that manages user sessions in Flask applications.</li>
+<li><strong>User Model</strong>: A model that represents the user in the database.</li>
+<li><strong>Login Manager</strong>: A Flask-Login component that handles user session management.</li>
+<li><strong>User Authentication</strong>: The process of verifying the identity of a user.</li>
+<li><strong>User Session</strong>: A session that keeps track of the logged-in user.</li>
+</ol>
+</div><h1>Setting Up Flask-Login</h1>
+<div class='content'><p>First, you need to install Flask-Login:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgZmxhc2stbG9naW4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install flask-login</pre></div><div class='content'><p>Next, let's set up Flask-Login in our Flask application.</p>
+</div><h2>Step 1: Initialize Flask-Login</h2>
+<div class='content'><p>In your <code>app.py</code> or main application file, initialize Flask-Login:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CmZyb20gZmxhc2tfbG9naW4gaW1wb3J0IExvZ2luTWFuYWdlcgoKYXBwID0gRmxhc2soX19uYW1lX18pCmFwcC5jb25maWdbJ1NFQ1JFVF9LRVknXSA9ICd5b3VyX3NlY3JldF9rZXknCmFwcC5jb25maWdbJ1NRTEFMQ0hFTVlfREFUQUJBU0VfVVJJJ10gPSAnc3FsaXRlOi8vL3NpdGUuZGInCmRiID0gU1FMQWxjaGVteShhcHApCmxvZ2luX21hbmFnZXIgPSBMb2dpbk1hbmFnZXIoYXBwKQpsb2dpbl9tYW5hZ2VyLmxvZ2luX3ZpZXcgPSAnbG9naW4nICAjIFJlZGlyZWN0IHRvIGxvZ2luIHBhZ2UgaWYgbm90IGF1dGhlbnRpY2F0ZWQKbG9naW5fbWFuYWdlci5sb2dpbl9tZXNzYWdlX2NhdGVnb3J5ID0gJ2luZm8nICAjIEZsYXNoIG1lc3NhZ2UgY2F0ZWdvcnk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'  # Redirect to login page if not authenticated
+login_manager.login_message_category = 'info'  # Flash message category</pre></div><div class='content'></div><h2>Step 2: Create User Model</h2>
+<div class='content'><p>Create a <code>User</code> model that includes the necessary fields and methods required by Flask-Login:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19sb2dpbiBpbXBvcnQgVXNlck1peGluCgpjbGFzcyBVc2VyKGRiLk1vZGVsLCBVc2VyTWl4aW4pOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHVzZXJuYW1lID0gZGIuQ29sdW1uKGRiLlN0cmluZygyMCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKICAgIGVtYWlsID0gZGIuQ29sdW1uKGRiLlN0cmluZygxMjApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwYXNzd29yZCA9IGRiLkNvbHVtbihkYi5TdHJpbmcoNjApLCBudWxsYWJsZT1GYWxzZSkKCiAgICBkZWYgX19yZXByX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGYiVXNlcigne3NlbGYudXNlcm5hbWV9JywgJ3tzZWxmLmVtYWlsfScpIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_login import UserMixin
+
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(20), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+    def __repr__(self):
+        return f&quot;User('{self.username}', '{self.email}')&quot;</pre></div><div class='content'></div><h2>Step 3: User Loader Function</h2>
+<div class='content'><p>Define a user loader function that Flask-Login will use to load a user from the database:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGxvZ2luX21hbmFnZXIudXNlcl9sb2FkZXIKZGVmIGxvYWRfdXNlcih1c2VyX2lkKToKICAgIHJldHVybiBVc2VyLnF1ZXJ5LmdldChpbnQodXNlcl9pZCkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))</pre></div><div class='content'></div><h1>Implementing User Login</h1>
+<div class='content'></div><h2>Step 1: Create Login Form</h2>
+<div class='content'><p>Create a login form using Flask-WTF:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza193dGYgaW1wb3J0IEZsYXNrRm9ybQpmcm9tIHd0Zm9ybXMgaW1wb3J0IFN0cmluZ0ZpZWxkLCBQYXNzd29yZEZpZWxkLCBTdWJtaXRGaWVsZCwgQm9vbGVhbkZpZWxkCmZyb20gd3Rmb3Jtcy52YWxpZGF0b3JzIGltcG9ydCBEYXRhUmVxdWlyZWQsIExlbmd0aCwgRW1haWwKCmNsYXNzIExvZ2luRm9ybShGbGFza0Zvcm0pOgogICAgZW1haWwgPSBTdHJpbmdGaWVsZCgnRW1haWwnLCB2YWxpZGF0b3JzPVtEYXRhUmVxdWlyZWQoKSwgRW1haWwoKV0pCiAgICBwYXNzd29yZCA9IFBhc3N3b3JkRmllbGQoJ1Bhc3N3b3JkJywgdmFsaWRhdG9ycz1bRGF0YVJlcXVpcmVkKCldKQogICAgcmVtZW1iZXIgPSBCb29sZWFuRmllbGQoJ1JlbWVtYmVyIE1lJykKICAgIHN1Ym1pdCA9IFN1Ym1pdEZpZWxkKCdMb2dpbicp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms.validators import DataRequired, Length, Email
+
+class LoginForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = BooleanField('Remember Me')
+    submit = SubmitField('Login')</pre></div><div class='content'></div><h2>Step 2: Create Login Route</h2>
+<div class='content'><p>Create a route to handle the login form submission:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgcmVuZGVyX3RlbXBsYXRlLCB1cmxfZm9yLCBmbGFzaCwgcmVkaXJlY3QsIHJlcXVlc3QKZnJvbSBmbGFza19sb2dpbiBpbXBvcnQgbG9naW5fdXNlciwgY3VycmVudF91c2VyLCBsb2dvdXRfdXNlcgpmcm9tIHdlcmt6ZXVnLnNlY3VyaXR5IGltcG9ydCBjaGVja19wYXNzd29yZF9oYXNoCgpAYXBwLnJvdXRlKCIvbG9naW4iLCBtZXRob2RzPVsnR0VUJywgJ1BPU1QnXSkKZGVmIGxvZ2luKCk6CiAgICBpZiBjdXJyZW50X3VzZXIuaXNfYXV0aGVudGljYXRlZDoKICAgICAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcignaG9tZScpKQogICAgZm9ybSA9IExvZ2luRm9ybSgpCiAgICBpZiBmb3JtLnZhbGlkYXRlX29uX3N1Ym1pdCgpOgogICAgICAgIHVzZXIgPSBVc2VyLnF1ZXJ5LmZpbHRlcl9ieShlbWFpbD1mb3JtLmVtYWlsLmRhdGEpLmZpcnN0KCkKICAgICAgICBpZiB1c2VyIGFuZCBjaGVja19wYXNzd29yZF9oYXNoKHVzZXIucGFzc3dvcmQsIGZvcm0ucGFzc3dvcmQuZGF0YSk6CiAgICAgICAgICAgIGxvZ2luX3VzZXIodXNlciwgcmVtZW1iZXI9Zm9ybS5yZW1lbWJlci5kYXRhKQogICAgICAgICAgICBuZXh0X3BhZ2UgPSByZXF1ZXN0LmFyZ3MuZ2V0KCduZXh0JykKICAgICAgICAgICAgcmV0dXJuIHJlZGlyZWN0KG5leHRfcGFnZSkgaWYgbmV4dF9wYWdlIGVsc2UgcmVkaXJlY3QodXJsX2ZvcignaG9tZScpKQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIGZsYXNoKCdMb2dpbiBVbnN1Y2Nlc3NmdWwuIFBsZWFzZSBjaGVjayBlbWFpbCBhbmQgcGFzc3dvcmQnLCAnZGFuZ2VyJykKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ2xvZ2luLmh0bWwnLCB0aXRsZT0nTG9naW4nLCBmb3JtPWZvcm0p"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import render_template, url_for, flash, redirect, request
+from flask_login import login_user, current_user, logout_user
+from werkzeug.security import check_password_hash
+
+@app.route(&quot;/login&quot;, methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+    return render_template('login.html', title='Login', form=form)</pre></div><div class='content'></div><h2>Step 3: Create Login Template</h2>
+<div class='content'><p>Create a <code>login.html</code> template to render the login form:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+TG9naW48L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgyPkxvZ2luPC9oMj4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSJ7eyB1cmxfZm9yKCdsb2dpbicpIH19Ij4KICAgICAgICB7eyBmb3JtLmhpZGRlbl90YWcoKSB9fQogICAgICAgIDxkaXY+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwubGFiZWwgfX08YnI+CiAgICAgICAgICAgIHt7IGZvcm0uZW1haWwoc2l6ZT0zMikgfX08YnI+CiAgICAgICAgPC9kaXY+CiAgICAgICAgPGRpdj4KICAgICAgICAgICAge3sgZm9ybS5wYXNzd29yZC5sYWJlbCB9fTxicj4KICAgICAgICAgICAge3sgZm9ybS5wYXNzd29yZChzaXplPTMyKSB9fTxicj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2PgogICAgICAgICAgICB7eyBmb3JtLnJlbWVtYmVyKCkgfX0ge3sgZm9ybS5yZW1lbWJlci5sYWJlbCB9fTxicj4KICAgICAgICA8L2Rpdj4KICAgICAgICA8ZGl2PgogICAgICAgICAgICB7eyBmb3JtLnN1Ym1pdCgpIH19CiAgICAgICAgPC9kaXY+CiAgICA8L2Zvcm0+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Login&lt;/h2&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;{{ url_for('login') }}&quot;&gt;
+        {{ form.hidden_tag() }}
+        &lt;div&gt;
+            {{ form.email.label }}&lt;br&gt;
+            {{ form.email(size=32) }}&lt;br&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.password.label }}&lt;br&gt;
+            {{ form.password(size=32) }}&lt;br&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.remember() }} {{ form.remember.label }}&lt;br&gt;
+        &lt;/div&gt;
+        &lt;div&gt;
+            {{ form.submit() }}
+        &lt;/div&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Implementing User Logout</h1>
+<div class='content'></div><h2>Step 1: Create Logout Route</h2>
+<div class='content'><p>Create a route to handle user logout:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgiL2xvZ291dCIpCmRlZiBsb2dvdXQoKToKICAgIGxvZ291dF91c2VyKCkKICAgIHJldHVybiByZWRpcmVjdCh1cmxfZm9yKCdob21lJykp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route(&quot;/logout&quot;)
+def logout():
+    logout_user()
+    return redirect(url_for('home'))</pre></div><div class='content'></div><h2>Step 2: Add Logout Link</h2>
+<div class='content'><p>Add a logout link to your navigation bar or wherever appropriate:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGEgaHJlZj0ie3sgdXJsX2ZvcignbG9nb3V0JykgfX0iPkxvZ291dDwvYT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;a href=&quot;{{ url_for('logout') }}&quot;&gt;Logout&lt;/a&gt;</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement User Login and Logout</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Implement user login and logout functionality in your Flask application.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Install Flask-Login.</li>
+<li>Initialize Flask-Login in your application.</li>
+<li>Create a <code>User</code> model.</li>
+<li>Define a user loader function.</li>
+<li>Create a login form using Flask-WTF.</li>
+<li>Create a login route and template.</li>
+<li>Create a logout route and add a logout link.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><p>Follow the steps outlined in this section to implement the user login and logout functionality.</p>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Common Mistake</strong>: Not setting the <code>SECRET_KEY</code> in your Flask application. This is required for session management.</li>
+<li><strong>Tip</strong>: Always hash passwords before storing them in the database. Use <code>werkzeug.security.generate_password_hash</code> and <code>check_password_hash</code> for this purpose.</li>
+<li><strong>Common Mistake</strong>: Forgetting to check if the user is already authenticated in the login route. This can lead to unnecessary login attempts.</li>
+<li><strong>Tip</strong>: Use <code>current_user.is_authenticated</code> to check if the user is already logged in.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to implement user login and logout functionality using Flask-Login. We learned how to set up Flask-Login, create a user model, handle user authentication, and manage user sessions. This is a fundamental part of building secure web applications with Flask. In the next section, we will explore password hashing to enhance the security of user credentials.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-user-registration' title="User Registration">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-password-hashing' title="Password Hashing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

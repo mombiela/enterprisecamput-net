@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISC-V Assembly Language</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/assembly/06-04-riscv-assembly" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/assembly/06-04-riscv-assembly" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/assembly/06-04-riscv-assembly" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/assembly/06-04-riscv-assembly" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/assembly/06-04-riscv-assembly" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-mips-assembly' title="MIPS Assembly Language">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">RISC-V Assembly Language</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-simple-bootloader' title="Writing a Simple Bootloader">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>RISC-V (Reduced Instruction Set Computer V) is an open standard instruction set architecture (ISA) based on established RISC principles. Unlike proprietary ISAs, RISC-V is open and free to use, making it a popular choice for academic research and industry applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. RISC-V Architecture Overview</h2>
+<div class='content'><ul>
+<li><strong>Registers</strong>: RISC-V has 32 general-purpose registers (<code>x0</code> to <code>x31</code>), each 32 bits wide in the RV32I base integer instruction set.</li>
+<li><strong>Program Counter (PC)</strong>: Holds the address of the next instruction to be executed.</li>
+<li><strong>Instruction Formats</strong>: RISC-V uses fixed-length 32-bit instructions with several formats (R, I, S, B, U, J).</li>
+</ul>
+</div><h2>2. Register Naming Conventions</h2>
+<div class='content'><ul>
+<li><strong>x0</strong>: Always zero.</li>
+<li><strong>x1</strong>: Return address (<code>ra</code>).</li>
+<li><strong>x2</strong>: Stack pointer (<code>sp</code>).</li>
+<li><strong>x3</strong>: Global pointer (<code>gp</code>).</li>
+<li><strong>x4</strong>: Thread pointer (<code>tp</code>).</li>
+<li><strong>x5-x7</strong>: Temporary registers (<code>t0-t2</code>).</li>
+<li><strong>x8</strong>: Frame pointer (<code>fp</code>).</li>
+<li><strong>x9-x18</strong>: Saved registers (<code>s0-s9</code>).</li>
+<li><strong>x19-x27</strong>: Temporary registers (<code>t3-t6</code>).</li>
+<li><strong>x28-x31</strong>: Argument registers (<code>a0-a7</code>).</li>
+</ul>
+</div><h2>3. Basic Instruction Types</h2>
+<div class='content'><ul>
+<li><strong>R-type</strong>: Register-register operations (e.g., <code>add</code>, <code>sub</code>).</li>
+<li><strong>I-type</strong>: Immediate operations (e.g., <code>addi</code>, <code>lw</code>).</li>
+<li><strong>S-type</strong>: Store operations (e.g., <code>sw</code>).</li>
+<li><strong>B-type</strong>: Branch operations (e.g., <code>beq</code>, <code>bne</code>).</li>
+<li><strong>U-type</strong>: Upper immediate operations (e.g., <code>lui</code>).</li>
+<li><strong>J-type</strong>: Jump operations (e.g., <code>jal</code>).</li>
+</ul>
+</div><h1>Writing a Simple RISC-V Program</h1>
+<div class='content'></div><h2>Example: Adding Two Numbers</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTaW1wbGUgUklTQy1WIHByb2dyYW0gdG8gYWRkIHR3byBudW1iZXJzCgouc2VjdGlvbiAuZGF0YQpudW0xOiAud29yZCA1Cm51bTI6IC53b3JkIDEwCnJlc3VsdDogLndvcmQgMAoKLnNlY3Rpb24gLnRleHQKLmdsb2JsIF9zdGFydAoKX3N0YXJ0OgogICAgIyBMb2FkIG51bTEgaW50byByZWdpc3RlciB0MAogICAgbGEgdDAsIG51bTEKICAgIGx3IHQwLCAwKHQwKQogICAgCiAgICAjIExvYWQgbnVtMiBpbnRvIHJlZ2lzdGVyIHQxCiAgICBsYSB0MSwgbnVtMgogICAgbHcgdDEsIDAodDEpCiAgICAKICAgICMgQWRkIHQwIGFuZCB0MSwgc3RvcmUgcmVzdWx0IGluIHQyCiAgICBhZGQgdDIsIHQwLCB0MQogICAgCiAgICAjIFN0b3JlIHRoZSByZXN1bHQgaW4gbWVtb3J5CiAgICBsYSB0MywgcmVzdWx0CiAgICBzdyB0MiwgMCh0MykKICAgIAogICAgIyBFeGl0IHRoZSBwcm9ncmFtCiAgICBsaSBhNywgOTMgICAgICAgIyBzeXNjYWxsIGZvciBleGl0CiAgICBlY2FsbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Simple RISC-V program to add two numbers
+
+.section .data
+num1: .word 5
+num2: .word 10
+result: .word 0
+
+.section .text
+.globl _start
+
+_start:
+    # Load num1 into register t0
+    la t0, num1
+    lw t0, 0(t0)
+    
+    # Load num2 into register t1
+    la t1, num2
+    lw t1, 0(t1)
+    
+    # Add t0 and t1, store result in t2
+    add t2, t0, t1
+    
+    # Store the result in memory
+    la t3, result
+    sw t2, 0(t3)
+    
+    # Exit the program
+    li a7, 93       # syscall for exit
+    ecall</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li><strong>Data Section</strong>: Defines the data (num1, num2, result).</li>
+<li><strong>Text Section</strong>: Contains the code.</li>
+<li><strong>Loading Data</strong>: <code>la</code> loads the address, <code>lw</code> loads the word from memory.</li>
+<li><strong>Addition</strong>: <code>add</code> instruction adds the values in <code>t0</code> and <code>t1</code>.</li>
+<li><strong>Storing Result</strong>: <code>sw</code> stores the result back to memory.</li>
+<li><strong>Exit</strong>: <code>li</code> loads the immediate value for the exit syscall, <code>ecall</code> makes the system call.</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Subtract Two Numbers</h2>
+<div class='content'><p>Write a RISC-V program to subtract two numbers and store the result in memory.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LnNlY3Rpb24gLmRhdGEKbnVtMTogLndvcmQgMTUKbnVtMjogLndvcmQgNQpyZXN1bHQ6IC53b3JkIDAKCi5zZWN0aW9uIC50ZXh0Ci5nbG9ibCBfc3RhcnQKCl9zdGFydDoKICAgIGxhIHQwLCBudW0xCiAgICBsdyB0MCwgMCh0MCkKICAgIAogICAgbGEgdDEsIG51bTIKICAgIGx3IHQxLCAwKHQxKQogICAgCiAgICBzdWIgdDIsIHQwLCB0MQogICAgCiAgICBsYSB0MywgcmVzdWx0CiAgICBzdyB0MiwgMCh0MykKICAgIAogICAgbGkgYTcsIDkzCiAgICBlY2FsbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.section .data
+num1: .word 15
+num2: .word 5
+result: .word 0
+
+.section .text
+.globl _start
+
+_start:
+    la t0, num1
+    lw t0, 0(t0)
+    
+    la t1, num2
+    lw t1, 0(t1)
+    
+    sub t2, t0, t1
+    
+    la t3, result
+    sw t2, 0(t3)
+    
+    li a7, 93
+    ecall</pre></div><div class='content'></div><h2>Exercise 2: Multiply Two Numbers</h2>
+<div class='content'><p>Write a RISC-V program to multiply two numbers and store the result in memory.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LnNlY3Rpb24gLmRhdGEKbnVtMTogLndvcmQgMwpudW0yOiAud29yZCA0CnJlc3VsdDogLndvcmQgMAoKLnNlY3Rpb24gLnRleHQKLmdsb2JsIF9zdGFydAoKX3N0YXJ0OgogICAgbGEgdDAsIG51bTEKICAgIGx3IHQwLCAwKHQwKQogICAgCiAgICBsYSB0MSwgbnVtMgogICAgbHcgdDEsIDAodDEpCiAgICAKICAgIG11bCB0MiwgdDAsIHQxCiAgICAKICAgIGxhIHQzLCByZXN1bHQKICAgIHN3IHQyLCAwKHQzKQogICAgCiAgICBsaSBhNywgOTMKICAgIGVjYWxs"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.section .data
+num1: .word 3
+num2: .word 4
+result: .word 0
+
+.section .text
+.globl _start
+
+_start:
+    la t0, num1
+    lw t0, 0(t0)
+    
+    la t1, num2
+    lw t1, 0(t1)
+    
+    mul t2, t0, t1
+    
+    la t3, result
+    sw t2, 0(t3)
+    
+    li a7, 93
+    ecall</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to Load Addresses</strong>: Always use <code>la</code> to load addresses before accessing memory.</li>
+<li><strong>Incorrect Register Usage</strong>: Ensure you use the correct registers for specific purposes (e.g., <code>sp</code> for stack pointer).</li>
+<li><strong>Immediate Values</strong>: Use <code>li</code> for loading immediate values into registers.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of RISC-V assembly language, including its architecture, instruction types, and how to write simple programs. By practicing the provided exercises, you should gain a solid understanding of how to manipulate data and perform arithmetic operations in RISC-V. In the next module, we will explore practical applications and projects to further solidify your understanding of assembly programming.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-mips-assembly' title="MIPS Assembly Language">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-simple-bootloader' title="Writing a Simple Bootloader">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

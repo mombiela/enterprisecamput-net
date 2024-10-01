@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study 2: Improving Security in a Web Application</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/owasp/08-04-caso-estudio-mejora-seguridad" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/owasp/08-04-cas-estudi-millora-seguretat" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/owasp/08-04-case-study-improving-security" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/owasp/08-04-case-study-improving-security" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/owasp/08-04-case-study-improving-security" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-case-study-analyzing-incident' title="Case Study 1: Analyzing a Security Incident">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Case Study 2: Improving Security in a Web Application</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-final-evaluation' title="Final Evaluation">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this case study, we will explore a real-world scenario where a web application has several security vulnerabilities. We will identify these vulnerabilities, understand their impact, and implement security measures to mitigate them. This exercise will help reinforce the concepts learned throughout the OWASP course and provide practical experience in improving web application security.</p>
+</div><h1>Scenario Overview</h1>
+<div class='content'><p>Imagine you are a security consultant hired to assess and improve the security of a web application for an e-commerce company. The application has been in production for a year, and the company has received reports of potential security issues from users and security researchers.</p>
+</div><h2>Key Areas of Focus</h2>
+<div class='content'><ol>
+<li><strong>Authentication and Authorization</strong></li>
+<li><strong>Data Protection</strong></li>
+<li><strong>Input Validation</strong></li>
+<li><strong>Error Handling and Logging</strong></li>
+<li><strong>Security Configuration</strong></li>
+</ol>
+</div><h1>Step-by-Step Analysis and Improvement</h1>
+<div class='content'></div><h2>1. Authentication and Authorization</h2>
+<div class='content'><p><strong>Identified Issues:</strong></p>
+<ul>
+<li>Weak password policies</li>
+<li>Lack of multi-factor authentication (MFA)</li>
+<li>Insecure session management</li>
+</ul>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>
+<p><strong>Implement Strong Password Policies:</strong></p>
+<pre><code class="language-python">def validate_password(password):
+    import re
+    if len(password) &lt; 8:
+        return False
+    if not re.search(&quot;[a-z]&quot;, password):
+        return False
+    if not re.search(&quot;[A-Z]&quot;, password):
+        return False
+    if not re.search(&quot;[0-9]&quot;, password):
+        return False
+    if not re.search(&quot;[@#$%^&amp;+=]&quot;, password):
+        return False
+    return True
+</code></pre>
+</li>
+<li>
+<p><strong>Enable Multi-Factor Authentication (MFA):</strong></p>
+<ul>
+<li>Integrate with an MFA provider like Google Authenticator or Authy.</li>
+<li>Require users to set up MFA during registration or login.</li>
+</ul>
+</li>
+<li>
+<p><strong>Secure Session Management:</strong></p>
+<pre><code class="language-python">from flask import Flask, session
+from datetime import timedelta
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Data Protection</h2>
+<div class='content'><p><strong>Identified Issues:</strong></p>
+<ul>
+<li>Sensitive data stored in plaintext</li>
+<li>Insecure data transmission</li>
+</ul>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>
+<p><strong>Encrypt Sensitive Data:</strong></p>
+<pre><code class="language-python">from cryptography.fernet import Fernet
+
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+def encrypt_data(data):
+    return cipher_suite.encrypt(data.encode())
+
+def decrypt_data(encrypted_data):
+    return cipher_suite.decrypt(encrypted_data).decode()
+</code></pre>
+</li>
+<li>
+<p><strong>Use HTTPS for Secure Data Transmission:</strong></p>
+<ul>
+<li>Obtain and install an SSL/TLS certificate.</li>
+<li>Redirect all HTTP traffic to HTTPS.</li>
+</ul>
+</li>
+</ul>
+</div><h2>3. Input Validation</h2>
+<div class='content'><p><strong>Identified Issues:</strong></p>
+<ul>
+<li>Lack of input validation leading to SQL injection and XSS vulnerabilities</li>
+</ul>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>
+<p><strong>Implement Input Validation:</strong></p>
+<pre><code class="language-python">from flask import request
+import re
+
+def validate_input(input_data):
+    if not re.match(&quot;^[a-zA-Z0-9_]*$&quot;, input_data):
+        return False
+    return True
+
+@app.route('/submit', methods=['POST'])
+def submit():
+    user_input = request.form['user_input']
+    if validate_input(user_input):
+        # Process the input
+        pass
+    else:
+        return &quot;Invalid input&quot;, 400
+</code></pre>
+</li>
+<li>
+<p><strong>Use Prepared Statements for Database Queries:</strong></p>
+<pre><code class="language-python">import sqlite3
+
+def get_user(username):
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+    cursor.execute(&quot;SELECT * FROM users WHERE username = ?&quot;, (username,))
+    return cursor.fetchone()
+</code></pre>
+</li>
+</ul>
+</div><h2>4. Error Handling and Logging</h2>
+<div class='content'><p><strong>Identified Issues:</strong></p>
+<ul>
+<li>Detailed error messages exposed to users</li>
+<li>Lack of proper logging</li>
+</ul>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>
+<p><strong>Implement Custom Error Pages:</strong></p>
+<pre><code class="language-python">@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
+</code></pre>
+</li>
+<li>
+<p><strong>Implement Secure Logging:</strong></p>
+<pre><code class="language-python">import logging
+
+logging.basicConfig(filename='app.log', level=logging.INFO)
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    if authenticate(username, password):
+        logging.info(f&quot;User {username} logged in successfully.&quot;)
+        return &quot;Login successful&quot;
+    else:
+        logging.warning(f&quot;Failed login attempt for user {username}.&quot;)
+        return &quot;Login failed&quot;, 401
+</code></pre>
+</li>
+</ul>
+</div><h2>5. Security Configuration</h2>
+<div class='content'><p><strong>Identified Issues:</strong></p>
+<ul>
+<li>Default configurations and unnecessary services enabled</li>
+</ul>
+<p><strong>Improvements:</strong></p>
+<ul>
+<li>
+<p><strong>Harden Server Configuration:</strong></p>
+<ul>
+<li>Disable directory listing.</li>
+<li>Remove or disable unused services and applications.</li>
+<li>Apply the principle of least privilege to services and users.</li>
+</ul>
+</li>
+<li>
+<p><strong>Secure Application Configuration:</strong></p>
+<pre><code class="language-python">app.config['DEBUG'] = False
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this case study, we identified several common security issues in a web application and implemented measures to mitigate them. By focusing on authentication and authorization, data protection, input validation, error handling, and security configuration, we significantly improved the security posture of the application.</p>
+</div><h2>Summary</h2>
+<div class='content'><ul>
+<li><strong>Authentication and Authorization:</strong> Implemented strong password policies, MFA, and secure session management.</li>
+<li><strong>Data Protection:</strong> Encrypted sensitive data and enforced HTTPS.</li>
+<li><strong>Input Validation:</strong> Validated user inputs and used prepared statements.</li>
+<li><strong>Error Handling and Logging:</strong> Created custom error pages and implemented secure logging.</li>
+<li><strong>Security Configuration:</strong> Hardened server and application configurations.</li>
+</ul>
+<p>By following these steps and continuously monitoring and updating security practices, you can help ensure the safety and integrity of web applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-case-study-analyzing-incident' title="Case Study 1: Analyzing a Security Incident">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-final-evaluation' title="Final Evaluation">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

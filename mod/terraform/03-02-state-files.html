@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Files</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/03-02-state-files" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/03-02-state-files" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/03-02-state-files" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/03-02-state-files" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/03-02-state-files" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-understanding-state' title="Understanding State">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">State Files</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-remote-state' title="Remote State">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the concept of state files in Terraform. Understanding state files is crucial for managing your infrastructure effectively. We will cover the following topics:</p>
+<ol>
+<li><strong>What is a State File?</strong></li>
+<li><strong>Purpose of State Files</strong></li>
+<li><strong>Structure of a State File</strong></li>
+<li><strong>Managing State Files</strong></li>
+<li><strong>Practical Example</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>What is a State File?</h1>
+<div class='content'><p>A state file is a JSON file that Terraform uses to keep track of the resources it manages. It acts as a source of truth for your infrastructure, storing information about the current state of your managed resources.</p>
+</div><h1>Purpose of State Files</h1>
+<div class='content'><p>State files serve several important purposes:</p>
+<ul>
+<li><strong>Tracking Resources:</strong> They keep track of the resources that Terraform manages, including their current state and configuration.</li>
+<li><strong>Performance Optimization:</strong> By storing the state locally, Terraform can quickly determine what changes need to be applied without querying the cloud provider for the current state of resources.</li>
+<li><strong>Collaboration:</strong> State files can be shared among team members to ensure everyone is working with the same infrastructure state.</li>
+</ul>
+</div><h1>Structure of a State File</h1>
+<div class='content'><p>A state file is a JSON document that contains several key sections:</p>
+<ul>
+<li><strong>Version:</strong> Indicates the version of the state file format.</li>
+<li><strong>Terraform Version:</strong> Specifies the version of Terraform that created the state file.</li>
+<li><strong>Resources:</strong> Lists all the resources managed by Terraform, including their current state and configuration.</li>
+<li><strong>Outputs:</strong> Stores the output values defined in your Terraform configuration.</li>
+</ul>
+<p>Here is a simplified example of a state file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ2ZXJzaW9uIjogNCwKICAidGVycmFmb3JtX3ZlcnNpb24iOiAiMS4wLjAiLAogICJyZXNvdXJjZXMiOiBbCiAgICB7CiAgICAgICJ0eXBlIjogImF3c19pbnN0YW5jZSIsCiAgICAgICJuYW1lIjogImV4YW1wbGUiLAogICAgICAiaW5zdGFuY2VzIjogWwogICAgICAgIHsKICAgICAgICAgICJhdHRyaWJ1dGVzIjogewogICAgICAgICAgICAiaWQiOiAiaS0xMjM0NTY3ODkwYWJjZGVmMCIsCiAgICAgICAgICAgICJhbWkiOiAiYW1pLTBjNTViMTU5Y2JmYWZlMWYwIiwKICAgICAgICAgICAgImluc3RhbmNlX3R5cGUiOiAidDIubWljcm8iCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICBdCiAgICB9CiAgXSwKICAib3V0cHV0cyI6IHsKICAgICJpbnN0YW5jZV9pZCI6IHsKICAgICAgInZhbHVlIjogImktMTIzNDU2Nzg5MGFiY2RlZjAiCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;version&quot;: 4,
+  &quot;terraform_version&quot;: &quot;1.0.0&quot;,
+  &quot;resources&quot;: [
+    {
+      &quot;type&quot;: &quot;aws_instance&quot;,
+      &quot;name&quot;: &quot;example&quot;,
+      &quot;instances&quot;: [
+        {
+          &quot;attributes&quot;: {
+            &quot;id&quot;: &quot;i-1234567890abcdef0&quot;,
+            &quot;ami&quot;: &quot;ami-0c55b159cbfafe1f0&quot;,
+            &quot;instance_type&quot;: &quot;t2.micro&quot;
+          }
+        }
+      ]
+    }
+  ],
+  &quot;outputs&quot;: {
+    &quot;instance_id&quot;: {
+      &quot;value&quot;: &quot;i-1234567890abcdef0&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h1>Managing State Files</h1>
+<div class='content'></div><h2>Local State</h2>
+<div class='content'><p>By default, Terraform stores the state file locally in a file named <code>terraform.tfstate</code>. This file is created in the directory where you run your Terraform commands.</p>
+</div><h2>Remote State</h2>
+<div class='content'><p>For collaboration and better state management, you can store the state file remotely using a backend. Common backends include:</p>
+<ul>
+<li><strong>Amazon S3</strong></li>
+<li><strong>Azure Blob Storage</strong></li>
+<li><strong>Google Cloud Storage</strong></li>
+<li><strong>HashiCorp Consul</strong></li>
+<li><strong>Terraform Cloud</strong></li>
+</ul>
+</div><h2>State Locking</h2>
+<div class='content'><p>State locking is a mechanism to prevent concurrent operations on the same state file, which can lead to conflicts and corruption. Most remote backends support state locking.</p>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple Terraform configuration and observe the state file.</p>
+</div><h2>Step 1: Create a Terraform Configuration</h2>
+<div class='content'><p>Create a file named <code>main.tf</code> with the following content:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgYW1pICAgICAgICAgICA9ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiCiAgaW5zdGFuY2VfdHlwZSA9ICJ0Mi5taWNybyIKfQoKb3V0cHV0ICJpbnN0YW5jZV9pZCIgewogIHZhbHVlID0gYXdzX2luc3RhbmNlLmV4YW1wbGUuaWQKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}
+
+output &quot;instance_id&quot; {
+  value = aws_instance.example.id
+}</pre></div><div class='content'></div><h2>Step 2: Initialize and Apply</h2>
+<div class='content'><p>Initialize and apply the configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQKdGVycmFmb3JtIGFwcGx5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init
+terraform apply</pre></div><div class='content'></div><h2>Step 3: Inspect the State File</h2>
+<div class='content'><p>After applying the configuration, inspect the <code>terraform.tfstate</code> file in your project directory. You will see a JSON document similar to the example provided earlier.</p>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Local State File</h2>
+<div class='content'><ol>
+<li>Create a simple Terraform configuration that provisions an AWS S3 bucket.</li>
+<li>Apply the configuration and inspect the <code>terraform.tfstate</code> file.</li>
+<li>Modify the configuration to change the bucket name and apply the changes.</li>
+<li>Observe how the state file is updated.</li>
+</ol>
+</div><h2>Exercise 2: Remote State</h2>
+<div class='content'><ol>
+<li>Configure a remote backend (e.g., Amazon S3) for your Terraform project.</li>
+<li>Migrate the local state file to the remote backend.</li>
+<li>Verify that the state file is stored remotely and that state locking is enabled.</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Exercise 1 Solution</h4>
+<ol>
+<li>
+<p>Create <code>main.tf</code>:</p>
+<pre><code class="language-hcl">provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_s3_bucket&quot; &quot;example&quot; {
+  bucket = &quot;my-unique-bucket-name&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>Initialize and apply:</p>
+<pre><code class="language-sh">terraform init
+terraform apply
+</code></pre>
+</li>
+<li>
+<p>Modify <code>main.tf</code> to change the bucket name:</p>
+<pre><code class="language-hcl">resource &quot;aws_s3_bucket&quot; &quot;example&quot; {
+  bucket = &quot;my-new-unique-bucket-name&quot;
+}
+</code></pre>
+</li>
+<li>
+<p>Apply the changes and inspect the state file:</p>
+<pre><code class="language-sh">terraform apply
+</code></pre>
+</li>
+</ol>
+<h4>Exercise 2 Solution</h4>
+<ol>
+<li>
+<p>Configure a remote backend in <code>main.tf</code>:</p>
+<pre><code class="language-hcl">terraform {
+  backend &quot;s3&quot; {
+    bucket = &quot;my-terraform-state-bucket&quot;
+    key    = &quot;path/to/my/key&quot;
+    region = &quot;us-west-2&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p>Initialize and migrate the state:</p>
+<pre><code class="language-sh">terraform init -migrate-state
+</code></pre>
+</li>
+<li>
+<p>Verify the state file in the S3 bucket and check for state locking.</p>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of state files in Terraform, their structure, and how to manage them both locally and remotely. Understanding state files is essential for effective infrastructure management and collaboration. In the next section, we will explore remote state management in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-understanding-state' title="Understanding State">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-remote-state' title="Remote State">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

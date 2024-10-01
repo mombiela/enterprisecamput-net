@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Ionic Storage</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ionic/04-05-using-ionic-storage" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ionic/04-05-using-ionic-storage" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ionic/04-05-using-ionic-storage" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ionic/04-05-using-ionic-storage" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ionic/04-05-using-ionic-storage" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-storing-data-locally' title="Storing Data Locally">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Ionic Storage</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-using-ionic-forms' title="Using Ionic Forms">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to use Ionic Storage to store data locally in your Ionic applications. Ionic Storage is a simple yet powerful way to store key-value pairs and JSON objects. It provides a unified API for various storage engines, including IndexedDB, SQLite, and localStorage.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Ionic Storage Overview</strong>: Understand what Ionic Storage is and why it is useful.</li>
+<li><strong>Setting Up Ionic Storage</strong>: Learn how to install and configure Ionic Storage in your project.</li>
+<li><strong>Basic Operations</strong>: Perform basic CRUD (Create, Read, Update, Delete) operations using Ionic Storage.</li>
+<li><strong>Advanced Usage</strong>: Explore advanced features like using different storage engines and handling complex data structures.</li>
+</ol>
+</div><h1>1. Ionic Storage Overview</h1>
+<div class='content'><p>Ionic Storage is a library that provides a simple API for storing data locally in your Ionic applications. It abstracts away the complexities of different storage engines and offers a consistent interface for developers.</p>
+</div><h2>Why Use Ionic Storage?</h2>
+<div class='content'><ul>
+<li><strong>Cross-Platform</strong>: Works seamlessly on web, iOS, and Android.</li>
+<li><strong>Unified API</strong>: Provides a single API for various storage engines.</li>
+<li><strong>Ease of Use</strong>: Simple and intuitive methods for storing and retrieving data.</li>
+<li><strong>Flexibility</strong>: Supports multiple storage engines, allowing you to choose the best one for your needs.</li>
+</ul>
+</div><h1>2. Setting Up Ionic Storage</h1>
+<div class='content'><p>To use Ionic Storage in your project, you need to install the necessary packages and configure them.</p>
+</div><h2>Step-by-Step Setup</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Ionic Storage and SQLite Plugin</strong>:</p>
+<pre><code class="language-bash">npm install @ionic/storage-angular
+npm install cordova-sqlite-storage
+</code></pre>
+</li>
+<li>
+<p><strong>Import and Configure Ionic Storage</strong>:
+Open your <code>app.module.ts</code> file and import the <code>IonicStorageModule</code>:</p>
+<pre><code class="language-typescript">import { IonicStorageModule } from '@ionic/storage-angular';
+
+@NgModule({
+  declarations: [AppComponent],
+  imports: [
+    BrowserModule,
+    IonicModule.forRoot(),
+    AppRoutingModule,
+    IonicStorageModule.forRoot()
+  ],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize Storage in Your Service or Component</strong>:
+Create a service or use an existing one to initialize and use Ionic Storage:</p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  constructor(private storage: Storage) {
+    this.init();
+  }
+
+  async init() {
+    await this.storage.create();
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Basic Operations</h1>
+<div class='content'></div><h2>Storing Data</h2>
+<div class='content'><p>To store data, use the <code>set</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdhaXQgdGhpcy5zdG9yYWdlLnNldCgna2V5JywgJ3ZhbHVlJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>await this.storage.set('key', 'value');</pre></div><div class='content'></div><h2>Retrieving Data</h2>
+<div class='content'><p>To retrieve data, use the <code>get</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdmFsdWUgPSBhd2FpdCB0aGlzLnN0b3JhZ2UuZ2V0KCdrZXknKTsKY29uc29sZS5sb2codmFsdWUpOyAvLyBPdXRwdXQ6ICd2YWx1ZSc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const value = await this.storage.get('key');
+console.log(value); // Output: 'value'</pre></div><div class='content'></div><h2>Updating Data</h2>
+<div class='content'><p>Updating data is the same as storing data. Simply use the <code>set</code> method with the same key:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdhaXQgdGhpcy5zdG9yYWdlLnNldCgna2V5JywgJ25ldyB2YWx1ZScpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>await this.storage.set('key', 'new value');</pre></div><div class='content'></div><h2>Deleting Data</h2>
+<div class='content'><p>To delete data, use the <code>remove</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdhaXQgdGhpcy5zdG9yYWdlLnJlbW92ZSgna2V5Jyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>await this.storage.remove('key');</pre></div><div class='content'></div><h2>Clearing All Data</h2>
+<div class='content'><p>To clear all data, use the <code>clear</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdhaXQgdGhpcy5zdG9yYWdlLmNsZWFyKCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>await this.storage.clear();</pre></div><div class='content'></div><h1>4. Advanced Usage</h1>
+<div class='content'></div><h2>Using Different Storage Engines</h2>
+<div class='content'><p>Ionic Storage supports multiple storage engines. You can configure the preferred engine in the <code>forRoot</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW9uaWNTdG9yYWdlTW9kdWxlLmZvclJvb3QoewogIG5hbWU6ICdfX215ZGInLAogIGRyaXZlck9yZGVyOiBbJ2luZGV4ZWRkYicsICdzcWxpdGUnLCAnbG9jYWxzdG9yYWdlJ10KfSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>IonicStorageModule.forRoot({
+  name: '__mydb',
+  driverOrder: ['indexeddb', 'sqlite', 'localstorage']
+})</pre></div><div class='content'></div><h2>Handling Complex Data Structures</h2>
+<div class='content'><p>You can store and retrieve complex data structures like arrays and objects:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdXNlciA9IHsgaWQ6IDEsIG5hbWU6ICdKb2huIERvZScgfTsKYXdhaXQgdGhpcy5zdG9yYWdlLnNldCgndXNlcicsIHVzZXIpOwoKY29uc3Qgc3RvcmVkVXNlciA9IGF3YWl0IHRoaXMuc3RvcmFnZS5nZXQoJ3VzZXInKTsKY29uc29sZS5sb2coc3RvcmVkVXNlcik7IC8vIE91dHB1dDogeyBpZDogMSwgbmFtZTogJ0pvaG4gRG9lJyB9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const user = { id: 1, name: 'John Doe' };
+await this.storage.set('user', user);
+
+const storedUser = await this.storage.get('user');
+console.log(storedUser); // Output: { id: 1, name: 'John Doe' }</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>Create a new Ionic page called <code>StoragePage</code>.</li>
+<li>Add a form to input a key-value pair.</li>
+<li>Implement buttons to store, retrieve, update, and delete the key-value pair using Ionic Storage.</li>
+<li>Display the stored value on the page.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create StoragePage</strong>:</p>
+<pre><code class="language-bash">ionic generate page StoragePage
+</code></pre>
+</li>
+<li>
+<p><strong>Add Form and Buttons in <code>storage-page.page.html</code></strong>:</p>
+<pre><code class="language-html">&lt;ion-header&gt;
+  &lt;ion-toolbar&gt;
+    &lt;ion-title&gt;Storage Page&lt;/ion-title&gt;
+  &lt;/ion-toolbar&gt;
+&lt;/ion-header&gt;
+
+&lt;ion-content&gt;
+  &lt;ion-item&gt;
+    &lt;ion-label position=&quot;floating&quot;&gt;Key&lt;/ion-label&gt;
+    &lt;ion-input [(ngModel)]=&quot;key&quot;&gt;&lt;/ion-input&gt;
+  &lt;/ion-item&gt;
+  &lt;ion-item&gt;
+    &lt;ion-label position=&quot;floating&quot;&gt;Value&lt;/ion-label&gt;
+    &lt;ion-input [(ngModel)]=&quot;value&quot;&gt;&lt;/ion-input&gt;
+  &lt;/ion-item&gt;
+  &lt;ion-button expand=&quot;full&quot; (click)=&quot;storeData()&quot;&gt;Store&lt;/ion-button&gt;
+  &lt;ion-button expand=&quot;full&quot; (click)=&quot;retrieveData()&quot;&gt;Retrieve&lt;/ion-button&gt;
+  &lt;ion-button expand=&quot;full&quot; (click)=&quot;updateData()&quot;&gt;Update&lt;/ion-button&gt;
+  &lt;ion-button expand=&quot;full&quot; (click)=&quot;deleteData()&quot;&gt;Delete&lt;/ion-button&gt;
+  &lt;ion-button expand=&quot;full&quot; (click)=&quot;clearData()&quot;&gt;Clear All&lt;/ion-button&gt;
+  &lt;ion-item&gt;
+    &lt;ion-label&gt;Stored Value: {{ storedValue }}&lt;/ion-label&gt;
+  &lt;/ion-item&gt;
+&lt;/ion-content&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Implement Methods in <code>storage-page.page.ts</code></strong>:</p>
+<pre><code class="language-typescript">import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage-angular';
+
+@Component({
+  selector: 'app-storage-page',
+  templateUrl: './storage-page.page.html',
+  styleUrls: ['./storage-page.page.scss'],
+})
+export class StoragePage {
+  key: string;
+  value: string;
+  storedValue: string;
+
+  constructor(private storage: Storage) {
+    this.init();
+  }
+
+  async init() {
+    await this.storage.create();
+  }
+
+  async storeData() {
+    await this.storage.set(this.key, this.value);
+  }
+
+  async retrieveData() {
+    this.storedValue = await this.storage.get(this.key);
+  }
+
+  async updateData() {
+    await this.storage.set(this.key, this.value);
+  }
+
+  async deleteData() {
+    await this.storage.remove(this.key);
+  }
+
+  async clearData() {
+    await this.storage.clear();
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of using Ionic Storage to store data locally in your Ionic applications. We learned how to set up Ionic Storage, perform basic CRUD operations, and handle complex data structures. By completing the practical exercise, you should now be comfortable with integrating Ionic Storage into your projects.</p>
+<p>Next, we will explore more advanced components and features in Ionic, such as forms, validation, and using native device features.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-storing-data-locally' title="Storing Data Locally">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-using-ionic-forms' title="Using Ionic Forms">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

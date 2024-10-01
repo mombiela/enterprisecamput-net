@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Making HTTP Requests</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/08-02-making-http-requests" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/08-02-making-http-requests" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/08-02-making-http-requests" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular2/08-02-making-http-requests" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/08-02-making-http-requests" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-to-http-client' title="Introduction to HTTP Client">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Making HTTP Requests</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-handling-http-responses' title="Handling HTTP Responses">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to make HTTP requests in Angular using the <code>HttpClient</code> module. This is a crucial part of any web application that needs to communicate with a backend server to fetch or send data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>HttpClient Module</strong>: The Angular module that provides a simplified API for HTTP requests.</li>
+<li><strong>HttpClient Methods</strong>: Methods such as <code>get</code>, <code>post</code>, <code>put</code>, <code>delete</code>, etc., used to perform HTTP operations.</li>
+<li><strong>Observables</strong>: Used to handle asynchronous data streams in Angular.</li>
+</ol>
+</div><h1>Setting Up HttpClient</h1>
+<div class='content'><p>Before making HTTP requests, you need to import the <code>HttpClientModule</code> in your Angular application.</p>
+<ol>
+<li>
+<p><strong>Import HttpClientModule</strong>:</p>
+<pre><code class="language-typescript">import { HttpClientModule } from '@angular/common/http';
+</code></pre>
+</li>
+<li>
+<p><strong>Add HttpClientModule to AppModule</strong>:</p>
+<pre><code class="language-typescript">import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+import { HttpClientModule } from '@angular/common/http';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    HttpClientModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+</code></pre>
+</li>
+</ol>
+</div><h1>Making a GET Request</h1>
+<div class='content'><p>The <code>HttpClient</code> service is used to make HTTP requests. Let's start with a simple GET request to fetch data from a server.</p>
+<ol>
+<li>
+<p><strong>Inject HttpClient in a Service</strong>:</p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) { }
+
+  getData(): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(this.apiUrl);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Service in a Component</strong>:</p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-data',
+  template: `
+    &lt;div *ngIf=&quot;data&quot;&gt;
+      &lt;pre&gt;{{ data | json }}&lt;/pre&gt;
+    &lt;/div&gt;
+  `
+})
+export class DataComponent implements OnInit {
+  data: any;
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit(): void {
+    this.dataService.getData().subscribe(response =&gt; {
+      this.data = response;
+    });
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Making a POST Request</h1>
+<div class='content'><p>To send data to the server, you can use the <code>post</code> method.</p>
+<ol>
+<li>
+<p><strong>Service Method for POST Request</strong>:</p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) { }
+
+  postData(data: any): Observable&lt;any&gt; {
+    return this.http.post&lt;any&gt;(this.apiUrl, data);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Service in a Component</strong>:</p>
+<pre><code class="language-typescript">import { Component } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-data',
+  template: `
+    &lt;button (click)=&quot;sendData()&quot;&gt;Send Data&lt;/button&gt;
+  `
+})
+export class DataComponent {
+  constructor(private dataService: DataService) { }
+
+  sendData(): void {
+    const data = { name: 'Angular', version: '2+' };
+    this.dataService.postData(data).subscribe(response =&gt; {
+      console.log('Data sent successfully', response);
+    });
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Handling Errors</h1>
+<div class='content'><p>It's important to handle errors that may occur during HTTP requests. You can use the <code>catchError</code> operator from RxJS.</p>
+<ol>
+<li>
+<p><strong>Service Method with Error Handling</strong>:</p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) { }
+
+  getData(): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side errors
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side errors
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Component with Error Handling</strong>:</p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-data',
+  template: `
+    &lt;div *ngIf=&quot;data&quot;&gt;
+      &lt;pre&gt;{{ data | json }}&lt;/pre&gt;
+    &lt;/div&gt;
+    &lt;div *ngIf=&quot;error&quot;&gt;
+      &lt;p&gt;{{ error }}&lt;/p&gt;
+    &lt;/div&gt;
+  `
+})
+export class DataComponent implements OnInit {
+  data: any;
+  error: string;
+
+  constructor(private dataService: DataService) { }
+
+  ngOnInit(): void {
+    this.dataService.getData().subscribe(
+      response =&gt; {
+        this.data = response;
+      },
+      error =&gt; {
+        this.error = error;
+      }
+    );
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Fetch and Display Data</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create a service to fetch data from a public API and display it in a component.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Create a new service called <code>UserService</code>.</li>
+<li>Use the <code>HttpClient</code> to fetch data from <code>https://jsonplaceholder.typicode.com/users</code>.</li>
+<li>Create a component called <code>UserComponent</code> to display the fetched data.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>UserService</strong>:</p>
+<pre><code class="language-typescript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  private apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+  constructor(private http: HttpClient) { }
+
+  getUsers(): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(this.apiUrl);
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>UserComponent</strong>:</p>
+<pre><code class="language-typescript">import { Component, OnInit } from '@angular/core';
+import { UserService } from './user.service';
+
+@Component({
+  selector: 'app-user',
+  template: `
+    &lt;div *ngIf=&quot;users&quot;&gt;
+      &lt;ul&gt;
+        &lt;li *ngFor=&quot;let user of users&quot;&gt;{{ user.name }}&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  `
+})
+export class UserComponent implements OnInit {
+  users: any;
+
+  constructor(private userService: UserService) { }
+
+  ngOnInit(): void {
+    this.userService.getUsers().subscribe(response =&gt; {
+      this.users = response;
+    });
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to make HTTP requests using the <code>HttpClient</code> module in Angular. We covered GET and POST requests, error handling, and provided a practical exercise to reinforce the concepts. In the next section, we will learn how to handle HTTP responses effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-to-http-client' title="Introduction to HTTP Client">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-handling-http-responses' title="Handling HTTP Responses">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

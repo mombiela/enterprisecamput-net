@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elastic Load Balancing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/aws/03-02-elastic-load-balancing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/aws/03-02-elastic-load-balancing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/aws/03-02-elastic-load-balancing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/aws/03-02-elastic-load-balancing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/aws/03-02-elastic-load-balancing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-amazon-vpc' title="Amazon VPC">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Elastic Load Balancing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-amazon-cloudfront' title="Amazon CloudFront">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Elastic Load Balancing (ELB) is a service that automatically distributes incoming application traffic across multiple targets, such as Amazon EC2 instances, containers, and IP addresses. ELB helps ensure that your application is highly available and can handle varying levels of traffic.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Load Balancer Types</strong>:</p>
+<ul>
+<li><strong>Application Load Balancer (ALB)</strong>: Best suited for HTTP and HTTPS traffic. Operates at the application layer (Layer 7) and provides advanced routing features.</li>
+<li><strong>Network Load Balancer (NLB)</strong>: Best suited for TCP, UDP, and TLS traffic. Operates at the transport layer (Layer 4) and is capable of handling millions of requests per second.</li>
+<li><strong>Classic Load Balancer (CLB)</strong>: Operates at both the application and transport layers. Suitable for applications built within the EC2-Classic network.</li>
+</ul>
+</li>
+<li>
+<p><strong>Target Groups</strong>:</p>
+<ul>
+<li>A target group routes requests to one or more registered targets (e.g., EC2 instances) using the specified protocol and port number.</li>
+<li>Health checks are performed on targets to ensure they are available to handle requests.</li>
+</ul>
+</li>
+<li>
+<p><strong>Listeners</strong>:</p>
+<ul>
+<li>A listener is a process that checks for connection requests. It is configured with a protocol and port number for front-end (client to load balancer) and back-end (load balancer to target) connections.</li>
+</ul>
+</li>
+<li>
+<p><strong>Health Checks</strong>:</p>
+<ul>
+<li>ELB performs health checks on registered targets to ensure they are healthy and can handle traffic. Unhealthy targets are automatically removed from the pool until they recover.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up an Application Load Balancer</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Load Balancer</strong>:</p>
+<ul>
+<li>Navigate to the EC2 Dashboard.</li>
+<li>Select &quot;Load Balancers&quot; from the left-hand menu.</li>
+<li>Click &quot;Create Load Balancer&quot; and choose &quot;Application Load Balancer&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Load Balancer</strong>:</p>
+<ul>
+<li><strong>Name</strong>: Provide a name for your load balancer.</li>
+<li><strong>Scheme</strong>: Choose &quot;Internet-facing&quot; or &quot;Internal&quot;.</li>
+<li><strong>Listeners</strong>: Add listeners (e.g., HTTP, HTTPS).</li>
+<li><strong>Availability Zones</strong>: Select the VPC and Availability Zones where the load balancer will be deployed.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Security Settings</strong> (for HTTPS):</p>
+<ul>
+<li><strong>SSL Certificate</strong>: Choose an existing certificate or upload a new one.</li>
+<li><strong>Security Policy</strong>: Select a predefined security policy.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Security Groups</strong>:</p>
+<ul>
+<li>Assign one or more security groups to the load balancer.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Routing</strong>:</p>
+<ul>
+<li><strong>Target Group</strong>: Create a new target group or select an existing one.</li>
+<li><strong>Health Checks</strong>: Configure health check settings (e.g., protocol, path, interval).</li>
+</ul>
+</li>
+<li>
+<p><strong>Register Targets</strong>:</p>
+<ul>
+<li>Add the instances or IP addresses to the target group.</li>
+</ul>
+</li>
+<li>
+<p><strong>Review and Create</strong>:</p>
+<ul>
+<li>Review the settings and click &quot;Create&quot;.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example: Creating an Application Load Balancer using AWS CLI</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdzIGVsYnYyIGNyZWF0ZS1sb2FkLWJhbGFuY2VyIFwKICAgIC0tbmFtZSBteS1sb2FkLWJhbGFuY2VyIFwKICAgIC0tc3VibmV0cyBzdWJuZXQtMTIzNDU2Nzggc3VibmV0LTg3NjU0MzIxIFwKICAgIC0tc2VjdXJpdHktZ3JvdXBzIHNnLTEyMzQ1Njc4IFwKICAgIC0tc2NoZW1lIGludGVybmV0LWZhY2luZyBcCiAgICAtLXR5cGUgYXBwbGljYXRpb24="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>aws elbv2 create-load-balancer \
+    --name my-load-balancer \
+    --subnets subnet-12345678 subnet-87654321 \
+    --security-groups sg-12345678 \
+    --scheme internet-facing \
+    --type application</pre></div><div class='content'></div><h2>Example: Registering Targets using AWS CLI</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdzIGVsYnYyIHJlZ2lzdGVyLXRhcmdldHMgXAogICAgLS10YXJnZXQtZ3JvdXAtYXJuIGFybjphd3M6ZWxhc3RpY2xvYWRiYWxhbmNpbmc6cmVnaW9uOmFjY291bnQtaWQ6dGFyZ2V0Z3JvdXAvbXktdGFyZ2V0cy8xMjM0NTY3ODkwMTIzNDU2IFwKICAgIC0tdGFyZ2V0cyBJZD1pLTEyMzQ1Njc4OTBhYmNkZWYwIElkPWktMGFiY2RlZjEyMzQ1Njc4OTA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>aws elbv2 register-targets \
+    --target-group-arn arn:aws:elasticloadbalancing:region:account-id:targetgroup/my-targets/1234567890123456 \
+    --targets Id=i-1234567890abcdef0 Id=i-0abcdef1234567890</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create and Configure an Application Load Balancer</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create an Application Load Balancer that distributes traffic to two EC2 instances.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Launch two EC2 instances in the same VPC.</li>
+<li>Create a new Application Load Balancer.</li>
+<li>Configure the load balancer with HTTP listeners.</li>
+<li>Create a target group and register the EC2 instances.</li>
+<li>Configure health checks.</li>
+<li>Test the load balancer by accessing its DNS name.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Launch EC2 Instances</strong>:</p>
+<ul>
+<li>Launch two EC2 instances in the same VPC and Availability Zone.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create Load Balancer</strong>:</p>
+<ul>
+<li>Follow the steps outlined in the &quot;Setting Up an Application Load Balancer&quot; section.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Listeners and Target Group</strong>:</p>
+<ul>
+<li>Add HTTP listeners on port 80.</li>
+<li>Create a target group with the two EC2 instances.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Health Checks</strong>:</p>
+<ul>
+<li>Set the health check path to <code>/</code> and protocol to HTTP.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Load Balancer</strong>:</p>
+<ul>
+<li>Access the load balancer's DNS name in a web browser to verify traffic distribution.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Security Groups</strong>: Ensure that the security groups for the load balancer and the targets allow the necessary traffic (e.g., HTTP/HTTPS).</li>
+<li><strong>Health Checks</strong>: Properly configure health checks to avoid removing healthy instances from the target group.</li>
+<li><strong>DNS Name</strong>: Use the load balancer's DNS name to access the application, not the IP addresses of the individual instances.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Elastic Load Balancing is a powerful service that enhances the availability and scalability of your applications. By distributing traffic across multiple targets and performing health checks, ELB ensures that your application can handle varying levels of traffic and remain highly available. In the next module, we will explore Amazon CloudFront, a content delivery network service that works seamlessly with ELB to deliver content to users with low latency.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-amazon-vpc' title="Amazon VPC">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-amazon-cloudfront' title="Amazon CloudFront">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

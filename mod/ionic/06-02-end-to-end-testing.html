@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>End-to-End Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ionic/06-02-end-to-end-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ionic/06-02-end-to-end-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ionic/06-02-end-to-end-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ionic/06-02-end-to-end-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ionic/06-02-end-to-end-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-unit-testing' title="Unit Testing in Ionic">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">End-to-End Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-building-production' title="Building for Production">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>End-to-end (E2E) testing is a crucial part of the software development lifecycle, especially for mobile and web applications. It ensures that the entire application flow works as expected, from the user interface to the backend services. In this section, we will cover the basics of E2E testing in Ionic, including setting up the testing environment, writing tests, and running them.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>End-to-End Testing</strong>: Testing the complete application flow from start to finish.</li>
+<li><strong>Protractor</strong>: A popular E2E testing framework for Angular applications.</li>
+<li><strong>Jasmine</strong>: A behavior-driven development framework for testing JavaScript code.</li>
+<li><strong>Test Suites and Specs</strong>: Organized collections of test cases.</li>
+</ol>
+</div><h1>Setting Up the Testing Environment</h1>
+<div class='content'><p>To get started with E2E testing in Ionic, you need to set up the testing environment. Ionic uses Protractor for E2E testing, which is built on top of WebDriverJS.</p>
+</div><h2>Step-by-Step Setup</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Protractor</strong>:</p>
+<pre><code class="language-bash">npm install -g protractor
+</code></pre>
+</li>
+<li>
+<p><strong>Update WebDriver Manager</strong>:</p>
+<pre><code class="language-bash">webdriver-manager update
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Protractor Configuration File</strong>:
+Create a file named <code>protractor.conf.js</code> in the root of your project with the following content:</p>
+<pre><code class="language-javascript">exports.config = {
+  allScriptsTimeout: 11000,
+  specs: [
+    './e2e/**/*.e2e-spec.ts'
+  ],
+  capabilities: {
+    'browserName': 'chrome'
+  },
+  directConnect: true,
+  baseUrl: 'http://localhost:8100/',
+  framework: 'jasmine',
+  jasmineNodeOpts: {
+    showColors: true,
+    defaultTimeoutInterval: 30000,
+    print: function() {}
+  },
+  onPrepare: function() {
+    require('ts-node').register({
+      project: 'e2e/tsconfig.e2e.json'
+    });
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Create a Test Directory</strong>:
+Create a directory named <code>e2e</code> in the root of your project. Inside this directory, create a file named <code>app.e2e-spec.ts</code> with the following content:</p>
+<pre><code class="language-typescript">import { browser, by, element } from 'protractor';
+
+describe('Ionic App', () =&gt; {
+  it('should display the welcome message', () =&gt; {
+    browser.get('/');
+    expect(element(by.css('ion-title')).getText()).toEqual('Welcome to Ionic');
+  });
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Update <code>tsconfig.json</code></strong>:
+Ensure your <code>tsconfig.json</code> includes the following configuration for E2E tests:</p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;outDir&quot;: &quot;./dist/out-tsc-e2e&quot;,
+    &quot;sourceMap&quot;: true,
+    &quot;declaration&quot;: false,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;types&quot;: [&quot;jasmine&quot;, &quot;node&quot;]
+  },
+  &quot;include&quot;: [
+    &quot;e2e/**/*.ts&quot;
+  ]
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Writing E2E Tests</h1>
+<div class='content'><p>E2E tests are written in Jasmine and executed by Protractor. Here’s a breakdown of the test file structure:</p>
+</div><h2>Example Test Case</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgYnJvd3NlciwgYnksIGVsZW1lbnQgfSBmcm9tICdwcm90cmFjdG9yJzsKCmRlc2NyaWJlKCdJb25pYyBBcHAnLCAoKSA9PiB7CiAgYmVmb3JlRWFjaCgoKSA9PiB7CiAgICBicm93c2VyLmdldCgnLycpOwogIH0pOwoKICBpdCgnc2hvdWxkIGRpc3BsYXkgdGhlIHdlbGNvbWUgbWVzc2FnZScsICgpID0+IHsKICAgIGV4cGVjdChlbGVtZW50KGJ5LmNzcygnaW9uLXRpdGxlJykpLmdldFRleHQoKSkudG9FcXVhbCgnV2VsY29tZSB0byBJb25pYycpOwogIH0pOwoKICBpdCgnc2hvdWxkIG5hdmlnYXRlIHRvIHRoZSBhYm91dCBwYWdlJywgKCkgPT4gewogICAgZWxlbWVudChieS5jc3MoJ2lvbi1idXR0b24nKSkuY2xpY2soKTsKICAgIGV4cGVjdChicm93c2VyLmdldEN1cnJlbnRVcmwoKSkudG9Db250YWluKCcvYWJvdXQnKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { browser, by, element } from 'protractor';
+
+describe('Ionic App', () =&gt; {
+  beforeEach(() =&gt; {
+    browser.get('/');
+  });
+
+  it('should display the welcome message', () =&gt; {
+    expect(element(by.css('ion-title')).getText()).toEqual('Welcome to Ionic');
+  });
+
+  it('should navigate to the about page', () =&gt; {
+    element(by.css('ion-button')).click();
+    expect(browser.getCurrentUrl()).toContain('/about');
+  });
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>describe</code></strong>: Defines a test suite.</li>
+<li><strong><code>beforeEach</code></strong>: Runs before each test case to set up the initial state.</li>
+<li><strong><code>it</code></strong>: Defines an individual test case.</li>
+<li><strong><code>browser.get</code></strong>: Navigates to a specific URL.</li>
+<li><strong><code>element</code></strong>: Selects an element on the page.</li>
+<li><strong><code>by.css</code></strong>: Finds elements using CSS selectors.</li>
+<li><strong><code>expect</code></strong>: Asserts the expected outcome.</li>
+</ul>
+</div><h1>Running E2E Tests</h1>
+<div class='content'><p>To run your E2E tests, use the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdHJhY3RvciBwcm90cmFjdG9yLmNvbmYuanM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>protractor protractor.conf.js</pre></div><div class='content'><p>This command will start the Protractor test runner, which will execute the tests defined in your <code>e2e</code> directory.</p>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Write an E2E Test for a Login Page</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Login Page</strong>:</p>
+<ul>
+<li>Add a new page named <code>login</code> with a form containing username and password fields and a login button.</li>
+</ul>
+</li>
+<li>
+<p><strong>Write the Test</strong>:</p>
+<ul>
+<li>Create a new file named <code>login.e2e-spec.ts</code> in the <code>e2e</code> directory.</li>
+<li>Write a test case to verify that the login form is displayed and that the user can submit the form.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgYnJvd3NlciwgYnksIGVsZW1lbnQgfSBmcm9tICdwcm90cmFjdG9yJzsKCmRlc2NyaWJlKCdMb2dpbiBQYWdlJywgKCkgPT4gewogIGJlZm9yZUVhY2goKCkgPT4gewogICAgYnJvd3Nlci5nZXQoJy9sb2dpbicpOwogIH0pOwoKICBpdCgnc2hvdWxkIGRpc3BsYXkgdGhlIGxvZ2luIGZvcm0nLCAoKSA9PiB7CiAgICBleHBlY3QoZWxlbWVudChieS5jc3MoJ2lvbi1pbnB1dFtuYW1lPSJ1c2VybmFtZSJdJykpLmlzUHJlc2VudCgpKS50b0JlKHRydWUpOwogICAgZXhwZWN0KGVsZW1lbnQoYnkuY3NzKCdpb24taW5wdXRbbmFtZT0icGFzc3dvcmQiXScpKS5pc1ByZXNlbnQoKSkudG9CZSh0cnVlKTsKICAgIGV4cGVjdChlbGVtZW50KGJ5LmNzcygnaW9uLWJ1dHRvblt0eXBlPSJzdWJtaXQiXScpKS5pc1ByZXNlbnQoKSkudG9CZSh0cnVlKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBhbGxvdyB0aGUgdXNlciB0byBsb2dpbicsICgpID0+IHsKICAgIGVsZW1lbnQoYnkuY3NzKCdpb24taW5wdXRbbmFtZT0idXNlcm5hbWUiXScpKS5zZW5kS2V5cygndGVzdHVzZXInKTsKICAgIGVsZW1lbnQoYnkuY3NzKCdpb24taW5wdXRbbmFtZT0icGFzc3dvcmQiXScpKS5zZW5kS2V5cygncGFzc3dvcmQnKTsKICAgIGVsZW1lbnQoYnkuY3NzKCdpb24tYnV0dG9uW3R5cGU9InN1Ym1pdCJdJykpLmNsaWNrKCk7CiAgICBleHBlY3QoYnJvd3Nlci5nZXRDdXJyZW50VXJsKCkpLnRvQ29udGFpbignL2hvbWUnKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { browser, by, element } from 'protractor';
+
+describe('Login Page', () =&gt; {
+  beforeEach(() =&gt; {
+    browser.get('/login');
+  });
+
+  it('should display the login form', () =&gt; {
+    expect(element(by.css('ion-input[name=&quot;username&quot;]')).isPresent()).toBe(true);
+    expect(element(by.css('ion-input[name=&quot;password&quot;]')).isPresent()).toBe(true);
+    expect(element(by.css('ion-button[type=&quot;submit&quot;]')).isPresent()).toBe(true);
+  });
+
+  it('should allow the user to login', () =&gt; {
+    element(by.css('ion-input[name=&quot;username&quot;]')).sendKeys('testuser');
+    element(by.css('ion-input[name=&quot;password&quot;]')).sendKeys('password');
+    element(by.css('ion-button[type=&quot;submit&quot;]')).click();
+    expect(browser.getCurrentUrl()).toContain('/home');
+  });
+});</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Element Not Found</strong>: Ensure that the CSS selectors used in your tests match the actual elements in your application.</li>
+<li><strong>Timeouts</strong>: Increase the <code>allScriptsTimeout</code> and <code>defaultTimeoutInterval</code> in the Protractor configuration if your tests are timing out.</li>
+<li><strong>Synchronization Issues</strong>: Use Protractor’s built-in synchronization features to handle asynchronous operations.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>End-to-end testing is essential for ensuring the reliability and functionality of your Ionic applications. By setting up Protractor and writing comprehensive E2E tests, you can catch issues early and provide a better user experience. In the next section, we will cover building your Ionic app for production.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-unit-testing' title="Unit Testing in Ionic">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-building-production' title="Building for Production">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

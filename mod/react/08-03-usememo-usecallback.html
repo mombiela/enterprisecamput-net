@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>useMemo and useCallback Hooks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/08-03-usememo-usecallback" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/08-03-usememo-usecallback" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/08-03-usememo-usecallback" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/react/08-03-usememo-usecallback" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/react/08-03-usememo-usecallback" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-memoization-react-memo' title="Memoization with React.memo">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">useMemo and useCallback Hooks</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-code-splitting-lazy-loading' title="Code Splitting and Lazy Loading">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore two powerful hooks in React: <code>useMemo</code> and <code>useCallback</code>. These hooks are essential for optimizing the performance of your React applications by preventing unnecessary re-renders and computations.</p>
+</div><h1>What is `useMemo`?</h1>
+<div class='content'><p>The <code>useMemo</code> hook is used to memoize the result of a computation. It helps to avoid expensive calculations on every render by caching the result and recomputing it only when one of its dependencies changes.</p>
+</div><h2>Syntax</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbWVtb2l6ZWRWYWx1ZSA9IHVzZU1lbW8oKCkgPT4gY29tcHV0ZUV4cGVuc2l2ZVZhbHVlKGEsIGIpLCBbYSwgYl0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const memoizedValue = useMemo(() =&gt; computeExpensiveValue(a, b), [a, b]);</pre></div><div class='content'><ul>
+<li><code>computeExpensiveValue</code> is a function that performs the expensive calculation.</li>
+<li><code>[a, b]</code> is the dependency array. The memoized value will only be recomputed if one of these dependencies changes.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'><p>Let's look at an example where we use <code>useMemo</code> to optimize a component that performs an expensive calculation.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VNZW1vIH0gZnJvbSAncmVhY3QnOwoKZnVuY3Rpb24gRXhwZW5zaXZlQ2FsY3VsYXRpb25Db21wb25lbnQoeyBhLCBiIH0pIHsKICBjb25zdCBbY291bnQsIHNldENvdW50XSA9IHVzZVN0YXRlKDApOwoKICBjb25zdCBleHBlbnNpdmVDYWxjdWxhdGlvbiA9IChhLCBiKSA9PiB7CiAgICBjb25zb2xlLmxvZygnUGVyZm9ybWluZyBleHBlbnNpdmUgY2FsY3VsYXRpb24uLi4nKTsKICAgIHJldHVybiBhICsgYjsKICB9OwoKICBjb25zdCBtZW1vaXplZFZhbHVlID0gdXNlTWVtbygoKSA9PiBleHBlbnNpdmVDYWxjdWxhdGlvbihhLCBiKSwgW2EsIGJdKTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxwPlJlc3VsdCBvZiBleHBlbnNpdmUgY2FsY3VsYXRpb246IHttZW1vaXplZFZhbHVlfTwvcD4KICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBzZXRDb3VudChjb3VudCArIDEpfT5JbmNyZW1lbnQgQ291bnQ8L2J1dHRvbj4KICAgICAgPHA+Q291bnQ6IHtjb3VudH08L3A+CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBFeHBlbnNpdmVDYWxjdWxhdGlvbkNvbXBvbmVudDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useMemo } from 'react';
+
+function ExpensiveCalculationComponent({ a, b }) {
+  const [count, setCount] = useState(0);
+
+  const expensiveCalculation = (a, b) =&gt; {
+    console.log('Performing expensive calculation...');
+    return a + b;
+  };
+
+  const memoizedValue = useMemo(() =&gt; expensiveCalculation(a, b), [a, b]);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Result of expensive calculation: {memoizedValue}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ExpensiveCalculationComponent;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>expensiveCalculation</code> function is called only when <code>a</code> or <code>b</code> changes.</li>
+<li>The <code>useMemo</code> hook ensures that the expensive calculation is not performed on every render, but only when necessary.</li>
+<li>Clicking the &quot;Increment Count&quot; button will not trigger the expensive calculation, as it does not affect the dependencies <code>[a, b]</code>.</li>
+</ul>
+</div><h1>What is `useCallback`?</h1>
+<div class='content'><p>The <code>useCallback</code> hook is used to memoize a callback function. It returns a memoized version of the callback that only changes if one of its dependencies has changed. This is useful for passing stable references to child components, preventing unnecessary re-renders.</p>
+</div><h2>Syntax</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbWVtb2l6ZWRDYWxsYmFjayA9IHVzZUNhbGxiYWNrKCgpID0+IHsKICBkb1NvbWV0aGluZyhhLCBiKTsKfSwgW2EsIGJdKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const memoizedCallback = useCallback(() =&gt; {
+  doSomething(a, b);
+}, [a, b]);</pre></div><div class='content'><ul>
+<li><code>doSomething</code> is the function to be memoized.</li>
+<li><code>[a, b]</code> is the dependency array. The memoized callback will only be recreated if one of these dependencies changes.</li>
+</ul>
+</div><h2>Example</h2>
+<div class='content'><p>Let's look at an example where we use <code>useCallback</code> to optimize a component that passes a callback to a child component.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VDYWxsYmFjayB9IGZyb20gJ3JlYWN0JzsKCmZ1bmN0aW9uIENoaWxkQ29tcG9uZW50KHsgb25DbGljayB9KSB7CiAgY29uc29sZS5sb2coJ0NoaWxkQ29tcG9uZW50IHJlbmRlcmVkJyk7CiAgcmV0dXJuIDxidXR0b24gb25DbGljaz17b25DbGlja30+Q2xpY2sgTWU8L2J1dHRvbj47Cn0KCmZ1bmN0aW9uIFBhcmVudENvbXBvbmVudCgpIHsKICBjb25zdCBbY291bnQsIHNldENvdW50XSA9IHVzZVN0YXRlKDApOwoKICBjb25zdCBoYW5kbGVDbGljayA9IHVzZUNhbGxiYWNrKCgpID0+IHsKICAgIGNvbnNvbGUubG9nKCdCdXR0b24gY2xpY2tlZCcpOwogIH0sIFtdKTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxDaGlsZENvbXBvbmVudCBvbkNsaWNrPXtoYW5kbGVDbGlja30gLz4KICAgICAgPGJ1dHRvbiBvbkNsaWNrPXsoKSA9PiBzZXRDb3VudChjb3VudCArIDEpfT5JbmNyZW1lbnQgQ291bnQ8L2J1dHRvbj4KICAgICAgPHA+Q291bnQ6IHtjb3VudH08L3A+CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBQYXJlbnRDb21wb25lbnQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useCallback } from 'react';
+
+function ChildComponent({ onClick }) {
+  console.log('ChildComponent rendered');
+  return &lt;button onClick={onClick}&gt;Click Me&lt;/button&gt;;
+}
+
+function ParentComponent() {
+  const [count, setCount] = useState(0);
+
+  const handleClick = useCallback(() =&gt; {
+    console.log('Button clicked');
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;ChildComponent onClick={handleClick} /&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increment Count&lt;/button&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default ParentComponent;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>handleClick</code> function is memoized using <code>useCallback</code>.</li>
+<li>The <code>ChildComponent</code> will not re-render when the &quot;Increment Count&quot; button is clicked, as the <code>handleClick</code> reference remains stable.</li>
+<li>This prevents unnecessary re-renders of the <code>ChildComponent</code>, improving performance.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a component that uses both <code>useMemo</code> and <code>useCallback</code> to optimize performance. The component should display a list of items and allow the user to filter the list based on a search input.</p>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VNZW1vLCB1c2VDYWxsYmFjayB9IGZyb20gJ3JlYWN0JzsKCmZ1bmN0aW9uIEZpbHRlcmFibGVMaXN0KHsgaXRlbXMgfSkgewogIGNvbnN0IFtzZWFyY2gsIHNldFNlYXJjaF0gPSB1c2VTdGF0ZSgnJyk7CgogIGNvbnN0IGZpbHRlcmVkSXRlbXMgPSB1c2VNZW1vKCgpID0+IHsKICAgIGNvbnNvbGUubG9nKCdGaWx0ZXJpbmcgaXRlbXMuLi4nKTsKICAgIHJldHVybiBpdGVtcy5maWx0ZXIoaXRlbSA9PiBpdGVtLnRvTG93ZXJDYXNlKCkuaW5jbHVkZXMoc2VhcmNoLnRvTG93ZXJDYXNlKCkpKTsKICB9LCBbaXRlbXMsIHNlYXJjaF0pOwoKICBjb25zdCBoYW5kbGVTZWFyY2hDaGFuZ2UgPSB1c2VDYWxsYmFjaygoZXZlbnQpID0+IHsKICAgIHNldFNlYXJjaChldmVudC50YXJnZXQudmFsdWUpOwogIH0sIFtdKTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiB2YWx1ZT17c2VhcmNofSBvbkNoYW5nZT17aGFuZGxlU2VhcmNoQ2hhbmdlfSBwbGFjZWhvbGRlcj0iU2VhcmNoIGl0ZW1zLi4uIiAvPgogICAgICA8dWw+CiAgICAgICAge2ZpbHRlcmVkSXRlbXMubWFwKChpdGVtLCBpbmRleCkgPT4gKAogICAgICAgICAgPGxpIGtleT17aW5kZXh9PntpdGVtfTwvbGk+CiAgICAgICAgKSl9CiAgICAgIDwvdWw+CiAgICA8L2Rpdj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBGaWx0ZXJhYmxlTGlzdDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useMemo, useCallback } from 'react';
+
+function FilterableList({ items }) {
+  const [search, setSearch] = useState('');
+
+  const filteredItems = useMemo(() =&gt; {
+    console.log('Filtering items...');
+    return items.filter(item =&gt; item.toLowerCase().includes(search.toLowerCase()));
+  }, [items, search]);
+
+  const handleSearchChange = useCallback((event) =&gt; {
+    setSearch(event.target.value);
+  }, []);
+
+  return (
+    &lt;div&gt;
+      &lt;input type=&quot;text&quot; value={search} onChange={handleSearchChange} placeholder=&quot;Search items...&quot; /&gt;
+      &lt;ul&gt;
+        {filteredItems.map((item, index) =&gt; (
+          &lt;li key={index}&gt;{item}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default FilterableList;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>filteredItems</code> array is memoized using <code>useMemo</code>, ensuring that the filtering logic is only executed when <code>items</code> or <code>search</code> changes.</li>
+<li>The <code>handleSearchChange</code> function is memoized using <code>useCallback</code>, providing a stable reference to the input's <code>onChange</code> handler.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned about the <code>useMemo</code> and <code>useCallback</code> hooks in React. These hooks are essential for optimizing performance by preventing unnecessary re-renders and computations. We explored practical examples and exercises to reinforce the concepts. By using these hooks effectively, you can build more efficient and performant React applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-memoization-react-memo' title="Memoization with React.memo">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-code-splitting-lazy-loading' title="Code Splitting and Lazy Loading">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

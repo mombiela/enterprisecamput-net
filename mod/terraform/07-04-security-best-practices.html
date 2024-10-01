@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Best Practices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/07-04-security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/07-04-security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/07-04-security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/07-04-security-best-practices" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/07-04-security-best-practices" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-testing-terraform-code' title="Testing Terraform Code">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Security Best Practices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-integrating-terraform-with-cicd' title="Integrating Terraform with CI/CD">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover essential security best practices when working with Terraform. Ensuring the security of your infrastructure as code (IaC) is crucial to protect sensitive data and maintain the integrity of your deployments.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Sensitive Data Management</strong></li>
+<li><strong>IAM Policies and Roles</strong></li>
+<li><strong>State File Security</strong></li>
+<li><strong>Environment Isolation</strong></li>
+<li><strong>Code Reviews and Audits</strong></li>
+<li><strong>Compliance and Governance</strong></li>
+</ol>
+</div><h1>1. Sensitive Data Management</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Sensitive data such as API keys, passwords, and other secrets should never be hardcoded in your Terraform configuration files. Instead, use secure methods to manage and reference these secrets.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Using Environment Variables</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIGFjY2Vzc19rZXkgPSB2YXIuYXdzX2FjY2Vzc19rZXkKICBzZWNyZXRfa2V5ID0gdmFyLmF3c19zZWNyZXRfa2V5CiAgcmVnaW9uICAgICA9ICJ1cy13ZXN0LTIiCn0KCnZhcmlhYmxlICJhd3NfYWNjZXNzX2tleSIgewogIGRlc2NyaXB0aW9uID0gIkFXUyBBY2Nlc3MgS2V5IgogIHR5cGUgICAgICAgID0gc3RyaW5nCn0KCnZhcmlhYmxlICJhd3Nfc2VjcmV0X2tleSIgewogIGRlc2NyaXB0aW9uID0gIkFXUyBTZWNyZXQgS2V5IgogIHR5cGUgICAgICAgID0gc3RyaW5nCiAgc2Vuc2l0aXZlICAgPSB0cnVlCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  region     = &quot;us-west-2&quot;
+}
+
+variable &quot;aws_access_key&quot; {
+  description = &quot;AWS Access Key&quot;
+  type        = string
+}
+
+variable &quot;aws_secret_key&quot; {
+  description = &quot;AWS Secret Key&quot;
+  type        = string
+  sensitive   = true
+}</pre></div><div class='content'><h4>Explanation</h4>
+<ul>
+<li><strong>Environment Variables</strong>: Store sensitive data in environment variables and reference them in your Terraform configuration.</li>
+<li><strong>Sensitive Attribute</strong>: Mark variables as sensitive to prevent them from being displayed in logs.</li>
+</ul>
+</div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create a Terraform configuration that uses environment variables to manage AWS credentials.</li>
+<li>Mark the secret key variable as sensitive.</li>
+</ol>
+</div><h1>2. IAM Policies and Roles</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Use the principle of least privilege when assigning IAM policies and roles. Ensure that your Terraform execution environment has only the permissions necessary to perform its tasks.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Creating a Least Privilege IAM Role</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19pYW1fcm9sZSIgInRlcnJhZm9ybSIgewogIG5hbWUgPSAidGVycmFmb3JtLXJvbGUiCgogIGFzc3VtZV9yb2xlX3BvbGljeSA9IGpzb25lbmNvZGUoewogICAgVmVyc2lvbiA9ICIyMDEyLTEwLTE3IiwKICAgIFN0YXRlbWVudCA9IFsKICAgICAgewogICAgICAgIEFjdGlvbiA9ICJzdHM6QXNzdW1lUm9sZSIsCiAgICAgICAgRWZmZWN0ID0gIkFsbG93IiwKICAgICAgICBQcmluY2lwYWwgPSB7CiAgICAgICAgICBTZXJ2aWNlID0gImVjMi5hbWF6b25hd3MuY29tIgogICAgICAgIH0KICAgICAgfQogICAgXQogIH0pCn0KCnJlc291cmNlICJhd3NfaWFtX3BvbGljeSIgInRlcnJhZm9ybV9wb2xpY3kiIHsKICBuYW1lICAgICAgICA9ICJ0ZXJyYWZvcm0tcG9saWN5IgogIGRlc2NyaXB0aW9uID0gIlBvbGljeSBmb3IgVGVycmFmb3JtIHRvIG1hbmFnZSByZXNvdXJjZXMiCgogIHBvbGljeSA9IGpzb25lbmNvZGUoewogICAgVmVyc2lvbiA9ICIyMDEyLTEwLTE3IiwKICAgIFN0YXRlbWVudCA9IFsKICAgICAgewogICAgICAgIEFjdGlvbiA9IFsKICAgICAgICAgICJlYzI6RGVzY3JpYmUqIiwKICAgICAgICAgICJlYzI6Q3JlYXRlKiIsCiAgICAgICAgICAiZWMyOkRlbGV0ZSoiCiAgICAgICAgXSwKICAgICAgICBFZmZlY3QgICA9ICJBbGxvdyIsCiAgICAgICAgUmVzb3VyY2UgPSAiKiIKICAgICAgfQogICAgXQogIH0pCn0KCnJlc291cmNlICJhd3NfaWFtX3JvbGVfcG9saWN5X2F0dGFjaG1lbnQiICJ0ZXJyYWZvcm1fYXR0YWNoIiB7CiAgcm9sZSAgICAgICA9IGF3c19pYW1fcm9sZS50ZXJyYWZvcm0ubmFtZQogIHBvbGljeV9hcm4gPSBhd3NfaWFtX3BvbGljeS50ZXJyYWZvcm1fcG9saWN5LmFybgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_iam_role&quot; &quot;terraform&quot; {
+  name = &quot;terraform-role&quot;
+
+  assume_role_policy = jsonencode({
+    Version = &quot;2012-10-17&quot;,
+    Statement = [
+      {
+        Action = &quot;sts:AssumeRole&quot;,
+        Effect = &quot;Allow&quot;,
+        Principal = {
+          Service = &quot;ec2.amazonaws.com&quot;
+        }
+      }
+    ]
+  })
+}
+
+resource &quot;aws_iam_policy&quot; &quot;terraform_policy&quot; {
+  name        = &quot;terraform-policy&quot;
+  description = &quot;Policy for Terraform to manage resources&quot;
+
+  policy = jsonencode({
+    Version = &quot;2012-10-17&quot;,
+    Statement = [
+      {
+        Action = [
+          &quot;ec2:Describe*&quot;,
+          &quot;ec2:Create*&quot;,
+          &quot;ec2:Delete*&quot;
+        ],
+        Effect   = &quot;Allow&quot;,
+        Resource = &quot;*&quot;
+      }
+    ]
+  })
+}
+
+resource &quot;aws_iam_role_policy_attachment&quot; &quot;terraform_attach&quot; {
+  role       = aws_iam_role.terraform.name
+  policy_arn = aws_iam_policy.terraform_policy.arn
+}</pre></div><div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create an IAM role with the least privilege policy for managing EC2 instances.</li>
+<li>Attach the policy to the role.</li>
+</ol>
+</div><h1>3. State File Security</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Terraform state files can contain sensitive information. Ensure that state files are stored securely and access is restricted.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Storing State Files in S3 with Encryption</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibXktdGVycmFmb3JtLXN0YXRlIgogICAga2V5ICAgICAgICAgICAgPSAicGF0aC90by9teS9rZXkiCiAgICByZWdpb24gICAgICAgICA9ICJ1cy13ZXN0LTIiCiAgICBlbmNyeXB0ICAgICAgICA9IHRydWUKICAgIGR5bmFtb2RiX3RhYmxlID0gInRlcnJhZm9ybS1sb2NrIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state&quot;
+    key            = &quot;path/to/my/key&quot;
+    region         = &quot;us-west-2&quot;
+    encrypt        = true
+    dynamodb_table = &quot;terraform-lock&quot;
+  }
+}</pre></div><div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Configure Terraform to store state files in an S3 bucket with encryption enabled.</li>
+<li>Use a DynamoDB table for state locking.</li>
+</ol>
+</div><h1>4. Environment Isolation</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Isolate different environments (e.g., development, staging, production) to prevent accidental changes and ensure that each environment is managed independently.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Using Workspaces for Environment Isolation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ID0gIm15LXRlcnJhZm9ybS1zdGF0ZSIKICAgIGtleSAgICA9ICJwYXRoL3RvL215L2tleSIKICAgIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCiAgfQp9CgpyZXNvdXJjZSAiYXdzX2luc3RhbmNlIiAiZXhhbXBsZSIgewogIGFtaSAgICAgICAgICAgPSAiYW1pLTBjNTViMTU5Y2JmYWZlMWYwIgogIGluc3RhbmNlX3R5cGUgPSAidDIubWljcm8iCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket = &quot;my-terraform-state&quot;
+    key    = &quot;path/to/my/key&quot;
+    region = &quot;us-west-2&quot;
+  }
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYW5kIHN3aXRjaCB0byBhIG5ldyB3b3Jrc3BhY2UKdGVycmFmb3JtIHdvcmtzcGFjZSBuZXcgZGV2CnRlcnJhZm9ybSB3b3Jrc3BhY2UgbmV3IHByb2QKCiMgQXBwbHkgY2hhbmdlcyBpbiB0aGUgZGV2IHdvcmtzcGFjZQp0ZXJyYWZvcm0gd29ya3NwYWNlIHNlbGVjdCBkZXYKdGVycmFmb3JtIGFwcGx5CgojIEFwcGx5IGNoYW5nZXMgaW4gdGhlIHByb2Qgd29ya3NwYWNlCnRlcnJhZm9ybSB3b3Jrc3BhY2Ugc2VsZWN0IHByb2QKdGVycmFmb3JtIGFwcGx5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create and switch to a new workspace
+terraform workspace new dev
+terraform workspace new prod
+
+# Apply changes in the dev workspace
+terraform workspace select dev
+terraform apply
+
+# Apply changes in the prod workspace
+terraform workspace select prod
+terraform apply</pre></div><div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create separate workspaces for development and production environments.</li>
+<li>Deploy resources in each workspace independently.</li>
+</ol>
+</div><h1>5. Code Reviews and Audits</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Regularly review and audit your Terraform code to ensure it adheres to security best practices and organizational policies.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Implementing Code Reviews with GitHub</h4>
+<ol>
+<li><strong>Create a Pull Request</strong>: Ensure all changes to Terraform code are made through pull requests.</li>
+<li><strong>Review Process</strong>: Set up a review process where at least one other team member reviews the code before merging.</li>
+</ol>
+</div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Set up a GitHub repository for your Terraform code.</li>
+<li>Implement a pull request workflow with mandatory code reviews.</li>
+</ol>
+</div><h1>6. Compliance and Governance</h1>
+<div class='content'></div><h2>Explanation</h2>
+<div class='content'><p>Ensure your Terraform configurations comply with industry standards and organizational policies. Use tools like Sentinel or Open Policy Agent (OPA) to enforce policies.</p>
+</div><h2>Practical Example</h2>
+<div class='content'><h4>Using Sentinel for Policy Enforcement</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cG9saWN5ICJlYzJfaW5zdGFuY2VfdHlwZSIgewogIHJ1bGUgewogICAgYWxsX2luc3RhbmNlcyA9IGZpbHRlciB0ZnBsYW4ucmVzb3VyY2VfY2hhbmdlcyBhcyBfLCByYyB7CiAgICAgIHJjLnR5cGUgaXMgImF3c19pbnN0YW5jZSIKICAgIH0KCiAgICBhbGxfaW5zdGFuY2VzIGFzIF8sIGluc3RhbmNlIHsKICAgICAgaW5zdGFuY2UuY2hhbmdlLmFmdGVyLmluc3RhbmNlX3R5cGUgaW4gWyJ0Mi5taWNybyIsICJ0Mi5zbWFsbCJdCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>policy &quot;ec2_instance_type&quot; {
+  rule {
+    all_instances = filter tfplan.resource_changes as _, rc {
+      rc.type is &quot;aws_instance&quot;
+    }
+
+    all_instances as _, instance {
+      instance.change.after.instance_type in [&quot;t2.micro&quot;, &quot;t2.small&quot;]
+    }
+  }
+}</pre></div><div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Write a Sentinel policy to enforce the use of specific EC2 instance types.</li>
+<li>Apply the policy to your Terraform configurations.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered essential security best practices for working with Terraform, including managing sensitive data, using IAM policies, securing state files, isolating environments, conducting code reviews, and ensuring compliance. By following these practices, you can enhance the security and integrity of your Terraform-managed infrastructure.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-testing-terraform-code' title="Testing Terraform Code">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-integrating-terraform-with-cicd' title="Integrating Terraform with CI/CD">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

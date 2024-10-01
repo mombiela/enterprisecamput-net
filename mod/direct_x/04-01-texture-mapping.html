@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texture Mapping</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/04-01-texture-mapping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/04-01-texture-mapping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/04-01-texture-mapping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/direct_x/04-01-texture-mapping" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/04-01-texture-mapping" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-compiling-using-shaders' title="Compiling and Using Shaders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Texture Mapping</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lighting-and-materials' title="Lighting and Materials">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Texture mapping is a technique used in computer graphics to apply images (textures) to 3D models. This process enhances the visual detail of 3D objects without increasing their geometric complexity. In this section, we will cover the basics of texture mapping in DirectX, including how to load textures, apply them to 3D models, and manage texture coordinates.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Textures</strong>: Images applied to the surface of 3D models.</li>
+<li><strong>Texture Coordinates (UV Mapping)</strong>: Coordinates that map the texture to the 3D model.</li>
+<li><strong>Sampler States</strong>: Settings that control how textures are sampled and applied.</li>
+</ol>
+</div><h1>Steps to Implement Texture Mapping</h1>
+<div class='content'></div><h2>1. Loading Textures</h2>
+<div class='content'><p>To load a texture in DirectX, you typically use the DirectX Tool Kit (DirectXTK) or DirectXTex library. Here’s an example of how to load a texture using DirectXTK:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGQzZDExLmg+CiNpbmNsdWRlIDxERFNUZXh0dXJlTG9hZGVyLmg+CgovLyBBc3N1bWUgZGV2aWNlIGlzIGEgdmFsaWQgSUQzRDExRGV2aWNlIHBvaW50ZXIKSUQzRDExU2hhZGVyUmVzb3VyY2VWaWV3KiB0ZXh0dXJlVmlldyA9IG51bGxwdHI7CkhSRVNVTFQgaHIgPSBEaXJlY3RYOjpDcmVhdGVERFNUZXh0dXJlRnJvbUZpbGUoZGV2aWNlLCBMInRleHR1cmUuZGRzIiwgbnVsbHB0ciwgJnRleHR1cmVWaWV3KTsKCmlmIChGQUlMRUQoaHIpKSB7CiAgICAvLyBIYW5kbGUgZXJyb3IKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;d3d11.h&gt;
+#include &lt;DDSTextureLoader.h&gt;
+
+// Assume device is a valid ID3D11Device pointer
+ID3D11ShaderResourceView* textureView = nullptr;
+HRESULT hr = DirectX::CreateDDSTextureFromFile(device, L&quot;texture.dds&quot;, nullptr, &amp;textureView);
+
+if (FAILED(hr)) {
+    // Handle error
+}</pre></div><div class='content'></div><h2>2. Applying Textures to 3D Models</h2>
+<div class='content'><p>To apply a texture to a 3D model, you need to set the texture as a shader resource and configure the pixel shader to use it. Here’s an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXNzdW1lIGNvbnRleHQgaXMgYSB2YWxpZCBJRDNEMTFEZXZpY2VDb250ZXh0IHBvaW50ZXIKY29udGV4dC0+UFNTZXRTaGFkZXJSZXNvdXJjZXMoMCwgMSwgJnRleHR1cmVWaWV3KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Assume context is a valid ID3D11DeviceContext pointer
+context-&gt;PSSetShaderResources(0, 1, &amp;textureView);</pre></div><div class='content'></div><h2>3. Managing Texture Coordinates</h2>
+<div class='content'><p>Texture coordinates (UV coordinates) are used to map the texture to the vertices of the 3D model. Here’s an example of a vertex structure with texture coordinates:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFZlcnRleCB7CiAgICBEaXJlY3RYOjpYTUZMT0FUMyBwb3NpdGlvbjsKICAgIERpcmVjdFg6OlhNRkxPQVQyIHRleENvb3JkOwp9OwoKLy8gRXhhbXBsZSB2ZXJ0ZXggZGF0YQpWZXJ0ZXggdmVydGljZXNbXSA9IHsKICAgIHsgRGlyZWN0WDo6WE1GTE9BVDMoLTEuMGYsIC0xLjBmLCAwLjBmKSwgRGlyZWN0WDo6WE1GTE9BVDIoMC4wZiwgMS4wZikgfSwKICAgIHsgRGlyZWN0WDo6WE1GTE9BVDMoMS4wZiwgLTEuMGYsIDAuMGYpLCBEaXJlY3RYOjpYTUZMT0FUMigxLjBmLCAxLjBmKSB9LAogICAgeyBEaXJlY3RYOjpYTUZMT0FUMygwLjBmLCAxLjBmLCAwLjBmKSwgRGlyZWN0WDo6WE1GTE9BVDIoMC41ZiwgMC4wZikgfQp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Vertex {
+    DirectX::XMFLOAT3 position;
+    DirectX::XMFLOAT2 texCoord;
+};
+
+// Example vertex data
+Vertex vertices[] = {
+    { DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+    { DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
+    { DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.0f) }
+};</pre></div><div class='content'></div><h2>4. Configuring Sampler States</h2>
+<div class='content'><p>Sampler states control how textures are sampled and applied. Here’s an example of creating a sampler state:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RDNEMTFfU0FNUExFUl9ERVNDIHNhbXBsZXJEZXNjID0ge307CnNhbXBsZXJEZXNjLkZpbHRlciA9IEQzRDExX0ZJTFRFUl9NSU5fTUFHX01JUF9MSU5FQVI7CnNhbXBsZXJEZXNjLkFkZHJlc3NVID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NWID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NXID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkNvbXBhcmlzb25GdW5jID0gRDNEMTFfQ09NUEFSSVNPTl9ORVZFUjsKc2FtcGxlckRlc2MuTWluTE9EID0gMDsKc2FtcGxlckRlc2MuTWF4TE9EID0gRDNEMTFfRkxPQVQzMl9NQVg7CgpJRDNEMTFTYW1wbGVyU3RhdGUqIHNhbXBsZXJTdGF0ZSA9IG51bGxwdHI7CmhyID0gZGV2aWNlLT5DcmVhdGVTYW1wbGVyU3RhdGUoJnNhbXBsZXJEZXNjLCAmc2FtcGxlclN0YXRlKTsKCmlmIChGQUlMRUQoaHIpKSB7CiAgICAvLyBIYW5kbGUgZXJyb3IKfQoKLy8gU2V0IHRoZSBzYW1wbGVyIHN0YXRlCmNvbnRleHQtPlBTU2V0U2FtcGxlcnMoMCwgMSwgJnNhbXBsZXJTdGF0ZSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>D3D11_SAMPLER_DESC samplerDesc = {};
+samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+samplerDesc.MinLOD = 0;
+samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+ID3D11SamplerState* samplerState = nullptr;
+hr = device-&gt;CreateSamplerState(&amp;samplerDesc, &amp;samplerState);
+
+if (FAILED(hr)) {
+    // Handle error
+}
+
+// Set the sampler state
+context-&gt;PSSetSamplers(0, 1, &amp;samplerState);</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Apply a Texture to a Triangle</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Apply a texture to a simple triangle.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Load a texture from a file.</li>
+<li>Create a vertex buffer with texture coordinates.</li>
+<li>Set the texture and sampler state in the pixel shader.</li>
+<li>Render the triangle with the applied texture.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVmVydGV4IHN0cnVjdHVyZSB3aXRoIHRleHR1cmUgY29vcmRpbmF0ZXMKc3RydWN0IFZlcnRleCB7CiAgICBEaXJlY3RYOjpYTUZMT0FUMyBwb3NpdGlvbjsKICAgIERpcmVjdFg6OlhNRkxPQVQyIHRleENvb3JkOwp9OwoKLy8gVmVydGV4IGRhdGEKVmVydGV4IHZlcnRpY2VzW10gPSB7CiAgICB7IERpcmVjdFg6OlhNRkxPQVQzKC0xLjBmLCAtMS4wZiwgMC4wZiksIERpcmVjdFg6OlhNRkxPQVQyKDAuMGYsIDEuMGYpIH0sCiAgICB7IERpcmVjdFg6OlhNRkxPQVQzKDEuMGYsIC0xLjBmLCAwLjBmKSwgRGlyZWN0WDo6WE1GTE9BVDIoMS4wZiwgMS4wZikgfSwKICAgIHsgRGlyZWN0WDo6WE1GTE9BVDMoMC4wZiwgMS4wZiwgMC4wZiksIERpcmVjdFg6OlhNRkxPQVQyKDAuNWYsIDAuMGYpIH0KfTsKCi8vIExvYWQgdGV4dHVyZQpJRDNEMTFTaGFkZXJSZXNvdXJjZVZpZXcqIHRleHR1cmVWaWV3ID0gbnVsbHB0cjsKSFJFU1VMVCBociA9IERpcmVjdFg6OkNyZWF0ZUREU1RleHR1cmVGcm9tRmlsZShkZXZpY2UsIEwidGV4dHVyZS5kZHMiLCBudWxscHRyLCAmdGV4dHVyZVZpZXcpOwoKLy8gQ3JlYXRlIHNhbXBsZXIgc3RhdGUKRDNEMTFfU0FNUExFUl9ERVNDIHNhbXBsZXJEZXNjID0ge307CnNhbXBsZXJEZXNjLkZpbHRlciA9IEQzRDExX0ZJTFRFUl9NSU5fTUFHX01JUF9MSU5FQVI7CnNhbXBsZXJEZXNjLkFkZHJlc3NVID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NWID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NXID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkNvbXBhcmlzb25GdW5jID0gRDNEMTFfQ09NUEFSSVNPTl9ORVZFUjsKc2FtcGxlckRlc2MuTWluTE9EID0gMDsKc2FtcGxlckRlc2MuTWF4TE9EID0gRDNEMTFfRkxPQVQzMl9NQVg7CgpJRDNEMTFTYW1wbGVyU3RhdGUqIHNhbXBsZXJTdGF0ZSA9IG51bGxwdHI7CmhyID0gZGV2aWNlLT5DcmVhdGVTYW1wbGVyU3RhdGUoJnNhbXBsZXJEZXNjLCAmc2FtcGxlclN0YXRlKTsKCi8vIFNldCB0ZXh0dXJlIGFuZCBzYW1wbGVyIHN0YXRlCmNvbnRleHQtPlBTU2V0U2hhZGVyUmVzb3VyY2VzKDAsIDEsICZ0ZXh0dXJlVmlldyk7CmNvbnRleHQtPlBTU2V0U2FtcGxlcnMoMCwgMSwgJnNhbXBsZXJTdGF0ZSk7CgovLyBSZW5kZXIgdGhlIHRyaWFuZ2xlIChhc3N1bWluZyB2ZXJ0ZXggYnVmZmVyIGFuZCBvdGhlciBzZXR1cCBpcyBkb25lKQpjb250ZXh0LT5EcmF3KDMsIDApOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Vertex structure with texture coordinates
+struct Vertex {
+    DirectX::XMFLOAT3 position;
+    DirectX::XMFLOAT2 texCoord;
+};
+
+// Vertex data
+Vertex vertices[] = {
+    { DirectX::XMFLOAT3(-1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(0.0f, 1.0f) },
+    { DirectX::XMFLOAT3(1.0f, -1.0f, 0.0f), DirectX::XMFLOAT2(1.0f, 1.0f) },
+    { DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f), DirectX::XMFLOAT2(0.5f, 0.0f) }
+};
+
+// Load texture
+ID3D11ShaderResourceView* textureView = nullptr;
+HRESULT hr = DirectX::CreateDDSTextureFromFile(device, L&quot;texture.dds&quot;, nullptr, &amp;textureView);
+
+// Create sampler state
+D3D11_SAMPLER_DESC samplerDesc = {};
+samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+samplerDesc.MinLOD = 0;
+samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+ID3D11SamplerState* samplerState = nullptr;
+hr = device-&gt;CreateSamplerState(&amp;samplerDesc, &amp;samplerState);
+
+// Set texture and sampler state
+context-&gt;PSSetShaderResources(0, 1, &amp;textureView);
+context-&gt;PSSetSamplers(0, 1, &amp;samplerState);
+
+// Render the triangle (assuming vertex buffer and other setup is done)
+context-&gt;Draw(3, 0);</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Texture Coordinates</strong>: Ensure that the texture coordinates are correctly mapped to the vertices.</li>
+<li><strong>Sampler State Configuration</strong>: Incorrect sampler state settings can lead to unexpected texture behavior. Double-check the sampler state configuration.</li>
+<li><strong>Resource Management</strong>: Remember to release resources (textures, sampler states) to avoid memory leaks.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of texture mapping in DirectX, including loading textures, applying them to 3D models, managing texture coordinates, and configuring sampler states. By understanding these concepts, you can enhance the visual detail of your 3D applications. In the next section, we will delve into lighting and materials to further improve the realism of your 3D scenes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-compiling-using-shaders' title="Compiling and Using Shaders">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lighting-and-materials' title="Lighting and Materials">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

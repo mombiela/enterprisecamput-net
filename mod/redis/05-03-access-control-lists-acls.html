@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Control Lists (ACLs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/05-03-access-control-lists-acls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/05-03-access-control-lists-acls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/05-03-access-control-lists-acls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/05-03-access-control-lists-acls" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/05-03-access-control-lists-acls" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-encryption' title="Encryption">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Access Control Lists (ACLs)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-security-best-practices' title="Security Best Practices">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Access Control Lists (ACLs) in Redis provide a way to manage and control access to the Redis server. ACLs allow you to define which commands and keys a user can access, enhancing the security and manageability of your Redis instance. This section will cover the basics of ACLs, how to configure them, and practical examples to help you understand their usage.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Users</strong>: Redis allows you to create multiple users, each with specific permissions.</li>
+<li><strong>Rules</strong>: Each user can have a set of rules that define what commands and keys they can access.</li>
+<li><strong>Authentication</strong>: Users must authenticate themselves to access the Redis server.</li>
+</ol>
+</div><h1>Configuring ACLs</h1>
+<div class='content'></div><h2>Creating Users</h2>
+<div class='content'><p>To create a new user, you use the <code>ACL SETUSER</code> command. Here’s an example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgYWxpY2Ugb24gPnBhc3N3b3JkIH4qICtAYWxs"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER alice on &gt;password ~* +@all</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>alice</code>: The username.</li>
+<li><code>on</code>: Enables the user.</li>
+<li><code>&gt;password</code>: Sets the password for the user.</li>
+<li><code>~*</code>: Allows access to all keys.</li>
+<li><code>+@all</code>: Grants all command permissions.</li>
+</ul>
+</div><h2>Modifying User Permissions</h2>
+<div class='content'><p>You can modify user permissions using the <code>ACL SETUSER</code> command. For example, to restrict a user to only read operations:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgYm9iIG9uID5wYXNzd29yZCB+KiArQHJlYWQgLUB3cml0ZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER bob on &gt;password ~* +@read -@write</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>+@read</code>: Grants read command permissions.</li>
+<li><code>-@write</code>: Denies write command permissions.</li>
+</ul>
+</div><h2>Listing Users</h2>
+<div class='content'><p>To list all users and their permissions, use the <code>ACL LIST</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIExJU1Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL LIST</pre></div><div class='content'></div><h2>Deleting Users</h2>
+<div class='content'><p>To delete a user, use the <code>ACL DELUSER</code> command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIERFTFVTRVIgYWxpY2U="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL DELUSER alice</pre></div><div class='content'></div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Creating a Read-Only User</h2>
+<div class='content'><ol>
+<li>
+<p>Create a user named <code>readonly</code> with read-only access:</p>
+<pre><code class="language-redis">ACL SETUSER readonly on &gt;readonlypassword ~* +@read -@write
+</code></pre>
+</li>
+<li>
+<p>Authenticate as the <code>readonly</code> user:</p>
+<pre><code class="language-redis">AUTH readonly readonlypassword
+</code></pre>
+</li>
+<li>
+<p>Try to perform a write operation (this should fail):</p>
+<pre><code class="language-redis">SET key1 value1
+</code></pre>
+<p>Expected output:</p>
+<pre><code>(error) NOPERM this user has no permissions to run the 'set' command
+</code></pre>
+</li>
+<li>
+<p>Perform a read operation (this should succeed):</p>
+<pre><code class="language-redis">GET key1
+</code></pre>
+<p>Expected output:</p>
+<pre><code>(nil)
+</code></pre>
+</li>
+</ol>
+</div><h2>Example 2: Creating a User with Specific Key Access</h2>
+<div class='content'><ol>
+<li>
+<p>Create a user named <code>limited</code> with access to keys starting with <code>prefix:</code>:</p>
+<pre><code class="language-redis">ACL SETUSER limited on &gt;limitedpassword ~prefix:* +@all
+</code></pre>
+</li>
+<li>
+<p>Authenticate as the <code>limited</code> user:</p>
+<pre><code class="language-redis">AUTH limited limitedpassword
+</code></pre>
+</li>
+<li>
+<p>Try to access a key outside the allowed prefix (this should fail):</p>
+<pre><code class="language-redis">GET otherkey
+</code></pre>
+<p>Expected output:</p>
+<pre><code>(error) NOPERM this user has no permissions to access one of the keys used as arguments
+</code></pre>
+</li>
+<li>
+<p>Access a key within the allowed prefix (this should succeed):</p>
+<pre><code class="language-redis">SET prefix:key1 value1
+</code></pre>
+<p>Expected output:</p>
+<pre><code>OK
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to Enable the User</strong>: Ensure you use the <code>on</code> keyword to enable the user.</li>
+<li><strong>Misconfiguring Permissions</strong>: Double-check the permissions you set to avoid unintended access.</li>
+<li><strong>Strong Passwords</strong>: Always use strong, unique passwords for each user to enhance security.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of Access Control Lists (ACLs) in Redis, including how to create and manage users, set permissions, and practical examples of configuring ACLs. ACLs are a powerful feature to enhance the security and manageability of your Redis instance by controlling access at a granular level. In the next section, we will delve into Redis Security Best Practices to further secure your Redis deployment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-encryption' title="Encryption">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-security-best-practices' title="Security Best Practices">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

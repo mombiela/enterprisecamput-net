@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrency Utilities</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/java/08-05-concurrency-utilities" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/java/08-05-concurrency-utilities" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/java/08-05-concurrency-utilities" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/java/08-05-concurrency-utilities" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/java/08-05-concurrency-utilities" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-synchronization' title="Synchronization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Concurrency Utilities</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-to-networking' title="Introduction to Networking">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Concurrency utilities in Java provide a robust framework for managing multiple threads and ensuring thread safety. These utilities are part of the <code>java.util.concurrent</code> package and offer various classes and interfaces to handle concurrent programming more efficiently.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Executor Framework</strong>: Manages a pool of worker threads, simplifying the execution of asynchronous tasks.</li>
+<li><strong>Concurrent Collections</strong>: Thread-safe versions of standard collections like <code>ConcurrentHashMap</code>, <code>CopyOnWriteArrayList</code>, etc.</li>
+<li><strong>Locks</strong>: More flexible and powerful alternatives to synchronized blocks, such as <code>ReentrantLock</code>.</li>
+<li><strong>Atomic Variables</strong>: Provide lock-free thread-safe operations on single variables.</li>
+<li><strong>Synchronizers</strong>: Utilities like <code>CountDownLatch</code>, <code>CyclicBarrier</code>, <code>Semaphore</code>, and <code>Exchanger</code> to manage thread coordination.</li>
+</ol>
+</div><h1>Executor Framework</h1>
+<div class='content'><p>The Executor framework provides a way to decouple task submission from the mechanics of how each task will be run, including details of thread use, scheduling, etc.</p>
+</div><h2>Example: Using `ExecutorService`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LkV4ZWN1dG9yU2VydmljZTsKaW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LkV4ZWN1dG9yczsKCnB1YmxpYyBjbGFzcyBFeGVjdXRvckV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIEV4ZWN1dG9yU2VydmljZSBleGVjdXRvciA9IEV4ZWN1dG9ycy5uZXdGaXhlZFRocmVhZFBvb2woMyk7CgogICAgICAgIGZvciAoaW50IGkgPSAwOyBpIDwgNTsgaSsrKSB7CiAgICAgICAgICAgIFJ1bm5hYmxlIHdvcmtlciA9IG5ldyBXb3JrZXJUaHJlYWQoIiIgKyBpKTsKICAgICAgICAgICAgZXhlY3V0b3IuZXhlY3V0ZSh3b3JrZXIpOwogICAgICAgIH0KICAgICAgICBleGVjdXRvci5zaHV0ZG93bigpOwogICAgICAgIHdoaWxlICghZXhlY3V0b3IuaXNUZXJtaW5hdGVkKCkpIHsKICAgICAgICB9CiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJGaW5pc2hlZCBhbGwgdGhyZWFkcyIpOwogICAgfQp9CgpjbGFzcyBXb3JrZXJUaHJlYWQgaW1wbGVtZW50cyBSdW5uYWJsZSB7CiAgICBwcml2YXRlIFN0cmluZyBjb21tYW5kOwoKICAgIHB1YmxpYyBXb3JrZXJUaHJlYWQoU3RyaW5nIHMpIHsKICAgICAgICB0aGlzLmNvbW1hbmQgPSBzOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgcnVuKCkgewogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbihUaHJlYWQuY3VycmVudFRocmVhZCgpLmdldE5hbWUoKSArICIgU3RhcnQuIENvbW1hbmQgPSAiICsgY29tbWFuZCk7CiAgICAgICAgcHJvY2Vzc0NvbW1hbmQoKTsKICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oVGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5nZXROYW1lKCkgKyAiIEVuZC4iKTsKICAgIH0KCiAgICBwcml2YXRlIHZvaWQgcHJvY2Vzc0NvbW1hbmQoKSB7CiAgICAgICAgdHJ5IHsKICAgICAgICAgICAgVGhyZWFkLnNsZWVwKDUwMDApOwogICAgICAgIH0gY2F0Y2ggKEludGVycnVwdGVkRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ExecutorExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        for (int i = 0; i &lt; 5; i++) {
+            Runnable worker = new WorkerThread(&quot;&quot; + i);
+            executor.execute(worker);
+        }
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+        System.out.println(&quot;Finished all threads&quot;);
+    }
+}
+
+class WorkerThread implements Runnable {
+    private String command;
+
+    public WorkerThread(String s) {
+        this.command = s;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + &quot; Start. Command = &quot; + command);
+        processCommand();
+        System.out.println(Thread.currentThread().getName() + &quot; End.&quot;);
+    }
+
+    private void processCommand() {
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>ExecutorService</strong>: Manages a pool of threads.</li>
+<li><strong>Executors.newFixedThreadPool(3)</strong>: Creates a thread pool with 3 threads.</li>
+<li><strong>executor.execute(worker)</strong>: Submits tasks for execution.</li>
+<li><strong>executor.shutdown()</strong>: Initiates an orderly shutdown.</li>
+<li><strong>executor.isTerminated()</strong>: Checks if all tasks have completed.</li>
+</ul>
+</div><h1>Concurrent Collections</h1>
+<div class='content'><p>Concurrent collections are designed to be used in a multi-threaded environment without the need for external synchronization.</p>
+</div><h2>Example: Using `ConcurrentHashMap`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LkNvbmN1cnJlbnRIYXNoTWFwOwoKcHVibGljIGNsYXNzIENvbmN1cnJlbnRIYXNoTWFwRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgQ29uY3VycmVudEhhc2hNYXA8U3RyaW5nLCBJbnRlZ2VyPiBtYXAgPSBuZXcgQ29uY3VycmVudEhhc2hNYXA8PigpOwoKICAgICAgICBtYXAucHV0KCJPbmUiLCAxKTsKICAgICAgICBtYXAucHV0KCJUd28iLCAyKTsKICAgICAgICBtYXAucHV0KCJUaHJlZSIsIDMpOwoKICAgICAgICBtYXAuZm9yRWFjaCgoa2V5LCB2YWx1ZSkgLT4gU3lzdGVtLm91dC5wcmludGxuKGtleSArICIgPSAiICsgdmFsdWUpKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+    public static void main(String[] args) {
+        ConcurrentHashMap&lt;String, Integer&gt; map = new ConcurrentHashMap&lt;&gt;();
+
+        map.put(&quot;One&quot;, 1);
+        map.put(&quot;Two&quot;, 2);
+        map.put(&quot;Three&quot;, 3);
+
+        map.forEach((key, value) -&gt; System.out.println(key + &quot; = &quot; + value));
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>ConcurrentHashMap</strong>: A thread-safe version of <code>HashMap</code>.</li>
+<li><strong>map.put()</strong>: Adds key-value pairs to the map.</li>
+<li><strong>map.forEach()</strong>: Iterates over the map entries.</li>
+</ul>
+</div><h1>Locks</h1>
+<div class='content'><p>Locks provide more extensive operations than synchronized blocks.</p>
+</div><h2>Example: Using `ReentrantLock`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LmxvY2tzLkxvY2s7CmltcG9ydCBqYXZhLnV0aWwuY29uY3VycmVudC5sb2Nrcy5SZWVudHJhbnRMb2NrOwoKcHVibGljIGNsYXNzIFJlZW50cmFudExvY2tFeGFtcGxlIHsKICAgIHByaXZhdGUgZmluYWwgTG9jayBsb2NrID0gbmV3IFJlZW50cmFudExvY2soKTsKCiAgICBwdWJsaWMgdm9pZCBwZXJmb3JtVGFzaygpIHsKICAgICAgICBsb2NrLmxvY2soKTsKICAgICAgICB0cnkgewogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oVGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5nZXROYW1lKCkgKyAiIGlzIHBlcmZvcm1pbmcgdGFzayIpOwogICAgICAgICAgICBUaHJlYWQuc2xlZXAoMTAwMCk7CiAgICAgICAgfSBjYXRjaCAoSW50ZXJydXB0ZWRFeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0gZmluYWxseSB7CiAgICAgICAgICAgIGxvY2sudW5sb2NrKCk7CiAgICAgICAgfQogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBSZWVudHJhbnRMb2NrRXhhbXBsZSBleGFtcGxlID0gbmV3IFJlZW50cmFudExvY2tFeGFtcGxlKCk7CiAgICAgICAgUnVubmFibGUgdGFzayA9IGV4YW1wbGU6OnBlcmZvcm1UYXNrOwoKICAgICAgICBUaHJlYWQgdDEgPSBuZXcgVGhyZWFkKHRhc2spOwogICAgICAgIFRocmVhZCB0MiA9IG5ldyBUaHJlYWQodGFzayk7CgogICAgICAgIHQxLnN0YXJ0KCk7CiAgICAgICAgdDIuc3RhcnQoKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ReentrantLockExample {
+    private final Lock lock = new ReentrantLock();
+
+    public void performTask() {
+        lock.lock();
+        try {
+            System.out.println(Thread.currentThread().getName() + &quot; is performing task&quot;);
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public static void main(String[] args) {
+        ReentrantLockExample example = new ReentrantLockExample();
+        Runnable task = example::performTask;
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>ReentrantLock</strong>: A reentrant mutual exclusion lock.</li>
+<li><strong>lock.lock()</strong>: Acquires the lock.</li>
+<li><strong>lock.unlock()</strong>: Releases the lock.</li>
+</ul>
+</div><h1>Atomic Variables</h1>
+<div class='content'><p>Atomic variables provide lock-free thread-safe operations on single variables.</p>
+</div><h2>Example: Using `AtomicInteger`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LmF0b21pYy5BdG9taWNJbnRlZ2VyOwoKcHVibGljIGNsYXNzIEF0b21pY0ludGVnZXJFeGFtcGxlIHsKICAgIHByaXZhdGUgQXRvbWljSW50ZWdlciBjb3VudGVyID0gbmV3IEF0b21pY0ludGVnZXIoMCk7CgogICAgcHVibGljIHZvaWQgaW5jcmVtZW50KCkgewogICAgICAgIGNvdW50ZXIuaW5jcmVtZW50QW5kR2V0KCk7CiAgICB9CgogICAgcHVibGljIGludCBnZXRDb3VudGVyKCkgewogICAgICAgIHJldHVybiBjb3VudGVyLmdldCgpOwogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBBdG9taWNJbnRlZ2VyRXhhbXBsZSBleGFtcGxlID0gbmV3IEF0b21pY0ludGVnZXJFeGFtcGxlKCk7CiAgICAgICAgUnVubmFibGUgdGFzayA9IGV4YW1wbGU6OmluY3JlbWVudDsKCiAgICAgICAgVGhyZWFkIHQxID0gbmV3IFRocmVhZCh0YXNrKTsKICAgICAgICBUaHJlYWQgdDIgPSBuZXcgVGhyZWFkKHRhc2spOwoKICAgICAgICB0MS5zdGFydCgpOwogICAgICAgIHQyLnN0YXJ0KCk7CgogICAgICAgIHRyeSB7CiAgICAgICAgICAgIHQxLmpvaW4oKTsKICAgICAgICAgICAgdDIuam9pbigpOwogICAgICAgIH0gY2F0Y2ggKEludGVycnVwdGVkRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CgogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiQ291bnRlcjogIiArIGV4YW1wbGUuZ2V0Q291bnRlcigpKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.atomic.AtomicInteger;
+
+public class AtomicIntegerExample {
+    private AtomicInteger counter = new AtomicInteger(0);
+
+    public void increment() {
+        counter.incrementAndGet();
+    }
+
+    public int getCounter() {
+        return counter.get();
+    }
+
+    public static void main(String[] args) {
+        AtomicIntegerExample example = new AtomicIntegerExample();
+        Runnable task = example::increment;
+
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+
+        t1.start();
+        t2.start();
+
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(&quot;Counter: &quot; + example.getCounter());
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>AtomicInteger</strong>: Provides atomic operations on an <code>int</code> value.</li>
+<li><strong>counter.incrementAndGet()</strong>: Atomically increments by one.</li>
+</ul>
+</div><h1>Synchronizers</h1>
+<div class='content'><p>Synchronizers help manage the coordination between threads.</p>
+</div><h2>Example: Using `CountDownLatch`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LkNvdW50RG93bkxhdGNoOwoKcHVibGljIGNsYXNzIENvdW50RG93bkxhdGNoRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgQ291bnREb3duTGF0Y2ggbGF0Y2ggPSBuZXcgQ291bnREb3duTGF0Y2goMyk7CgogICAgICAgIFJ1bm5hYmxlIHRhc2sgPSAoKSAtPiB7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbihUaHJlYWQuY3VycmVudFRocmVhZCgpLmdldE5hbWUoKSArICIgaXMgd29ya2luZyIpOwogICAgICAgICAgICBsYXRjaC5jb3VudERvd24oKTsKICAgICAgICB9OwoKICAgICAgICBmb3IgKGludCBpID0gMDsgaSA8IDM7IGkrKykgewogICAgICAgICAgICBuZXcgVGhyZWFkKHRhc2spLnN0YXJ0KCk7CiAgICAgICAgfQoKICAgICAgICB0cnkgewogICAgICAgICAgICBsYXRjaC5hd2FpdCgpOwogICAgICAgIH0gY2F0Y2ggKEludGVycnVwdGVkRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CgogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiQWxsIHRhc2tzIGFyZSBjb21wbGV0ZWQiKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.CountDownLatch;
+
+public class CountDownLatchExample {
+    public static void main(String[] args) {
+        CountDownLatch latch = new CountDownLatch(3);
+
+        Runnable task = () -&gt; {
+            System.out.println(Thread.currentThread().getName() + &quot; is working&quot;);
+            latch.countDown();
+        };
+
+        for (int i = 0; i &lt; 3; i++) {
+            new Thread(task).start();
+        }
+
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(&quot;All tasks are completed&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>CountDownLatch</strong>: Allows one or more threads to wait until a set of operations being performed in other threads completes.</li>
+<li><strong>latch.countDown()</strong>: Decrements the count of the latch.</li>
+<li><strong>latch.await()</strong>: Causes the current thread to wait until the latch has counted down to zero.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>Create a <code>ConcurrentHashMap</code> to store student names and their scores.</li>
+<li>Use an <code>ExecutorService</code> to simulate multiple threads adding scores to the map.</li>
+<li>Ensure thread safety and print the final map.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEudXRpbC5jb25jdXJyZW50LkNvbmN1cnJlbnRIYXNoTWFwOwppbXBvcnQgamF2YS51dGlsLmNvbmN1cnJlbnQuRXhlY3V0b3JTZXJ2aWNlOwppbXBvcnQgamF2YS51dGlsLmNvbmN1cnJlbnQuRXhlY3V0b3JzOwoKcHVibGljIGNsYXNzIENvbmN1cnJlbmN5RXhlcmNpc2UgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIENvbmN1cnJlbnRIYXNoTWFwPFN0cmluZywgSW50ZWdlcj4gc3R1ZGVudFNjb3JlcyA9IG5ldyBDb25jdXJyZW50SGFzaE1hcDw+KCk7CiAgICAgICAgRXhlY3V0b3JTZXJ2aWNlIGV4ZWN1dG9yID0gRXhlY3V0b3JzLm5ld0ZpeGVkVGhyZWFkUG9vbCgzKTsKCiAgICAgICAgUnVubmFibGUgdGFzazEgPSAoKSAtPiBzdHVkZW50U2NvcmVzLnB1dCgiQWxpY2UiLCA4NSk7CiAgICAgICAgUnVubmFibGUgdGFzazIgPSAoKSAtPiBzdHVkZW50U2NvcmVzLnB1dCgiQm9iIiwgOTApOwogICAgICAgIFJ1bm5hYmxlIHRhc2szID0gKCkgLT4gc3R1ZGVudFNjb3Jlcy5wdXQoIkNoYXJsaWUiLCA5NSk7CgogICAgICAgIGV4ZWN1dG9yLmV4ZWN1dGUodGFzazEpOwogICAgICAgIGV4ZWN1dG9yLmV4ZWN1dGUodGFzazIpOwogICAgICAgIGV4ZWN1dG9yLmV4ZWN1dGUodGFzazMpOwoKICAgICAgICBleGVjdXRvci5zaHV0ZG93bigpOwogICAgICAgIHdoaWxlICghZXhlY3V0b3IuaXNUZXJtaW5hdGVkKCkpIHsKICAgICAgICB9CgogICAgICAgIHN0dWRlbnRTY29yZXMuZm9yRWFjaCgobmFtZSwgc2NvcmUpIC0+IFN5c3RlbS5vdXQucHJpbnRsbihuYW1lICsgIjogIiArIHNjb3JlKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ConcurrencyExercise {
+    public static void main(String[] args) {
+        ConcurrentHashMap&lt;String, Integer&gt; studentScores = new ConcurrentHashMap&lt;&gt;();
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        Runnable task1 = () -&gt; studentScores.put(&quot;Alice&quot;, 85);
+        Runnable task2 = () -&gt; studentScores.put(&quot;Bob&quot;, 90);
+        Runnable task3 = () -&gt; studentScores.put(&quot;Charlie&quot;, 95);
+
+        executor.execute(task1);
+        executor.execute(task2);
+        executor.execute(task3);
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+        }
+
+        studentScores.forEach((name, score) -&gt; System.out.println(name + &quot;: &quot; + score));
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>ConcurrentHashMap</strong>: Ensures thread-safe operations.</li>
+<li><strong>ExecutorService</strong>: Manages the execution of tasks.</li>
+<li><strong>executor.execute()</strong>: Submits tasks for execution.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Concurrency utilities in Java provide powerful tools to manage multi-threaded applications efficiently. By using the Executor framework, concurrent collections, locks, atomic variables, and synchronizers, you can write robust and thread-safe code. Understanding and utilizing these utilities will significantly enhance your ability to handle concurrency in Java applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-synchronization' title="Synchronization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-to-networking' title="Introduction to Networking">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

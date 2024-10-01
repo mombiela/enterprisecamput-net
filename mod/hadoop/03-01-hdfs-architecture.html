@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFS Architecture</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/03-01-hdfs-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/03-01-hdfs-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/03-01-hdfs-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/03-01-hdfs-architecture" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/03-01-hdfs-architecture" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">HDFS Architecture</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-hdfs-commands' title="HDFS Commands">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>HDFS (Hadoop Distributed File System) is the primary storage system used by Hadoop applications. It is designed to store large datasets reliably and to stream those data sets at high bandwidth to user applications. HDFS is highly fault-tolerant and is designed to be deployed on low-cost hardware.</p>
+</div><h1>Key Concepts of HDFS Architecture</h1>
+<div class='content'></div><h2>1. **Blocks**</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: HDFS splits large files into smaller fixed-size blocks (default 128 MB).</li>
+<li><strong>Purpose</strong>: This allows HDFS to store large files across multiple nodes in a cluster.</li>
+<li><strong>Example</strong>: A 512 MB file will be split into four 128 MB blocks.</li>
+</ul>
+</div><h2>2. **NameNode**</h2>
+<div class='content'><ul>
+<li><strong>Role</strong>: The master server that manages the file system namespace and regulates access to files by clients.</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>Maintains the directory tree of all files in the file system.</li>
+<li>Tracks the location of blocks across DataNodes.</li>
+<li>Handles metadata operations like opening, closing, and renaming files and directories.</li>
+</ul>
+</li>
+</ul>
+</div><h2>3. **DataNode**</h2>
+<div class='content'><ul>
+<li><strong>Role</strong>: The worker nodes that store the actual data.</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>Serve read and write requests from the file system’s clients.</li>
+<li>Perform block creation, deletion, and replication upon instruction from the NameNode.</li>
+</ul>
+</li>
+</ul>
+</div><h2>4. **Secondary NameNode**</h2>
+<div class='content'><ul>
+<li><strong>Role</strong>: Assists the primary NameNode.</li>
+<li><strong>Responsibilities</strong>:
+<ul>
+<li>Periodically merges the namespace image with the edit log to prevent the edit log from becoming too large.</li>
+<li>Acts as a checkpointing mechanism but not a failover NameNode.</li>
+</ul>
+</li>
+</ul>
+</div><h2>5. **Replication**</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: HDFS stores multiple copies of data blocks to ensure reliability and fault tolerance.</li>
+<li><strong>Default Replication Factor</strong>: 3 (can be configured).</li>
+<li><strong>Example</strong>: Each block of a file is replicated on three different DataNodes.</li>
+</ul>
+</div><h2>6. **Rack Awareness**</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: HDFS is aware of the rack topology of the cluster.</li>
+<li><strong>Purpose</strong>: To improve data reliability, availability, and network bandwidth utilization.</li>
+<li><strong>Example</strong>: HDFS places one replica on a different rack to ensure data availability even if an entire rack fails.</li>
+</ul>
+</div><h1>HDFS Architecture Diagram</h1>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ky0tLS0tLS0tLS0tLS0tLS0tLS0rCnwgICAgIE5hbWVOb2RlICAgICAgfAp8IChNYXN0ZXIgTm9kZSkgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICAgICAgIHwKICAgICAgICAgfCBNZXRhZGF0YSBPcGVyYXRpb25zCiAgICAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rCnwgICAgRGF0YU5vZGUgMSAgICAgfCAgIHwgICAgRGF0YU5vZGUgMiAgICAgfCAgIHwgICAgRGF0YU5vZGUgMyAgICAgfAp8IChXb3JrZXIgTm9kZSkgICAgIHwgICB8IChXb3JrZXIgTm9kZSkgICAgIHwgICB8IChXb3JrZXIgTm9kZSkgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rCnwgQmxvY2sgMSwgQmxvY2sgMiAgfCAgIHwgQmxvY2sgMiwgQmxvY2sgMyAgfCAgIHwgQmxvY2sgMSwgQmxvY2sgMyAgfAorLS0tLS0tLS0tLS0tLS0tLS0tLSsgICArLS0tLS0tLS0tLS0tLS0tLS0tLSsgICArLS0tLS0tLS0tLS0tLS0tLS0tLSs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>+-------------------+
+|     NameNode      |
+| (Master Node)     |
++-------------------+
+         |
+         | Metadata Operations
+         |
++-------------------+   +-------------------+   +-------------------+
+|    DataNode 1     |   |    DataNode 2     |   |    DataNode 3     |
+| (Worker Node)     |   | (Worker Node)     |   | (Worker Node)     |
++-------------------+   +-------------------+   +-------------------+
+| Block 1, Block 2  |   | Block 2, Block 3  |   | Block 1, Block 3  |
++-------------------+   +-------------------+   +-------------------+</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'></div><h2>Example: Writing a File to HDFS</h2>
+<div class='content'><ol>
+<li><strong>Client Request</strong>: A client wants to write a file <code>example.txt</code> to HDFS.</li>
+<li><strong>File Splitting</strong>: The file is split into blocks (e.g., <code>example.txt</code> is 256 MB, split into two 128 MB blocks).</li>
+<li><strong>Metadata Update</strong>: The NameNode updates its metadata to include the new file and its blocks.</li>
+<li><strong>Block Placement</strong>: The NameNode instructs DataNodes to store the blocks with replication.</li>
+<li><strong>Data Storage</strong>: DataNodes store the blocks and replicate them as per the replication factor.</li>
+</ol>
+</div><h2>Code Example: Using HDFS Commands</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBkaXJlY3RvcnkgaW4gSERGUwpoZGZzIGRmcyAtbWtkaXIgL3VzZXIvaGFkb29wL2V4YW1wbGUKCiMgQ29weSBhIGxvY2FsIGZpbGUgdG8gSERGUwpoZGZzIGRmcyAtcHV0IGV4YW1wbGUudHh0IC91c2VyL2hhZG9vcC9leGFtcGxlLwoKIyBMaXN0IGZpbGVzIGluIHRoZSBIREZTIGRpcmVjdG9yeQpoZGZzIGRmcyAtbHMgL3VzZXIvaGFkb29wL2V4YW1wbGUv"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a directory in HDFS
+hdfs dfs -mkdir /user/hadoop/example
+
+# Copy a local file to HDFS
+hdfs dfs -put example.txt /user/hadoop/example/
+
+# List files in the HDFS directory
+hdfs dfs -ls /user/hadoop/example/</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Understanding HDFS Block Storage</h2>
+<div class='content'><p><strong>Task</strong>: Given a file of size 512 MB and a default block size of 128 MB, determine how many blocks will be created and how they will be replicated.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>The file will be split into 4 blocks (512 MB / 128 MB).</li>
+<li>Each block will be replicated 3 times (default replication factor).</li>
+<li>Total blocks stored = 4 blocks * 3 replicas = 12 blocks.</li>
+</ul>
+</div><h2>Exercise 2: Basic HDFS Commands</h2>
+<div class='content'><p><strong>Task</strong>: Perform the following operations using HDFS commands:</p>
+<ol>
+<li>Create a directory <code>/user/student/data</code>.</li>
+<li>Upload a file <code>data.txt</code> from the local filesystem to the HDFS directory.</li>
+<li>List the contents of the HDFS directory.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhdGUgYSBkaXJlY3RvcnkgaW4gSERGUwpoZGZzIGRmcyAtbWtkaXIgL3VzZXIvc3R1ZGVudC9kYXRhCgojIFVwbG9hZCBhIGZpbGUgdG8gSERGUwpoZGZzIGRmcyAtcHV0IGRhdGEudHh0IC91c2VyL3N0dWRlbnQvZGF0YS8KCiMgTGlzdCBmaWxlcyBpbiB0aGUgSERGUyBkaXJlY3RvcnkKaGRmcyBkZnMgLWxzIC91c2VyL3N0dWRlbnQvZGF0YS8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Create a directory in HDFS
+hdfs dfs -mkdir /user/student/data
+
+# Upload a file to HDFS
+hdfs dfs -put data.txt /user/student/data/
+
+# List files in the HDFS directory
+hdfs dfs -ls /user/student/data/</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the architecture of HDFS, including its key components such as NameNode, DataNode, and Secondary NameNode. We also discussed the concepts of blocks, replication, and rack awareness. Understanding these fundamentals is crucial for working effectively with HDFS and leveraging its capabilities for big data storage and processing. In the next section, we will delve deeper into HDFS commands and their practical applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-hdfs-commands' title="HDFS Commands">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

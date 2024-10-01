@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Management</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/05-03-memory-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/05-03-memory-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/05-03-memory-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/05-03-memory-management" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/05-03-memory-management" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-caching-persistence' title="Caching and Persistence">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Memory Management</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-optimizing-spark-applications' title="Optimizing Spark Applications">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Memory management is a critical aspect of optimizing Apache Spark applications. Efficient memory usage can significantly improve the performance and stability of your Spark jobs. In this section, we will cover the following topics:</p>
+<ol>
+<li><strong>Understanding Spark's Memory Model</strong></li>
+<li><strong>Memory Management Techniques</strong></li>
+<li><strong>Configuring Memory in Spark</strong></li>
+<li><strong>Common Memory Issues and Solutions</strong></li>
+</ol>
+</div><h1>Understanding Spark's Memory Model</h1>
+<div class='content'><p>Spark's memory model is divided into two main categories:</p>
+<ol>
+<li><strong>Execution Memory</strong>: Used for storing intermediate data during shuffles, joins, sorts, and aggregations.</li>
+<li><strong>Storage Memory</strong>: Used for caching and persisting RDDs, DataFrames, and Datasets.</li>
+</ol>
+</div><h2>Memory Management in Spark</h2>
+<div class='content'><p>Spark uses a unified memory management model, which dynamically allocates memory between execution and storage tasks. The memory is divided into three regions:</p>
+<ul>
+<li><strong>Reserved Memory</strong>: A small fraction of memory reserved for system and internal Spark operations.</li>
+<li><strong>User Memory</strong>: Memory available for user data structures and objects.</li>
+<li><strong>Spark Memory</strong>: Further divided into execution and storage memory.</li>
+</ul>
+</div><h2>Memory Management Diagram</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Memory Region</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reserved Memory</td>
+<td>Reserved for system and internal Spark operations.</td>
+</tr>
+<tr>
+<td>User Memory</td>
+<td>Available for user data structures and objects.</td>
+</tr>
+<tr>
+<td>Spark Memory</td>
+<td>Divided into execution and storage memory.</td>
+</tr>
+<tr>
+<td>Execution Memory</td>
+<td>Used for intermediate data during shuffles, joins, sorts, and aggregations.</td>
+</tr>
+<tr>
+<td>Storage Memory</td>
+<td>Used for caching and persisting RDDs, DataFrames, and Datasets.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Memory Management Techniques</h1>
+<div class='content'></div><h2>1. Caching and Persistence</h2>
+<div class='content'><p>Caching and persisting data can help avoid recomputation and improve performance. Use the following methods:</p>
+<ul>
+<li><strong>cache()</strong>: Caches the data in memory.</li>
+<li><strong>persist()</strong>: Allows specifying the storage level (e.g., MEMORY_ONLY, MEMORY_AND_DISK).</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRmID0gc3BhcmsucmVhZC5qc29uKCJkYXRhLmpzb24iKQpkZi5jYWNoZSgpIC8vIENhY2hlcyB0aGUgRGF0YUZyYW1lIGluIG1lbW9yeQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val df = spark.read.json(&quot;data.json&quot;)
+df.cache() // Caches the DataFrame in memory</pre></div><div class='content'></div><h2>2. Serialization</h2>
+<div class='content'><p>Efficient serialization can reduce memory usage. Spark supports two serialization libraries:</p>
+<ul>
+<li><strong>Java Serialization</strong>: Default, but not very efficient.</li>
+<li><strong>Kryo Serialization</strong>: More efficient and recommended for large datasets.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BhcmsuY29uZi5zZXQoInNwYXJrLnNlcmlhbGl6ZXIiLCAib3JnLmFwYWNoZS5zcGFyay5zZXJpYWxpemVyLktyeW9TZXJpYWxpemVyIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spark.conf.set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)</pre></div><div class='content'></div><h2>3. Memory Tuning</h2>
+<div class='content'><p>Adjusting memory-related configurations can optimize Spark's performance:</p>
+<ul>
+<li><strong>spark.executor.memory</strong>: Total memory available to each executor.</li>
+<li><strong>spark.driver.memory</strong>: Total memory available to the driver.</li>
+<li><strong>spark.memory.fraction</strong>: Fraction of JVM heap used for execution and storage.</li>
+<li><strong>spark.memory.storageFraction</strong>: Fraction of Spark memory used for storage.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BhcmsuY29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLm1lbW9yeSIsICI0ZyIpCnNwYXJrLmNvbmYuc2V0KCJzcGFyay5kcml2ZXIubWVtb3J5IiwgIjJnIikKc3BhcmsuY29uZi5zZXQoInNwYXJrLm1lbW9yeS5mcmFjdGlvbiIsICIwLjYiKQpzcGFyay5jb25mLnNldCgic3BhcmsubWVtb3J5LnN0b3JhZ2VGcmFjdGlvbiIsICIwLjUiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spark.conf.set(&quot;spark.executor.memory&quot;, &quot;4g&quot;)
+spark.conf.set(&quot;spark.driver.memory&quot;, &quot;2g&quot;)
+spark.conf.set(&quot;spark.memory.fraction&quot;, &quot;0.6&quot;)
+spark.conf.set(&quot;spark.memory.storageFraction&quot;, &quot;0.5&quot;)</pre></div><div class='content'></div><h1>Common Memory Issues and Solutions</h1>
+<div class='content'></div><h2>1. Out of Memory Errors</h2>
+<div class='content'><p><strong>Issue</strong>: Spark jobs fail with OutOfMemoryError.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>Increase executor and driver memory.</li>
+<li>Optimize the size of partitions.</li>
+<li>Use efficient serialization (Kryo).</li>
+</ul>
+</div><h2>2. Garbage Collection Overhead</h2>
+<div class='content'><p><strong>Issue</strong>: Excessive garbage collection pauses.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>Tune JVM garbage collection settings.</li>
+<li>Increase memory allocation.</li>
+<li>Optimize data structures and avoid large objects.</li>
+</ul>
+</div><h2>3. Memory Leaks</h2>
+<div class='content'><p><strong>Issue</strong>: Memory usage keeps increasing, leading to job failures.</p>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>Ensure proper cleanup of RDDs and DataFrames.</li>
+<li>Avoid unnecessary caching and persisting.</li>
+<li>Monitor and debug memory usage.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Optimize Memory Usage in a Spark Application</h2>
+<div class='content'><p><strong>Objective</strong>: Optimize the memory usage of a Spark application that processes a large dataset.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Load a large dataset into a DataFrame.</li>
+<li>Cache the DataFrame.</li>
+<li>Configure Spark to use Kryo serialization.</li>
+<li>Adjust memory-related configurations.</li>
+<li>Monitor memory usage and optimize partition sizes.</li>
+</ol>
+<p><strong>Code Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU3RlcCAxOiBMb2FkIGEgbGFyZ2UgZGF0YXNldAp2YWwgZGYgPSBzcGFyay5yZWFkLmpzb24oImxhcmdlX2RhdGEuanNvbiIpCgovLyBTdGVwIDI6IENhY2hlIHRoZSBEYXRhRnJhbWUKZGYuY2FjaGUoKQoKLy8gU3RlcCAzOiBDb25maWd1cmUgU3BhcmsgdG8gdXNlIEtyeW8gc2VyaWFsaXphdGlvbgpzcGFyay5jb25mLnNldCgic3Bhcmsuc2VyaWFsaXplciIsICJvcmcuYXBhY2hlLnNwYXJrLnNlcmlhbGl6ZXIuS3J5b1NlcmlhbGl6ZXIiKQoKLy8gU3RlcCA0OiBBZGp1c3QgbWVtb3J5LXJlbGF0ZWQgY29uZmlndXJhdGlvbnMKc3BhcmsuY29uZi5zZXQoInNwYXJrLmV4ZWN1dG9yLm1lbW9yeSIsICI4ZyIpCnNwYXJrLmNvbmYuc2V0KCJzcGFyay5kcml2ZXIubWVtb3J5IiwgIjRnIikKc3BhcmsuY29uZi5zZXQoInNwYXJrLm1lbW9yeS5mcmFjdGlvbiIsICIwLjYiKQpzcGFyay5jb25mLnNldCgic3BhcmsubWVtb3J5LnN0b3JhZ2VGcmFjdGlvbiIsICIwLjUiKQoKLy8gU3RlcCA1OiBNb25pdG9yIG1lbW9yeSB1c2FnZSBhbmQgb3B0aW1pemUgcGFydGl0aW9uIHNpemVzCmRmLnJlcGFydGl0aW9uKDEwMCkud3JpdGUucGFycXVldCgib3B0aW1pemVkX291dHB1dCIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Step 1: Load a large dataset
+val df = spark.read.json(&quot;large_data.json&quot;)
+
+// Step 2: Cache the DataFrame
+df.cache()
+
+// Step 3: Configure Spark to use Kryo serialization
+spark.conf.set(&quot;spark.serializer&quot;, &quot;org.apache.spark.serializer.KryoSerializer&quot;)
+
+// Step 4: Adjust memory-related configurations
+spark.conf.set(&quot;spark.executor.memory&quot;, &quot;8g&quot;)
+spark.conf.set(&quot;spark.driver.memory&quot;, &quot;4g&quot;)
+spark.conf.set(&quot;spark.memory.fraction&quot;, &quot;0.6&quot;)
+spark.conf.set(&quot;spark.memory.storageFraction&quot;, &quot;0.5&quot;)
+
+// Step 5: Monitor memory usage and optimize partition sizes
+df.repartition(100).write.parquet(&quot;optimized_output&quot;)</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ol>
+<li><strong>Loading the Dataset</strong>: The dataset is loaded into a DataFrame.</li>
+<li><strong>Caching</strong>: The DataFrame is cached to avoid recomputation.</li>
+<li><strong>Serialization</strong>: Kryo serialization is configured for efficient memory usage.</li>
+<li><strong>Memory Configuration</strong>: Memory settings are adjusted to allocate more memory to executors and the driver.</li>
+<li><strong>Partition Optimization</strong>: The DataFrame is repartitioned to optimize memory usage during write operations.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essentials of memory management in Apache Spark. We explored Spark's memory model, memory management techniques, and common memory issues with their solutions. By understanding and applying these concepts, you can optimize the performance and stability of your Spark applications. In the next section, we will delve into optimizing Spark applications further.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-caching-persistence' title="Caching and Persistence">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-optimizing-spark-applications' title="Optimizing Spark Applications">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

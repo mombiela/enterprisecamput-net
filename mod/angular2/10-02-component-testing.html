@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/10-02-component-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/10-02-component-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/10-02-component-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular2/10-02-component-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/10-02-component-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-unit-testing' title="Unit Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Component Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-service-testing' title="Service Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Component testing is a crucial part of ensuring that your Angular applications work as expected. In this section, we will cover the basics of testing Angular components, including setting up the testing environment, writing test cases, and running tests.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>TestBed</strong>: Angular's primary API for configuring and initializing the environment for unit tests.</li>
+<li><strong>ComponentFixture</strong>: A wrapper around a component and its template, which allows you to interact with the component and query its DOM.</li>
+<li><strong>DebugElement</strong>: An Angular abstraction over the native DOM element, providing additional methods for querying and interacting with the DOM.</li>
+</ol>
+</div><h1>Setting Up the Testing Environment</h1>
+<div class='content'><p>Before you can start writing tests for your components, you need to set up the testing environment. Angular CLI automatically sets up Jasmine and Karma for you when you create a new project.</p>
+</div><h2>Example: Setting Up a Test for a Simple Component</h2>
+<div class='content'><p>Let's assume we have a simple <code>CounterComponent</code> that increments a counter when a button is clicked.</p>
+<p><strong>counter.component.ts</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC1jb3VudGVyJywKICB0ZW1wbGF0ZTogYAogICAgPGRpdj4KICAgICAgPHA+Q291bnRlcjoge3sgY291bnRlciB9fTwvcD4KICAgICAgPGJ1dHRvbiAoY2xpY2spPSJpbmNyZW1lbnQoKSI+SW5jcmVtZW50PC9idXR0b24+CiAgICA8L2Rpdj4KICBgCn0pCmV4cG9ydCBjbGFzcyBDb3VudGVyQ29tcG9uZW50IHsKICBjb3VudGVyID0gMDsKCiAgaW5jcmVtZW50KCkgewogICAgdGhpcy5jb3VudGVyKys7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-counter',
+  template: `
+    &lt;div&gt;
+      &lt;p&gt;Counter: {{ counter }}&lt;/p&gt;
+      &lt;button (click)=&quot;increment()&quot;&gt;Increment&lt;/button&gt;
+    &lt;/div&gt;
+  `
+})
+export class CounterComponent {
+  counter = 0;
+
+  increment() {
+    this.counter++;
+  }
+}</pre></div><div class='content'><p><strong>counter.component.spec.ts</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50Rml4dHVyZSwgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IEJ5IH0gZnJvbSAnQGFuZ3VsYXIvcGxhdGZvcm0tYnJvd3Nlcic7CmltcG9ydCB7IENvdW50ZXJDb21wb25lbnQgfSBmcm9tICcuL2NvdW50ZXIuY29tcG9uZW50JzsKCmRlc2NyaWJlKCdDb3VudGVyQ29tcG9uZW50JywgKCkgPT4gewogIGxldCBjb21wb25lbnQ6IENvdW50ZXJDb21wb25lbnQ7CiAgbGV0IGZpeHR1cmU6IENvbXBvbmVudEZpeHR1cmU8Q291bnRlckNvbXBvbmVudD47CgogIGJlZm9yZUVhY2goYXN5bmMgKCkgPT4gewogICAgYXdhaXQgVGVzdEJlZC5jb25maWd1cmVUZXN0aW5nTW9kdWxlKHsKICAgICAgZGVjbGFyYXRpb25zOiBbIENvdW50ZXJDb21wb25lbnQgXQogICAgfSkKICAgIC5jb21waWxlQ29tcG9uZW50cygpOwogIH0pOwoKICBiZWZvcmVFYWNoKCgpID0+IHsKICAgIGZpeHR1cmUgPSBUZXN0QmVkLmNyZWF0ZUNvbXBvbmVudChDb3VudGVyQ29tcG9uZW50KTsKICAgIGNvbXBvbmVudCA9IGZpeHR1cmUuY29tcG9uZW50SW5zdGFuY2U7CiAgICBmaXh0dXJlLmRldGVjdENoYW5nZXMoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBjcmVhdGUnLCAoKSA9PiB7CiAgICBleHBlY3QoY29tcG9uZW50KS50b0JlVHJ1dGh5KCk7CiAgfSk7CgogIGl0KCdzaG91bGQgZGlzcGxheSBpbml0aWFsIGNvdW50ZXIgdmFsdWUnLCAoKSA9PiB7CiAgICBjb25zdCBjb21waWxlZCA9IGZpeHR1cmUubmF0aXZlRWxlbWVudDsKICAgIGV4cGVjdChjb21waWxlZC5xdWVyeVNlbGVjdG9yKCdwJykudGV4dENvbnRlbnQpLnRvQ29udGFpbignQ291bnRlcjogMCcpOwogIH0pOwoKICBpdCgnc2hvdWxkIGluY3JlbWVudCBjb3VudGVyIG9uIGJ1dHRvbiBjbGljaycsICgpID0+IHsKICAgIGNvbnN0IGJ1dHRvbiA9IGZpeHR1cmUuZGVidWdFbGVtZW50LnF1ZXJ5KEJ5LmNzcygnYnV0dG9uJykpLm5hdGl2ZUVsZW1lbnQ7CiAgICBidXR0b24uY2xpY2soKTsKICAgIGZpeHR1cmUuZGV0ZWN0Q2hhbmdlcygpOwogICAgZXhwZWN0KGNvbXBvbmVudC5jb3VudGVyKS50b0JlKDEpOwogICAgZXhwZWN0KGZpeHR1cmUubmF0aXZlRWxlbWVudC5xdWVyeVNlbGVjdG9yKCdwJykudGV4dENvbnRlbnQpLnRvQ29udGFpbignQ291bnRlcjogMScpOwogIH0pOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { CounterComponent } from './counter.component';
+
+describe('CounterComponent', () =&gt; {
+  let component: CounterComponent;
+  let fixture: ComponentFixture&lt;CounterComponent&gt;;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ CounterComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(CounterComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display initial counter value', () =&gt; {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('p').textContent).toContain('Counter: 0');
+  });
+
+  it('should increment counter on button click', () =&gt; {
+    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    button.click();
+    fixture.detectChanges();
+    expect(component.counter).toBe(1);
+    expect(fixture.nativeElement.querySelector('p').textContent).toContain('Counter: 1');
+  });
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ol>
+<li>
+<p><strong>TestBed Configuration</strong>:</p>
+<ul>
+<li><code>TestBed.configureTestingModule</code> is used to configure the testing module, declaring the <code>CounterComponent</code>.</li>
+<li><code>compileComponents</code> compiles the component and its template.</li>
+</ul>
+</li>
+<li>
+<p><strong>ComponentFixture</strong>:</p>
+<ul>
+<li><code>TestBed.createComponent</code> creates an instance of the component and its fixture.</li>
+<li><code>fixture.detectChanges</code> triggers change detection, updating the component's view.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Cases</strong>:</p>
+<ul>
+<li>The first test case checks if the component is created successfully.</li>
+<li>The second test case verifies the initial counter value displayed in the template.</li>
+<li>The third test case simulates a button click, checks if the counter is incremented, and verifies the updated value in the template.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Testing a Simple Component</h2>
+<div class='content'><p>Create a <code>GreetingComponent</code> that displays a greeting message and has a button to change the message.</p>
+<p><strong>greeting.component.ts</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC1ncmVldGluZycsCiAgdGVtcGxhdGU6IGAKICAgIDxkaXY+CiAgICAgIDxwPnt7IG1lc3NhZ2UgfX08L3A+CiAgICAgIDxidXR0b24gKGNsaWNrKT0iY2hhbmdlTWVzc2FnZSgpIj5DaGFuZ2UgTWVzc2FnZTwvYnV0dG9uPgogICAgPC9kaXY+CiAgYAp9KQpleHBvcnQgY2xhc3MgR3JlZXRpbmdDb21wb25lbnQgewogIG1lc3NhZ2UgPSAnSGVsbG8sIFdvcmxkISc7CgogIGNoYW5nZU1lc3NhZ2UoKSB7CiAgICB0aGlzLm1lc3NhZ2UgPSAnSGVsbG8sIEFuZ3VsYXIhJzsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-greeting',
+  template: `
+    &lt;div&gt;
+      &lt;p&gt;{{ message }}&lt;/p&gt;
+      &lt;button (click)=&quot;changeMessage()&quot;&gt;Change Message&lt;/button&gt;
+    &lt;/div&gt;
+  `
+})
+export class GreetingComponent {
+  message = 'Hello, World!';
+
+  changeMessage() {
+    this.message = 'Hello, Angular!';
+  }
+}</pre></div><div class='content'><p><strong>greeting.component.spec.ts</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50Rml4dHVyZSwgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IEJ5IH0gZnJvbSAnQGFuZ3VsYXIvcGxhdGZvcm0tYnJvd3Nlcic7CmltcG9ydCB7IEdyZWV0aW5nQ29tcG9uZW50IH0gZnJvbSAnLi9ncmVldGluZy5jb21wb25lbnQnOwoKZGVzY3JpYmUoJ0dyZWV0aW5nQ29tcG9uZW50JywgKCkgPT4gewogIGxldCBjb21wb25lbnQ6IEdyZWV0aW5nQ29tcG9uZW50OwogIGxldCBmaXh0dXJlOiBDb21wb25lbnRGaXh0dXJlPEdyZWV0aW5nQ29tcG9uZW50PjsKCiAgYmVmb3JlRWFjaChhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoewogICAgICBkZWNsYXJhdGlvbnM6IFsgR3JlZXRpbmdDb21wb25lbnQgXQogICAgfSkKICAgIC5jb21waWxlQ29tcG9uZW50cygpOwogIH0pOwoKICBiZWZvcmVFYWNoKCgpID0+IHsKICAgIGZpeHR1cmUgPSBUZXN0QmVkLmNyZWF0ZUNvbXBvbmVudChHcmVldGluZ0NvbXBvbmVudCk7CiAgICBjb21wb25lbnQgPSBmaXh0dXJlLmNvbXBvbmVudEluc3RhbmNlOwogICAgZml4dHVyZS5kZXRlY3RDaGFuZ2VzKCk7CiAgfSk7CgogIGl0KCdzaG91bGQgY3JlYXRlJywgKCkgPT4gewogICAgZXhwZWN0KGNvbXBvbmVudCkudG9CZVRydXRoeSgpOwogIH0pOwoKICBpdCgnc2hvdWxkIGRpc3BsYXkgaW5pdGlhbCBtZXNzYWdlJywgKCkgPT4gewogICAgY29uc3QgY29tcGlsZWQgPSBmaXh0dXJlLm5hdGl2ZUVsZW1lbnQ7CiAgICBleHBlY3QoY29tcGlsZWQucXVlcnlTZWxlY3RvcigncCcpLnRleHRDb250ZW50KS50b0NvbnRhaW4oJ0hlbGxvLCBXb3JsZCEnKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBjaGFuZ2UgbWVzc2FnZSBvbiBidXR0b24gY2xpY2snLCAoKSA9PiB7CiAgICBjb25zdCBidXR0b24gPSBmaXh0dXJlLmRlYnVnRWxlbWVudC5xdWVyeShCeS5jc3MoJ2J1dHRvbicpKS5uYXRpdmVFbGVtZW50OwogICAgYnV0dG9uLmNsaWNrKCk7CiAgICBmaXh0dXJlLmRldGVjdENoYW5nZXMoKTsKICAgIGV4cGVjdChjb21wb25lbnQubWVzc2FnZSkudG9CZSgnSGVsbG8sIEFuZ3VsYXIhJyk7CiAgICBleHBlY3QoZml4dHVyZS5uYXRpdmVFbGVtZW50LnF1ZXJ5U2VsZWN0b3IoJ3AnKS50ZXh0Q29udGVudCkudG9Db250YWluKCdIZWxsbywgQW5ndWxhciEnKTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+import { GreetingComponent } from './greeting.component';
+
+describe('GreetingComponent', () =&gt; {
+  let component: GreetingComponent;
+  let fixture: ComponentFixture&lt;GreetingComponent&gt;;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ GreetingComponent ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(GreetingComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display initial message', () =&gt; {
+    const compiled = fixture.nativeElement;
+    expect(compiled.querySelector('p').textContent).toContain('Hello, World!');
+  });
+
+  it('should change message on button click', () =&gt; {
+    const button = fixture.debugElement.query(By.css('button')).nativeElement;
+    button.click();
+    fixture.detectChanges();
+    expect(component.message).toBe('Hello, Angular!');
+    expect(fixture.nativeElement.querySelector('p').textContent).toContain('Hello, Angular!');
+  });
+});</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ol>
+<li><strong>TestBed Configuration</strong>: Similar to the previous example, we configure the testing module and compile the component.</li>
+<li><strong>ComponentFixture</strong>: We create an instance of the <code>GreetingComponent</code> and its fixture.</li>
+<li><strong>Test Cases</strong>:
+<ul>
+<li>The first test case checks if the component is created successfully.</li>
+<li>The second test case verifies the initial greeting message displayed in the template.</li>
+<li>The third test case simulates a button click, checks if the message is changed, and verifies the updated message in the template.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Not Triggering Change Detection</strong>: Always call <code>fixture.detectChanges()</code> after making changes to the component to ensure the view is updated.</li>
+<li><strong>Querying the DOM</strong>: Use <code>fixture.debugElement.query(By.css('selector'))</code> to query the DOM elements instead of directly accessing <code>nativeElement</code>.</li>
+<li><strong>Isolating Tests</strong>: Ensure each test case is independent and does not rely on the state modified by other tests.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of component testing in Angular. We learned how to set up the testing environment, write test cases, and run tests. We also provided practical exercises to reinforce the learned concepts. Component testing is essential for ensuring the reliability and maintainability of your Angular applications. In the next section, we will delve into service testing, which is another critical aspect of Angular testing.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-unit-testing' title="Unit Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-service-testing' title="Service Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

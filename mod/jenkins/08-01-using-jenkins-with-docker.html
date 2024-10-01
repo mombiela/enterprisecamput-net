@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Using Jenkins with Docker</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/08-01-using-jenkins-with-docker" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/08-01-using-jenkins-with-docker" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/08-01-using-jenkins-with-docker" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jenkins/08-01-using-jenkins-with-docker" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/08-01-using-jenkins-with-docker" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-automating-deployments' title="Automating Deployments">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Using Jenkins with Docker</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-jenkins-and-kubernetes' title="Jenkins and Kubernetes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore how to use Jenkins with Docker. Docker is a platform that allows you to automate the deployment of applications inside lightweight, portable containers. Integrating Jenkins with Docker can significantly enhance your CI/CD pipelines by providing a consistent and isolated environment for building, testing, and deploying applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Docker Basics</strong>:</p>
+<ul>
+<li><strong>Containers</strong>: Lightweight, standalone, and executable packages that include everything needed to run a piece of software.</li>
+<li><strong>Images</strong>: Read-only templates used to create containers.</li>
+<li><strong>Dockerfile</strong>: A text file that contains instructions to build a Docker image.</li>
+</ul>
+</li>
+<li>
+<p><strong>Jenkins and Docker Integration</strong>:</p>
+<ul>
+<li><strong>Docker Plugin</strong>: A Jenkins plugin that allows Jenkins to interact with Docker.</li>
+<li><strong>Docker Agents</strong>: Jenkins agents that run inside Docker containers.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Installing Docker</h1>
+<div class='content'><p>Before integrating Docker with Jenkins, you need to have Docker installed on your system. Follow the official Docker installation guide for your operating system: <a href="https://docs.docker.com/get-docker/">Docker Installation Guide</a>.</p>
+</div><h1>Installing the Docker Plugin in Jenkins</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Access Jenkins Dashboard</strong>:</p>
+<ul>
+<li>Open your Jenkins instance in a web browser.</li>
+<li>Log in with your credentials.</li>
+</ul>
+</li>
+<li>
+<p><strong>Navigate to Plugin Manager</strong>:</p>
+<ul>
+<li>Go to <code>Manage Jenkins</code> &gt; <code>Manage Plugins</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Install Docker Plugin</strong>:</p>
+<ul>
+<li>In the <code>Available</code> tab, search for <code>Docker</code>.</li>
+<li>Select <code>Docker</code> and <code>Docker Pipeline</code> plugins.</li>
+<li>Click <code>Install without restart</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuring Docker in Jenkins</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Add Docker Host</strong>:</p>
+<ul>
+<li>Go to <code>Manage Jenkins</code> &gt; <code>Configure System</code>.</li>
+<li>Scroll down to <code>Cloud</code> section and click <code>Add a new cloud</code> &gt; <code>Docker</code>.</li>
+<li>Configure the Docker host URL (e.g., <code>unix:///var/run/docker.sock</code> for Unix-based systems).</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Connection</strong>:</p>
+<ul>
+<li>Click <code>Test Connection</code> to ensure Jenkins can communicate with the Docker host.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Creating a Jenkins Job with Docker</h1>
+<div class='content'></div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a New Job</strong>:</p>
+<ul>
+<li>Go to Jenkins Dashboard.</li>
+<li>Click <code>New Item</code>, enter a name, and select <code>Pipeline</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure Pipeline</strong>:</p>
+<ul>
+<li>In the <code>Pipeline</code> section, select <code>Pipeline script</code> and enter the following script:</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgewogICAgICAgIGRvY2tlciB7CiAgICAgICAgICAgIGltYWdlICdtYXZlbjozLjYuMy1qZGstOCcKICAgICAgICAgICAgYXJncyAnLXYgL3Jvb3QvLm0yOi9yb290Ly5tMicKICAgICAgICB9CiAgICB9CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgc2ggJ212biAtLXZlcnNpb24nCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent {
+        docker {
+            image 'maven:3.6.3-jdk-8'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn --version'
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>agent</strong>: Specifies that the pipeline will run inside a Docker container.</li>
+<li><strong>docker</strong>: Defines the Docker configuration.
+<ul>
+<li><strong>image</strong>: The Docker image to use (<code>maven:3.6.3-jdk-8</code> in this case).</li>
+<li><strong>args</strong>: Additional arguments for the Docker run command (e.g., volume mounts).</li>
+</ul>
+</li>
+<li><strong>stages</strong>: Defines the stages of the pipeline.
+<ul>
+<li><strong>stage('Build')</strong>: A single stage named <code>Build</code>.</li>
+<li><strong>steps</strong>: The steps to execute in the stage.
+<ul>
+<li><strong>sh 'mvn --version'</strong>: Runs the <code>mvn --version</code> command inside the container to verify Maven installation.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li><strong>Save and Run</strong>:
+<ul>
+<li>Click <code>Save</code> and then <code>Build Now</code> to run the job.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Build a Simple Java Application with Docker</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Objective</strong>: Create a Jenkins pipeline that builds a simple Java application using a Docker container.</p>
+</li>
+<li>
+<p><strong>Steps</strong>:</p>
+<ul>
+<li>Create a new Jenkins job of type <code>Pipeline</code>.</li>
+<li>Use the following pipeline script:</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgewogICAgICAgIGRvY2tlciB7CiAgICAgICAgICAgIGltYWdlICdvcGVuamRrOjExJwogICAgICAgICAgICBhcmdzICctdiAvcm9vdC8ubTI6L3Jvb3QvLm0yJwogICAgICAgIH0KICAgIH0KICAgIHN0YWdlcyB7CiAgICAgICAgc3RhZ2UoJ0Nsb25lIFJlcG9zaXRvcnknKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGdpdCAnaHR0cHM6Ly9naXRodWIuY29tL3NwcmluZy1wcm9qZWN0cy9zcHJpbmctcGV0Y2xpbmljLmdpdCcKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIHNoICcuL212bncgY2xlYW4gcGFja2FnZScKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent {
+        docker {
+            image 'openjdk:11'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/spring-projects/spring-petclinic.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh './mvnw clean package'
+            }
+        }
+    }
+}</pre></div><div class='content'><ol start="3">
+<li>
+<p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>Clone Repository</strong>: Clones the Spring Petclinic repository from GitHub.</li>
+<li><strong>Build</strong>: Runs the Maven build command inside the Docker container.</li>
+</ul>
+</li>
+<li>
+<p><strong>Run the Job</strong>:</p>
+<ul>
+<li>Save the job and click <code>Build Now</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ul>
+<li>Ensure Docker is installed and running.</li>
+<li>Install the Docker plugin in Jenkins.</li>
+<li>Configure the Docker host in Jenkins.</li>
+<li>Create and run the Jenkins job with the provided pipeline script.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of using Jenkins with Docker. We installed the Docker plugin, configured Docker in Jenkins, and created a Jenkins job that runs inside a Docker container. By integrating Docker with Jenkins, you can create isolated and consistent build environments, making your CI/CD pipelines more robust and reliable.</p>
+<p>Next, we will explore how to use Jenkins with Kubernetes in the following section.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-automating-deployments' title="Automating Deployments">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-jenkins-and-kubernetes' title="Jenkins and Kubernetes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

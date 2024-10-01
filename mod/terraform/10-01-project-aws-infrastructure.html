@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 1: AWS Infrastructure</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/10-01-project-aws-infrastructure" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/10-01-project-aws-infrastructure" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/10-01-project-aws-infrastructure" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/10-01-project-aws-infrastructure" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/10-01-project-aws-infrastructure" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-community-and-support' title="Community and Support">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Project 1: AWS Infrastructure</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-project-multi-cloud-deployment' title="Project 2: Multi-Cloud Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this project, we will create a basic AWS infrastructure using Terraform. This project will help you understand how to apply the concepts learned in the previous modules to a real-world scenario. We will cover the following steps:</p>
+<ol>
+<li><strong>Setting Up AWS Credentials</strong></li>
+<li><strong>Creating a VPC</strong></li>
+<li><strong>Creating Subnets</strong></li>
+<li><strong>Setting Up an Internet Gateway</strong></li>
+<li><strong>Creating Security Groups</strong></li>
+<li><strong>Launching EC2 Instances</strong></li>
+<li><strong>Outputting Important Information</strong></li>
+</ol>
+</div><h1>1. Setting Up AWS Credentials</h1>
+<div class='content'><p>Before we start, ensure you have your AWS credentials configured. You can set up your credentials using the AWS CLI or by creating a <code>~/.aws/credentials</code> file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdzIGNvbmZpZ3VyZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>aws configure</pre></div><div class='content'><p>Alternatively, you can create a <code>~/.aws/credentials</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W2RlZmF1bHRdCmF3c19hY2Nlc3Nfa2V5X2lkID0gWU9VUl9BQ0NFU1NfS0VZCmF3c19zZWNyZXRfYWNjZXNzX2tleSA9IFlPVVJfU0VDUkVUX0tFWQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY</pre></div><div class='content'></div><h1>2. Creating a VPC</h1>
+<div class='content'><p>First, let's create a new directory for our project and initialize it with Terraform.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgYXdzLWluZnJhc3RydWN0dXJlCmNkIGF3cy1pbmZyYXN0cnVjdHVyZQp0ZXJyYWZvcm0gaW5pdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir aws-infrastructure
+cd aws-infrastructure
+terraform init</pre></div><div class='content'><p>Create a <code>main.tf</code> file and add the following code to define a VPC:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfdnBjIiAibWFpbiIgewogIGNpZHJfYmxvY2sgPSAiMTAuMC4wLjAvMTYiCgogIHRhZ3MgPSB7CiAgICBOYW1lID0gIm1haW4tdnBjIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_vpc&quot; &quot;main&quot; {
+  cidr_block = &quot;10.0.0.0/16&quot;
+
+  tags = {
+    Name = &quot;main-vpc&quot;
+  }
+}</pre></div><div class='content'></div><h1>3. Creating Subnets</h1>
+<div class='content'><p>Next, we will create two subnets within our VPC.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19zdWJuZXQiICJzdWJuZXQxIiB7CiAgdnBjX2lkICAgICA9IGF3c192cGMubWFpbi5pZAogIGNpZHJfYmxvY2sgPSAiMTAuMC4xLjAvMjQiCiAgYXZhaWxhYmlsaXR5X3pvbmUgPSAidXMtd2VzdC0yYSIKCiAgdGFncyA9IHsKICAgIE5hbWUgPSAic3VibmV0MSIKICB9Cn0KCnJlc291cmNlICJhd3Nfc3VibmV0IiAic3VibmV0MiIgewogIHZwY19pZCAgICAgPSBhd3NfdnBjLm1haW4uaWQKICBjaWRyX2Jsb2NrID0gIjEwLjAuMi4wLzI0IgogIGF2YWlsYWJpbGl0eV96b25lID0gInVzLXdlc3QtMmIiCgogIHRhZ3MgPSB7CiAgICBOYW1lID0gInN1Ym5ldDIiCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_subnet&quot; &quot;subnet1&quot; {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = &quot;10.0.1.0/24&quot;
+  availability_zone = &quot;us-west-2a&quot;
+
+  tags = {
+    Name = &quot;subnet1&quot;
+  }
+}
+
+resource &quot;aws_subnet&quot; &quot;subnet2&quot; {
+  vpc_id     = aws_vpc.main.id
+  cidr_block = &quot;10.0.2.0/24&quot;
+  availability_zone = &quot;us-west-2b&quot;
+
+  tags = {
+    Name = &quot;subnet2&quot;
+  }
+}</pre></div><div class='content'></div><h1>4. Setting Up an Internet Gateway</h1>
+<div class='content'><p>We need an Internet Gateway to allow our instances to access the internet.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19pbnRlcm5ldF9nYXRld2F5IiAiaWd3IiB7CiAgdnBjX2lkID0gYXdzX3ZwYy5tYWluLmlkCgogIHRhZ3MgPSB7CiAgICBOYW1lID0gIm1haW4taWd3IgogIH0KfQoKcmVzb3VyY2UgImF3c19yb3V0ZV90YWJsZSIgInJ0IiB7CiAgdnBjX2lkID0gYXdzX3ZwYy5tYWluLmlkCgogIHJvdXRlIHsKICAgIGNpZHJfYmxvY2sgPSAiMC4wLjAuMC8wIgogICAgZ2F0ZXdheV9pZCA9IGF3c19pbnRlcm5ldF9nYXRld2F5Lmlndy5pZAogIH0KCiAgdGFncyA9IHsKICAgIE5hbWUgPSAibWFpbi1yb3V0ZS10YWJsZSIKICB9Cn0KCnJlc291cmNlICJhd3Nfcm91dGVfdGFibGVfYXNzb2NpYXRpb24iICJhIiB7CiAgc3VibmV0X2lkICAgICAgPSBhd3Nfc3VibmV0LnN1Ym5ldDEuaWQKICByb3V0ZV90YWJsZV9pZCA9IGF3c19yb3V0ZV90YWJsZS5ydC5pZAp9CgpyZXNvdXJjZSAiYXdzX3JvdXRlX3RhYmxlX2Fzc29jaWF0aW9uIiAiYiIgewogIHN1Ym5ldF9pZCAgICAgID0gYXdzX3N1Ym5ldC5zdWJuZXQyLmlkCiAgcm91dGVfdGFibGVfaWQgPSBhd3Nfcm91dGVfdGFibGUucnQuaWQKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_internet_gateway&quot; &quot;igw&quot; {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = &quot;main-igw&quot;
+  }
+}
+
+resource &quot;aws_route_table&quot; &quot;rt&quot; {
+  vpc_id = aws_vpc.main.id
+
+  route {
+    cidr_block = &quot;0.0.0.0/0&quot;
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
+  tags = {
+    Name = &quot;main-route-table&quot;
+  }
+}
+
+resource &quot;aws_route_table_association&quot; &quot;a&quot; {
+  subnet_id      = aws_subnet.subnet1.id
+  route_table_id = aws_route_table.rt.id
+}
+
+resource &quot;aws_route_table_association&quot; &quot;b&quot; {
+  subnet_id      = aws_subnet.subnet2.id
+  route_table_id = aws_route_table.rt.id
+}</pre></div><div class='content'></div><h1>5. Creating Security Groups</h1>
+<div class='content'><p>We will create a security group to allow SSH and HTTP access.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19zZWN1cml0eV9ncm91cCIgIndlYl9zZyIgewogIHZwY19pZCA9IGF3c192cGMubWFpbi5pZAoKICBpbmdyZXNzIHsKICAgIGZyb21fcG9ydCAgID0gMjIKICAgIHRvX3BvcnQgICAgID0gMjIKICAgIHByb3RvY29sICAgID0gInRjcCIKICAgIGNpZHJfYmxvY2tzID0gWyIwLjAuMC4wLzAiXQogIH0KCiAgaW5ncmVzcyB7CiAgICBmcm9tX3BvcnQgICA9IDgwCiAgICB0b19wb3J0ICAgICA9IDgwCiAgICBwcm90b2NvbCAgICA9ICJ0Y3AiCiAgICBjaWRyX2Jsb2NrcyA9IFsiMC4wLjAuMC8wIl0KICB9CgogIGVncmVzcyB7CiAgICBmcm9tX3BvcnQgICA9IDAKICAgIHRvX3BvcnQgICAgID0gMAogICAgcHJvdG9jb2wgICAgPSAiLTEiCiAgICBjaWRyX2Jsb2NrcyA9IFsiMC4wLjAuMC8wIl0KICB9CgogIHRhZ3MgPSB7CiAgICBOYW1lID0gIndlYi1zZyIKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_security_group&quot; &quot;web_sg&quot; {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = &quot;tcp&quot;
+    cidr_blocks = [&quot;0.0.0.0/0&quot;]
+  }
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = &quot;tcp&quot;
+    cidr_blocks = [&quot;0.0.0.0/0&quot;]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = &quot;-1&quot;
+    cidr_blocks = [&quot;0.0.0.0/0&quot;]
+  }
+
+  tags = {
+    Name = &quot;web-sg&quot;
+  }
+}</pre></div><div class='content'></div><h1>6. Launching EC2 Instances</h1>
+<div class='content'><p>Now, let's launch two EC2 instances in our subnets.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2UgImF3c19pbnN0YW5jZSIgIndlYjEiIHsKICBhbWkgICAgICAgICAgID0gImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIgIyBBbWF6b24gTGludXggMiBBTUkKICBpbnN0YW5jZV90eXBlID0gInQyLm1pY3JvIgogIHN1Ym5ldF9pZCAgICAgPSBhd3Nfc3VibmV0LnN1Ym5ldDEuaWQKICBzZWN1cml0eV9ncm91cHMgPSBbYXdzX3NlY3VyaXR5X2dyb3VwLndlYl9zZy5uYW1lXQoKICB0YWdzID0gewogICAgTmFtZSA9ICJ3ZWIxIgogIH0KfQoKcmVzb3VyY2UgImF3c19pbnN0YW5jZSIgIndlYjIiIHsKICBhbWkgICAgICAgICAgID0gImFtaS0wYzU1YjE1OWNiZmFmZTFmMCIgIyBBbWF6b24gTGludXggMiBBTUkKICBpbnN0YW5jZV90eXBlID0gInQyLm1pY3JvIgogIHN1Ym5ldF9pZCAgICAgPSBhd3Nfc3VibmV0LnN1Ym5ldDIuaWQKICBzZWN1cml0eV9ncm91cHMgPSBbYXdzX3NlY3VyaXR5X2dyb3VwLndlYl9zZy5uYW1lXQoKICB0YWdzID0gewogICAgTmFtZSA9ICJ3ZWIyIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resource &quot;aws_instance&quot; &quot;web1&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot; # Amazon Linux 2 AMI
+  instance_type = &quot;t2.micro&quot;
+  subnet_id     = aws_subnet.subnet1.id
+  security_groups = [aws_security_group.web_sg.name]
+
+  tags = {
+    Name = &quot;web1&quot;
+  }
+}
+
+resource &quot;aws_instance&quot; &quot;web2&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot; # Amazon Linux 2 AMI
+  instance_type = &quot;t2.micro&quot;
+  subnet_id     = aws_subnet.subnet2.id
+  security_groups = [aws_security_group.web_sg.name]
+
+  tags = {
+    Name = &quot;web2&quot;
+  }
+}</pre></div><div class='content'></div><h1>7. Outputting Important Information</h1>
+<div class='content'><p>Finally, let's output the public IP addresses of our instances.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3V0cHV0ICJ3ZWIxX3B1YmxpY19pcCIgewogIHZhbHVlID0gYXdzX2luc3RhbmNlLndlYjEucHVibGljX2lwCn0KCm91dHB1dCAid2ViMl9wdWJsaWNfaXAiIHsKICB2YWx1ZSA9IGF3c19pbnN0YW5jZS53ZWIyLnB1YmxpY19pcAp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>output &quot;web1_public_ip&quot; {
+  value = aws_instance.web1.public_ip
+}
+
+output &quot;web2_public_ip&quot; {
+  value = aws_instance.web2.public_ip
+}</pre></div><div class='content'></div><h1>Applying the Configuration</h1>
+<div class='content'><p>To apply the configuration, run the following commands:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHBsYW4KdGVycmFmb3JtIGFwcGx5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform plan
+terraform apply</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this project, we created a basic AWS infrastructure using Terraform. We set up a VPC, subnets, an Internet Gateway, security groups, and launched EC2 instances. This project demonstrated how to use Terraform to manage AWS resources and provided a foundation for more complex infrastructure setups.</p>
+</div><h2>Next Steps</h2>
+<div class='content'><ul>
+<li>Experiment with adding more resources, such as RDS instances or S3 buckets.</li>
+<li>Explore using Terraform modules to organize your code better.</li>
+<li>Try deploying a simple web application on the EC2 instances.</li>
+</ul>
+<p>By completing this project, you have gained practical experience in using Terraform to manage AWS infrastructure, which is a valuable skill for any cloud engineer or DevOps professional.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-community-and-support' title="Community and Support">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-project-multi-cloud-deployment' title="Project 2: Multi-Cloud Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

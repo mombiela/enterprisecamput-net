@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Common Issues and Solutions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/06-02-common-issues-solutions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/06-02-common-issues-solutions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/06-02-common-issues-solutions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/06-02-common-issues-solutions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/06-02-common-issues-solutions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-monitoring-nginx' title="Monitoring NGINX">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Common Issues and Solutions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-performance-tuning' title="Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover some of the most common issues encountered when working with NGINX and provide solutions to resolve them. Understanding these common pitfalls and their fixes will help you maintain a robust and efficient NGINX setup.</p>
+</div><h1>1. NGINX Fails to Start</h1>
+<div class='content'></div><h2>Issue:</h2>
+<div class='content'><p>NGINX fails to start, and you receive an error message indicating that the service could not be started.</p>
+</div><h2>Common Causes:</h2>
+<div class='content'><ul>
+<li>Configuration file syntax errors.</li>
+<li>Port conflicts.</li>
+<li>Missing or incorrect permissions.</li>
+</ul>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Check Configuration Syntax:</strong>
+Use the following command to check the syntax of your NGINX configuration files:</p>
+<pre><code class="language-bash">sudo nginx -t
+</code></pre>
+<p>If there are syntax errors, the output will indicate the file and line number where the error occurred.</p>
+</li>
+<li>
+<p><strong>Resolve Port Conflicts:</strong>
+Ensure that the port NGINX is trying to bind to is not already in use by another service. You can check which service is using a specific port with:</p>
+<pre><code class="language-bash">sudo lsof -i :80
+</code></pre>
+<p>If another service is using the port, either stop that service or configure NGINX to use a different port.</p>
+</li>
+<li>
+<p><strong>Check Permissions:</strong>
+Ensure that NGINX has the necessary permissions to access its configuration files and directories. Verify the ownership and permissions of the files:</p>
+<pre><code class="language-bash">sudo chown -R www-data:www-data /etc/nginx
+sudo chmod -R 755 /etc/nginx
+</code></pre>
+</li>
+</ol>
+</div><h1>2. 502 Bad Gateway Error</h1>
+<div class='content'></div><h2>Issue:</h2>
+<div class='content'><p>Users receive a &quot;502 Bad Gateway&quot; error when trying to access your site.</p>
+</div><h2>Common Causes:</h2>
+<div class='content'><ul>
+<li>Backend server is down or unreachable.</li>
+<li>Misconfigured upstream server block.</li>
+<li>Timeout issues.</li>
+</ul>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Check Backend Server:</strong>
+Ensure that your backend server (e.g., a web application server) is running and reachable. You can test this by accessing the backend server directly.</p>
+</li>
+<li>
+<p><strong>Verify Upstream Configuration:</strong>
+Check your NGINX configuration to ensure that the upstream server block is correctly configured. For example:</p>
+<pre><code class="language-nginx">upstream backend {
+    server 127.0.0.1:8080;
+}
+
+server {
+    location / {
+        proxy_pass http://backend;
+    }
+}
+</code></pre>
+<p>Ensure the IP address and port match those of your backend server.</p>
+</li>
+<li>
+<p><strong>Increase Timeout Values:</strong>
+If the backend server is slow to respond, you may need to increase the timeout values in your NGINX configuration:</p>
+<pre><code class="language-nginx">proxy_connect_timeout 60s;
+proxy_send_timeout 60s;
+proxy_read_timeout 60s;
+</code></pre>
+</li>
+</ol>
+</div><h1>3. 404 Not Found Error</h1>
+<div class='content'></div><h2>Issue:</h2>
+<div class='content'><p>Users receive a &quot;404 Not Found&quot; error when trying to access certain pages or resources.</p>
+</div><h2>Common Causes:</h2>
+<div class='content'><ul>
+<li>Incorrect root directory.</li>
+<li>Missing files or directories.</li>
+<li>Misconfigured location blocks.</li>
+</ul>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Verify Root Directory:</strong>
+Ensure that the root directory specified in your NGINX configuration matches the location of your website files:</p>
+<pre><code class="language-nginx">server {
+    root /var/www/html;
+    ...
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Check File Existence:</strong>
+Verify that the files and directories you are trying to access actually exist in the specified root directory.</p>
+</li>
+<li>
+<p><strong>Review Location Blocks:</strong>
+Ensure that your location blocks are correctly configured to serve the desired content. For example:</p>
+<pre><code class="language-nginx">location /images/ {
+    alias /var/www/images/;
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>4. SSL/TLS Configuration Issues</h1>
+<div class='content'></div><h2>Issue:</h2>
+<div class='content'><p>Users encounter SSL/TLS errors when trying to access your site over HTTPS.</p>
+</div><h2>Common Causes:</h2>
+<div class='content'><ul>
+<li>Incorrect SSL certificate paths.</li>
+<li>Expired or invalid SSL certificates.</li>
+<li>Misconfigured SSL settings.</li>
+</ul>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Verify Certificate Paths:</strong>
+Ensure that the paths to your SSL certificate and key files are correct in your NGINX configuration:</p>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    ...
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Check Certificate Validity:</strong>
+Verify that your SSL certificate is valid and not expired. You can check the certificate details with:</p>
+<pre><code class="language-bash">openssl x509 -in /etc/nginx/ssl/nginx.crt -noout -text
+</code></pre>
+</li>
+<li>
+<p><strong>Review SSL Settings:</strong>
+Ensure that your SSL settings are correctly configured. For example:</p>
+<pre><code class="language-nginx">ssl_protocols TLSv1.2 TLSv1.3;
+ssl_ciphers HIGH:!aNULL:!MD5;
+</code></pre>
+</li>
+</ol>
+</div><h1>5. High CPU or Memory Usage</h1>
+<div class='content'></div><h2>Issue:</h2>
+<div class='content'><p>NGINX is consuming a high amount of CPU or memory, leading to performance issues.</p>
+</div><h2>Common Causes:</h2>
+<div class='content'><ul>
+<li>High traffic volume.</li>
+<li>Inefficient configuration.</li>
+<li>Resource-intensive modules or scripts.</li>
+</ul>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Optimize Configuration:</strong>
+Review and optimize your NGINX configuration to handle high traffic efficiently. For example, adjust the worker processes and connections:</p>
+<pre><code class="language-nginx">worker_processes auto;
+worker_connections 1024;
+</code></pre>
+</li>
+<li>
+<p><strong>Enable Caching:</strong>
+Implement caching to reduce the load on your server. For example:</p>
+<pre><code class="language-nginx">location / {
+    proxy_cache my_cache;
+    proxy_cache_valid 200 1h;
+    ...
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor and Analyze:</strong>
+Use monitoring tools to analyze the performance of your NGINX server and identify resource-intensive processes. Tools like <code>htop</code>, <code>ngxtop</code>, and <code>New Relic</code> can be helpful.</p>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Understanding and resolving common issues with NGINX is crucial for maintaining a stable and efficient web server. By following the solutions provided in this section, you can troubleshoot and fix many of the typical problems that arise when working with NGINX. In the next section, we will delve into performance tuning techniques to further optimize your NGINX server.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-monitoring-nginx' title="Monitoring NGINX">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-performance-tuning' title="Performance Tuning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

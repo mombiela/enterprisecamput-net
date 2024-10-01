@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite Database</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/07-04-sqlite-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/07-04-sqlite-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/07-04-sqlite-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flutter/07-04-sqlite-database" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/07-04-sqlite-database" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-file-storage' title="File Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">SQLite Database</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-using-hive' title="Using Hive for Local Storage">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to use SQLite for local storage in Flutter applications. SQLite is a lightweight, disk-based database that doesn’t require a separate server process and allows access to the database using a nonstandard variant of the SQL query language. It is a popular choice for local storage in mobile applications due to its simplicity and efficiency.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>SQLite Database</strong>: A self-contained, serverless, zero-configuration, transactional SQL database engine.</li>
+<li><strong>sqflite Package</strong>: A Flutter plugin for SQLite, providing a simple API to interact with SQLite databases.</li>
+<li><strong>CRUD Operations</strong>: The basic operations for interacting with a database - Create, Read, Update, and Delete.</li>
+</ol>
+</div><h1>Setting Up SQLite in Flutter</h1>
+<div class='content'></div><h2>Step 1: Add Dependencies</h2>
+<div class='content'><p>First, add the <code>sqflite</code> and <code>path</code> packages to your <code>pubspec.yaml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzOgogIGZsdXR0ZXI6CiAgICBzZGs6IGZsdXR0ZXIKICBzcWZsaXRlOiBeMi4wLjArMwogIHBhdGg6IF4xLjguMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.0.0+3
+  path: ^1.8.0</pre></div><div class='content'><p>Run <code>flutter pub get</code> to install the packages.</p>
+</div><h2>Step 2: Import Packages</h2>
+<div class='content'><p>Import the necessary packages in your Dart file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOnNxZmxpdGUvc3FmbGl0ZS5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOnBhdGgvcGF0aC5kYXJ0Jzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';</pre></div><div class='content'></div><h2>Step 3: Initialize the Database</h2>
+<div class='content'><p>Create a function to initialize the database. This function will open the database and create a table if it doesn’t exist:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPERhdGFiYXNlPiBpbml0aWFsaXplRGF0YWJhc2UoKSBhc3luYyB7CiAgU3RyaW5nIHBhdGggPSBqb2luKGF3YWl0IGdldERhdGFiYXNlc1BhdGgoKSwgJ2V4YW1wbGUuZGInKTsKICAKICByZXR1cm4gb3BlbkRhdGFiYXNlKAogICAgcGF0aCwKICAgIG9uQ3JlYXRlOiAoZGIsIHZlcnNpb24pIHsKICAgICAgcmV0dXJuIGRiLmV4ZWN1dGUoCiAgICAgICAgIkNSRUFURSBUQUJMRSBpdGVtcyhpZCBJTlRFR0VSIFBSSU1BUlkgS0VZLCBuYW1lIFRFWFQsIHZhbHVlIElOVEVHRVIpIiwKICAgICAgKTsKICAgIH0sCiAgICB2ZXJzaW9uOiAxLAogICk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;Database&gt; initializeDatabase() async {
+  String path = join(await getDatabasesPath(), 'example.db');
+  
+  return openDatabase(
+    path,
+    onCreate: (db, version) {
+      return db.execute(
+        &quot;CREATE TABLE items(id INTEGER PRIMARY KEY, name TEXT, value INTEGER)&quot;,
+      );
+    },
+    version: 1,
+  );
+}</pre></div><div class='content'></div><h2>Step 4: CRUD Operations</h2>
+<div class='content'><h4>Create</h4>
+<p>To insert data into the database, use the <code>insert</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPHZvaWQ+IGluc2VydEl0ZW0oRGF0YWJhc2UgZGIsIE1hcDxTdHJpbmcsIGR5bmFtaWM+IGl0ZW0pIGFzeW5jIHsKICBhd2FpdCBkYi5pbnNlcnQoCiAgICAnaXRlbXMnLAogICAgaXRlbSwKICAgIGNvbmZsaWN0QWxnb3JpdGhtOiBDb25mbGljdEFsZ29yaXRobS5yZXBsYWNlLAogICk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;void&gt; insertItem(Database db, Map&lt;String, dynamic&gt; item) async {
+  await db.insert(
+    'items',
+    item,
+    conflictAlgorithm: ConflictAlgorithm.replace,
+  );
+}</pre></div><div class='content'><h4>Read</h4>
+<p>To retrieve data from the database, use the <code>query</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPExpc3Q8TWFwPFN0cmluZywgZHluYW1pYz4+PiBnZXRJdGVtcyhEYXRhYmFzZSBkYikgYXN5bmMgewogIHJldHVybiBhd2FpdCBkYi5xdWVyeSgnaXRlbXMnKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt; getItems(Database db) async {
+  return await db.query('items');
+}</pre></div><div class='content'><h4>Update</h4>
+<p>To update existing data, use the <code>update</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPHZvaWQ+IHVwZGF0ZUl0ZW0oRGF0YWJhc2UgZGIsIE1hcDxTdHJpbmcsIGR5bmFtaWM+IGl0ZW0pIGFzeW5jIHsKICBhd2FpdCBkYi51cGRhdGUoCiAgICAnaXRlbXMnLAogICAgaXRlbSwKICAgIHdoZXJlOiAiaWQgPSA/IiwKICAgIHdoZXJlQXJnczogW2l0ZW1bJ2lkJ11dLAogICk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;void&gt; updateItem(Database db, Map&lt;String, dynamic&gt; item) async {
+  await db.update(
+    'items',
+    item,
+    where: &quot;id = ?&quot;,
+    whereArgs: [item['id']],
+  );
+}</pre></div><div class='content'><h4>Delete</h4>
+<p>To delete data from the database, use the <code>delete</code> method:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPHZvaWQ+IGRlbGV0ZUl0ZW0oRGF0YWJhc2UgZGIsIGludCBpZCkgYXN5bmMgewogIGF3YWl0IGRiLmRlbGV0ZSgKICAgICdpdGVtcycsCiAgICB3aGVyZTogImlkID0gPyIsCiAgICB3aGVyZUFyZ3M6IFtpZF0sCiAgKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;void&gt; deleteItem(Database db, int id) async {
+  await db.delete(
+    'items',
+    where: &quot;id = ?&quot;,
+    whereArgs: [id],
+  );
+}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Here is a complete example demonstrating how to use SQLite in a Flutter application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpzcWZsaXRlL3NxZmxpdGUuZGFydCc7CmltcG9ydCAncGFja2FnZTpwYXRoL3BhdGguZGFydCc7Cgp2b2lkIG1haW4oKSA9PiBydW5BcHAoTXlBcHAoKSk7CgpjbGFzcyBNeUFwcCBleHRlbmRzIFN0YXRlbGVzc1dpZGdldCB7CiAgQG92ZXJyaWRlCiAgV2lkZ2V0IGJ1aWxkKEJ1aWxkQ29udGV4dCBjb250ZXh0KSB7CiAgICByZXR1cm4gTWF0ZXJpYWxBcHAoCiAgICAgIGhvbWU6IEhvbWVTY3JlZW4oKSwKICAgICk7CiAgfQp9CgpjbGFzcyBIb21lU2NyZWVuIGV4dGVuZHMgU3RhdGVmdWxXaWRnZXQgewogIEBvdmVycmlkZQogIF9Ib21lU2NyZWVuU3RhdGUgY3JlYXRlU3RhdGUoKSA9PiBfSG9tZVNjcmVlblN0YXRlKCk7Cn0KCmNsYXNzIF9Ib21lU2NyZWVuU3RhdGUgZXh0ZW5kcyBTdGF0ZTxIb21lU2NyZWVuPiB7CiAgRGF0YWJhc2UgX2RhdGFiYXNlOwogIExpc3Q8TWFwPFN0cmluZywgZHluYW1pYz4+IF9pdGVtcyA9IFtdOwoKICBAb3ZlcnJpZGUKICB2b2lkIGluaXRTdGF0ZSgpIHsKICAgIHN1cGVyLmluaXRTdGF0ZSgpOwogICAgX2luaXRpYWxpemVEYXRhYmFzZSgpOwogIH0KCiAgRnV0dXJlPHZvaWQ+IF9pbml0aWFsaXplRGF0YWJhc2UoKSBhc3luYyB7CiAgICBfZGF0YWJhc2UgPSBhd2FpdCBpbml0aWFsaXplRGF0YWJhc2UoKTsKICAgIF9yZWZyZXNoSXRlbXMoKTsKICB9CgogIEZ1dHVyZTx2b2lkPiBfcmVmcmVzaEl0ZW1zKCkgYXN5bmMgewogICAgZmluYWwgZGF0YSA9IGF3YWl0IGdldEl0ZW1zKF9kYXRhYmFzZSk7CiAgICBzZXRTdGF0ZSgoKSB7CiAgICAgIF9pdGVtcyA9IGRhdGE7CiAgICB9KTsKICB9CgogIEZ1dHVyZTx2b2lkPiBfYWRkSXRlbSgpIGFzeW5jIHsKICAgIGF3YWl0IGluc2VydEl0ZW0oX2RhdGFiYXNlLCB7J25hbWUnOiAnSXRlbSAke19pdGVtcy5sZW5ndGggKyAxfScsICd2YWx1ZSc6IF9pdGVtcy5sZW5ndGggKyAxfSk7CiAgICBfcmVmcmVzaEl0ZW1zKCk7CiAgfQoKICBGdXR1cmU8dm9pZD4gX3VwZGF0ZUl0ZW0oaW50IGlkKSBhc3luYyB7CiAgICBhd2FpdCB1cGRhdGVJdGVtKF9kYXRhYmFzZSwgeydpZCc6IGlkLCAnbmFtZSc6ICdVcGRhdGVkIEl0ZW0nLCAndmFsdWUnOiA5OTl9KTsKICAgIF9yZWZyZXNoSXRlbXMoKTsKICB9CgogIEZ1dHVyZTx2b2lkPiBfZGVsZXRlSXRlbShpbnQgaWQpIGFzeW5jIHsKICAgIGF3YWl0IGRlbGV0ZUl0ZW0oX2RhdGFiYXNlLCBpZCk7CiAgICBfcmVmcmVzaEl0ZW1zKCk7CiAgfQoKICBAb3ZlcnJpZGUKICBXaWRnZXQgYnVpbGQoQnVpbGRDb250ZXh0IGNvbnRleHQpIHsKICAgIHJldHVybiBTY2FmZm9sZCgKICAgICAgYXBwQmFyOiBBcHBCYXIoCiAgICAgICAgdGl0bGU6IFRleHQoJ1NRTGl0ZSBFeGFtcGxlJyksCiAgICAgICksCiAgICAgIGJvZHk6IExpc3RWaWV3LmJ1aWxkZXIoCiAgICAgICAgaXRlbUNvdW50OiBfaXRlbXMubGVuZ3RoLAogICAgICAgIGl0ZW1CdWlsZGVyOiAoY29udGV4dCwgaW5kZXgpIHsKICAgICAgICAgIGZpbmFsIGl0ZW0gPSBfaXRlbXNbaW5kZXhdOwogICAgICAgICAgcmV0dXJuIExpc3RUaWxlKAogICAgICAgICAgICB0aXRsZTogVGV4dChpdGVtWyduYW1lJ10pLAogICAgICAgICAgICBzdWJ0aXRsZTogVGV4dCgnVmFsdWU6ICR7aXRlbVsndmFsdWUnXX0nKSwKICAgICAgICAgICAgdHJhaWxpbmc6IFJvdygKICAgICAgICAgICAgICBtYWluQXhpc1NpemU6IE1haW5BeGlzU2l6ZS5taW4sCiAgICAgICAgICAgICAgY2hpbGRyZW46IFsKICAgICAgICAgICAgICAgIEljb25CdXR0b24oCiAgICAgICAgICAgICAgICAgIGljb246IEljb24oSWNvbnMuZWRpdCksCiAgICAgICAgICAgICAgICAgIG9uUHJlc3NlZDogKCkgPT4gX3VwZGF0ZUl0ZW0oaXRlbVsnaWQnXSksCiAgICAgICAgICAgICAgICApLAogICAgICAgICAgICAgICAgSWNvbkJ1dHRvbigKICAgICAgICAgICAgICAgICAgaWNvbjogSWNvbihJY29ucy5kZWxldGUpLAogICAgICAgICAgICAgICAgICBvblByZXNzZWQ6ICgpID0+IF9kZWxldGVJdGVtKGl0ZW1bJ2lkJ10pLAogICAgICAgICAgICAgICAgKSwKICAgICAgICAgICAgICBdLAogICAgICAgICAgICApLAogICAgICAgICAgKTsKICAgICAgICB9LAogICAgICApLAogICAgICBmbG9hdGluZ0FjdGlvbkJ1dHRvbjogRmxvYXRpbmdBY3Rpb25CdXR0b24oCiAgICAgICAgb25QcmVzc2VkOiBfYWRkSXRlbSwKICAgICAgICBjaGlsZDogSWNvbihJY29ucy5hZGQpLAogICAgICApLAogICAgKTsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+void main() =&gt; runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() =&gt; _HomeScreenState();
+}
+
+class _HomeScreenState extends State&lt;HomeScreen&gt; {
+  Database _database;
+  List&lt;Map&lt;String, dynamic&gt;&gt; _items = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeDatabase();
+  }
+
+  Future&lt;void&gt; _initializeDatabase() async {
+    _database = await initializeDatabase();
+    _refreshItems();
+  }
+
+  Future&lt;void&gt; _refreshItems() async {
+    final data = await getItems(_database);
+    setState(() {
+      _items = data;
+    });
+  }
+
+  Future&lt;void&gt; _addItem() async {
+    await insertItem(_database, {'name': 'Item ${_items.length + 1}', 'value': _items.length + 1});
+    _refreshItems();
+  }
+
+  Future&lt;void&gt; _updateItem(int id) async {
+    await updateItem(_database, {'id': id, 'name': 'Updated Item', 'value': 999});
+    _refreshItems();
+  }
+
+  Future&lt;void&gt; _deleteItem(int id) async {
+    await deleteItem(_database, id);
+    _refreshItems();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('SQLite Example'),
+      ),
+      body: ListView.builder(
+        itemCount: _items.length,
+        itemBuilder: (context, index) {
+          final item = _items[index];
+          return ListTile(
+            title: Text(item['name']),
+            subtitle: Text('Value: ${item['value']}'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () =&gt; _updateItem(item['id']),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () =&gt; _deleteItem(item['id']),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addItem,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a New Table</h2>
+<div class='content'><ol>
+<li>Modify the <code>initializeDatabase</code> function to create a new table called <code>users</code> with columns <code>id</code>, <code>username</code>, and <code>email</code>.</li>
+<li>Write functions to perform CRUD operations on the <code>users</code> table.</li>
+</ol>
+</div><h2>Exercise 2: Implement Search Functionality</h2>
+<div class='content'><ol>
+<li>Add a search bar to the <code>HomeScreen</code> widget.</li>
+<li>Implement a function to search for items in the <code>items</code> table based on the <code>name</code> column.</li>
+</ol>
+</div><h2>Exercise 3: Handle Database Versioning</h2>
+<div class='content'><ol>
+<li>Modify the <code>initializeDatabase</code> function to handle database versioning.</li>
+<li>Implement a migration strategy to add a new column <code>description</code> to the <code>items</code> table when upgrading the database version.</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned how to use SQLite for local storage in Flutter applications. We covered the basics of setting up the <code>sqflite</code> package, initializing the database, and performing CRUD operations. We also provided a practical example and exercises to reinforce the concepts. SQLite is a powerful tool for managing local data, and mastering it will significantly enhance your Flutter development skills.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-file-storage' title="File Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-using-hive' title="Using Hive for Local Storage">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Akka</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/06-05-introduction-to-akka" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/06-05-introduction-to-akka" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/06-05-introduction-to-akka" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/scala/06-05-introduction-to-akka" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/06-05-introduction-to-akka" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-concurrency-in-scala' title="Concurrency in Scala">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introduction to Akka</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-sbt-scala-build-tool' title="SBT (Scala Build Tool)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Akka is a powerful toolkit and runtime for building highly concurrent, distributed, and resilient message-driven applications on the JVM. It simplifies the development of complex, distributed systems by providing a higher level of abstraction for dealing with concurrency and distribution.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. Actors</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Actors are the fundamental unit of computation in Akka. They encapsulate state and behavior, and they communicate exclusively through message passing.</li>
+<li><strong>Characteristics</strong>:
+<ul>
+<li><strong>Encapsulation</strong>: Each actor has its own state and behavior.</li>
+<li><strong>Isolation</strong>: Actors do not share state directly.</li>
+<li><strong>Asynchronous Communication</strong>: Actors communicate by sending and receiving messages asynchronously.</li>
+</ul>
+</li>
+</ul>
+</div><h2>2. Actor System</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: An actor system is a hierarchical group of actors which share common configuration and lifecycle.</li>
+<li><strong>Purpose</strong>: It provides the infrastructure for creating and managing actors.</li>
+</ul>
+</div><h2>3. Messages</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Messages are immutable objects that actors use to communicate with each other.</li>
+<li><strong>Types</strong>: Messages can be of any type, but it's a good practice to use case classes or case objects.</li>
+</ul>
+</div><h2>4. Supervision</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Supervision is a strategy for handling failures in actor systems. Supervisors manage the lifecycle and error handling of their child actors.</li>
+<li><strong>Strategies</strong>:
+<ul>
+<li><strong>Restart</strong>: Restart the child actor.</li>
+<li><strong>Resume</strong>: Resume the child actor's operation.</li>
+<li><strong>Stop</strong>: Stop the child actor.</li>
+<li><strong>Escalate</strong>: Escalate the failure to the supervisor's supervisor.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up Akka</h1>
+<div class='content'></div><h2>1. Adding Akka to Your Project</h2>
+<div class='content'><p>To use Akka in your Scala project, you need to add the Akka dependencies to your <code>build.sbt</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGlicmFyeURlcGVuZGVuY2llcyArPSAiY29tLnR5cGVzYWZlLmFra2EiICUlICJha2thLWFjdG9yLXR5cGVkIiAlICIyLjYuMTYi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>libraryDependencies += &quot;com.typesafe.akka&quot; %% &quot;akka-actor-typed&quot; % &quot;2.6.16&quot;</pre></div><div class='content'></div><h2>2. Creating an Actor System</h2>
+<div class='content'><p>Here's a simple example of creating an actor system and defining an actor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3IudHlwZWQuQWN0b3JTeXN0ZW0KaW1wb3J0IGFra2EuYWN0b3IudHlwZWQuc2NhbGFkc2wuQmVoYXZpb3JzCgpvYmplY3QgSGVsbG9Xb3JsZCB7CiAgZGVmIGFwcGx5KCk6IEJlaGF2aW9ycy5SZWNlaXZlW1N0cmluZ10gPSBCZWhhdmlvcnMucmVjZWl2ZSB7IChjb250ZXh0LCBtZXNzYWdlKSA9PgogICAgY29udGV4dC5sb2cuaW5mbygiSGVsbG8sIHt9ISIsIG1lc3NhZ2UpCiAgICBCZWhhdmlvcnMuc2FtZQogIH0KfQoKb2JqZWN0IE1haW4gZXh0ZW5kcyBBcHAgewogIHZhbCBzeXN0ZW06IEFjdG9yU3lzdGVtW1N0cmluZ10gPSBBY3RvclN5c3RlbShIZWxsb1dvcmxkKCksICJoZWxsby1ha2thIikKICBzeXN0ZW0gISAiV29ybGQiCiAgc3lzdGVtICEgIkFra2EiCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.Behaviors
+
+object HelloWorld {
+  def apply(): Behaviors.Receive[String] = Behaviors.receive { (context, message) =&gt;
+    context.log.info(&quot;Hello, {}!&quot;, message)
+    Behaviors.same
+  }
+}
+
+object Main extends App {
+  val system: ActorSystem[String] = ActorSystem(HelloWorld(), &quot;hello-akka&quot;)
+  system ! &quot;World&quot;
+  system ! &quot;Akka&quot;
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>HelloWorld Actor</strong>: Defines an actor that logs a greeting message.</li>
+<li><strong>ActorSystem</strong>: Creates an actor system named &quot;hello-akka&quot; and sends messages to the <code>HelloWorld</code> actor.</li>
+</ul>
+</div><h1>Practical Example: Simple Chat System</h1>
+<div class='content'></div><h2>1. Define Messages</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VhbGVkIHRyYWl0IENoYXRNZXNzYWdlCmNhc2UgY2xhc3MgU2VuZE1lc3NhZ2UoY29udGVudDogU3RyaW5nKSBleHRlbmRzIENoYXRNZXNzYWdlCmNhc2UgY2xhc3MgUmVjZWl2ZU1lc3NhZ2UoY29udGVudDogU3RyaW5nKSBleHRlbmRzIENoYXRNZXNzYWdl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sealed trait ChatMessage
+case class SendMessage(content: String) extends ChatMessage
+case class ReceiveMessage(content: String) extends ChatMessage</pre></div><div class='content'></div><h2>2. Define Chat Actor</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3IudHlwZWQuQmVoYXZpb3IKaW1wb3J0IGFra2EuYWN0b3IudHlwZWQuc2NhbGFkc2wuQmVoYXZpb3JzCgpvYmplY3QgQ2hhdEFjdG9yIHsKICBkZWYgYXBwbHkoKTogQmVoYXZpb3JbQ2hhdE1lc3NhZ2VdID0gQmVoYXZpb3JzLnJlY2VpdmUgeyAoY29udGV4dCwgbWVzc2FnZSkgPT4KICAgIG1lc3NhZ2UgbWF0Y2ggewogICAgICBjYXNlIFNlbmRNZXNzYWdlKGNvbnRlbnQpID0+CiAgICAgICAgY29udGV4dC5sb2cuaW5mbygiU2VuZGluZyBtZXNzYWdlOiB7fSIsIGNvbnRlbnQpCiAgICAgICAgQmVoYXZpb3JzLnNhbWUKICAgICAgY2FzZSBSZWNlaXZlTWVzc2FnZShjb250ZW50KSA9PgogICAgICAgIGNvbnRleHQubG9nLmluZm8oIlJlY2VpdmVkIG1lc3NhZ2U6IHt9IiwgY29udGVudCkKICAgICAgICBCZWhhdmlvcnMuc2FtZQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.typed.Behavior
+import akka.actor.typed.scaladsl.Behaviors
+
+object ChatActor {
+  def apply(): Behavior[ChatMessage] = Behaviors.receive { (context, message) =&gt;
+    message match {
+      case SendMessage(content) =&gt;
+        context.log.info(&quot;Sending message: {}&quot;, content)
+        Behaviors.same
+      case ReceiveMessage(content) =&gt;
+        context.log.info(&quot;Received message: {}&quot;, content)
+        Behaviors.same
+    }
+  }
+}</pre></div><div class='content'></div><h2>3. Create Actor System and Send Messages</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JqZWN0IENoYXRBcHAgZXh0ZW5kcyBBcHAgewogIHZhbCBzeXN0ZW06IEFjdG9yU3lzdGVtW0NoYXRNZXNzYWdlXSA9IEFjdG9yU3lzdGVtKENoYXRBY3RvcigpLCAiY2hhdC1zeXN0ZW0iKQogIHN5c3RlbSAhIFNlbmRNZXNzYWdlKCJIZWxsbywgQWtrYSEiKQogIHN5c3RlbSAhIFJlY2VpdmVNZXNzYWdlKCJIZWxsbywgVXNlciEiKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>object ChatApp extends App {
+  val system: ActorSystem[ChatMessage] = ActorSystem(ChatActor(), &quot;chat-system&quot;)
+  system ! SendMessage(&quot;Hello, Akka!&quot;)
+  system ! ReceiveMessage(&quot;Hello, User!&quot;)
+}</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>ChatMessage</strong>: Defines the messages that the chat actor can handle.</li>
+<li><strong>ChatActor</strong>: Defines the behavior of the chat actor, logging sent and received messages.</li>
+<li><strong>ChatApp</strong>: Creates an actor system and sends messages to the <code>ChatActor</code>.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Counter Actor</h2>
+<div class='content'><ol>
+<li>Define a <code>CounterMessage</code> trait with <code>Increment</code> and <code>Decrement</code> case objects.</li>
+<li>Create a <code>CounterActor</code> that maintains a count and logs the current count on each message.</li>
+<li>Create an actor system and send increment and decrement messages to the <code>CounterActor</code>.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VhbGVkIHRyYWl0IENvdW50ZXJNZXNzYWdlCmNhc2Ugb2JqZWN0IEluY3JlbWVudCBleHRlbmRzIENvdW50ZXJNZXNzYWdlCmNhc2Ugb2JqZWN0IERlY3JlbWVudCBleHRlbmRzIENvdW50ZXJNZXNzYWdlCgpvYmplY3QgQ291bnRlckFjdG9yIHsKICBkZWYgYXBwbHkoKTogQmVoYXZpb3JbQ291bnRlck1lc3NhZ2VdID0gQmVoYXZpb3JzLnNldHVwIHsgY29udGV4dCA9PgogICAgdmFyIGNvdW50ID0gMAogICAgQmVoYXZpb3JzLnJlY2VpdmVNZXNzYWdlIHsKICAgICAgY2FzZSBJbmNyZW1lbnQgPT4KICAgICAgICBjb3VudCArPSAxCiAgICAgICAgY29udGV4dC5sb2cuaW5mbygiQ291bnQ6IHt9IiwgY291bnQpCiAgICAgICAgQmVoYXZpb3JzLnNhbWUKICAgICAgY2FzZSBEZWNyZW1lbnQgPT4KICAgICAgICBjb3VudCAtPSAxCiAgICAgICAgY29udGV4dC5sb2cuaW5mbygiQ291bnQ6IHt9IiwgY291bnQpCiAgICAgICAgQmVoYXZpb3JzLnNhbWUKICAgIH0KICB9Cn0KCm9iamVjdCBDb3VudGVyQXBwIGV4dGVuZHMgQXBwIHsKICB2YWwgc3lzdGVtOiBBY3RvclN5c3RlbVtDb3VudGVyTWVzc2FnZV0gPSBBY3RvclN5c3RlbShDb3VudGVyQWN0b3IoKSwgImNvdW50ZXItc3lzdGVtIikKICBzeXN0ZW0gISBJbmNyZW1lbnQKICBzeXN0ZW0gISBJbmNyZW1lbnQKICBzeXN0ZW0gISBEZWNyZW1lbnQKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sealed trait CounterMessage
+case object Increment extends CounterMessage
+case object Decrement extends CounterMessage
+
+object CounterActor {
+  def apply(): Behavior[CounterMessage] = Behaviors.setup { context =&gt;
+    var count = 0
+    Behaviors.receiveMessage {
+      case Increment =&gt;
+        count += 1
+        context.log.info(&quot;Count: {}&quot;, count)
+        Behaviors.same
+      case Decrement =&gt;
+        count -= 1
+        context.log.info(&quot;Count: {}&quot;, count)
+        Behaviors.same
+    }
+  }
+}
+
+object CounterApp extends App {
+  val system: ActorSystem[CounterMessage] = ActorSystem(CounterActor(), &quot;counter-system&quot;)
+  system ! Increment
+  system ! Increment
+  system ! Decrement
+}</pre></div><div class='content'></div><h2>Exercise 2: Implement a Supervisor Strategy</h2>
+<div class='content'><ol>
+<li>Create a <code>ChildActor</code> that throws an exception on receiving a specific message.</li>
+<li>Create a <code>SupervisorActor</code> that supervises the <code>ChildActor</code> and implements a restart strategy.</li>
+<li>Create an actor system and send messages to the <code>ChildActor</code> through the <code>SupervisorActor</code>.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3IudHlwZWQuU3VwZXJ2aXNvclN0cmF0ZWd5CmltcG9ydCBzY2FsYS5jb25jdXJyZW50LmR1cmF0aW9uLl8KCm9iamVjdCBDaGlsZEFjdG9yIHsKICBkZWYgYXBwbHkoKTogQmVoYXZpb3JbU3RyaW5nXSA9IEJlaGF2aW9ycy5yZWNlaXZlIHsgKGNvbnRleHQsIG1lc3NhZ2UpID0+CiAgICBpZiAobWVzc2FnZSA9PSAiZmFpbCIpIHRocm93IG5ldyBSdW50aW1lRXhjZXB0aW9uKCJGYWlsdXJlISIpCiAgICBlbHNlIHsKICAgICAgY29udGV4dC5sb2cuaW5mbygiTWVzc2FnZToge30iLCBtZXNzYWdlKQogICAgICBCZWhhdmlvcnMuc2FtZQogICAgfQogIH0KfQoKb2JqZWN0IFN1cGVydmlzb3JBY3RvciB7CiAgZGVmIGFwcGx5KCk6IEJlaGF2aW9yW1N0cmluZ10gPSBCZWhhdmlvcnMuc3VwZXJ2aXNlKENoaWxkQWN0b3IoKSkKICAgIC5vbkZhaWx1cmVbUnVudGltZUV4Y2VwdGlvbl0oU3VwZXJ2aXNvclN0cmF0ZWd5LnJlc3RhcnQud2l0aExpbWl0KDMsIDEubWludXRlKSkKfQoKb2JqZWN0IFN1cGVydmlzb3JBcHAgZXh0ZW5kcyBBcHAgewogIHZhbCBzeXN0ZW06IEFjdG9yU3lzdGVtW1N0cmluZ10gPSBBY3RvclN5c3RlbShTdXBlcnZpc29yQWN0b3IoKSwgInN1cGVydmlzb3Itc3lzdGVtIikKICBzeXN0ZW0gISAiSGVsbG8iCiAgc3lzdGVtICEgImZhaWwiCiAgc3lzdGVtICEgIkhlbGxvIGFnYWluIgp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.typed.SupervisorStrategy
+import scala.concurrent.duration._
+
+object ChildActor {
+  def apply(): Behavior[String] = Behaviors.receive { (context, message) =&gt;
+    if (message == &quot;fail&quot;) throw new RuntimeException(&quot;Failure!&quot;)
+    else {
+      context.log.info(&quot;Message: {}&quot;, message)
+      Behaviors.same
+    }
+  }
+}
+
+object SupervisorActor {
+  def apply(): Behavior[String] = Behaviors.supervise(ChildActor())
+    .onFailure[RuntimeException](SupervisorStrategy.restart.withLimit(3, 1.minute))
+}
+
+object SupervisorApp extends App {
+  val system: ActorSystem[String] = ActorSystem(SupervisorActor(), &quot;supervisor-system&quot;)
+  system ! &quot;Hello&quot;
+  system ! &quot;fail&quot;
+  system ! &quot;Hello again&quot;
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we introduced Akka and its core concepts, including actors, actor systems, messages, and supervision. We also provided practical examples and exercises to help you get started with building concurrent and distributed applications using Akka. In the next module, we will delve deeper into the Scala ecosystem and tools, exploring how to effectively build and manage Scala projects.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-concurrency-in-scala' title="Concurrency in Scala">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-sbt-scala-build-tool' title="SBT (Scala Build Tool)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

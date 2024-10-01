@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persistent Volume Claims</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/05-03-persistent-volume-claims" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/05-03-persistent-volume-claims" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/05-03-persistent-volume-claims" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/05-03-persistent-volume-claims" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/05-03-persistent-volume-claims" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-persistent-volumes' title="Persistent Volumes">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Persistent Volume Claims</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-storage-classes' title="Storage Classes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into Persistent Volume Claims (PVCs) in Kubernetes. PVCs are a fundamental concept for managing storage in a Kubernetes cluster. They allow users to request storage resources without needing to know the details of the underlying storage infrastructure.</p>
+</div><h1>What is a Persistent Volume Claim?</h1>
+<div class='content'><p>A Persistent Volume Claim (PVC) is a request for storage by a user. It is similar to a Pod in that Pods consume node resources, and PVCs consume Persistent Volumes (PVs). PVCs are used to abstract the details of how storage is provided, allowing users to request storage without needing to know the specifics of the storage backend.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Persistent Volume (PV):</strong> A piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.</li>
+<li><strong>Persistent Volume Claim (PVC):</strong> A request for storage by a user. It specifies the size and access modes required.</li>
+<li><strong>Storage Class:</strong> Defines the type of storage (e.g., SSD, HDD) and the provisioner that should be used to create the PV.</li>
+</ul>
+</div><h1>Creating a Persistent Volume Claim</h1>
+<div class='content'><p>To create a PVC, you need to define a YAML file that specifies the storage requirements. Below is an example of a PVC YAML file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IG15LXB2YwpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVPbmNlCiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgIHN0b3JhZ2U6IDFHaQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: my-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion:</strong> The version of the Kubernetes API.</li>
+<li><strong>kind:</strong> The type of resource, which is <code>PersistentVolumeClaim</code> in this case.</li>
+<li><strong>metadata:</strong> Metadata about the PVC, including its name.</li>
+<li><strong>spec:</strong> The specification of the PVC, including:
+<ul>
+<li><strong>accessModes:</strong> The access modes required for the volume. Common access modes are:
+<ul>
+<li><code>ReadWriteOnce</code> (RWO): The volume can be mounted as read-write by a single node.</li>
+<li><code>ReadOnlyMany</code> (ROX): The volume can be mounted as read-only by many nodes.</li>
+<li><code>ReadWriteMany</code> (RWX): The volume can be mounted as read-write by many nodes.</li>
+</ul>
+</li>
+<li><strong>resources:</strong> The storage resources required, including the amount of storage requested.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Binding a PVC to a PV</h1>
+<div class='content'><p>When a PVC is created, Kubernetes looks for a PV that matches the request. If a suitable PV is found, it is bound to the PVC. If no suitable PV is found, the PVC remains unbound until a matching PV is available.</p>
+</div><h2>Example</h2>
+<div class='content'><p>Let's create a PV that matches the PVC defined above:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBteS1wdgpzcGVjOgogIGNhcGFjaXR5OgogICAgc3RvcmFnZTogMUdpCiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgaG9zdFBhdGg6CiAgICBwYXRoOiAiL21udC9kYXRhIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: my-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: &quot;/mnt/data&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion:</strong> The version of the Kubernetes API.</li>
+<li><strong>kind:</strong> The type of resource, which is <code>PersistentVolume</code> in this case.</li>
+<li><strong>metadata:</strong> Metadata about the PV, including its name.</li>
+<li><strong>spec:</strong> The specification of the PV, including:
+<ul>
+<li><strong>capacity:</strong> The storage capacity of the PV.</li>
+<li><strong>accessModes:</strong> The access modes supported by the PV.</li>
+<li><strong>persistentVolumeReclaimPolicy:</strong> The policy for reclaiming the PV when it is released. Common policies are:
+<ul>
+<li><code>Retain</code>: The PV is retained after it is released.</li>
+<li><code>Recycle</code>: The PV is scrubbed and made available for a new claim.</li>
+<li><code>Delete</code>: The PV is deleted after it is released.</li>
+</ul>
+</li>
+<li><strong>hostPath:</strong> The path on the host where the data is stored.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Using a PVC in a Pod</h1>
+<div class='content'><p>Once a PVC is bound to a PV, it can be used in a Pod. Below is an example of a Pod that uses the PVC:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IG15LXBvZApzcGVjOgogIGNvbnRhaW5lcnM6CiAgICAtIG5hbWU6IG15LWNvbnRhaW5lcgogICAgICBpbWFnZTogbmdpbngKICAgICAgdm9sdW1lTW91bnRzOgogICAgICAgIC0gbW91bnRQYXRoOiAiL3Vzci9zaGFyZS9uZ2lueC9odG1sIgogICAgICAgICAgbmFtZTogbXktdm9sdW1lCiAgdm9sdW1lczoKICAgIC0gbmFtZTogbXktdm9sdW1lCiAgICAgIHBlcnNpc3RlbnRWb2x1bWVDbGFpbToKICAgICAgICBjbGFpbU5hbWU6IG15LXB2Yw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: my-volume
+  volumes:
+    - name: my-volume
+      persistentVolumeClaim:
+        claimName: my-pvc</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion:</strong> The version of the Kubernetes API.</li>
+<li><strong>kind:</strong> The type of resource, which is <code>Pod</code> in this case.</li>
+<li><strong>metadata:</strong> Metadata about the Pod, including its name.</li>
+<li><strong>spec:</strong> The specification of the Pod, including:
+<ul>
+<li><strong>containers:</strong> The containers that run in the Pod. Each container can have:
+<ul>
+<li><strong>name:</strong> The name of the container.</li>
+<li><strong>image:</strong> The Docker image to use for the container.</li>
+<li><strong>volumeMounts:</strong> The volumes to mount in the container, including:
+<ul>
+<li><strong>mountPath:</strong> The path in the container where the volume is mounted.</li>
+<li><strong>name:</strong> The name of the volume.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>volumes:</strong> The volumes available to the Pod, including:
+<ul>
+<li><strong>name:</strong> The name of the volume.</li>
+<li><strong>persistentVolumeClaim:</strong> The PVC to use for the volume, including:
+<ul>
+<li><strong>claimName:</strong> The name of the PVC.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>
+<p>Create a Persistent Volume (PV) with the following specifications:</p>
+<ul>
+<li>Name: <code>exercise-pv</code></li>
+<li>Capacity: <code>2Gi</code></li>
+<li>Access Mode: <code>ReadWriteOnce</code></li>
+<li>Host Path: <code>/mnt/exercise-data</code></li>
+<li>Reclaim Policy: <code>Retain</code></li>
+</ul>
+</li>
+<li>
+<p>Create a Persistent Volume Claim (PVC) with the following specifications:</p>
+<ul>
+<li>Name: <code>exercise-pvc</code></li>
+<li>Request: <code>2Gi</code></li>
+<li>Access Mode: <code>ReadWriteOnce</code></li>
+</ul>
+</li>
+<li>
+<p>Create a Pod that uses the PVC to mount the volume at <code>/data</code> in the container.</p>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Create the PV:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBleGVyY2lzZS1wdgpzcGVjOgogIGNhcGFjaXR5OgogICAgc3RvcmFnZTogMkdpCiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgaG9zdFBhdGg6CiAgICBwYXRoOiAiL21udC9leGVyY2lzZS1kYXRhIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: exercise-pv
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: &quot;/mnt/exercise-data&quot;</pre></div><div class='content'><ol start="2">
+<li>Create the PVC:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IGV4ZXJjaXNlLXB2YwpzcGVjOgogIGFjY2Vzc01vZGVzOgogICAgLSBSZWFkV3JpdGVPbmNlCiAgcmVzb3VyY2VzOgogICAgcmVxdWVzdHM6CiAgICAgIHN0b3JhZ2U6IDJHaQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: exercise-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi</pre></div><div class='content'><ol start="3">
+<li>Create the Pod:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4ZXJjaXNlLXBvZApzcGVjOgogIGNvbnRhaW5lcnM6CiAgICAtIG5hbWU6IGV4ZXJjaXNlLWNvbnRhaW5lcgogICAgICBpbWFnZTogbmdpbngKICAgICAgdm9sdW1lTW91bnRzOgogICAgICAgIC0gbW91bnRQYXRoOiAiL2RhdGEiCiAgICAgICAgICBuYW1lOiBleGVyY2lzZS12b2x1bWUKICB2b2x1bWVzOgogICAgLSBuYW1lOiBleGVyY2lzZS12b2x1bWUKICAgICAgcGVyc2lzdGVudFZvbHVtZUNsYWltOgogICAgICAgIGNsYWltTmFtZTogZXhlcmNpc2UtcHZj"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: exercise-pod
+spec:
+  containers:
+    - name: exercise-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/data&quot;
+          name: exercise-volume
+  volumes:
+    - name: exercise-volume
+      persistentVolumeClaim:
+        claimName: exercise-pvc</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mismatch in Access Modes:</strong> Ensure that the access modes specified in the PVC match those of the PV.</li>
+<li><strong>Insufficient Storage:</strong> Make sure the storage capacity requested in the PVC does not exceed the capacity of the PV.</li>
+<li><strong>Reclaim Policy:</strong> Be aware of the reclaim policy of the PV, as it determines what happens to the PV after it is released.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Persistent Volume Claims (PVCs) in Kubernetes. We learned how to create PVCs, bind them to Persistent Volumes (PVs), and use them in Pods. Understanding PVCs is crucial for managing storage in a Kubernetes cluster, and it allows users to request storage resources without needing to know the details of the underlying storage infrastructure.</p>
+<p>Next, we will explore Storage Classes, which provide a way to dynamically provision PVs based on the storage requirements specified in PVCs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-persistent-volumes' title="Persistent Volumes">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-storage-classes' title="Storage Classes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

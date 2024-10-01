@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MailboxProcessor and Agents</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/06-03-mailboxprocessor-agents" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/06-03-mailboxprocessor-agents" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/06-03-mailboxprocessor-agents" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fsharp/06-03-mailboxprocessor-agents" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/06-03-mailboxprocessor-agents" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-task-parallel-library' title="Task Parallel Library">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">MailboxProcessor and Agents</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-concurrency-patterns' title="Concurrency Patterns">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the MailboxProcessor and agents in F#. These are powerful tools for managing concurrency and building robust, scalable applications. We will cover the following topics:</p>
+<ol>
+<li><strong>Introduction to MailboxProcessor</strong></li>
+<li><strong>Creating and Using MailboxProcessor</strong></li>
+<li><strong>Agents and Message Passing</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. Introduction to MailboxProcessor</h1>
+<div class='content'><p>The <code>MailboxProcessor</code> is a core component in F# for handling asynchronous message processing. It allows you to create agents that can process messages in a thread-safe manner. This is particularly useful for building concurrent applications where you need to manage state or perform tasks asynchronously.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Agent</strong>: An entity that processes messages.</li>
+<li><strong>Mailbox</strong>: A queue where messages are stored before being processed by the agent.</li>
+<li><strong>Message Passing</strong>: The mechanism by which messages are sent to the agent for processing.</li>
+</ul>
+</div><h1>2. Creating and Using MailboxProcessor</h1>
+<div class='content'><p>To create a <code>MailboxProcessor</code>, you define an agent that processes messages. Here is a basic example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0KCi8vIERlZmluZSBhIHR5cGUgZm9yIG1lc3NhZ2VzCnR5cGUgTWVzc2FnZSA9CiAgICB8IEluY3JlbWVudAogICAgfCBEZWNyZW1lbnQKICAgIHwgUHJpbnQKCi8vIENyZWF0ZSBhIE1haWxib3hQcm9jZXNzb3IKbGV0IGFnZW50ID0gTWFpbGJveFByb2Nlc3Nvci5TdGFydChmdW4gaW5ib3ggLT4KICAgIC8vIEluaXRpYWwgc3RhdGUKICAgIGxldCByZWMgbG9vcCBjb3VudCA9CiAgICAgICAgYXN5bmMgewogICAgICAgICAgICAvLyBXYWl0IGZvciBhIG1lc3NhZ2UKICAgICAgICAgICAgbGV0ISBtc2cgPSBpbmJveC5SZWNlaXZlKCkKICAgICAgICAgICAgbWF0Y2ggbXNnIHdpdGgKICAgICAgICAgICAgfCBJbmNyZW1lbnQgLT4KICAgICAgICAgICAgICAgIHByaW50Zm4gIkluY3JlbWVudGluZyIKICAgICAgICAgICAgICAgIHJldHVybiEgbG9vcCAoY291bnQgKyAxKQogICAgICAgICAgICB8IERlY3JlbWVudCAtPgogICAgICAgICAgICAgICAgcHJpbnRmbiAiRGVjcmVtZW50aW5nIgogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIChjb3VudCAtIDEpCiAgICAgICAgICAgIHwgUHJpbnQgLT4KICAgICAgICAgICAgICAgIHByaW50Zm4gIkN1cnJlbnQgY291bnQ6ICVkIiBjb3VudAogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIGNvdW50CiAgICAgICAgfQogICAgLy8gU3RhcnQgdGhlIGxvb3Agd2l0aCBhbiBpbml0aWFsIGNvdW50IG9mIDAKICAgIGxvb3AgMAopCgovLyBTZW5kIG1lc3NhZ2VzIHRvIHRoZSBhZ2VudAphZ2VudC5Qb3N0IEluY3JlbWVudAphZ2VudC5Qb3N0IEluY3JlbWVudAphZ2VudC5Qb3N0IERlY3JlbWVudAphZ2VudC5Qb3N0IFByaW50"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System
+
+// Define a type for messages
+type Message =
+    | Increment
+    | Decrement
+    | Print
+
+// Create a MailboxProcessor
+let agent = MailboxProcessor.Start(fun inbox -&gt;
+    // Initial state
+    let rec loop count =
+        async {
+            // Wait for a message
+            let! msg = inbox.Receive()
+            match msg with
+            | Increment -&gt;
+                printfn &quot;Incrementing&quot;
+                return! loop (count + 1)
+            | Decrement -&gt;
+                printfn &quot;Decrementing&quot;
+                return! loop (count - 1)
+            | Print -&gt;
+                printfn &quot;Current count: %d&quot; count
+                return! loop count
+        }
+    // Start the loop with an initial count of 0
+    loop 0
+)
+
+// Send messages to the agent
+agent.Post Increment
+agent.Post Increment
+agent.Post Decrement
+agent.Post Print</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>Message Type</strong>: Defines the types of messages the agent can process.</li>
+<li><strong>MailboxProcessor.Start</strong>: Starts the agent with an initial state.</li>
+<li><strong>loop Function</strong>: A recursive function that processes messages and updates the state.</li>
+<li><strong>inbox.Receive()</strong>: Waits for a message to be received.</li>
+<li><strong>agent.Post</strong>: Sends a message to the agent.</li>
+</ul>
+</div><h1>3. Agents and Message Passing</h1>
+<div class='content'><p>Agents in F# are designed to handle messages asynchronously. This allows you to build systems where different parts of the application can communicate without blocking each other.</p>
+</div><h2>Benefits:</h2>
+<div class='content'><ul>
+<li><strong>Concurrency</strong>: Agents can process messages concurrently, improving performance.</li>
+<li><strong>Isolation</strong>: Each agent has its own state, reducing the risk of shared state issues.</li>
+<li><strong>Scalability</strong>: Agents can be distributed across multiple threads or machines.</li>
+</ul>
+</div><h1>4. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Counter Agent</h2>
+<div class='content'><p>Let's create a more complex example where an agent manages a counter with additional functionality.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBDb3VudGVyTWVzc2FnZSA9CiAgICB8IEluY3JlbWVudCBvZiBpbnQKICAgIHwgRGVjcmVtZW50IG9mIGludAogICAgfCBSZXNldAogICAgfCBHZXRDb3VudCBvZiBBc3luY1JlcGx5Q2hhbm5lbDxpbnQ+CgpsZXQgY291bnRlckFnZW50ID0gTWFpbGJveFByb2Nlc3Nvci5TdGFydChmdW4gaW5ib3ggLT4KICAgIGxldCByZWMgbG9vcCBjb3VudCA9CiAgICAgICAgYXN5bmMgewogICAgICAgICAgICBsZXQhIG1zZyA9IGluYm94LlJlY2VpdmUoKQogICAgICAgICAgICBtYXRjaCBtc2cgd2l0aAogICAgICAgICAgICB8IEluY3JlbWVudCB2YWx1ZSAtPgogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIChjb3VudCArIHZhbHVlKQogICAgICAgICAgICB8IERlY3JlbWVudCB2YWx1ZSAtPgogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIChjb3VudCAtIHZhbHVlKQogICAgICAgICAgICB8IFJlc2V0IC0+CiAgICAgICAgICAgICAgICByZXR1cm4hIGxvb3AgMAogICAgICAgICAgICB8IEdldENvdW50IHJlcGx5Q2hhbm5lbCAtPgogICAgICAgICAgICAgICAgcmVwbHlDaGFubmVsLlJlcGx5KGNvdW50KQogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIGNvdW50CiAgICAgICAgfQogICAgbG9vcCAwCikKCi8vIFVzaW5nIHRoZSBjb3VudGVyIGFnZW50CmNvdW50ZXJBZ2VudC5Qb3N0IChJbmNyZW1lbnQgNSkKY291bnRlckFnZW50LlBvc3QgKERlY3JlbWVudCAyKQpjb3VudGVyQWdlbnQuUG9zdCBSZXNldApjb3VudGVyQWdlbnQuUG9zdEFuZFJlcGx5KGZ1biByZXBseUNoYW5uZWwgLT4gR2V0Q291bnQgcmVwbHlDaGFubmVsKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type CounterMessage =
+    | Increment of int
+    | Decrement of int
+    | Reset
+    | GetCount of AsyncReplyChannel&lt;int&gt;
+
+let counterAgent = MailboxProcessor.Start(fun inbox -&gt;
+    let rec loop count =
+        async {
+            let! msg = inbox.Receive()
+            match msg with
+            | Increment value -&gt;
+                return! loop (count + value)
+            | Decrement value -&gt;
+                return! loop (count - value)
+            | Reset -&gt;
+                return! loop 0
+            | GetCount replyChannel -&gt;
+                replyChannel.Reply(count)
+                return! loop count
+        }
+    loop 0
+)
+
+// Using the counter agent
+counterAgent.Post (Increment 5)
+counterAgent.Post (Decrement 2)
+counterAgent.Post Reset
+counterAgent.PostAndReply(fun replyChannel -&gt; GetCount replyChannel)</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>AsyncReplyChannel</strong>: Used to send a reply back to the caller.</li>
+<li><strong>PostAndReply</strong>: Sends a message and waits for a reply.</li>
+</ul>
+</div><h1>5. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Temperature Sensor Agent</h2>
+<div class='content'><p>Create an agent that simulates a temperature sensor. The agent should:</p>
+<ul>
+<li>Accept messages to set the temperature.</li>
+<li>Accept messages to get the current temperature.</li>
+<li>Print the temperature when it changes.</li>
+</ul>
+<h4>Solution:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBUZW1wZXJhdHVyZU1lc3NhZ2UgPQogICAgfCBTZXRUZW1wZXJhdHVyZSBvZiBmbG9hdAogICAgfCBHZXRUZW1wZXJhdHVyZSBvZiBBc3luY1JlcGx5Q2hhbm5lbDxmbG9hdD4KCmxldCB0ZW1wZXJhdHVyZUFnZW50ID0gTWFpbGJveFByb2Nlc3Nvci5TdGFydChmdW4gaW5ib3ggLT4KICAgIGxldCByZWMgbG9vcCB0ZW1wZXJhdHVyZSA9CiAgICAgICAgYXN5bmMgewogICAgICAgICAgICBsZXQhIG1zZyA9IGluYm94LlJlY2VpdmUoKQogICAgICAgICAgICBtYXRjaCBtc2cgd2l0aAogICAgICAgICAgICB8IFNldFRlbXBlcmF0dXJlIHRlbXAgLT4KICAgICAgICAgICAgICAgIHByaW50Zm4gIlRlbXBlcmF0dXJlIHNldCB0bzogJWYiIHRlbXAKICAgICAgICAgICAgICAgIHJldHVybiEgbG9vcCB0ZW1wCiAgICAgICAgICAgIHwgR2V0VGVtcGVyYXR1cmUgcmVwbHlDaGFubmVsIC0+CiAgICAgICAgICAgICAgICByZXBseUNoYW5uZWwuUmVwbHkodGVtcGVyYXR1cmUpCiAgICAgICAgICAgICAgICByZXR1cm4hIGxvb3AgdGVtcGVyYXR1cmUKICAgICAgICB9CiAgICBsb29wIDAuMAopCgovLyBVc2luZyB0aGUgdGVtcGVyYXR1cmUgYWdlbnQKdGVtcGVyYXR1cmVBZ2VudC5Qb3N0IChTZXRUZW1wZXJhdHVyZSAyNS4wKQpsZXQgY3VycmVudFRlbXAgPSB0ZW1wZXJhdHVyZUFnZW50LlBvc3RBbmRSZXBseShmdW4gcmVwbHlDaGFubmVsIC0+IEdldFRlbXBlcmF0dXJlIHJlcGx5Q2hhbm5lbCkKcHJpbnRmbiAiQ3VycmVudCB0ZW1wZXJhdHVyZTogJWYiIGN1cnJlbnRUZW1w"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type TemperatureMessage =
+    | SetTemperature of float
+    | GetTemperature of AsyncReplyChannel&lt;float&gt;
+
+let temperatureAgent = MailboxProcessor.Start(fun inbox -&gt;
+    let rec loop temperature =
+        async {
+            let! msg = inbox.Receive()
+            match msg with
+            | SetTemperature temp -&gt;
+                printfn &quot;Temperature set to: %f&quot; temp
+                return! loop temp
+            | GetTemperature replyChannel -&gt;
+                replyChannel.Reply(temperature)
+                return! loop temperature
+        }
+    loop 0.0
+)
+
+// Using the temperature agent
+temperatureAgent.Post (SetTemperature 25.0)
+let currentTemp = temperatureAgent.PostAndReply(fun replyChannel -&gt; GetTemperature replyChannel)
+printfn &quot;Current temperature: %f&quot; currentTemp</pre></div><div class='content'></div><h2>Exercise 2: Bank Account Agent</h2>
+<div class='content'><p>Create an agent that simulates a bank account. The agent should:</p>
+<ul>
+<li>Accept messages to deposit and withdraw money.</li>
+<li>Accept messages to get the current balance.</li>
+<li>Print the balance after each transaction.</li>
+</ul>
+<h4>Solution:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBCYW5rTWVzc2FnZSA9CiAgICB8IERlcG9zaXQgb2YgZmxvYXQKICAgIHwgV2l0aGRyYXcgb2YgZmxvYXQKICAgIHwgR2V0QmFsYW5jZSBvZiBBc3luY1JlcGx5Q2hhbm5lbDxmbG9hdD4KCmxldCBiYW5rQWdlbnQgPSBNYWlsYm94UHJvY2Vzc29yLlN0YXJ0KGZ1biBpbmJveCAtPgogICAgbGV0IHJlYyBsb29wIGJhbGFuY2UgPQogICAgICAgIGFzeW5jIHsKICAgICAgICAgICAgbGV0ISBtc2cgPSBpbmJveC5SZWNlaXZlKCkKICAgICAgICAgICAgbWF0Y2ggbXNnIHdpdGgKICAgICAgICAgICAgfCBEZXBvc2l0IGFtb3VudCAtPgogICAgICAgICAgICAgICAgbGV0IG5ld0JhbGFuY2UgPSBiYWxhbmNlICsgYW1vdW50CiAgICAgICAgICAgICAgICBwcmludGZuICJEZXBvc2l0ZWQ6ICVmLCBOZXcgQmFsYW5jZTogJWYiIGFtb3VudCBuZXdCYWxhbmNlCiAgICAgICAgICAgICAgICByZXR1cm4hIGxvb3AgbmV3QmFsYW5jZQogICAgICAgICAgICB8IFdpdGhkcmF3IGFtb3VudCB3aGVuIGFtb3VudCA8PSBiYWxhbmNlIC0+CiAgICAgICAgICAgICAgICBsZXQgbmV3QmFsYW5jZSA9IGJhbGFuY2UgLSBhbW91bnQKICAgICAgICAgICAgICAgIHByaW50Zm4gIldpdGhkcmV3OiAlZiwgTmV3IEJhbGFuY2U6ICVmIiBhbW91bnQgbmV3QmFsYW5jZQogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIG5ld0JhbGFuY2UKICAgICAgICAgICAgfCBXaXRoZHJhdyBhbW91bnQgLT4KICAgICAgICAgICAgICAgIHByaW50Zm4gIkluc3VmZmljaWVudCBmdW5kcyB0byB3aXRoZHJhdzogJWYiIGFtb3VudAogICAgICAgICAgICAgICAgcmV0dXJuISBsb29wIGJhbGFuY2UKICAgICAgICAgICAgfCBHZXRCYWxhbmNlIHJlcGx5Q2hhbm5lbCAtPgogICAgICAgICAgICAgICAgcmVwbHlDaGFubmVsLlJlcGx5KGJhbGFuY2UpCiAgICAgICAgICAgICAgICByZXR1cm4hIGxvb3AgYmFsYW5jZQogICAgICAgIH0KICAgIGxvb3AgMC4wCikKCi8vIFVzaW5nIHRoZSBiYW5rIGFnZW50CmJhbmtBZ2VudC5Qb3N0IChEZXBvc2l0IDEwMC4wKQpiYW5rQWdlbnQuUG9zdCAoV2l0aGRyYXcgMzAuMCkKbGV0IGJhbGFuY2UgPSBiYW5rQWdlbnQuUG9zdEFuZFJlcGx5KGZ1biByZXBseUNoYW5uZWwgLT4gR2V0QmFsYW5jZSByZXBseUNoYW5uZWwpCnByaW50Zm4gIkN1cnJlbnQgYmFsYW5jZTogJWYiIGJhbGFuY2U="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type BankMessage =
+    | Deposit of float
+    | Withdraw of float
+    | GetBalance of AsyncReplyChannel&lt;float&gt;
+
+let bankAgent = MailboxProcessor.Start(fun inbox -&gt;
+    let rec loop balance =
+        async {
+            let! msg = inbox.Receive()
+            match msg with
+            | Deposit amount -&gt;
+                let newBalance = balance + amount
+                printfn &quot;Deposited: %f, New Balance: %f&quot; amount newBalance
+                return! loop newBalance
+            | Withdraw amount when amount &lt;= balance -&gt;
+                let newBalance = balance - amount
+                printfn &quot;Withdrew: %f, New Balance: %f&quot; amount newBalance
+                return! loop newBalance
+            | Withdraw amount -&gt;
+                printfn &quot;Insufficient funds to withdraw: %f&quot; amount
+                return! loop balance
+            | GetBalance replyChannel -&gt;
+                replyChannel.Reply(balance)
+                return! loop balance
+        }
+    loop 0.0
+)
+
+// Using the bank agent
+bankAgent.Post (Deposit 100.0)
+bankAgent.Post (Withdraw 30.0)
+let balance = bankAgent.PostAndReply(fun replyChannel -&gt; GetBalance replyChannel)
+printfn &quot;Current balance: %f&quot; balance</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have learned about the <code>MailboxProcessor</code> and agents in F#. We covered how to create and use a <code>MailboxProcessor</code>, the benefits of using agents, and provided practical examples and exercises to reinforce the concepts. Understanding and utilizing agents can significantly improve the concurrency and scalability of your applications. In the next section, we will explore concurrency patterns to further enhance your skills in building robust F# applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-task-parallel-library' title="Task Parallel Library">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-concurrency-patterns' title="Concurrency Patterns">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

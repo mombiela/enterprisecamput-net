@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Organization and Modularity</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/09-01-code-organization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/09-01-code-organization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/09-01-code-organization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/d3_js/09-01-code-organization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/09-01-code-organization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-debugging-troubleshooting' title="Debugging and Troubleshooting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Code Organization and Modularity</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-reusable-components' title="Reusable Components">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to organize your D3.js code effectively and make it modular. Proper code organization is crucial for maintaining readability, scalability, and ease of debugging. By the end of this section, you will understand how to structure your D3.js projects in a way that promotes reusability and maintainability.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Separation of Concerns</strong>: Dividing your code into distinct sections, each responsible for a specific aspect of the application.</li>
+<li><strong>Modularity</strong>: Creating self-contained modules that can be reused across different parts of your application.</li>
+<li><strong>Encapsulation</strong>: Hiding the internal details of a module and exposing only what is necessary.</li>
+<li><strong>Naming Conventions</strong>: Using consistent and descriptive names for variables, functions, and files.</li>
+</ol>
+</div><h1>Why Organize Code?</h1>
+<div class='content'><ul>
+<li><strong>Maintainability</strong>: Easier to understand and modify.</li>
+<li><strong>Reusability</strong>: Components can be reused in different parts of the application or in different projects.</li>
+<li><strong>Scalability</strong>: Simplifies adding new features or scaling the application.</li>
+<li><strong>Collaboration</strong>: Facilitates teamwork by making the codebase more understandable to others.</li>
+</ul>
+</div><h1>Basic Structure of a D3.js Project</h1>
+<div class='content'><p>A typical D3.js project can be organized into the following structure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvamVjdC1yb290LwrilIIK4pSc4pSA4pSAIGRhdGEvICAgICAgICAgICAgICAgICAgICMgRGF0YSBmaWxlcyAoQ1NWLCBKU09OLCBldGMuKQrilIIgICDilJTilIDilIAgc2FtcGxlLWRhdGEuY3N2CuKUggrilJzilIDilIAgc3JjLyAgICAgICAgICAgICAgICAgICAgIyBTb3VyY2UgZmlsZXMK4pSCICAg4pSc4pSA4pSAIGNvbXBvbmVudHMvICAgICAgICAgIyBSZXVzYWJsZSBjb21wb25lbnRzCuKUgiAgIOKUgiAgIOKUlOKUgOKUgCBiYXJDaGFydC5qcwrilIIgICDilJzilIDilIAgc3R5bGVzLyAgICAgICAgICAgICAjIENTUyBvciBTQ1NTIGZpbGVzCuKUgiAgIOKUgiAgIOKUlOKUgOKUgCBtYWluLmNzcwrilIIgICDilJzilIDilIAgdXRpbHMvICAgICAgICAgICAgICAjIFV0aWxpdHkgZnVuY3Rpb25zCuKUgiAgIOKUgiAgIOKUlOKUgOKUgCBkYXRhUGFyc2VyLmpzCuKUgiAgIOKUnOKUgOKUgCBpbmRleC5odG1sICAgICAgICAgICMgTWFpbiBIVE1MIGZpbGUK4pSCICAg4pSU4pSA4pSAIG1haW4uanMgICAgICAgICAgICAgIyBNYWluIEphdmFTY3JpcHQgZmlsZQrilIIK4pSc4pSA4pSAIGRpc3QvICAgICAgICAgICAgICAgICAgICMgQ29tcGlsZWQgZmlsZXMgKGZvciBwcm9kdWN0aW9uKQrilIIK4pSU4pSA4pSAIHBhY2thZ2UuanNvbiAgICAgICAgICAgICMgUHJvamVjdCBtZXRhZGF0YSBhbmQgZGVwZW5kZW5jaWVz"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>project-root/
+│
+├── data/                   # Data files (CSV, JSON, etc.)
+│   └── sample-data.csv
+│
+├── src/                    # Source files
+│   ├── components/         # Reusable components
+│   │   └── barChart.js
+│   ├── styles/             # CSS or SCSS files
+│   │   └── main.css
+│   ├── utils/              # Utility functions
+│   │   └── dataParser.js
+│   ├── index.html          # Main HTML file
+│   └── main.js             # Main JavaScript file
+│
+├── dist/                   # Compiled files (for production)
+│
+└── package.json            # Project metadata and dependencies</pre></div><div class='content'></div><h1>Example: Creating a Modular Bar Chart</h1>
+<div class='content'></div><h2>Step 1: Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create the Project Structure</strong>:</p>
+<pre><code class="language-bash">mkdir d3-project
+cd d3-project
+mkdir -p src/{components,styles,utils} data dist
+touch src/{components/barChart.js,styles/main.css,utils/dataParser.js,index.html,main.js}
+</code></pre>
+</li>
+<li>
+<p><strong>Initialize the Project</strong>:</p>
+<pre><code class="language-bash">npm init -y
+npm install d3
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Writing the Bar Chart Component</h2>
+<div class='content'><p><strong>src/components/barChart.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW1wb3J0IEQzLmpzCmltcG9ydCAqIGFzIGQzIGZyb20gJ2QzJzsKCi8vIEJhciBDaGFydCBDb21wb25lbnQKZXhwb3J0IGZ1bmN0aW9uIGJhckNoYXJ0KGRhdGEsIGNvbmZpZykgewogICAgY29uc3QgeyB3aWR0aCwgaGVpZ2h0LCBtYXJnaW4gfSA9IGNvbmZpZzsKCiAgICAvLyBDcmVhdGUgU1ZHIGNvbnRhaW5lcgogICAgY29uc3Qgc3ZnID0gZDMuc2VsZWN0KGNvbmZpZy5zZWxlY3RvcikKICAgICAgICAuYXBwZW5kKCdzdmcnKQogICAgICAgIC5hdHRyKCd3aWR0aCcsIHdpZHRoKQogICAgICAgIC5hdHRyKCdoZWlnaHQnLCBoZWlnaHQpOwoKICAgIC8vIFNldCB1cCBzY2FsZXMKICAgIGNvbnN0IHggPSBkMy5zY2FsZUJhbmQoKQogICAgICAgIC5kb21haW4oZGF0YS5tYXAoZCA9PiBkLm5hbWUpKQogICAgICAgIC5yYW5nZShbbWFyZ2luLmxlZnQsIHdpZHRoIC0gbWFyZ2luLnJpZ2h0XSkKICAgICAgICAucGFkZGluZygwLjEpOwoKICAgIGNvbnN0IHkgPSBkMy5zY2FsZUxpbmVhcigpCiAgICAgICAgLmRvbWFpbihbMCwgZDMubWF4KGRhdGEsIGQgPT4gZC52YWx1ZSldKQogICAgICAgIC5uaWNlKCkKICAgICAgICAucmFuZ2UoW2hlaWdodCAtIG1hcmdpbi5ib3R0b20sIG1hcmdpbi50b3BdKTsKCiAgICAvLyBEcmF3IGJhcnMKICAgIHN2Zy5zZWxlY3RBbGwoJy5iYXInKQogICAgICAgIC5kYXRhKGRhdGEpCiAgICAgICAgLmVudGVyKCkuYXBwZW5kKCdyZWN0JykKICAgICAgICAuYXR0cignY2xhc3MnLCAnYmFyJykKICAgICAgICAuYXR0cigneCcsIGQgPT4geChkLm5hbWUpKQogICAgICAgIC5hdHRyKCd5JywgZCA9PiB5KGQudmFsdWUpKQogICAgICAgIC5hdHRyKCd3aWR0aCcsIHguYmFuZHdpZHRoKCkpCiAgICAgICAgLmF0dHIoJ2hlaWdodCcsIGQgPT4geSgwKSAtIHkoZC52YWx1ZSkpCiAgICAgICAgLmF0dHIoJ2ZpbGwnLCAnc3RlZWxibHVlJyk7CgogICAgLy8gQWRkIFggYXhpcwogICAgc3ZnLmFwcGVuZCgnZycpCiAgICAgICAgLmF0dHIoJ3RyYW5zZm9ybScsIGB0cmFuc2xhdGUoMCwke2hlaWdodCAtIG1hcmdpbi5ib3R0b219KWApCiAgICAgICAgLmNhbGwoZDMuYXhpc0JvdHRvbSh4KSk7CgogICAgLy8gQWRkIFkgYXhpcwogICAgc3ZnLmFwcGVuZCgnZycpCiAgICAgICAgLmF0dHIoJ3RyYW5zZm9ybScsIGB0cmFuc2xhdGUoJHttYXJnaW4ubGVmdH0sMClgKQogICAgICAgIC5jYWxsKGQzLmF4aXNMZWZ0KHkpKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Import D3.js
+import * as d3 from 'd3';
+
+// Bar Chart Component
+export function barChart(data, config) {
+    const { width, height, margin } = config;
+
+    // Create SVG container
+    const svg = d3.select(config.selector)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+    // Set up scales
+    const x = d3.scaleBand()
+        .domain(data.map(d =&gt; d.name))
+        .range([margin.left, width - margin.right])
+        .padding(0.1);
+
+    const y = d3.scaleLinear()
+        .domain([0, d3.max(data, d =&gt; d.value)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
+
+    // Draw bars
+    svg.selectAll('.bar')
+        .data(data)
+        .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', d =&gt; x(d.name))
+        .attr('y', d =&gt; y(d.value))
+        .attr('width', x.bandwidth())
+        .attr('height', d =&gt; y(0) - y(d.value))
+        .attr('fill', 'steelblue');
+
+    // Add X axis
+    svg.append('g')
+        .attr('transform', `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x));
+
+    // Add Y axis
+    svg.append('g')
+        .attr('transform', `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y));
+}</pre></div><div class='content'></div><h2>Step 3: Using the Bar Chart Component</h2>
+<div class='content'><p><strong>src/main.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgYmFyQ2hhcnQgfSBmcm9tICcuL2NvbXBvbmVudHMvYmFyQ2hhcnQuanMnOwoKLy8gU2FtcGxlIGRhdGEKY29uc3QgZGF0YSA9IFsKICAgIHsgbmFtZTogJ0EnLCB2YWx1ZTogMzAgfSwKICAgIHsgbmFtZTogJ0InLCB2YWx1ZTogODAgfSwKICAgIHsgbmFtZTogJ0MnLCB2YWx1ZTogNDUgfSwKICAgIHsgbmFtZTogJ0QnLCB2YWx1ZTogNjAgfSwKICAgIHsgbmFtZTogJ0UnLCB2YWx1ZTogMjAgfSwKICAgIHsgbmFtZTogJ0YnLCB2YWx1ZTogOTAgfSwKICAgIHsgbmFtZTogJ0cnLCB2YWx1ZTogNTUgfSwKXTsKCi8vIENvbmZpZ3VyYXRpb24KY29uc3QgY29uZmlnID0gewogICAgc2VsZWN0b3I6ICcjY2hhcnQnLAogICAgd2lkdGg6IDgwMCwKICAgIGhlaWdodDogNDAwLAogICAgbWFyZ2luOiB7IHRvcDogMjAsIHJpZ2h0OiAzMCwgYm90dG9tOiAzMCwgbGVmdDogNDAgfQp9OwoKLy8gQ3JlYXRlIHRoZSBiYXIgY2hhcnQKYmFyQ2hhcnQoZGF0YSwgY29uZmlnKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { barChart } from './components/barChart.js';
+
+// Sample data
+const data = [
+    { name: 'A', value: 30 },
+    { name: 'B', value: 80 },
+    { name: 'C', value: 45 },
+    { name: 'D', value: 60 },
+    { name: 'E', value: 20 },
+    { name: 'F', value: 90 },
+    { name: 'G', value: 55 },
+];
+
+// Configuration
+const config = {
+    selector: '#chart',
+    width: 800,
+    height: 400,
+    margin: { top: 20, right: 30, bottom: 30, left: 40 }
+};
+
+// Create the bar chart
+barChart(data, config);</pre></div><div class='content'><p><strong>src/index.html</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+RDMuanMgQmFyIENoYXJ0PC90aXRsZT4KICAgIDxsaW5rIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0ic3R5bGVzL21haW4uY3NzIj4KPC9oZWFkPgo8Ym9keT4KICAgIDxkaXYgaWQ9ImNoYXJ0Ij48L2Rpdj4KICAgIDxzY3JpcHQgdHlwZT0ibW9kdWxlIiBzcmM9Im1haW4uanMiPjwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;D3.js Bar Chart&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles/main.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
+    &lt;script type=&quot;module&quot; src=&quot;main.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Step 4: Running the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Serve the Project</strong>:
+You can use a simple HTTP server to serve your project. For example, using <code>http-server</code>:</p>
+<pre><code class="language-bash">npm install -g http-server
+http-server ./src
+</code></pre>
+</li>
+<li>
+<p><strong>Open the Project</strong>:
+Open your browser and navigate to <code>http://localhost:8080</code> (or the port provided by <code>http-server</code>).</p>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the importance of code organization and modularity in D3.js projects. We discussed the basic structure of a D3.js project and provided a step-by-step example of creating a modular bar chart component. By following these practices, you can create more maintainable, reusable, and scalable D3.js applications.</p>
+<p>Next, we will delve into creating reusable components, which will further enhance the modularity and reusability of your D3.js code.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-debugging-troubleshooting' title="Debugging and Troubleshooting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-reusable-components' title="Reusable Components">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

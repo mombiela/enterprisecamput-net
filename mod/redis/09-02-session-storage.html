@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Storage</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/09-02-session-storage" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/09-02-session-storage" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/09-02-session-storage" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/09-02-session-storage" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/09-02-session-storage" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-caching' title="Caching">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Session Storage</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-message-queues' title="Message Queues">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how Redis can be used for session storage. Session storage is a common use case for Redis due to its high performance and ability to handle large volumes of data with low latency. We will cover the following topics:</p>
+<ol>
+<li><strong>What is Session Storage?</strong></li>
+<li><strong>Why Use Redis for Session Storage?</strong></li>
+<li><strong>Implementing Session Storage with Redis</strong></li>
+<li><strong>Practical Example</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>What is Session Storage?</h1>
+<div class='content'><p>Session storage refers to the practice of storing user session data on the server side. This data typically includes user authentication information, preferences, and other stateful data that needs to persist across multiple requests within a user session.</p>
+</div><h1>Why Use Redis for Session Storage?</h1>
+<div class='content'><p>Redis is an excellent choice for session storage due to several reasons:</p>
+<ul>
+<li><strong>Speed</strong>: Redis operates in-memory, providing extremely fast read and write operations.</li>
+<li><strong>Scalability</strong>: Redis can handle a large number of concurrent connections and operations, making it suitable for high-traffic applications.</li>
+<li><strong>Persistence</strong>: Redis offers various persistence options to ensure data durability.</li>
+<li><strong>Data Structures</strong>: Redis supports various data structures that can be used to store complex session data.</li>
+</ul>
+</div><h1>Implementing Session Storage with Redis</h1>
+<div class='content'><p>To implement session storage with Redis, follow these steps:</p>
+<ol>
+<li><strong>Install Redis</strong>: Ensure Redis is installed and running on your server.</li>
+<li><strong>Choose a Session ID</strong>: Generate a unique session ID for each user session.</li>
+<li><strong>Store Session Data</strong>: Use Redis commands to store session data associated with the session ID.</li>
+<li><strong>Retrieve Session Data</strong>: Retrieve session data using the session ID when needed.</li>
+<li><strong>Set Expiration</strong>: Set an expiration time for session data to automatically remove stale sessions.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's walk through a practical example of implementing session storage with Redis using Python and the <code>redis-py</code> library.</p>
+</div><h2>Step 1: Install Redis and `redis-py`</h2>
+<div class='content'><p>Ensure Redis is installed and running on your server. Install the <code>redis-py</code> library using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgcmVkaXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install redis</pre></div><div class='content'></div><h2>Step 2: Connect to Redis</h2>
+<div class='content'><p>Create a connection to the Redis server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCgojIENvbm5lY3QgdG8gUmVkaXMgc2VydmVyCnIgPSByZWRpcy5SZWRpcyhob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTAp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+
+# Connect to Redis server
+r = redis.Redis(host='localhost', port=6379, db=0)</pre></div><div class='content'></div><h2>Step 3: Store Session Data</h2>
+<div class='content'><p>Generate a session ID and store session data:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHV1aWQKCiMgR2VuZXJhdGUgYSB1bmlxdWUgc2Vzc2lvbiBJRApzZXNzaW9uX2lkID0gc3RyKHV1aWQudXVpZDQoKSkKCiMgU3RvcmUgc2Vzc2lvbiBkYXRhCnNlc3Npb25fZGF0YSA9IHsKICAgICd1c2VyX2lkJzogJzEyMzQ1JywKICAgICd1c2VybmFtZSc6ICdqb2huX2RvZScsCiAgICAnZW1haWwnOiAnam9obkBleGFtcGxlLmNvbScKfQoKIyBTdG9yZSBzZXNzaW9uIGRhdGEgaW4gUmVkaXMKci5obXNldChzZXNzaW9uX2lkLCBzZXNzaW9uX2RhdGEpCgojIFNldCBleHBpcmF0aW9uIHRpbWUgKGUuZy4sIDMwIG1pbnV0ZXMpCnIuZXhwaXJlKHNlc3Npb25faWQsIDE4MDAp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import uuid
+
+# Generate a unique session ID
+session_id = str(uuid.uuid4())
+
+# Store session data
+session_data = {
+    'user_id': '12345',
+    'username': 'john_doe',
+    'email': 'john@example.com'
+}
+
+# Store session data in Redis
+r.hmset(session_id, session_data)
+
+# Set expiration time (e.g., 30 minutes)
+r.expire(session_id, 1800)</pre></div><div class='content'></div><h2>Step 4: Retrieve Session Data</h2>
+<div class='content'><p>Retrieve session data using the session ID:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZXRyaWV2ZSBzZXNzaW9uIGRhdGEKcmV0cmlldmVkX2RhdGEgPSByLmhnZXRhbGwoc2Vzc2lvbl9pZCkKCiMgQ29udmVydCBieXRlIGRhdGEgdG8gc3RyaW5nCnJldHJpZXZlZF9kYXRhID0ge2suZGVjb2RlKCd1dGYtOCcpOiB2LmRlY29kZSgndXRmLTgnKSBmb3IgaywgdiBpbiByZXRyaWV2ZWRfZGF0YS5pdGVtcygpfQoKcHJpbnQocmV0cmlldmVkX2RhdGEp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Retrieve session data
+retrieved_data = r.hgetall(session_id)
+
+# Convert byte data to string
+retrieved_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in retrieved_data.items()}
+
+print(retrieved_data)</pre></div><div class='content'></div><h2>Step 5: Delete Session Data</h2>
+<div class='content'><p>Delete session data when the session ends:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWxldGUgc2Vzc2lvbiBkYXRhCnIuZGVsZXRlKHNlc3Npb25faWQp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Delete session data
+r.delete(session_id)</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Session Storage</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a basic session storage system using Redis. Store user session data and retrieve it using the session ID.</li>
+<li><strong>Hint</strong>: Use the <code>hmset</code> and <code>hgetall</code> commands to store and retrieve session data.</li>
+</ol>
+</div><h2>Exercise 2: Session Expiration</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Modify the session storage system to set an expiration time for session data. Ensure that session data is automatically removed after the expiration time.</li>
+<li><strong>Hint</strong>: Use the <code>expire</code> command to set the expiration time.</li>
+</ol>
+</div><h2>Exercise 3: Session Management</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a session management system that can handle multiple user sessions. Store, retrieve, and delete session data for different users.</li>
+<li><strong>Hint</strong>: Use unique session IDs for each user session and manage them using Redis commands.</li>
+</ol>
+</div><h1>Solutions</h1>
+<div class='content'></div><h2>Solution 1: Basic Session Storage</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCmltcG9ydCB1dWlkCgojIENvbm5lY3QgdG8gUmVkaXMgc2VydmVyCnIgPSByZWRpcy5SZWRpcyhob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTApCgojIEdlbmVyYXRlIGEgdW5pcXVlIHNlc3Npb24gSUQKc2Vzc2lvbl9pZCA9IHN0cih1dWlkLnV1aWQ0KCkpCgojIFN0b3JlIHNlc3Npb24gZGF0YQpzZXNzaW9uX2RhdGEgPSB7CiAgICAndXNlcl9pZCc6ICcxMjM0NScsCiAgICAndXNlcm5hbWUnOiAnam9obl9kb2UnLAogICAgJ2VtYWlsJzogJ2pvaG5AZXhhbXBsZS5jb20nCn0KCiMgU3RvcmUgc2Vzc2lvbiBkYXRhIGluIFJlZGlzCnIuaG1zZXQoc2Vzc2lvbl9pZCwgc2Vzc2lvbl9kYXRhKQoKIyBSZXRyaWV2ZSBzZXNzaW9uIGRhdGEKcmV0cmlldmVkX2RhdGEgPSByLmhnZXRhbGwoc2Vzc2lvbl9pZCkKcmV0cmlldmVkX2RhdGEgPSB7ay5kZWNvZGUoJ3V0Zi04Jyk6IHYuZGVjb2RlKCd1dGYtOCcpIGZvciBrLCB2IGluIHJldHJpZXZlZF9kYXRhLml0ZW1zKCl9CgpwcmludChyZXRyaWV2ZWRfZGF0YSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+import uuid
+
+# Connect to Redis server
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Generate a unique session ID
+session_id = str(uuid.uuid4())
+
+# Store session data
+session_data = {
+    'user_id': '12345',
+    'username': 'john_doe',
+    'email': 'john@example.com'
+}
+
+# Store session data in Redis
+r.hmset(session_id, session_data)
+
+# Retrieve session data
+retrieved_data = r.hgetall(session_id)
+retrieved_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in retrieved_data.items()}
+
+print(retrieved_data)</pre></div><div class='content'></div><h2>Solution 2: Session Expiration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCmltcG9ydCB1dWlkCgojIENvbm5lY3QgdG8gUmVkaXMgc2VydmVyCnIgPSByZWRpcy5SZWRpcyhob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTApCgojIEdlbmVyYXRlIGEgdW5pcXVlIHNlc3Npb24gSUQKc2Vzc2lvbl9pZCA9IHN0cih1dWlkLnV1aWQ0KCkpCgojIFN0b3JlIHNlc3Npb24gZGF0YQpzZXNzaW9uX2RhdGEgPSB7CiAgICAndXNlcl9pZCc6ICcxMjM0NScsCiAgICAndXNlcm5hbWUnOiAnam9obl9kb2UnLAogICAgJ2VtYWlsJzogJ2pvaG5AZXhhbXBsZS5jb20nCn0KCiMgU3RvcmUgc2Vzc2lvbiBkYXRhIGluIFJlZGlzCnIuaG1zZXQoc2Vzc2lvbl9pZCwgc2Vzc2lvbl9kYXRhKQoKIyBTZXQgZXhwaXJhdGlvbiB0aW1lIChlLmcuLCAzMCBtaW51dGVzKQpyLmV4cGlyZShzZXNzaW9uX2lkLCAxODAwKQoKIyBSZXRyaWV2ZSBzZXNzaW9uIGRhdGEKcmV0cmlldmVkX2RhdGEgPSByLmhnZXRhbGwoc2Vzc2lvbl9pZCkKcmV0cmlldmVkX2RhdGEgPSB7ay5kZWNvZGUoJ3V0Zi04Jyk6IHYuZGVjb2RlKCd1dGYtOCcpIGZvciBrLCB2IGluIHJldHJpZXZlZF9kYXRhLml0ZW1zKCl9CgpwcmludChyZXRyaWV2ZWRfZGF0YSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+import uuid
+
+# Connect to Redis server
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Generate a unique session ID
+session_id = str(uuid.uuid4())
+
+# Store session data
+session_data = {
+    'user_id': '12345',
+    'username': 'john_doe',
+    'email': 'john@example.com'
+}
+
+# Store session data in Redis
+r.hmset(session_id, session_data)
+
+# Set expiration time (e.g., 30 minutes)
+r.expire(session_id, 1800)
+
+# Retrieve session data
+retrieved_data = r.hgetall(session_id)
+retrieved_data = {k.decode('utf-8'): v.decode('utf-8') for k, v in retrieved_data.items()}
+
+print(retrieved_data)</pre></div><div class='content'></div><h2>Solution 3: Session Management</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCmltcG9ydCB1dWlkCgojIENvbm5lY3QgdG8gUmVkaXMgc2VydmVyCnIgPSByZWRpcy5SZWRpcyhob3N0PSdsb2NhbGhvc3QnLCBwb3J0PTYzNzksIGRiPTApCgpkZWYgY3JlYXRlX3Nlc3Npb24odXNlcl9pZCwgdXNlcm5hbWUsIGVtYWlsKToKICAgIHNlc3Npb25faWQgPSBzdHIodXVpZC51dWlkNCgpKQogICAgc2Vzc2lvbl9kYXRhID0gewogICAgICAgICd1c2VyX2lkJzogdXNlcl9pZCwKICAgICAgICAndXNlcm5hbWUnOiB1c2VybmFtZSwKICAgICAgICAnZW1haWwnOiBlbWFpbAogICAgfQogICAgci5obXNldChzZXNzaW9uX2lkLCBzZXNzaW9uX2RhdGEpCiAgICByLmV4cGlyZShzZXNzaW9uX2lkLCAxODAwKQogICAgcmV0dXJuIHNlc3Npb25faWQKCmRlZiBnZXRfc2Vzc2lvbihzZXNzaW9uX2lkKToKICAgIHJldHJpZXZlZF9kYXRhID0gci5oZ2V0YWxsKHNlc3Npb25faWQpCiAgICBpZiByZXRyaWV2ZWRfZGF0YToKICAgICAgICByZXR1cm4ge2suZGVjb2RlKCd1dGYtOCcpOiB2LmRlY29kZSgndXRmLTgnKSBmb3IgaywgdiBpbiByZXRyaWV2ZWRfZGF0YS5pdGVtcygpfQogICAgcmV0dXJuIE5vbmUKCmRlZiBkZWxldGVfc2Vzc2lvbihzZXNzaW9uX2lkKToKICAgIHIuZGVsZXRlKHNlc3Npb25faWQpCgojIEV4YW1wbGUgdXNhZ2UKc2Vzc2lvbl9pZCA9IGNyZWF0ZV9zZXNzaW9uKCcxMjM0NScsICdqb2huX2RvZScsICdqb2huQGV4YW1wbGUuY29tJykKcHJpbnQoZ2V0X3Nlc3Npb24oc2Vzc2lvbl9pZCkpCmRlbGV0ZV9zZXNzaW9uKHNlc3Npb25faWQpCnByaW50KGdldF9zZXNzaW9uKHNlc3Npb25faWQpKSAgIyBTaG91bGQgcmV0dXJuIE5vbmU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+import uuid
+
+# Connect to Redis server
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+def create_session(user_id, username, email):
+    session_id = str(uuid.uuid4())
+    session_data = {
+        'user_id': user_id,
+        'username': username,
+        'email': email
+    }
+    r.hmset(session_id, session_data)
+    r.expire(session_id, 1800)
+    return session_id
+
+def get_session(session_id):
+    retrieved_data = r.hgetall(session_id)
+    if retrieved_data:
+        return {k.decode('utf-8'): v.decode('utf-8') for k, v in retrieved_data.items()}
+    return None
+
+def delete_session(session_id):
+    r.delete(session_id)
+
+# Example usage
+session_id = create_session('12345', 'john_doe', 'john@example.com')
+print(get_session(session_id))
+delete_session(session_id)
+print(get_session(session_id))  # Should return None</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to use Redis for session storage. We covered the basics of session storage, why Redis is a good choice for this use case, and how to implement session storage with Redis. We also provided practical examples and exercises to reinforce the concepts. In the next section, we will explore another advanced use case for Redis.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-caching' title="Caching">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-message-queues' title="Message Queues">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

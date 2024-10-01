@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote State</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/03-03-remote-state" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/03-03-remote-state" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/03-03-remote-state" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/terraform/03-03-remote-state" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/03-03-remote-state" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-state-files' title="State Files">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Remote State</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-state-locking' title="State Locking">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the concept of remote state in Terraform. Managing state is a critical aspect of using Terraform effectively, and remote state storage offers several advantages over local state storage.</p>
+</div><h1>What is Remote State?</h1>
+<div class='content'><p>Remote state refers to storing the Terraform state file in a remote location rather than on the local filesystem. This approach provides several benefits, including:</p>
+<ul>
+<li><strong>Collaboration</strong>: Multiple team members can work on the same infrastructure without conflicts.</li>
+<li><strong>Security</strong>: State files can be stored in secure, managed storage solutions.</li>
+<li><strong>Backup and Recovery</strong>: Remote storage solutions often provide built-in backup and recovery options.</li>
+</ul>
+</div><h1>Benefits of Remote State</h1>
+<div class='content'><ol>
+<li><strong>Collaboration</strong>: When the state is stored remotely, team members can access and update the state file concurrently, reducing the risk of conflicts.</li>
+<li><strong>Security</strong>: Remote state storage solutions often offer encryption and access control mechanisms to protect sensitive information.</li>
+<li><strong>Consistency</strong>: Ensures that all team members are working with the most up-to-date state file.</li>
+<li><strong>Scalability</strong>: Remote state storage can handle larger state files and more complex infrastructure setups.</li>
+</ol>
+</div><h1>Configuring Remote State</h1>
+<div class='content'><p>To configure remote state, you need to specify a backend in your Terraform configuration. Terraform supports various backends, including Amazon S3, Azure Blob Storage, Google Cloud Storage, and HashiCorp Consul.</p>
+</div><h2>Example: Configuring Remote State with Amazon S3</h2>
+<div class='content'><p>Here is an example of how to configure remote state storage using Amazon S3:</p>
+<ol>
+<li>
+<p><strong>Create an S3 Bucket</strong>: First, create an S3 bucket in your AWS account to store the state file.</p>
+</li>
+<li>
+<p><strong>Configure the Backend</strong>: Add the following backend configuration to your Terraform configuration file (<code>main.tf</code>):</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibXktdGVycmFmb3JtLXN0YXRlLWJ1Y2tldCIKICAgIGtleSAgICAgICAgICAgID0gInBhdGgvdG8vbXkvdGVycmFmb3JtLnRmc3RhdGUiCiAgICByZWdpb24gICAgICAgICA9ICJ1cy13ZXN0LTIiCiAgICBlbmNyeXB0ICAgICAgICA9IHRydWUKICAgIGR5bmFtb2RiX3RhYmxlID0gInRlcnJhZm9ybS1sb2NrLXRhYmxlIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;my-terraform-state-bucket&quot;
+    key            = &quot;path/to/my/terraform.tfstate&quot;
+    region         = &quot;us-west-2&quot;
+    encrypt        = true
+    dynamodb_table = &quot;terraform-lock-table&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><code>bucket</code>: The name of the S3 bucket.</li>
+<li><code>key</code>: The path within the bucket where the state file will be stored.</li>
+<li><code>region</code>: The AWS region where the bucket is located.</li>
+<li><code>encrypt</code>: Whether to enable server-side encryption for the state file.</li>
+<li><code>dynamodb_table</code>: (Optional) The name of a DynamoDB table to use for state locking and consistency.</li>
+</ul>
+<ol start="3">
+<li><strong>Initialize the Backend</strong>: Run the <code>terraform init</code> command to initialize the backend configuration.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init</pre></div><div class='content'></div><h2>Example: Configuring Remote State with Azure Blob Storage</h2>
+<div class='content'><p>Here is an example of how to configure remote state storage using Azure Blob Storage:</p>
+<ol>
+<li>
+<p><strong>Create a Storage Account and Container</strong>: First, create a storage account and a container in your Azure account to store the state file.</p>
+</li>
+<li>
+<p><strong>Configure the Backend</strong>: Add the following backend configuration to your Terraform configuration file (<code>main.tf</code>):</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJhenVyZXJtIiB7CiAgICBzdG9yYWdlX2FjY291bnRfbmFtZSA9ICJteXN0b3JhZ2VhY2NvdW50IgogICAgY29udGFpbmVyX25hbWUgICAgICAgPSAidGZzdGF0ZSIKICAgIGtleSAgICAgICAgICAgICAgICAgID0gInRlcnJhZm9ybS50ZnN0YXRlIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;azurerm&quot; {
+    storage_account_name = &quot;mystorageaccount&quot;
+    container_name       = &quot;tfstate&quot;
+    key                  = &quot;terraform.tfstate&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><code>storage_account_name</code>: The name of the Azure storage account.</li>
+<li><code>container_name</code>: The name of the container within the storage account.</li>
+<li><code>key</code>: The path within the container where the state file will be stored.</li>
+</ul>
+<ol start="3">
+<li><strong>Initialize the Backend</strong>: Run the <code>terraform init</code> command to initialize the backend configuration.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Configure Remote State with Google Cloud Storage</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a GCS Bucket</strong>: Create a Google Cloud Storage (GCS) bucket in your GCP account to store the state file.</p>
+</li>
+<li>
+<p><strong>Configure the Backend</strong>: Add the following backend configuration to your Terraform configuration file (<code>main.tf</code>):</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJnY3MiIHsKICAgIGJ1Y2tldCAgPSAibXktdGVycmFmb3JtLXN0YXRlLWJ1Y2tldCIKICAgIHByZWZpeCAgPSAidGVycmFmb3JtL3N0YXRlIgogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;gcs&quot; {
+    bucket  = &quot;my-terraform-state-bucket&quot;
+    prefix  = &quot;terraform/state&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><code>bucket</code>: The name of the GCS bucket.</li>
+<li><code>prefix</code>: The path within the bucket where the state file will be stored.</li>
+</ul>
+<ol start="3">
+<li><strong>Initialize the Backend</strong>: Run the <code>terraform init</code> command to initialize the backend configuration.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Create a GCS Bucket</strong>: Use the GCP Console or <code>gsutil</code> command to create a bucket.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3N1dGlsIG1iIC1sIHVzLWNlbnRyYWwxIGdzOi8vbXktdGVycmFmb3JtLXN0YXRlLWJ1Y2tldA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gsutil mb -l us-central1 gs://my-terraform-state-bucket</pre></div><div class='content'><ol start="2">
+<li>
+<p><strong>Configure the Backend</strong>: Add the backend configuration to your <code>main.tf</code> file as shown above.</p>
+</li>
+<li>
+<p><strong>Initialize the Backend</strong>: Run the <code>terraform init</code> command.</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Bucket/Container Naming</strong>: Ensure that the bucket or container name is unique and follows the naming conventions of the cloud provider.</li>
+<li><strong>Permissions</strong>: Make sure that the Terraform user/service account has the necessary permissions to read and write to the remote state storage.</li>
+<li><strong>State Locking</strong>: Use state locking mechanisms (e.g., DynamoDB for AWS) to prevent concurrent modifications to the state file.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the concept of remote state in Terraform, its benefits, and how to configure it using different cloud storage solutions. Remote state is essential for collaboration, security, and consistency in managing your infrastructure. In the next section, we will delve into state locking and how it helps prevent concurrent modifications to the state file.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-state-files' title="State Files">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-state-locking' title="State Locking">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

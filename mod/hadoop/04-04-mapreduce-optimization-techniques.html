@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapReduce Optimization Techniques</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/04-04-mapreduce-optimization-techniques" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/04-04-mapreduce-optimization-techniques" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/04-04-mapreduce-optimization-techniques" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/04-04-mapreduce-optimization-techniques" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/04-04-mapreduce-optimization-techniques" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-writing-a-mapreduce-program' title="Writing a MapReduce Program">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">MapReduce Optimization Techniques</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-apache-pig' title="Apache Pig">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>MapReduce is a powerful framework for processing large datasets in a distributed environment. However, to get the best performance out of your MapReduce jobs, it's essential to understand and apply various optimization techniques. This section will cover key strategies to optimize MapReduce jobs, including tuning parameters, improving data locality, and optimizing the code.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Understanding the MapReduce Workflow</strong>:</p>
+<ul>
+<li><strong>Map Phase</strong>: Processes input data and produces intermediate key-value pairs.</li>
+<li><strong>Shuffle and Sort Phase</strong>: Transfers and sorts intermediate data.</li>
+<li><strong>Reduce Phase</strong>: Aggregates intermediate data to produce final output.</li>
+</ul>
+</li>
+<li>
+<p><strong>Performance Metrics</strong>:</p>
+<ul>
+<li><strong>Job Execution Time</strong>: Total time taken to complete a MapReduce job.</li>
+<li><strong>Resource Utilization</strong>: Efficient use of CPU, memory, and I/O resources.</li>
+<li><strong>Data Locality</strong>: Proximity of data to the computation node.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Optimization Techniques</h1>
+<div class='content'></div><h2>1. Tuning Configuration Parameters</h2>
+<div class='content'><p>Hadoop provides several configuration parameters that can be tuned to optimize MapReduce jobs. Some of the key parameters include:</p>
+<ul>
+<li><strong>mapreduce.map.memory.mb</strong>: Memory allocated for each map task.</li>
+<li><strong>mapreduce.reduce.memory.mb</strong>: Memory allocated for each reduce task.</li>
+<li><strong>mapreduce.task.io.sort.mb</strong>: Buffer size for sorting map output.</li>
+<li><strong>mapreduce.task.io.sort.factor</strong>: Number of streams to merge at once during sorting.</li>
+<li><strong>mapreduce.reduce.shuffle.parallelcopies</strong>: Number of parallel copies during the shuffle phase.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHByb3BlcnR5PgogIDxuYW1lPm1hcHJlZHVjZS5tYXAubWVtb3J5Lm1iPC9uYW1lPgogIDx2YWx1ZT4yMDQ4PC92YWx1ZT4KPC9wcm9wZXJ0eT4KPHByb3BlcnR5PgogIDxuYW1lPm1hcHJlZHVjZS5yZWR1Y2UubWVtb3J5Lm1iPC9uYW1lPgogIDx2YWx1ZT40MDk2PC92YWx1ZT4KPC9wcm9wZXJ0eT4KPHByb3BlcnR5PgogIDxuYW1lPm1hcHJlZHVjZS50YXNrLmlvLnNvcnQubWI8L25hbWU+CiAgPHZhbHVlPjUxMjwvdmFsdWU+CjwvcHJvcGVydHk+Cjxwcm9wZXJ0eT4KICA8bmFtZT5tYXByZWR1Y2UudGFzay5pby5zb3J0LmZhY3RvcjwvbmFtZT4KICA8dmFsdWU+MTA8L3ZhbHVlPgo8L3Byb3BlcnR5Pgo8cHJvcGVydHk+CiAgPG5hbWU+bWFwcmVkdWNlLnJlZHVjZS5zaHVmZmxlLnBhcmFsbGVsY29waWVzPC9uYW1lPgogIDx2YWx1ZT41PC92YWx1ZT4KPC9wcm9wZXJ0eT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;property&gt;
+  &lt;name&gt;mapreduce.map.memory.mb&lt;/name&gt;
+  &lt;value&gt;2048&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.reduce.memory.mb&lt;/name&gt;
+  &lt;value&gt;4096&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.task.io.sort.mb&lt;/name&gt;
+  &lt;value&gt;512&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.task.io.sort.factor&lt;/name&gt;
+  &lt;value&gt;10&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.reduce.shuffle.parallelcopies&lt;/name&gt;
+  &lt;value&gt;5&lt;/value&gt;
+&lt;/property&gt;</pre></div><div class='content'></div><h2>2. Improving Data Locality</h2>
+<div class='content'><p>Data locality refers to the proximity of data to the computation node. Ensuring that data is processed on the node where it resides can significantly reduce network I/O and improve performance.</p>
+<ul>
+<li><strong>HDFS Block Placement</strong>: Ensure that data blocks are distributed evenly across the cluster.</li>
+<li><strong>Speculative Execution</strong>: Enable speculative execution to handle slow-running tasks.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHByb3BlcnR5PgogIDxuYW1lPm1hcHJlZHVjZS5tYXAuc3BlY3VsYXRpdmU8L25hbWU+CiAgPHZhbHVlPnRydWU8L3ZhbHVlPgo8L3Byb3BlcnR5Pgo8cHJvcGVydHk+CiAgPG5hbWU+bWFwcmVkdWNlLnJlZHVjZS5zcGVjdWxhdGl2ZTwvbmFtZT4KICA8dmFsdWU+dHJ1ZTwvdmFsdWU+CjwvcHJvcGVydHk+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;property&gt;
+  &lt;name&gt;mapreduce.map.speculative&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.reduce.speculative&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;</pre></div><div class='content'></div><h2>3. Optimizing MapReduce Code</h2>
+<div class='content'><p>Efficient coding practices can greatly enhance the performance of MapReduce jobs.</p>
+<ul>
+<li><strong>Combiner Function</strong>: Use a combiner function to reduce the amount of data transferred between the map and reduce phases.</li>
+<li><strong>Custom InputFormat and OutputFormat</strong>: Implement custom InputFormat and OutputFormat classes to handle specific data formats more efficiently.</li>
+<li><strong>In-Memory Combiner</strong>: Use in-memory combiner to reduce the amount of intermediate data written to disk.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15Q29tYmluZXIgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHVibGljIHZvaWQgcmVkdWNlKFRleHQga2V5LCBJdGVyYWJsZTxJbnRXcml0YWJsZT4gdmFsdWVzLCBDb250ZXh0IGNvbnRleHQpIHRocm93cyBJT0V4Y2VwdGlvbiwgSW50ZXJydXB0ZWRFeGNlcHRpb24gewogICAgICAgIGludCBzdW0gPSAwOwogICAgICAgIGZvciAoSW50V3JpdGFibGUgdmFsIDogdmFsdWVzKSB7CiAgICAgICAgICAgIHN1bSArPSB2YWwuZ2V0KCk7CiAgICAgICAgfQogICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCBuZXcgSW50V3JpdGFibGUoc3VtKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyCombiner extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        context.write(key, new IntWritable(sum));
+    }
+}</pre></div><div class='content'></div><h2>4. Efficient Data Serialization</h2>
+<div class='content'><p>Efficient serialization and deserialization of data can reduce the overhead of data transfer and storage.</p>
+<ul>
+<li><strong>Writable Interface</strong>: Use Hadoop's Writable interface for custom data types.</li>
+<li><strong>SequenceFile</strong>: Use SequenceFile format for intermediate data to improve read/write performance.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15V3JpdGFibGUgaW1wbGVtZW50cyBXcml0YWJsZSB7CiAgICBwcml2YXRlIGludCBpZDsKICAgIHByaXZhdGUgU3RyaW5nIG5hbWU7CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCB3cml0ZShEYXRhT3V0cHV0IG91dCkgdGhyb3dzIElPRXhjZXB0aW9uIHsKICAgICAgICBvdXQud3JpdGVJbnQoaWQpOwogICAgICAgIG91dC53cml0ZVVURihuYW1lKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIHJlYWRGaWVsZHMoRGF0YUlucHV0IGluKSB0aHJvd3MgSU9FeGNlcHRpb24gewogICAgICAgIGlkID0gaW4ucmVhZEludCgpOwogICAgICAgIG5hbWUgPSBpbi5yZWFkVVRGKCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyWritable implements Writable {
+    private int id;
+    private String name;
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        out.writeInt(id);
+        out.writeUTF(name);
+    }
+
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        id = in.readInt();
+        name = in.readUTF();
+    }
+}</pre></div><div class='content'></div><h2>5. Partitioning and Sorting</h2>
+<div class='content'><p>Proper partitioning and sorting can balance the load across reducers and improve performance.</p>
+<ul>
+<li><strong>Custom Partitioner</strong>: Implement a custom partitioner to control how data is distributed to reducers.</li>
+<li><strong>Total Order Sorting</strong>: Use TotalOrderPartitioner for global sorting of data.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15UGFydGl0aW9uZXIgZXh0ZW5kcyBQYXJ0aXRpb25lcjxUZXh0LCBJbnRXcml0YWJsZT4gewogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgaW50IGdldFBhcnRpdGlvbihUZXh0IGtleSwgSW50V3JpdGFibGUgdmFsdWUsIGludCBudW1QYXJ0aXRpb25zKSB7CiAgICAgICAgcmV0dXJuIChrZXkuaGFzaENvZGUoKSAmIEludGVnZXIuTUFYX1ZBTFVFKSAlIG51bVBhcnRpdGlvbnM7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyPartitioner extends Partitioner&lt;Text, IntWritable&gt; {
+    @Override
+    public int getPartition(Text key, IntWritable value, int numPartitions) {
+        return (key.hashCode() &amp; Integer.MAX_VALUE) % numPartitions;
+    }
+}</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Tuning Configuration Parameters</h2>
+<div class='content'><p><strong>Task</strong>: Modify the configuration parameters to optimize a given MapReduce job.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Open the <code>mapred-site.xml</code> file.</li>
+<li>Adjust the parameters as shown in the example above.</li>
+<li>Run the MapReduce job and observe the performance improvements.</li>
+</ol>
+</div><h2>Exercise 2: Implementing a Combiner</h2>
+<div class='content'><p><strong>Task</strong>: Implement a combiner function to reduce the amount of intermediate data.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Create a new class <code>MyCombiner</code> extending <code>Reducer</code>.</li>
+<li>Implement the <code>reduce</code> method to aggregate intermediate data.</li>
+<li>Set the combiner class in the job configuration:
+<pre><code class="language-java">job.setCombinerClass(MyCombiner.class);
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 3: Custom Partitioner</h2>
+<div class='content'><p><strong>Task</strong>: Implement a custom partitioner to control data distribution.</p>
+<p><strong>Solution</strong>:</p>
+<ol>
+<li>Create a new class <code>MyPartitioner</code> extending <code>Partitioner</code>.</li>
+<li>Implement the <code>getPartition</code> method to define the partitioning logic.</li>
+<li>Set the partitioner class in the job configuration:
+<pre><code class="language-java">job.setPartitionerClass(MyPartitioner.class);
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Optimizing MapReduce jobs involves a combination of tuning configuration parameters, improving data locality, writing efficient code, and using appropriate data serialization techniques. By applying these optimization techniques, you can significantly enhance the performance and efficiency of your MapReduce jobs. In the next module, we will explore various tools in the Hadoop ecosystem that complement and extend the capabilities of Hadoop.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-writing-a-mapreduce-program' title="Writing a MapReduce Program">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-apache-pig' title="Apache Pig">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

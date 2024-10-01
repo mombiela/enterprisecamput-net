@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A1: Injection</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/owasp/03-01-inyeccion" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/owasp/03-01-injeccio" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/owasp/03-01-injection" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/owasp/03-01-injection" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/owasp/03-01-injection" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-owasp-zap' title="OWASP ZAP (Zed Attack Proxy)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">A1: Injection</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-broken-authentication' title="A2: Broken Authentication">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Injection Attacks</h1>
+<div class='content'><p>Injection attacks are one of the most critical and common vulnerabilities in web applications. They occur when untrusted data is sent to an interpreter as part of a command or query. The attacker's hostile data can trick the interpreter into executing unintended commands or accessing unauthorized data.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Injection Flaws</strong>: These occur when an application sends untrusted data to an interpreter.</li>
+<li><strong>Types of Injection Attacks</strong>:
+<ul>
+<li><strong>SQL Injection</strong>: Involves inserting or &quot;injecting&quot; a SQL query via the input data from the client to the application.</li>
+<li><strong>Command Injection</strong>: Occurs when an attacker can execute arbitrary commands on the host operating system via a vulnerable application.</li>
+<li><strong>LDAP Injection</strong>: Involves manipulating LDAP queries.</li>
+<li><strong>XPath Injection</strong>: Targets XML data stores.</li>
+<li><strong>NoSQL Injection</strong>: Targets NoSQL databases.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Examples of Injection Attacks</h2>
+<div class='content'><h4>SQL Injection</h4>
+<p><strong>Vulnerable Code Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VybmFtZSA9ICdhZG1pbicgQU5EIHBhc3N3b3JkID0gJ3Bhc3N3b3JkJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM users WHERE username = 'admin' AND password = 'password';</pre></div><div class='content'><p><strong>Attack Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VybmFtZSA9ICdhZG1pbicgQU5EIHBhc3N3b3JkID0gJyAnIE9SICcxJz0nMSc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM users WHERE username = 'admin' AND password = ' ' OR '1'='1';</pre></div><div class='content'><p><strong>Explanation:</strong>
+In this example, the attacker uses the input <code>' OR '1'='1</code> to manipulate the SQL query. This condition is always true, allowing the attacker to bypass authentication.</p>
+<h4>Command Injection</h4>
+<p><strong>Vulnerable Code Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9zCgp1c2VyX2lucHV0ID0gInNvbWVfaW5wdXQiCm9zLnN5c3RlbSgiZWNobyAiICsgdXNlcl9pbnB1dCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import os
+
+user_input = &quot;some_input&quot;
+os.system(&quot;echo &quot; + user_input)</pre></div><div class='content'><p><strong>Attack Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlcl9pbnB1dCA9ICJzb21lX2lucHV0OyBybSAtcmYgLyIKb3Muc3lzdGVtKCJlY2hvICIgKyB1c2VyX2lucHV0KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>user_input = &quot;some_input; rm -rf /&quot;
+os.system(&quot;echo &quot; + user_input)</pre></div><div class='content'><p><strong>Explanation:</strong>
+Here, the attacker appends <code>; rm -rf /</code> to the input, which results in the execution of a destructive command.</p>
+</div><h2>Preventing Injection Attacks</h2>
+<div class='content'><ol>
+<li><strong>Input Validation</strong>: Always validate and sanitize user inputs.</li>
+<li><strong>Parameterized Queries</strong>: Use prepared statements and parameterized queries.</li>
+<li><strong>Stored Procedures</strong>: Use stored procedures to separate data from commands.</li>
+<li><strong>Escaping</strong>: Properly escape special characters in inputs.</li>
+<li><strong>Least Privilege</strong>: Ensure the application runs with the least privileges necessary.</li>
+</ol>
+</div><h2>Practical Example: Preventing SQL Injection</h2>
+<div class='content'><p><strong>Vulnerable PHP Code:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVzZXJuYW1lID0gJF9QT1NUWyd1c2VybmFtZSddOwokcGFzc3dvcmQgPSAkX1BPU1RbJ3Bhc3N3b3JkJ107CiRxdWVyeSA9ICJTRUxFQ1QgKiBGUk9NIHVzZXJzIFdIRVJFIHVzZXJuYW1lID0gJyR1c2VybmFtZScgQU5EIHBhc3N3b3JkID0gJyRwYXNzd29yZCciOwokcmVzdWx0ID0gbXlzcWxpX3F1ZXJ5KCRjb25uLCAkcXVlcnkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$username = $_POST['username'];
+$password = $_POST['password'];
+$query = &quot;SELECT * FROM users WHERE username = '$username' AND password = '$password'&quot;;
+$result = mysqli_query($conn, $query);</pre></div><div class='content'><p><strong>Secure PHP Code Using Prepared Statements:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVzZXJuYW1lID0gJF9QT1NUWyd1c2VybmFtZSddOwokcGFzc3dvcmQgPSAkX1BPU1RbJ3Bhc3N3b3JkJ107CiRzdG10ID0gJGNvbm4tPnByZXBhcmUoIlNFTEVDVCAqIEZST00gdXNlcnMgV0hFUkUgdXNlcm5hbWUgPSA/IEFORCBwYXNzd29yZCA9ID8iKTsKJHN0bXQtPmJpbmRfcGFyYW0oInNzIiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwokc3RtdC0+ZXhlY3V0ZSgpOwokcmVzdWx0ID0gJHN0bXQtPmdldF9yZXN1bHQoKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$username = $_POST['username'];
+$password = $_POST['password'];
+$stmt = $conn-&gt;prepare(&quot;SELECT * FROM users WHERE username = ? AND password = ?&quot;);
+$stmt-&gt;bind_param(&quot;ss&quot;, $username, $password);
+$stmt-&gt;execute();
+$result = $stmt-&gt;get_result();</pre></div><div class='content'><p><strong>Explanation:</strong>
+In the secure code example, prepared statements are used to ensure that user inputs are treated as data, not executable code.</p>
+</div><h2>Practical Exercises</h2>
+<div class='content'><h4>Exercise 1: Identifying SQL Injection Vulnerabilities</h4>
+<p><strong>Task:</strong>
+Given the following PHP code, identify the potential SQL injection vulnerability and explain how it can be exploited.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVzZXJfaWQgPSAkX0dFVFsndXNlcl9pZCddOwokcXVlcnkgPSAiU0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VyX2lkID0gJyR1c2VyX2lkJyI7CiRyZXN1bHQgPSBteXNxbGlfcXVlcnkoJGNvbm4sICRxdWVyeSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$user_id = $_GET['user_id'];
+$query = &quot;SELECT * FROM users WHERE user_id = '$user_id'&quot;;
+$result = mysqli_query($conn, $query);</pre></div><div class='content'><p><strong>Solution:</strong>
+The <code>$user_id</code> parameter is directly included in the SQL query without any validation or sanitization. An attacker could exploit this by providing a malicious input such as <code>1 OR 1=1</code>, which would result in the query:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VyX2lkID0gJzEgT1IgMT0xJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM users WHERE user_id = '1 OR 1=1';</pre></div><div class='content'><p>This would return all users instead of just the one with <code>user_id = 1</code>.</p>
+<h4>Exercise 2: Securing Code Against SQL Injection</h4>
+<p><strong>Task:</strong>
+Rewrite the following PHP code to prevent SQL injection using prepared statements.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVzZXJuYW1lID0gJF9QT1NUWyd1c2VybmFtZSddOwokcGFzc3dvcmQgPSAkX1BPU1RbJ3Bhc3N3b3JkJ107CiRxdWVyeSA9ICJTRUxFQ1QgKiBGUk9NIHVzZXJzIFdIRVJFIHVzZXJuYW1lID0gJyR1c2VybmFtZScgQU5EIHBhc3N3b3JkID0gJyRwYXNzd29yZCciOwokcmVzdWx0ID0gbXlzcWxpX3F1ZXJ5KCRjb25uLCAkcXVlcnkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$username = $_POST['username'];
+$password = $_POST['password'];
+$query = &quot;SELECT * FROM users WHERE username = '$username' AND password = '$password'&quot;;
+$result = mysqli_query($conn, $query);</pre></div><div class='content'><p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHVzZXJuYW1lID0gJF9QT1NUWyd1c2VybmFtZSddOwokcGFzc3dvcmQgPSAkX1BPU1RbJ3Bhc3N3b3JkJ107CiRzdG10ID0gJGNvbm4tPnByZXBhcmUoIlNFTEVDVCAqIEZST00gdXNlcnMgV0hFUkUgdXNlcm5hbWUgPSA/IEFORCBwYXNzd29yZCA9ID8iKTsKJHN0bXQtPmJpbmRfcGFyYW0oInNzIiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwokc3RtdC0+ZXhlY3V0ZSgpOwokcmVzdWx0ID0gJHN0bXQtPmdldF9yZXN1bHQoKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$username = $_POST['username'];
+$password = $_POST['password'];
+$stmt = $conn-&gt;prepare(&quot;SELECT * FROM users WHERE username = ? AND password = ?&quot;);
+$stmt-&gt;bind_param(&quot;ss&quot;, $username, $password);
+$stmt-&gt;execute();
+$result = $stmt-&gt;get_result();</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Concatenating user inputs directly into SQL queries.
+<ul>
+<li><strong>Tip</strong>: Always use prepared statements or parameterized queries.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Assuming client-side validation is sufficient.
+<ul>
+<li><strong>Tip</strong>: Always validate and sanitize inputs on the server side.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Using dynamic SQL queries without proper escaping.
+<ul>
+<li><strong>Tip</strong>: Use ORM (Object-Relational Mapping) frameworks that handle escaping and parameterization automatically.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Injection attacks, particularly SQL injection, are a significant threat to web application security. Understanding how these attacks work and implementing best practices such as input validation, parameterized queries, and least privilege can help mitigate these risks. By following the guidelines and practices outlined in this section, developers can build more secure applications and protect sensitive data from malicious actors.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-owasp-zap' title="OWASP ZAP (Zed Attack Proxy)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-broken-authentication' title="A2: Broken Authentication">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

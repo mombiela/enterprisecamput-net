@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka with Flink</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/06-03-kafka-flink" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/06-03-kafka-flink" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/06-03-kafka-flink" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/06-03-kafka-flink" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/06-03-kafka-flink" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-kafka-spark' title="Kafka with Spark">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka with Flink</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-kafka-elasticsearch' title="Kafka with Elasticsearch">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Apache Kafka and Apache Flink are powerful tools for real-time data processing. Kafka is a distributed streaming platform that allows you to publish and subscribe to streams of records, while Flink is a stream processing framework that can process data in real-time with low latency. Integrating Kafka with Flink enables you to build robust, scalable, and real-time data processing pipelines.</p>
+<p>In this module, we will cover:</p>
+<ol>
+<li>Setting up Kafka and Flink.</li>
+<li>Integrating Kafka with Flink.</li>
+<li>Practical examples of using Kafka with Flink.</li>
+<li>Exercises to reinforce the concepts.</li>
+</ol>
+</div><h1>Setting Up Kafka and Flink</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Java Development Kit (JDK) installed.</li>
+<li>Apache Kafka installed and running.</li>
+<li>Apache Flink installed and running.</li>
+</ul>
+</div><h2>Step-by-Step Setup</h2>
+<div class='content'><h4>1. Install Apache Kafka</h4>
+<p>Follow the instructions in Module 1, Section 4: <a href="01-04-setting-up-kafka">Setting Up Kafka</a>.</p>
+<h4>2. Install Apache Flink</h4>
+<ol>
+<li>Download the latest version of Apache Flink from the <a href="https://flink.apache.org/downloads.html">official website</a>.</li>
+<li>Extract the downloaded archive:
+<pre><code class="language-sh">tar -xzf flink-*.tgz
+cd flink-*
+</code></pre>
+</li>
+<li>Start a local Flink cluster:
+<pre><code class="language-sh">./bin/start-cluster.sh
+</code></pre>
+</li>
+</ol>
+</div><h1>Integrating Kafka with Flink</h1>
+<div class='content'></div><h2>Kafka Source Connector</h2>
+<div class='content'><p>Flink provides a Kafka Source Connector to read data from Kafka topics. The connector is part of the <code>flink-connector-kafka</code> library.</p>
+</div><h2>Adding Dependencies</h2>
+<div class='content'><p>Add the following dependencies to your <code>pom.xml</code> if you are using Maven:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuYXBhY2hlLmZsaW5rPC9ncm91cElkPgogICAgPGFydGlmYWN0SWQ+ZmxpbmstY29ubmVjdG9yLWthZmthXzIuMTI8L2FydGlmYWN0SWQ+CiAgICA8dmVyc2lvbj4xLjE0LjA8L3ZlcnNpb24+CjwvZGVwZW5kZW5jeT4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.flink&lt;/groupId&gt;
+    &lt;artifactId&gt;flink-connector-kafka_2.12&lt;/artifactId&gt;
+    &lt;version&gt;1.14.0&lt;/version&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h2>Example: Reading from Kafka</h2>
+<div class='content'><h4>1. Create a Kafka Topic</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluL2thZmthLXRvcGljcy5zaCAtLWNyZWF0ZSAtLXRvcGljIHRlc3QtdG9waWMgLS1ib290c3RyYXAtc2VydmVyIGxvY2FsaG9zdDo5MDkyIC0tcGFydGl0aW9ucyAxIC0tcmVwbGljYXRpb24tZmFjdG9yIDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bin/kafka-topics.sh --create --topic test-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1</pre></div><div class='content'><h4>2. Produce Messages to Kafka</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluL2thZmthLWNvbnNvbGUtcHJvZHVjZXIuc2ggLS10b3BpYyB0ZXN0LXRvcGljIC0tYm9vdHN0cmFwLXNlcnZlciBsb2NhbGhvc3Q6OTA5Mg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bin/kafka-console-producer.sh --topic test-topic --bootstrap-server localhost:9092</pre></div><div class='content'><p>Type some messages and press Enter.</p>
+<h4>3. Flink Job to Consume Messages from Kafka</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuZmxpbmsuYXBpLmNvbW1vbi5zZXJpYWxpemF0aW9uLlNpbXBsZVN0cmluZ1NjaGVtYTsKaW1wb3J0IG9yZy5hcGFjaGUuZmxpbmsuc3RyZWFtaW5nLmFwaS5kYXRhc3RyZWFtLkRhdGFTdHJlYW07CmltcG9ydCBvcmcuYXBhY2hlLmZsaW5rLnN0cmVhbWluZy5hcGkuZW52aXJvbm1lbnQuU3RyZWFtRXhlY3V0aW9uRW52aXJvbm1lbnQ7CmltcG9ydCBvcmcuYXBhY2hlLmZsaW5rLnN0cmVhbWluZy5jb25uZWN0b3JzLmthZmthLkZsaW5rS2Fma2FDb25zdW1lcjsKCmltcG9ydCBqYXZhLnV0aWwuUHJvcGVydGllczsKCnB1YmxpYyBjbGFzcyBLYWZrYUZsaW5rRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICAvLyBTZXQgdXAgdGhlIGV4ZWN1dGlvbiBlbnZpcm9ubWVudAogICAgICAgIGZpbmFsIFN0cmVhbUV4ZWN1dGlvbkVudmlyb25tZW50IGVudiA9IFN0cmVhbUV4ZWN1dGlvbkVudmlyb25tZW50LmdldEV4ZWN1dGlvbkVudmlyb25tZW50KCk7CgogICAgICAgIC8vIFNldCB1cCBLYWZrYSBjb25zdW1lciBwcm9wZXJ0aWVzCiAgICAgICAgUHJvcGVydGllcyBwcm9wZXJ0aWVzID0gbmV3IFByb3BlcnRpZXMoKTsKICAgICAgICBwcm9wZXJ0aWVzLnNldFByb3BlcnR5KCJib290c3RyYXAuc2VydmVycyIsICJsb2NhbGhvc3Q6OTA5MiIpOwogICAgICAgIHByb3BlcnRpZXMuc2V0UHJvcGVydHkoImdyb3VwLmlkIiwgImZsaW5rLWdyb3VwIik7CgogICAgICAgIC8vIENyZWF0ZSBhIEthZmthIGNvbnN1bWVyCiAgICAgICAgRmxpbmtLYWZrYUNvbnN1bWVyPFN0cmluZz4ga2Fma2FDb25zdW1lciA9IG5ldyBGbGlua0thZmthQ29uc3VtZXI8PigKICAgICAgICAgICAgICAgICJ0ZXN0LXRvcGljIiwKICAgICAgICAgICAgICAgIG5ldyBTaW1wbGVTdHJpbmdTY2hlbWEoKSwKICAgICAgICAgICAgICAgIHByb3BlcnRpZXMKICAgICAgICApOwoKICAgICAgICAvLyBBZGQgdGhlIEthZmthIGNvbnN1bWVyIGFzIGEgc291cmNlIHRvIHRoZSBGbGluayBqb2IKICAgICAgICBEYXRhU3RyZWFtPFN0cmluZz4gc3RyZWFtID0gZW52LmFkZFNvdXJjZShrYWZrYUNvbnN1bWVyKTsKCiAgICAgICAgLy8gUHJpbnQgdGhlIGNvbnN1bWVkIG1lc3NhZ2VzIHRvIHRoZSBjb25zb2xlCiAgICAgICAgc3RyZWFtLnByaW50KCk7CgogICAgICAgIC8vIEV4ZWN1dGUgdGhlIEZsaW5rIGpvYgogICAgICAgIGVudi5leGVjdXRlKCJLYWZrYSBGbGluayBFeGFtcGxlIik7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+
+import java.util.Properties;
+
+public class KafkaFlinkExample {
+    public static void main(String[] args) throws Exception {
+        // Set up the execution environment
+        final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        // Set up Kafka consumer properties
+        Properties properties = new Properties();
+        properties.setProperty(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        properties.setProperty(&quot;group.id&quot;, &quot;flink-group&quot;);
+
+        // Create a Kafka consumer
+        FlinkKafkaConsumer&lt;String&gt; kafkaConsumer = new FlinkKafkaConsumer&lt;&gt;(
+                &quot;test-topic&quot;,
+                new SimpleStringSchema(),
+                properties
+        );
+
+        // Add the Kafka consumer as a source to the Flink job
+        DataStream&lt;String&gt; stream = env.addSource(kafkaConsumer);
+
+        // Print the consumed messages to the console
+        stream.print();
+
+        // Execute the Flink job
+        env.execute(&quot;Kafka Flink Example&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>StreamExecutionEnvironment</strong>: The context in which the program is executed.</li>
+<li><strong>Properties</strong>: Configuration for the Kafka consumer.</li>
+<li><strong>FlinkKafkaConsumer</strong>: The Kafka consumer that reads from the specified topic.</li>
+<li><strong>DataStream</strong>: Represents the stream of data read from Kafka.</li>
+<li><strong>print()</strong>: Prints the consumed messages to the console.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Filter Messages</h2>
+<div class='content'><p>Modify the Flink job to filter out messages that contain the word &quot;error&quot;.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RGF0YVN0cmVhbTxTdHJpbmc+IGZpbHRlcmVkU3RyZWFtID0gc3RyZWFtLmZpbHRlcihtZXNzYWdlIC0+ICFtZXNzYWdlLmNvbnRhaW5zKCJlcnJvciIpKTsKZmlsdGVyZWRTdHJlYW0ucHJpbnQoKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DataStream&lt;String&gt; filteredStream = stream.filter(message -&gt; !message.contains(&quot;error&quot;));
+filteredStream.print();</pre></div><div class='content'></div><h2>Exercise 2: Count Messages</h2>
+<div class='content'><p>Count the number of messages received from Kafka and print the count every 10 seconds.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuZmxpbmsuc3RyZWFtaW5nLmFwaS53aW5kb3dpbmcudGltZS5UaW1lOwoKRGF0YVN0cmVhbTxMb25nPiBjb3VudFN0cmVhbSA9IHN0cmVhbQogICAgLm1hcChtZXNzYWdlIC0+IDFMKQogICAgLnRpbWVXaW5kb3dBbGwoVGltZS5zZWNvbmRzKDEwKSkKICAgIC5zdW0oMCk7Cgpjb3VudFN0cmVhbS5wcmludCgpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.flink.streaming.api.windowing.time.Time;
+
+DataStream&lt;Long&gt; countStream = stream
+    .map(message -&gt; 1L)
+    .timeWindowAll(Time.seconds(10))
+    .sum(0);
+
+countStream.print();</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Kafka Properties</strong>: Ensure that the Kafka properties such as <code>bootstrap.servers</code> and <code>group.id</code> are correctly set.</li>
+<li><strong>Schema Mismatch</strong>: Ensure that the schema used in the Kafka consumer matches the data format in the Kafka topic.</li>
+<li><strong>Resource Management</strong>: Monitor the resource usage of your Flink job to avoid performance bottlenecks.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this module, we covered how to integrate Kafka with Flink to build real-time data processing pipelines. We learned how to set up Kafka and Flink, create a Kafka consumer in Flink, and process the consumed messages. The practical exercises provided hands-on experience with filtering and counting messages.</p>
+<p>Next, we will explore integrating Kafka with Elasticsearch in Module 6, Section 4: <a href="06-04-kafka-elasticsearch">Kafka with Elasticsearch</a>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-kafka-spark' title="Kafka with Spark">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-kafka-elasticsearch' title="Kafka with Elasticsearch">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

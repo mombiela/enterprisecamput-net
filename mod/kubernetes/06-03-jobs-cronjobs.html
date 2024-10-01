@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jobs and CronJobs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/06-03-jobs-cronjobs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/06-03-jobs-cronjobs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/06-03-jobs-cronjobs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/06-03-jobs-cronjobs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/06-03-jobs-cronjobs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-daemonsets' title="DaemonSets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Jobs and CronJobs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-crds' title="Custom Resource Definitions (CRDs)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore Kubernetes Jobs and CronJobs, which are essential for running batch processing tasks and scheduled tasks within a Kubernetes cluster. We will cover the following topics:</p>
+<ol>
+<li><strong>Introduction to Jobs</strong></li>
+<li><strong>Creating and Managing Jobs</strong></li>
+<li><strong>Introduction to CronJobs</strong></li>
+<li><strong>Creating and Managing CronJobs</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. Introduction to Jobs</h1>
+<div class='content'><p>A Kubernetes Job creates one or more pods and ensures that a specified number of them successfully terminate. Jobs are used for tasks that need to be run to completion, such as batch processing or data processing tasks.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Job</strong>: A controller that creates pods to run a task to completion.</li>
+<li><strong>Pod</strong>: The smallest deployable unit in Kubernetes, which runs containers.</li>
+</ul>
+</div><h1>2. Creating and Managing Jobs</h1>
+<div class='content'></div><h2>Creating a Job</h2>
+<div class='content'><p>To create a Job, you define a Job resource in a YAML file. Here is an example of a simple Job that runs a single pod to print &quot;Hello, World!&quot;.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogSm9iCm1ldGFkYXRhOgogIG5hbWU6IGhlbGxvLXdvcmxkLWpvYgpzcGVjOgogIHRlbXBsYXRlOgogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBoZWxsbwogICAgICAgIGltYWdlOiBidXN5Ym94CiAgICAgICAgY29tbWFuZDogWyJlY2hvIiwgIkhlbGxvLCBXb3JsZCEiXQogICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hello-world-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: hello
+        image: busybox
+        command: [&quot;echo&quot;, &quot;Hello, World!&quot;]
+      restartPolicy: Never</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: The API version for the Job resource.</li>
+<li><strong>kind</strong>: Specifies that this is a Job resource.</li>
+<li><strong>metadata</strong>: Contains the name of the Job.</li>
+<li><strong>spec</strong>: Defines the Job's behavior.
+<ul>
+<li><strong>template</strong>: Specifies the pod template.
+<ul>
+<li><strong>spec</strong>: Defines the pod's specification.
+<ul>
+<li><strong>containers</strong>: Lists the containers to run in the pod.
+<ul>
+<li><strong>name</strong>: The name of the container.</li>
+<li><strong>image</strong>: The container image to use.</li>
+<li><strong>command</strong>: The command to run in the container.</li>
+</ul>
+</li>
+<li><strong>restartPolicy</strong>: Ensures the pod does not restart automatically.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Managing Jobs</h2>
+<div class='content'><ul>
+<li><strong>Create a Job</strong>: <code>kubectl apply -f job.yaml</code></li>
+<li><strong>List Jobs</strong>: <code>kubectl get jobs</code></li>
+<li><strong>Get Job Details</strong>: <code>kubectl describe job &lt;job-name&gt;</code></li>
+<li><strong>Delete a Job</strong>: <code>kubectl delete job &lt;job-name&gt;</code></li>
+</ul>
+</div><h1>3. Introduction to CronJobs</h1>
+<div class='content'><p>A CronJob creates Jobs on a time-based schedule. It is useful for running periodic tasks, such as backups or report generation.</p>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>CronJob</strong>: A controller that creates Jobs on a schedule.</li>
+<li><strong>Schedule</strong>: A cron format string that specifies when the Job should run.</li>
+</ul>
+</div><h1>4. Creating and Managing CronJobs</h1>
+<div class='content'></div><h2>Creating a CronJob</h2>
+<div class='content'><p>To create a CronJob, you define a CronJob resource in a YAML file. Here is an example of a CronJob that runs a Job every minute to print &quot;Hello, World!&quot;.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogQ3JvbkpvYgptZXRhZGF0YToKICBuYW1lOiBoZWxsby13b3JsZC1jcm9uam9iCnNwZWM6CiAgc2NoZWR1bGU6ICIqLzEgKiAqICogKiIKICBqb2JUZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIHRlbXBsYXRlOgogICAgICAgIHNwZWM6CiAgICAgICAgICBjb250YWluZXJzOgogICAgICAgICAgLSBuYW1lOiBoZWxsbwogICAgICAgICAgICBpbWFnZTogYnVzeWJveAogICAgICAgICAgICBjb21tYW5kOiBbImVjaG8iLCAiSGVsbG8sIFdvcmxkISJdCiAgICAgICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hello-world-cronjob
+spec:
+  schedule: &quot;*/1 * * * *&quot;
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: busybox
+            command: [&quot;echo&quot;, &quot;Hello, World!&quot;]
+          restartPolicy: Never</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: The API version for the CronJob resource.</li>
+<li><strong>kind</strong>: Specifies that this is a CronJob resource.</li>
+<li><strong>metadata</strong>: Contains the name of the CronJob.</li>
+<li><strong>spec</strong>: Defines the CronJob's behavior.
+<ul>
+<li><strong>schedule</strong>: Specifies the cron schedule.</li>
+<li><strong>jobTemplate</strong>: Defines the Job template.
+<ul>
+<li><strong>spec</strong>: Defines the Job's specification.
+<ul>
+<li><strong>template</strong>: Specifies the pod template.
+<ul>
+<li><strong>spec</strong>: Defines the pod's specification.
+<ul>
+<li><strong>containers</strong>: Lists the containers to run in the pod.
+<ul>
+<li><strong>name</strong>: The name of the container.</li>
+<li><strong>image</strong>: The container image to use.</li>
+<li><strong>command</strong>: The command to run in the container.</li>
+</ul>
+</li>
+<li><strong>restartPolicy</strong>: Ensures the pod does not restart automatically.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Managing CronJobs</h2>
+<div class='content'><ul>
+<li><strong>Create a CronJob</strong>: <code>kubectl apply -f cronjob.yaml</code></li>
+<li><strong>List CronJobs</strong>: <code>kubectl get cronjobs</code></li>
+<li><strong>Get CronJob Details</strong>: <code>kubectl describe cronjob &lt;cronjob-name&gt;</code></li>
+<li><strong>Delete a CronJob</strong>: <code>kubectl delete cronjob &lt;cronjob-name&gt;</code></li>
+</ul>
+</div><h1>5. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Job to Process Data</h2>
+<div class='content'><p>Create a Job that processes data and writes the result to a file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogSm9iCm1ldGFkYXRhOgogIG5hbWU6IGRhdGEtcHJvY2Vzc2luZy1qb2IKc3BlYzoKICB0ZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogcHJvY2Vzc29yCiAgICAgICAgaW1hZ2U6IGJ1c3lib3gKICAgICAgICBjb21tYW5kOiBbInNoIiwgIi1jIiwgImVjaG8gJ1Byb2Nlc3NpbmcgZGF0YS4uLicgPiAvZGF0YS9vdXRwdXQudHh0Il0KICAgICAgICB2b2x1bWVNb3VudHM6CiAgICAgICAgLSBuYW1lOiBkYXRhLXZvbHVtZQogICAgICAgICAgbW91bnRQYXRoOiAvZGF0YQogICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcgogICAgICB2b2x1bWVzOgogICAgICAtIG5hbWU6IGRhdGEtdm9sdW1lCiAgICAgICAgZW1wdHlEaXI6IHt9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-processing-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: processor
+        image: busybox
+        command: [&quot;sh&quot;, &quot;-c&quot;, &quot;echo 'Processing data...' &gt; /data/output.txt&quot;]
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      restartPolicy: Never
+      volumes:
+      - name: data-volume
+        emptyDir: {}</pre></div><div class='content'></div><h2>Example 2: CronJob for Daily Backup</h2>
+<div class='content'><p>Create a CronJob that runs a backup script every day at midnight.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogQ3JvbkpvYgptZXRhZGF0YToKICBuYW1lOiBkYWlseS1iYWNrdXAtY3JvbmpvYgpzcGVjOgogIHNjaGVkdWxlOiAiMCAwICogKiAqIgogIGpvYlRlbXBsYXRlOgogICAgc3BlYzoKICAgICAgdGVtcGxhdGU6CiAgICAgICAgc3BlYzoKICAgICAgICAgIGNvbnRhaW5lcnM6CiAgICAgICAgICAtIG5hbWU6IGJhY2t1cAogICAgICAgICAgICBpbWFnZTogYnVzeWJveAogICAgICAgICAgICBjb21tYW5kOiBbInNoIiwgIi1jIiwgImVjaG8gJ1J1bm5pbmcgYmFja3VwLi4uJyJdCiAgICAgICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-backup-cronjob
+spec:
+  schedule: &quot;0 0 * * *&quot;
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: busybox
+            command: [&quot;sh&quot;, &quot;-c&quot;, &quot;echo 'Running backup...'&quot;]
+          restartPolicy: Never</pre></div><div class='content'></div><h1>6. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Job</h2>
+<div class='content'><p>Create a Job that runs a pod to print &quot;Kubernetes Job Example&quot;.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogSm9iCm1ldGFkYXRhOgogIG5hbWU6IGt1YmVybmV0ZXMtam9iLWV4YW1wbGUKc3BlYzoKICB0ZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogZXhhbXBsZQogICAgICAgIGltYWdlOiBidXN5Ym94CiAgICAgICAgY29tbWFuZDogWyJlY2hvIiwgIkt1YmVybmV0ZXMgSm9iIEV4YW1wbGUiXQogICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kubernetes-job-example
+spec:
+  template:
+    spec:
+      containers:
+      - name: example
+        image: busybox
+        command: [&quot;echo&quot;, &quot;Kubernetes Job Example&quot;]
+      restartPolicy: Never</pre></div><div class='content'></div><h2>Exercise 2: Create a CronJob</h2>
+<div class='content'><p>Create a CronJob that runs a Job every 5 minutes to print &quot;Scheduled Task&quot;.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogQ3JvbkpvYgptZXRhZGF0YToKICBuYW1lOiBzY2hlZHVsZWQtdGFzay1jcm9uam9iCnNwZWM6CiAgc2NoZWR1bGU6ICIqLzUgKiAqICogKiIKICBqb2JUZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIHRlbXBsYXRlOgogICAgICAgIHNwZWM6CiAgICAgICAgICBjb250YWluZXJzOgogICAgICAgICAgLSBuYW1lOiB0YXNrCiAgICAgICAgICAgIGltYWdlOiBidXN5Ym94CiAgICAgICAgICAgIGNvbW1hbmQ6IFsiZWNobyIsICJTY2hlZHVsZWQgVGFzayJdCiAgICAgICAgICByZXN0YXJ0UG9saWN5OiBOZXZlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scheduled-task-cronjob
+spec:
+  schedule: &quot;*/5 * * * *&quot;
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: task
+            image: busybox
+            command: [&quot;echo&quot;, &quot;Scheduled Task&quot;]
+          restartPolicy: Never</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Forgetting to set <code>restartPolicy</code> to <code>Never</code> in Jobs and CronJobs.
+<ul>
+<li><strong>Tip</strong>: Always set <code>restartPolicy: Never</code> to ensure the pod does not restart automatically.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Incorrect cron schedule format in CronJobs.
+<ul>
+<li><strong>Tip</strong>: Use a cron schedule generator to ensure the correct format.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Kubernetes Jobs and CronJobs, including how to create and manage them. We also provided practical examples and exercises to reinforce the concepts. Understanding Jobs and CronJobs is essential for running batch and scheduled tasks in a Kubernetes cluster. In the next section, we will dive into StatefulSets, which are used for managing stateful applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-daemonsets' title="DaemonSets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-crds' title="Custom Resource Definitions (CRDs)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

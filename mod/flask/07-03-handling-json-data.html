@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling JSON Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/07-03-handling-json-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/07-03-handling-json-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/07-03-handling-json-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/07-03-handling-json-data" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/07-03-handling-json-data" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-creating-restful-endpoints' title="Creating RESTful Endpoints">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling JSON Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-authentication-apis' title="Authentication for APIs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to handle JSON data in Flask. JSON (JavaScript Object Notation) is a lightweight data interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is commonly used for transmitting data in web applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>What is JSON?</strong></p>
+<ul>
+<li>JSON is a text format that is completely language-independent but uses conventions that are familiar to programmers of the C family of languages.</li>
+<li>JSON is built on two structures:
+<ul>
+<li>A collection of name/value pairs (often called an object, dictionary, hash table, keyed list, or associative array).</li>
+<li>An ordered list of values (often called an array, vector, list, or sequence).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Why Use JSON?</strong></p>
+<ul>
+<li>JSON is easy to read and write.</li>
+<li>JSON is language-independent.</li>
+<li>JSON is lightweight and fast.</li>
+<li>JSON is widely used in web APIs.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Handling JSON in Flask</h1>
+<div class='content'><p>Flask provides built-in support for JSON. You can easily parse JSON data from incoming requests and send JSON responses.</p>
+</div><h2>Parsing JSON Data from Requests</h2>
+<div class='content'><p>When a client sends JSON data to your Flask application, you can access it using the <code>request.get_json()</code> method.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL2FwaS9kYXRhJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIHJlY2VpdmVfZGF0YSgpOgogICAgZGF0YSA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgaWYgbm90IGRhdGE6CiAgICAgICAgcmV0dXJuIGpzb25pZnkoeyJlcnJvciI6ICJJbnZhbGlkIEpTT04gZGF0YSJ9KSwgNDAwCiAgICAjIFByb2Nlc3MgdGhlIGRhdGEKICAgIHJldHVybiBqc29uaWZ5KHsibWVzc2FnZSI6ICJEYXRhIHJlY2VpdmVkIiwgImRhdGEiOiBkYXRhfSksIDIwMAoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['POST'])
+def receive_data():
+    data = request.get_json()
+    if not data:
+        return jsonify({&quot;error&quot;: &quot;Invalid JSON data&quot;}), 400
+    # Process the data
+    return jsonify({&quot;message&quot;: &quot;Data received&quot;, &quot;data&quot;: data}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>request.get_json()</code>: This method parses the incoming JSON data and returns it as a Python dictionary.</li>
+<li><code>jsonify()</code>: This function converts a Python dictionary into a JSON response.</li>
+</ul>
+</div><h2>Sending JSON Responses</h2>
+<div class='content'><p>You can use the <code>jsonify()</code> function to send JSON responses from your Flask application.</p>
+<h4>Example</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnkKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL2FwaS9kYXRhJywgbWV0aG9kcz1bJ0dFVCddKQpkZWYgc2VuZF9kYXRhKCk6CiAgICBkYXRhID0gewogICAgICAgICJuYW1lIjogIkpvaG4gRG9lIiwKICAgICAgICAiYWdlIjogMzAsCiAgICAgICAgImNpdHkiOiAiTmV3IFlvcmsiCiAgICB9CiAgICByZXR1cm4ganNvbmlmeShkYXRhKQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/data', methods=['GET'])
+def send_data():
+    data = {
+        &quot;name&quot;: &quot;John Doe&quot;,
+        &quot;age&quot;: 30,
+        &quot;city&quot;: &quot;New York&quot;
+    }
+    return jsonify(data)
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>jsonify(data)</code>: This function takes a Python dictionary and converts it into a JSON response.</li>
+</ul>
+</div><h2>Practical Exercise</h2>
+<div class='content'><p><strong>Exercise: Create an API endpoint that receives JSON data and returns a modified version of it.</strong></p>
+<ol>
+<li>Create a new Flask route <code>/api/modify</code> that accepts POST requests.</li>
+<li>Parse the incoming JSON data.</li>
+<li>Modify the data (e.g., add a new key-value pair).</li>
+<li>Return the modified data as a JSON response.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnL2FwaS9tb2RpZnknLCBtZXRob2RzPVsnUE9TVCddKQpkZWYgbW9kaWZ5X2RhdGEoKToKICAgIGRhdGEgPSByZXF1ZXN0LmdldF9qc29uKCkKICAgIGlmIG5vdCBkYXRhOgogICAgICAgIHJldHVybiBqc29uaWZ5KHsiZXJyb3IiOiAiSW52YWxpZCBKU09OIGRhdGEifSksIDQwMAogICAgIyBNb2RpZnkgdGhlIGRhdGEKICAgIGRhdGFbJ3N0YXR1cyddID0gJ21vZGlmaWVkJwogICAgcmV0dXJuIGpzb25pZnkoZGF0YSksIDIwMAoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+@app.route('/api/modify', methods=['POST'])
+def modify_data():
+    data = request.get_json()
+    if not data:
+        return jsonify({&quot;error&quot;: &quot;Invalid JSON data&quot;}), 400
+    # Modify the data
+    data['status'] = 'modified'
+    return jsonify(data), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>The <code>/api/modify</code> route accepts POST requests.</li>
+<li>The incoming JSON data is parsed using <code>request.get_json()</code>.</li>
+<li>A new key-value pair (<code>'status': 'modified'</code>) is added to the data.</li>
+<li>The modified data is returned as a JSON response using <code>jsonify()</code>.</li>
+</ul>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Invalid JSON Data</strong>: Ensure that the incoming data is valid JSON. Use <code>request.get_json()</code> to handle parsing errors gracefully.</li>
+<li><strong>Content-Type Header</strong>: When sending JSON data in a request, make sure to set the <code>Content-Type</code> header to <code>application/json</code>.</li>
+<li><strong>Use <code>jsonify()</code></strong>: Always use <code>jsonify()</code> to create JSON responses. It handles the correct MIME type and character encoding.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to handle JSON data in Flask. We covered parsing JSON data from incoming requests and sending JSON responses. We also provided a practical exercise to reinforce the concepts. Understanding how to work with JSON is crucial for building modern web applications and APIs. In the next section, we will explore authentication for APIs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-creating-restful-endpoints' title="Creating RESTful Endpoints">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-authentication-apis' title="Authentication for APIs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

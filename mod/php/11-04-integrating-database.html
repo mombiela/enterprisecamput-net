@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrating with a Database</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/11-04-integrating-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/11-04-integrating-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/11-04-integrating-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/php/11-04-integrating-database" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/php/11-04-integrating-database" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-03-implementing-backend' title="Implementing Backend Logic">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integrating with a Database</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-05-testing-deployment' title="Testing and Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will learn how to integrate a database into our web application. This involves connecting to the database, performing CRUD (Create, Read, Update, Delete) operations, and ensuring data integrity and security. We will use MySQL as our database management system and PDO (PHP Data Objects) for database interaction.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand how to connect to a MySQL database using PDO.</li>
+<li>Perform CRUD operations.</li>
+<li>Handle database errors and exceptions.</li>
+<li>Ensure database security.</li>
+</ul>
+</div><h1>1. Connecting to a MySQL Database</h1>
+<div class='content'></div><h2>Step-by-Step Guide</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Database and Table:</strong></p>
+<pre><code class="language-sql">CREATE DATABASE webapp_db;
+USE webapp_db;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+</code></pre>
+</li>
+<li>
+<p><strong>Database Configuration:</strong>
+Create a configuration file <code>config.php</code> to store database credentials.</p>
+<pre><code class="language-php">&lt;?php
+define('DB_HOST', 'localhost');
+define('DB_USER', 'root');
+define('DB_PASS', '');
+define('DB_NAME', 'webapp_db');
+?&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Connecting to the Database:</strong></p>
+<pre><code class="language-php">&lt;?php
+require 'config.php';
+
+try {
+    $dsn = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo &quot;Connected successfully&quot;;
+} catch (PDOException $e) {
+    echo &quot;Connection failed: &quot; . $e-&gt;getMessage();
+}
+?&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>DSN (Data Source Name):</strong> Specifies the database type, host, and database name.</li>
+<li><strong>PDO:</strong> PHP Data Objects, a database access layer providing a uniform method of access to multiple databases.</li>
+<li><strong>Error Handling:</strong> <code>PDO::ATTR_ERRMODE</code> is set to <code>PDO::ERRMODE_EXCEPTION</code> to throw exceptions on errors.</li>
+</ul>
+</div><h1>2. Performing CRUD Operations</h1>
+<div class='content'></div><h2>Create (Insert Data)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKcmVxdWlyZSAnY29uZmlnLnBocCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgREJfVVNFUiwgREJfUEFTUyk7CiAgICAkcGRvLT5zZXRBdHRyaWJ1dGUoUERPOjpBVFRSX0VSUk1PREUsIFBETzo6RVJSTU9ERV9FWENFUFRJT04pOwoKICAgICRzcWwgPSAiSU5TRVJUIElOVE8gdXNlcnMgKHVzZXJuYW1lLCBlbWFpbCwgcGFzc3dvcmQpIFZBTFVFUyAoOnVzZXJuYW1lLCA6ZW1haWwsIDpwYXNzd29yZCkiOwogICAgJHN0bXQgPSAkcGRvLT5wcmVwYXJlKCRzcWwpOwoKICAgICRzdG10LT5leGVjdXRlKFsKICAgICAgICAnOnVzZXJuYW1lJyA9PiAnam9obl9kb2UnLAogICAgICAgICc6ZW1haWwnID0+ICdqb2huQGV4YW1wbGUuY29tJywKICAgICAgICAnOnBhc3N3b3JkJyA9PiBwYXNzd29yZF9oYXNoKCdwYXNzd29yZDEyMycsIFBBU1NXT1JEX0RFRkFVTFQpCiAgICBdKTsKCiAgICBlY2hvICJOZXcgcmVjb3JkIGNyZWF0ZWQgc3VjY2Vzc2Z1bGx5IjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJFcnJvcjogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+require 'config.php';
+
+try {
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = &quot;INSERT INTO users (username, email, password) VALUES (:username, :email, :password)&quot;;
+    $stmt = $pdo-&gt;prepare($sql);
+
+    $stmt-&gt;execute([
+        ':username' =&gt; 'john_doe',
+        ':email' =&gt; 'john@example.com',
+        ':password' =&gt; password_hash('password123', PASSWORD_DEFAULT)
+    ]);
+
+    echo &quot;New record created successfully&quot;;
+} catch (PDOException $e) {
+    echo &quot;Error: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>Read (Retrieve Data)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKcmVxdWlyZSAnY29uZmlnLnBocCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgREJfVVNFUiwgREJfUEFTUyk7CiAgICAkcGRvLT5zZXRBdHRyaWJ1dGUoUERPOjpBVFRSX0VSUk1PREUsIFBETzo6RVJSTU9ERV9FWENFUFRJT04pOwoKICAgICRzcWwgPSAiU0VMRUNUICogRlJPTSB1c2VycyI7CiAgICAkc3RtdCA9ICRwZG8tPnF1ZXJ5KCRzcWwpOwoKICAgIHdoaWxlICgkcm93ID0gJHN0bXQtPmZldGNoKFBETzo6RkVUQ0hfQVNTT0MpKSB7CiAgICAgICAgZWNobyAiSUQ6ICIgLiAkcm93WydpZCddIC4gIiAtIE5hbWU6ICIgLiAkcm93Wyd1c2VybmFtZSddIC4gIiAtIEVtYWlsOiAiIC4gJHJvd1snZW1haWwnXSAuICI8YnI+IjsKICAgIH0KfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJFcnJvcjogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+require 'config.php';
+
+try {
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = &quot;SELECT * FROM users&quot;;
+    $stmt = $pdo-&gt;query($sql);
+
+    while ($row = $stmt-&gt;fetch(PDO::FETCH_ASSOC)) {
+        echo &quot;ID: &quot; . $row['id'] . &quot; - Name: &quot; . $row['username'] . &quot; - Email: &quot; . $row['email'] . &quot;&lt;br&gt;&quot;;
+    }
+} catch (PDOException $e) {
+    echo &quot;Error: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>Update (Modify Data)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKcmVxdWlyZSAnY29uZmlnLnBocCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgREJfVVNFUiwgREJfUEFTUyk7CiAgICAkcGRvLT5zZXRBdHRyaWJ1dGUoUERPOjpBVFRSX0VSUk1PREUsIFBETzo6RVJSTU9ERV9FWENFUFRJT04pOwoKICAgICRzcWwgPSAiVVBEQVRFIHVzZXJzIFNFVCBlbWFpbCA9IDplbWFpbCBXSEVSRSB1c2VybmFtZSA9IDp1c2VybmFtZSI7CiAgICAkc3RtdCA9ICRwZG8tPnByZXBhcmUoJHNxbCk7CgogICAgJHN0bXQtPmV4ZWN1dGUoWwogICAgICAgICc6ZW1haWwnID0+ICduZXdlbWFpbEBleGFtcGxlLmNvbScsCiAgICAgICAgJzp1c2VybmFtZScgPT4gJ2pvaG5fZG9lJwogICAgXSk7CgogICAgZWNobyAiUmVjb3JkIHVwZGF0ZWQgc3VjY2Vzc2Z1bGx5IjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJFcnJvcjogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+require 'config.php';
+
+try {
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = &quot;UPDATE users SET email = :email WHERE username = :username&quot;;
+    $stmt = $pdo-&gt;prepare($sql);
+
+    $stmt-&gt;execute([
+        ':email' =&gt; 'newemail@example.com',
+        ':username' =&gt; 'john_doe'
+    ]);
+
+    echo &quot;Record updated successfully&quot;;
+} catch (PDOException $e) {
+    echo &quot;Error: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>Delete (Remove Data)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKcmVxdWlyZSAnY29uZmlnLnBocCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgREJfVVNFUiwgREJfUEFTUyk7CiAgICAkcGRvLT5zZXRBdHRyaWJ1dGUoUERPOjpBVFRSX0VSUk1PREUsIFBETzo6RVJSTU9ERV9FWENFUFRJT04pOwoKICAgICRzcWwgPSAiREVMRVRFIEZST00gdXNlcnMgV0hFUkUgdXNlcm5hbWUgPSA6dXNlcm5hbWUiOwogICAgJHN0bXQgPSAkcGRvLT5wcmVwYXJlKCRzcWwpOwoKICAgICRzdG10LT5leGVjdXRlKFsKICAgICAgICAnOnVzZXJuYW1lJyA9PiAnam9obl9kb2UnCiAgICBdKTsKCiAgICBlY2hvICJSZWNvcmQgZGVsZXRlZCBzdWNjZXNzZnVsbHkiOwp9IGNhdGNoIChQRE9FeGNlcHRpb24gJGUpIHsKICAgIGVjaG8gIkVycm9yOiAiIC4gJGUtPmdldE1lc3NhZ2UoKTsKfQo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+require 'config.php';
+
+try {
+    $pdo = new PDO($dsn, DB_USER, DB_PASS);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $sql = &quot;DELETE FROM users WHERE username = :username&quot;;
+    $stmt = $pdo-&gt;prepare($sql);
+
+    $stmt-&gt;execute([
+        ':username' =&gt; 'john_doe'
+    ]);
+
+    echo &quot;Record deleted successfully&quot;;
+} catch (PDOException $e) {
+    echo &quot;Error: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h1>3. Handling Database Errors and Exceptions</h1>
+<div class='content'></div><h2>Common Mistakes</h2>
+<div class='content'><ul>
+<li><strong>Incorrect DSN:</strong> Ensure the DSN string is correctly formatted.</li>
+<li><strong>Wrong Credentials:</strong> Verify the database username and password.</li>
+<li><strong>SQL Syntax Errors:</strong> Double-check SQL statements for syntax errors.</li>
+</ul>
+</div><h2>Error Handling Tips</h2>
+<div class='content'><ul>
+<li>Use <code>try-catch</code> blocks to handle exceptions.</li>
+<li>Log errors to a file instead of displaying them to users for security reasons.</li>
+</ul>
+</div><h1>4. Ensuring Database Security</h1>
+<div class='content'></div><h2>Prepared Statements</h2>
+<div class='content'><ul>
+<li>Use prepared statements to prevent SQL injection.</li>
+<li>Example:
+<pre><code class="language-php">$stmt = $pdo-&gt;prepare(&quot;SELECT * FROM users WHERE username = :username&quot;);
+$stmt-&gt;execute([':username' =&gt; $username]);
+</code></pre>
+</li>
+</ul>
+</div><h2>Password Hashing</h2>
+<div class='content'><ul>
+<li>Always hash passwords before storing them in the database.</li>
+<li>Use <code>password_hash()</code> and <code>password_verify()</code> functions.</li>
+</ul>
+</div><h2>User Input Validation</h2>
+<div class='content'><ul>
+<li>Validate and sanitize all user inputs before using them in SQL queries.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to integrate a MySQL database into a PHP web application. We learned how to connect to the database, perform CRUD operations, handle errors, and ensure security. These skills are essential for building robust and secure web applications. In the next section, we will focus on testing and deploying our web application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-03-implementing-backend' title="Implementing Backend Logic">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-05-testing-deployment' title="Testing and Deployment">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

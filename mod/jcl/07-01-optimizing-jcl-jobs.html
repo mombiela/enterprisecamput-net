@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizing JCL Jobs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jcl/07-01-optimizing-jcl-jobs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jcl/07-01-optimizing-jcl-jobs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jcl/07-01-optimizing-jcl-jobs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jcl/07-01-optimizing-jcl-jobs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jcl/07-01-optimizing-jcl-jobs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-using-jes2-jes3' title="Using JES2/JES3 for Troubleshooting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizing JCL Jobs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-efficient-data-set-usage' title="Efficient Data Set Usage">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Optimizing JCL (Job Control Language) jobs is crucial for improving the efficiency and performance of batch processing in mainframe environments. This section will cover various techniques and best practices to optimize JCL jobs, ensuring they run faster and use system resources more effectively.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Efficient Resource Allocation</strong>: Properly allocate CPU, memory, and I/O resources to avoid bottlenecks.</li>
+<li><strong>Minimizing Job Execution Time</strong>: Techniques to reduce the overall execution time of JCL jobs.</li>
+<li><strong>Reducing I/O Operations</strong>: Strategies to minimize the number of input/output operations.</li>
+<li><strong>Parallel Processing</strong>: Leveraging parallelism to execute multiple tasks simultaneously.</li>
+<li><strong>Best Practices</strong>: General guidelines to follow for writing optimized JCL jobs.</li>
+</ol>
+</div><h1>Efficient Resource Allocation</h1>
+<div class='content'></div><h2>CPU and Memory Allocation</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Specify Appropriate REGION Parameter</strong>: The REGION parameter controls the amount of memory allocated to a job or step. Allocating too much or too little memory can impact performance.</p>
+<pre><code class="language-jcl">//STEP1 EXEC PGM=MYPROG,REGION=4M
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example allocates 4 megabytes of memory to the step.</li>
+</ul>
+</li>
+<li>
+<p><strong>Use the TIME Parameter Wisely</strong>: The TIME parameter limits the CPU time a job or step can use. Setting appropriate limits can prevent runaway jobs.</p>
+<pre><code class="language-jcl">//STEP1 EXEC PGM=MYPROG,TIME=1440
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example sets the CPU time limit to 24 hours (1440 minutes).</li>
+</ul>
+</li>
+</ul>
+</div><h2>I/O Resource Management</h2>
+<div class='content'><ul>
+<li><strong>Efficient Data Set Allocation</strong>: Use the appropriate space allocation parameters (e.g., SPACE, UNIT) to avoid excessive I/O operations.
+<pre><code class="language-jcl">//MYDATA  DD  DSN=MY.DATA.SET,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(CYL,(10,5)),UNIT=SYSDA
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example allocates a new data set with an initial space of 10 cylinders and an additional 5 cylinders if needed.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Minimizing Job Execution Time</h1>
+<div class='content'></div><h2>Use of Efficient Utilities</h2>
+<div class='content'><ul>
+<li><strong>Sort Utility</strong>: Use the SORT utility for sorting and merging data sets efficiently.
+<pre><code class="language-jcl">//SORTSTEP EXEC PGM=SORT
+//SYSIN    DD  *
+SORT FIELDS=(1,10,CH,A)
+/*
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example sorts a data set based on the first 10 characters in ascending order.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Avoid Unnecessary Steps</h2>
+<div class='content'><ul>
+<li><strong>Combine Steps</strong>: Where possible, combine multiple steps into a single step to reduce overhead.
+<pre><code class="language-jcl">//STEP1 EXEC PGM=MYPROG
+//STEP2 EXEC PGM=MYPROG2
+</code></pre>
+<ul>
+<li><strong>Optimization</strong>: If MYPROG and MYPROG2 can be combined into a single program, it reduces the job's overall execution time.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Reducing I/O Operations</h1>
+<div class='content'></div><h2>Use of Buffers</h2>
+<div class='content'><ul>
+<li><strong>Buffering</strong>: Increase the buffer size for data sets to reduce the number of I/O operations.
+<pre><code class="language-jcl">//MYDATA  DD  DSN=MY.DATA.SET,DISP=SHR,BUFNO=20
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example sets the buffer number to 20, which can improve I/O performance.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Efficient Data Set Usage</h2>
+<div class='content'><ul>
+<li><strong>Avoid Unnecessary Data Set Access</strong>: Only access data sets when necessary and close them as soon as they are no longer needed.
+<pre><code class="language-jcl">//MYDATA  DD  DSN=MY.DATA.SET,DISP=SHR
+//        DD  DSN=MY.OTHER.DATA,DISP=SHR
+</code></pre>
+<ul>
+<li><strong>Optimization</strong>: Ensure that each data set is accessed only when required.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Parallel Processing</h1>
+<div class='content'></div><h2>Use of Multiple Initiators</h2>
+<div class='content'><ul>
+<li><strong>Parallel Job Execution</strong>: Submit multiple jobs to run in parallel using different initiators.
+<pre><code class="language-jcl">//JOB1  JOB  (ACCT),'PARALLEL JOB 1',CLASS=A
+//JOB2  JOB  (ACCT),'PARALLEL JOB 2',CLASS=B
+</code></pre>
+<ul>
+<li><strong>Explanation</strong>: This example submits two jobs to run in parallel, each using a different class.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Use of Multiple Steps</h2>
+<div class='content'><ul>
+<li><strong>Concurrent Steps</strong>: Design jobs with multiple steps that can run concurrently.
+<pre><code class="language-jcl">//STEP1 EXEC PGM=MYPROG1
+//STEP2 EXEC PGM=MYPROG2,COND=(0,LT)
+</code></pre>
+<ul>
+<li><strong>Optimization</strong>: If MYPROG1 and MYPROG2 can run concurrently, design the job to allow parallel execution.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Best Practices</h1>
+<div class='content'><ol>
+<li><strong>Regularly Review and Update JCL</strong>: Periodically review JCL jobs to ensure they are optimized for current system configurations and workloads.</li>
+<li><strong>Use Symbolic Parameters</strong>: Use symbolic parameters to make JCL jobs more flexible and easier to maintain.</li>
+<li><strong>Monitor Job Performance</strong>: Continuously monitor job performance and make adjustments as needed.</li>
+<li><strong>Document Changes</strong>: Keep detailed documentation of any changes made to JCL jobs for future reference.</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Optimize a JCL Job</h2>
+<div class='content'><p>Given the following JCL job, identify and implement optimizations:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9KT0IxICBKT0IgIChBQ0NUKSwnU0FNUExFIEpPQicKLy9TVEVQMSBFWEVDIFBHTT1NWVBST0cxCi8vU1RFUDIgRVhFQyBQR009TVlQUk9HMgovL01ZREFUQSAgREQgIERTTj1NWS5EQVRBLlNFVCxESVNQPShORVcsQ0FUTEcsREVMRVRFKSwKLy8gICAgICAgICAgICBTUEFDRT0oVFJLLCgxMDAsNTApKSxVTklUPVNZU0RBCi8vU09SVFNURVAgRVhFQyBQR009U09SVAovL1NZU0lOICAgIEREICAqClNPUlQgRklFTERTPSgxLDEwLENILEEpCi8q"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//JOB1  JOB  (ACCT),'SAMPLE JOB'
+//STEP1 EXEC PGM=MYPROG1
+//STEP2 EXEC PGM=MYPROG2
+//MYDATA  DD  DSN=MY.DATA.SET,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(TRK,(100,50)),UNIT=SYSDA
+//SORTSTEP EXEC PGM=SORT
+//SYSIN    DD  *
+SORT FIELDS=(1,10,CH,A)
+/*</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Combine Steps if Possible</strong>: If MYPROG1 and MYPROG2 can be combined, do so.</li>
+<li><strong>Optimize Space Allocation</strong>: Use cylinders instead of tracks for better performance.</li>
+<li><strong>Increase Buffer Size</strong>: Set an appropriate buffer size for the data set.</li>
+</ol>
+<p>Optimized JCL:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9KT0IxICBKT0IgIChBQ0NUKSwnU0FNUExFIEpPQicKLy9TVEVQMSBFWEVDIFBHTT1NWVBST0cxCi8vTVlEQVRBICBERCAgRFNOPU1ZLkRBVEEuU0VULERJU1A9KE5FVyxDQVRMRyxERUxFVEUpLAovLyAgICAgICAgICAgIFNQQUNFPShDWUwsKDEwLDUpKSxVTklUPVNZU0RBLEJVRk5PPTIwCi8vU09SVFNURVAgRVhFQyBQR009U09SVAovL1NZU0lOICAgIEREICAqClNPUlQgRklFTERTPSgxLDEwLENILEEpCi8q"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//JOB1  JOB  (ACCT),'SAMPLE JOB'
+//STEP1 EXEC PGM=MYPROG1
+//MYDATA  DD  DSN=MY.DATA.SET,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(CYL,(10,5)),UNIT=SYSDA,BUFNO=20
+//SORTSTEP EXEC PGM=SORT
+//SYSIN    DD  *
+SORT FIELDS=(1,10,CH,A)
+/*</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Optimizing JCL jobs involves efficient resource allocation, minimizing job execution time, reducing I/O operations, leveraging parallel processing, and following best practices. By implementing these techniques, you can significantly improve the performance and efficiency of your JCL jobs. In the next section, we will explore efficient data set usage in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-using-jes2-jes3' title="Using JES2/JES3 for Troubleshooting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-efficient-data-set-usage' title="Efficient Data Set Usage">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

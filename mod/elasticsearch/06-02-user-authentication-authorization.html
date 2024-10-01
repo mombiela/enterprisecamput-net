@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication and Authorization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/06-02-user-authentication-authorization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/06-02-user-authentication-authorization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/06-02-user-authentication-authorization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/06-02-user-authentication-authorization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/06-02-user-authentication-authorization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-securing-elasticsearch' title="Securing Elasticsearch">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">User Authentication and Authorization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-role-based-access-control' title="Role-Based Access Control">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will explore how to secure your Elasticsearch cluster by implementing user authentication and authorization. This ensures that only authorized users can access and perform operations on your Elasticsearch data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Authentication</strong>: Verifying the identity of a user or system.</li>
+<li><strong>Authorization</strong>: Determining what an authenticated user is allowed to do.</li>
+<li><strong>Roles</strong>: A set of permissions that can be assigned to users.</li>
+<li><strong>Users</strong>: Entities that interact with Elasticsearch, each having a unique identity.</li>
+</ol>
+</div><h1>Setting Up Authentication</h1>
+<div class='content'></div><h2>1. Enabling Security Features</h2>
+<div class='content'><p>Elasticsearch security features are part of the Elastic Stack's commercial features. To enable these features, you need to configure the <code>elasticsearch.yml</code> file.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBlbGFzdGljc2VhcmNoLnltbAp4cGFjay5zZWN1cml0eS5lbmFibGVkOiB0cnVl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># elasticsearch.yml
+xpack.security.enabled: true</pre></div><div class='content'></div><h2>2. Creating Users</h2>
+<div class='content'><p>Users can be created using the Elasticsearch API or Kibana. Here, we will use the API to create a user.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvam9obl9kb2UKewogICJwYXNzd29yZCIgOiAicGFzc3dvcmQxMjMiLAogICJyb2xlcyIgOiBbICJhZG1pbiIgXSwKICAiZnVsbF9uYW1lIiA6ICJKb2huIERvZSIsCiAgImVtYWlsIiA6ICJqb2huLmRvZUBleGFtcGxlLmNvbSIKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/john_doe
+{
+  &quot;password&quot; : &quot;password123&quot;,
+  &quot;roles&quot; : [ &quot;admin&quot; ],
+  &quot;full_name&quot; : &quot;John Doe&quot;,
+  &quot;email&quot; : &quot;john.doe@example.com&quot;
+}</pre></div><div class='content'></div><h2>3. Creating Roles</h2>
+<div class='content'><p>Roles define the permissions for users. You can create roles using the API.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3JvbGUvYWRtaW4KewogICJjbHVzdGVyIjogWyJhbGwiXSwKICAiaW5kaWNlcyI6IFsKICAgIHsKICAgICAgIm5hbWVzIjogWyAiKiIgXSwKICAgICAgInByaXZpbGVnZXMiOiBbImFsbCJdCiAgICB9CiAgXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/role/admin
+{
+  &quot;cluster&quot;: [&quot;all&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [ &quot;*&quot; ],
+      &quot;privileges&quot;: [&quot;all&quot;]
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Authorization</h1>
+<div class='content'></div><h2>1. Role-Based Access Control (RBAC)</h2>
+<div class='content'><p>RBAC is a method of regulating access to computer or network resources based on the roles of individual users within an enterprise.</p>
+</div><h2>2. Assigning Roles to Users</h2>
+<div class='content'><p>Roles can be assigned to users when creating the user or by updating an existing user.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvamFuZV9kb2UvX3Bhc3N3b3JkCnsKICAicGFzc3dvcmQiIDogIm5ld3Bhc3N3b3JkMTIzIiwKICAicm9sZXMiIDogWyAicmVhZF9vbmx5IiBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/jane_doe/_password
+{
+  &quot;password&quot; : &quot;newpassword123&quot;,
+  &quot;roles&quot; : [ &quot;read_only&quot; ]
+}</pre></div><div class='content'></div><h2>3. Defining Custom Roles</h2>
+<div class='content'><p>You can define custom roles to meet specific needs.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3JvbGUvcmVhZF9vbmx5CnsKICAiY2x1c3RlciI6IFsibW9uaXRvciJdLAogICJpbmRpY2VzIjogWwogICAgewogICAgICAibmFtZXMiOiBbICIqIiBdLAogICAgICAicHJpdmlsZWdlcyI6IFsicmVhZCJdCiAgICB9CiAgXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/role/read_only
+{
+  &quot;cluster&quot;: [&quot;monitor&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [ &quot;*&quot; ],
+      &quot;privileges&quot;: [&quot;read&quot;]
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'></div><h2>Scenario</h2>
+<div class='content'><p>You have a team of data analysts who need read-only access to the Elasticsearch cluster, and a team of administrators who need full access.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Create Roles</strong>:
+<ul>
+<li><code>read_only</code> for data analysts.</li>
+<li><code>admin</code> for administrators.</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3JvbGUvcmVhZF9vbmx5CnsKICAiY2x1c3RlciI6IFsibW9uaXRvciJdLAogICJpbmRpY2VzIjogWwogICAgewogICAgICAibmFtZXMiOiBbICIqIiBdLAogICAgICAicHJpdmlsZWdlcyI6IFsicmVhZCJdCiAgICB9CiAgXQp9CgpQT1NUIC9fc2VjdXJpdHkvcm9sZS9hZG1pbgp7CiAgImNsdXN0ZXIiOiBbImFsbCJdLAogICJpbmRpY2VzIjogWwogICAgewogICAgICAibmFtZXMiOiBbICIqIiBdLAogICAgICAicHJpdmlsZWdlcyI6IFsiYWxsIl0KICAgIH0KICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/role/read_only
+{
+  &quot;cluster&quot;: [&quot;monitor&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [ &quot;*&quot; ],
+      &quot;privileges&quot;: [&quot;read&quot;]
+    }
+  ]
+}
+
+POST /_security/role/admin
+{
+  &quot;cluster&quot;: [&quot;all&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [ &quot;*&quot; ],
+      &quot;privileges&quot;: [&quot;all&quot;]
+    }
+  ]
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Create Users</strong>:
+<ul>
+<li><code>alice</code> for a data analyst.</li>
+<li><code>bob</code> for an administrator.</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvYWxpY2UKewogICJwYXNzd29yZCIgOiAiYWxpY2VwYXNzd29yZCIsCiAgInJvbGVzIiA6IFsgInJlYWRfb25seSIgXSwKICAiZnVsbF9uYW1lIiA6ICJBbGljZSBBbmFseXN0IiwKICAiZW1haWwiIDogImFsaWNlLmFuYWx5c3RAZXhhbXBsZS5jb20iCn0KClBPU1QgL19zZWN1cml0eS91c2VyL2JvYgp7CiAgInBhc3N3b3JkIiA6ICJib2JwYXNzd29yZCIsCiAgInJvbGVzIiA6IFsgImFkbWluIiBdLAogICJmdWxsX25hbWUiIDogIkJvYiBBZG1pbiIsCiAgImVtYWlsIiA6ICJib2IuYWRtaW5AZXhhbXBsZS5jb20iCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/alice
+{
+  &quot;password&quot; : &quot;alicepassword&quot;,
+  &quot;roles&quot; : [ &quot;read_only&quot; ],
+  &quot;full_name&quot; : &quot;Alice Analyst&quot;,
+  &quot;email&quot; : &quot;alice.analyst@example.com&quot;
+}
+
+POST /_security/user/bob
+{
+  &quot;password&quot; : &quot;bobpassword&quot;,
+  &quot;roles&quot; : [ &quot;admin&quot; ],
+  &quot;full_name&quot; : &quot;Bob Admin&quot;,
+  &quot;email&quot; : &quot;bob.admin@example.com&quot;
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Incorrect Role Assignment</strong>: Ensure that roles are correctly assigned to users to avoid unauthorized access.</li>
+<li><strong>Weak Passwords</strong>: Use strong passwords to enhance security.</li>
+<li><strong>Role Overlap</strong>: Avoid overlapping roles that might grant unintended permissions.</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a New User with Custom Role</h2>
+<div class='content'><ol>
+<li>Create a custom role <code>data_writer</code> that allows write access to the <code>data-*</code> indices.</li>
+<li>Create a user <code>charlie</code> with the <code>data_writer</code> role.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3JvbGUvZGF0YV93cml0ZXIKewogICJjbHVzdGVyIjogW10sCiAgImluZGljZXMiOiBbCiAgICB7CiAgICAgICJuYW1lcyI6IFsgImRhdGEtKiIgXSwKICAgICAgInByaXZpbGVnZXMiOiBbIndyaXRlIl0KICAgIH0KICBdCn0KClBPU1QgL19zZWN1cml0eS91c2VyL2NoYXJsaWUKewogICJwYXNzd29yZCIgOiAiY2hhcmxpZXBhc3N3b3JkIiwKICAicm9sZXMiIDogWyAiZGF0YV93cml0ZXIiIF0sCiAgImZ1bGxfbmFtZSIgOiAiQ2hhcmxpZSBXcml0ZXIiLAogICJlbWFpbCIgOiAiY2hhcmxpZS53cml0ZXJAZXhhbXBsZS5jb20iCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/role/data_writer
+{
+  &quot;cluster&quot;: [],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [ &quot;data-*&quot; ],
+      &quot;privileges&quot;: [&quot;write&quot;]
+    }
+  ]
+}
+
+POST /_security/user/charlie
+{
+  &quot;password&quot; : &quot;charliepassword&quot;,
+  &quot;roles&quot; : [ &quot;data_writer&quot; ],
+  &quot;full_name&quot; : &quot;Charlie Writer&quot;,
+  &quot;email&quot; : &quot;charlie.writer@example.com&quot;
+}</pre></div><div class='content'></div><h2>Exercise 2: Update User Role</h2>
+<div class='content'><ol>
+<li>Update the user <code>alice</code> to have both <code>read_only</code> and <code>data_writer</code> roles.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvYWxpY2UvX3Bhc3N3b3JkCnsKICAicGFzc3dvcmQiIDogImFsaWNlcGFzc3dvcmQiLAogICJyb2xlcyIgOiBbICJyZWFkX29ubHkiLCAiZGF0YV93cml0ZXIiIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/alice/_password
+{
+  &quot;password&quot; : &quot;alicepassword&quot;,
+  &quot;roles&quot; : [ &quot;read_only&quot;, &quot;data_writer&quot; ]
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of user authentication and authorization in Elasticsearch. We learned how to enable security features, create users and roles, and assign roles to users. These practices are essential for securing your Elasticsearch cluster and ensuring that only authorized users have access to your data.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-securing-elasticsearch' title="Securing Elasticsearch">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-role-based-access-control' title="Role-Based Access Control">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

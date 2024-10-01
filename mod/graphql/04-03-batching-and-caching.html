@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batching and Caching</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/04-03-batching-and-caching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/04-03-batching-and-caching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/04-03-batching-and-caching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/04-03-batching-and-caching" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/04-03-batching-and-caching" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-data-fetching-strategies' title="Data Fetching Strategies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Batching and Caching</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-error-handling' title="Error Handling">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore two essential techniques for optimizing data fetching in GraphQL: batching and caching. These techniques can significantly improve the performance and efficiency of your GraphQL server by reducing the number of requests and reusing previously fetched data.</p>
+</div><h1>Batching</h1>
+<div class='content'><p>Batching is the process of combining multiple requests into a single request to reduce the number of round trips to the server. This is particularly useful when dealing with multiple related queries that can be resolved more efficiently together.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Batching</strong>: Combining multiple requests into a single request.</li>
+<li><strong>DataLoader</strong>: A utility for batching and caching in GraphQL.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'><p>Let's consider a scenario where we need to fetch user data for multiple user IDs. Without batching, each user ID would result in a separate database query, which can be inefficient.</p>
+<h4>Step-by-Step Implementation</h4>
+<ol>
+<li>
+<p><strong>Install DataLoader</strong>:</p>
+<pre><code class="language-bash">npm install dataloader
+</code></pre>
+</li>
+<li>
+<p><strong>Create a DataLoader</strong>:</p>
+<pre><code class="language-javascript">const DataLoader = require('dataloader');
+
+const userLoader = new DataLoader(async (userIds) =&gt; {
+  const users = await getUsersByIds(userIds); // Assume this function fetches users by IDs
+  return userIds.map(id =&gt; users.find(user =&gt; user.id === id));
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Use DataLoader in Resolvers</strong>:</p>
+<pre><code class="language-javascript">const resolvers = {
+  Query: {
+    user: (parent, { id }, context) =&gt; {
+      return context.userLoader.load(id);
+    },
+    users: (parent, args, context) =&gt; {
+      return context.userLoader.loadMany(args.ids);
+    }
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Integrate DataLoader with Context</strong>:</p>
+<pre><code class="language-javascript">const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () =&gt; ({
+    userLoader: userLoader
+  })
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>DataLoader</strong> batches multiple <code>load</code> calls into a single batch request.</li>
+<li>The <code>load</code> method queues the request, and the <code>loadMany</code> method can handle multiple IDs at once.</li>
+<li>The <code>context</code> object is used to pass the DataLoader instance to the resolvers.</li>
+</ul>
+</div><h1>Caching</h1>
+<div class='content'><p>Caching is the process of storing previously fetched data so that future requests can be served faster without hitting the database or external API again.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Caching</strong>: Storing data for quick retrieval.</li>
+<li><strong>In-memory Cache</strong>: A cache stored in the server's memory.</li>
+<li><strong>Distributed Cache</strong>: A cache that is shared across multiple servers, such as Redis.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'><p>Let's implement a simple in-memory cache for user data.</p>
+<h4>Step-by-Step Implementation</h4>
+<ol>
+<li>
+<p><strong>Create a Cache</strong>:</p>
+<pre><code class="language-javascript">const userCache = new Map();
+</code></pre>
+</li>
+<li>
+<p><strong>Modify DataLoader to Use Cache</strong>:</p>
+<pre><code class="language-javascript">const userLoader = new DataLoader(async (userIds) =&gt; {
+  const users = await getUsersByIds(userIds);
+  users.forEach(user =&gt; userCache.set(user.id, user));
+  return userIds.map(id =&gt; userCache.get(id));
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Check Cache Before Fetching</strong>:</p>
+<pre><code class="language-javascript">const getUserById = async (id) =&gt; {
+  if (userCache.has(id)) {
+    return userCache.get(id);
+  }
+  const user = await fetchUserById(id); // Assume this function fetches a user by ID
+  userCache.set(id, user);
+  return user;
+};
+</code></pre>
+</li>
+</ol>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>In-memory Cache</strong>: The <code>userCache</code> is a simple in-memory cache using a JavaScript <code>Map</code>.</li>
+<li><strong>Cache Check</strong>: Before fetching data, the cache is checked to see if the data is already available.</li>
+<li><strong>Cache Update</strong>: After fetching data, the cache is updated to store the new data.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Batching and Caching</h2>
+<div class='content'><ol>
+<li><strong>Setup</strong>: Create a GraphQL server with a <code>User</code> type and a query to fetch users by ID.</li>
+<li><strong>Batching</strong>: Implement DataLoader to batch requests for user data.</li>
+<li><strong>Caching</strong>: Add an in-memory cache to store user data and reduce database hits.</li>
+</ol>
+<h4>Solution</h4>
+<ol>
+<li>
+<p><strong>Setup</strong>:</p>
+<pre><code class="language-javascript">const { ApolloServer, gql } = require('apollo-server');
+const DataLoader = require('dataloader');
+
+const typeDefs = gql`
+  type User {
+    id: ID!
+    name: String!
+  }
+
+  type Query {
+    user(id: ID!): User
+    users(ids: [ID!]!): [User]
+  }
+`;
+
+const users = [
+  { id: '1', name: 'Alice' },
+  { id: '2', name: 'Bob' },
+  { id: '3', name: 'Charlie' }
+];
+
+const getUsersByIds = async (ids) =&gt; {
+  return users.filter(user =&gt; ids.includes(user.id));
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Batching</strong>:</p>
+<pre><code class="language-javascript">const userLoader = new DataLoader(async (userIds) =&gt; {
+  const users = await getUsersByIds(userIds);
+  return userIds.map(id =&gt; users.find(user =&gt; user.id === id));
+});
+
+const resolvers = {
+  Query: {
+    user: (parent, { id }, context) =&gt; {
+      return context.userLoader.load(id);
+    },
+    users: (parent, { ids }, context) =&gt; {
+      return context.userLoader.loadMany(ids);
+    }
+  }
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: () =&gt; ({
+    userLoader: userLoader
+  })
+});
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Caching</strong>:</p>
+<pre><code class="language-javascript">const userCache = new Map();
+
+const getUserById = async (id) =&gt; {
+  if (userCache.has(id)) {
+    return userCache.get(id);
+  }
+  const user = await fetchUserById(id);
+  userCache.set(id, user);
+  return user;
+};
+
+const userLoader = new DataLoader(async (userIds) =&gt; {
+  const users = await getUsersByIds(userIds);
+  users.forEach(user =&gt; userCache.set(user.id, user));
+  return userIds.map(id =&gt; userCache.get(id));
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Over-caching</strong>: Be cautious not to cache data that changes frequently, as it can lead to stale data.</li>
+<li><strong>Batch Size</strong>: Ensure the batch size is optimal; too large batches can lead to performance issues.</li>
+<li><strong>Cache Invalidation</strong>: Implement strategies to invalidate or update the cache when the underlying data changes.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the concepts of batching and caching in GraphQL. We learned how to use DataLoader to batch requests and how to implement a simple in-memory cache to store and retrieve data efficiently. These techniques are crucial for optimizing the performance of your GraphQL server and ensuring a smooth user experience.</p>
+<p>Next, we will explore error handling in GraphQL, which is essential for building robust and reliable applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-data-fetching-strategies' title="Data Fetching Strategies">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-error-handling' title="Error Handling">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

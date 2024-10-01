@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>State Space Search</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/algoritmos_avanzados/04-03-busqueda-espacios-estados" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/algoritmos_avanzados/04-03-cerca-espais-estats" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/algoritmos_avanzados/04-03-state-space-search" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/algoritmos_avanzados/04-03-state-space-search" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/algoritmos_avanzados/04-03-state-space-search" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-advanced-sorting' title="Advanced Sorting Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">State Space Search</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-machine-learning' title="Introduction to Machine Learning">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>State Space Search is a fundamental concept in computer science and artificial intelligence, used to solve problems by exploring all possible states and transitions between them. This technique is particularly useful in scenarios where the solution path is not immediately obvious and requires systematic exploration.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. State Space</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: The state space of a problem is a collection of all possible states that can be reached from the initial state by applying a series of actions.</li>
+<li><strong>Components</strong>:
+<ul>
+<li><strong>Initial State</strong>: The starting point of the search.</li>
+<li><strong>Goal State</strong>: The desired end state.</li>
+<li><strong>Actions</strong>: Operations that transition the system from one state to another.</li>
+<li><strong>Transition Model</strong>: Describes how actions change the state.</li>
+</ul>
+</li>
+</ul>
+</div><h2>2. Search Tree</h2>
+<div class='content'><ul>
+<li><strong>Nodes</strong>: Represent states.</li>
+<li><strong>Edges</strong>: Represent actions leading from one state to another.</li>
+<li><strong>Root</strong>: The initial state.</li>
+<li><strong>Leaves</strong>: States with no further actions or goal states.</li>
+</ul>
+</div><h2>3. Search Strategies</h2>
+<div class='content'><ul>
+<li><strong>Uninformed Search</strong>: No additional information about the state space beyond the problem definition.
+<ul>
+<li>Examples: Breadth-First Search (BFS), Depth-First Search (DFS)</li>
+</ul>
+</li>
+<li><strong>Informed Search</strong>: Uses heuristics to guide the search.
+<ul>
+<li>Examples: A*, Greedy Best-First Search</li>
+</ul>
+</li>
+</ul>
+</div><h1>Uninformed Search Strategies</h1>
+<div class='content'></div><h2>Breadth-First Search (BFS)</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Explores all nodes at the present depth level before moving on to nodes at the next depth level.</li>
+<li><strong>Implementation</strong>:
+<pre><code class="language-python">from collections import deque
+
+def bfs(initial_state, goal_state, transition_model):
+    frontier = deque([initial_state])
+    explored = set()
+
+    while frontier:
+        state = frontier.popleft()
+        if state == goal_state:
+            return True
+        explored.add(state)
+        for action in transition_model[state]:
+            child_state = transition_model[state][action]
+            if child_state not in explored and child_state not in frontier:
+                frontier.append(child_state)
+    return False
+</code></pre>
+</li>
+</ul>
+</div><h2>Depth-First Search (DFS)</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Explores as far as possible along each branch before backtracking.</li>
+<li><strong>Implementation</strong>:
+<pre><code class="language-python">def dfs(initial_state, goal_state, transition_model):
+    frontier = [initial_state]
+    explored = set()
+
+    while frontier:
+        state = frontier.pop()
+        if state == goal_state:
+            return True
+        explored.add(state)
+        for action in transition_model[state]:
+            child_state = transition_model[state][action]
+            if child_state not in explored and child_state not in frontier:
+                frontier.append(child_state)
+    return False
+</code></pre>
+</li>
+</ul>
+</div><h1>Informed Search Strategies</h1>
+<div class='content'></div><h2>A* Search</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Combines the cost to reach the node and the estimated cost to reach the goal (heuristic).</li>
+<li><strong>Heuristic Function</strong>: Estimates the cost from the current state to the goal state.</li>
+<li><strong>Implementation</strong>:
+<pre><code class="language-python">import heapq
+
+def a_star(initial_state, goal_state, transition_model, heuristic):
+    frontier = []
+    heapq.heappush(frontier, (0, initial_state))
+    explored = set()
+    cost_so_far = {initial_state: 0}
+
+    while frontier:
+        _, current = heapq.heappop(frontier)
+        if current == goal_state:
+            return True
+        explored.add(current)
+        for action in transition_model[current]:
+            child_state = transition_model[current][action]
+            new_cost = cost_so_far[current] + 1  # Assuming uniform cost
+            if child_state not in cost_so_far or new_cost &lt; cost_so_far[child_state]:
+                cost_so_far[child_state] = new_cost
+                priority = new_cost + heuristic(child_state, goal_state)
+                heapq.heappush(frontier, (priority, child_state))
+    return False
+</code></pre>
+</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implement BFS for a Simple Maze</h2>
+<div class='content'><ul>
+<li><strong>Problem</strong>: Given a simple maze represented as a grid, implement BFS to find the shortest path from the start to the goal.</li>
+<li><strong>Solution</strong>:
+<pre><code class="language-python">def bfs_maze(maze, start, goal):
+    rows, cols = len(maze), len(maze[0])
+    frontier = deque([start])
+    explored = set()
+    parent = {start: None}
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+
+    while frontier:
+        current = frontier.popleft()
+        if current == goal:
+            path = []
+            while current:
+                path.append(current)
+                current = parent[current]
+            return path[::-1]
+        explored.add(current)
+        for direction in directions:
+            next_row, next_col = current[0] + direction[0], current[1] + direction[1]
+            if 0 &lt;= next_row &lt; rows and 0 &lt;= next_col &lt; cols and maze[next_row][next_col] == 0:
+                next_state = (next_row, next_col)
+                if next_state not in explored and next_state not in frontier:
+                    frontier.append(next_state)
+                    parent[next_state] = current
+    return None
+
+# Example usage
+maze = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
+]
+start = (0, 0)
+goal = (4, 4)
+path = bfs_maze(maze, start, goal)
+print(&quot;Path:&quot;, path)
+</code></pre>
+</li>
+</ul>
+</div><h2>Exercise 2: Implement A* for a Grid with Obstacles</h2>
+<div class='content'><ul>
+<li><strong>Problem</strong>: Given a grid with obstacles, implement A* to find the shortest path from the start to the goal.</li>
+<li><strong>Solution</strong>:
+<pre><code class="language-python">def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def a_star_grid(maze, start, goal):
+    rows, cols = len(maze), len(maze[0])
+    frontier = []
+    heapq.heappush(frontier, (0, start))
+    explored = set()
+    cost_so_far = {start: 0}
+    parent = {start: None}
+
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # Up, Down, Left, Right
+
+    while frontier:
+        _, current = heapq.heappop(frontier)
+        if current == goal:
+            path = []
+            while current:
+                path.append(current)
+                current = parent[current]
+            return path[::-1]
+        explored.add(current)
+        for direction in directions:
+            next_row, next_col = current[0] + direction[0], current[1] + direction[1]
+            if 0 &lt;= next_row &lt; rows and 0 &lt;= next_col &lt; cols and maze[next_row][next_col] == 0:
+                next_state = (next_row, next_col)
+                new_cost = cost_so_far[current] + 1
+                if next_state not in cost_so_far or new_cost &lt; cost_so_far[next_state]:
+                    cost_so_far[next_state] = new_cost
+                    priority = new_cost + heuristic(next_state, goal)
+                    heapq.heappush(frontier, (priority, next_state))
+                    parent[next_state] = current
+    return None
+
+# Example usage
+maze = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
+]
+start = (0, 0)
+goal = (4, 4)
+path = a_star_grid(maze, start, goal)
+print(&quot;Path:&quot;, path)
+</code></pre>
+</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Not marking nodes as explored, leading to infinite loops.
+<ul>
+<li><strong>Tip</strong>: Always keep track of explored nodes to avoid revisiting them.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Incorrect heuristic function in A* leading to suboptimal paths.
+<ul>
+<li><strong>Tip</strong>: Ensure the heuristic is admissible (never overestimates the true cost).</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>State Space Search is a powerful technique for solving complex problems by exploring all possible states and transitions. Understanding and implementing various search strategies, both uninformed and informed, is crucial for tackling a wide range of computational problems. By mastering these concepts, you will be well-equipped to handle advanced algorithmic challenges in both theoretical and practical applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-advanced-sorting' title="Advanced Sorting Algorithms">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-machine-learning' title="Introduction to Machine Learning">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

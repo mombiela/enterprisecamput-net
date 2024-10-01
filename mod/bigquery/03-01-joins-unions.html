@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joins and Unions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/03-01-joins-unions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/03-01-joins-unions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/03-01-joins-unions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/bigquery/03-01-joins-unions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/03-01-joins-unions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-aggregating-data' title="Aggregating Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Joins and Unions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subqueries">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore two fundamental SQL operations: Joins and Unions. These operations are essential for combining data from multiple tables, which is a common requirement in data analysis and reporting.</p>
+</div><h1>What are Joins?</h1>
+<div class='content'><p>Joins are used to combine rows from two or more tables based on a related column between them. There are several types of joins, each serving a different purpose:</p>
+<ol>
+<li><strong>Inner Join</strong>: Returns only the rows that have matching values in both tables.</li>
+<li><strong>Left Join (or Left Outer Join)</strong>: Returns all rows from the left table and the matched rows from the right table. If no match is found, NULL values are returned for columns from the right table.</li>
+<li><strong>Right Join (or Right Outer Join)</strong>: Returns all rows from the right table and the matched rows from the left table. If no match is found, NULL values are returned for columns from the left table.</li>
+<li><strong>Full Join (or Full Outer Join)</strong>: Returns all rows when there is a match in either left or right table. Rows without a match in one of the tables will have NULL values for columns from that table.</li>
+<li><strong>Cross Join</strong>: Returns the Cartesian product of the two tables, i.e., all possible combinations of rows.</li>
+</ol>
+</div><h2>Inner Join Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYS5pZCwgCiAgICBhLm5hbWUsIAogICAgYi5vcmRlcl9pZCwgCiAgICBiLmFtb3VudApGUk9NIAogICAgY3VzdG9tZXJzIGEKSU5ORVIgSk9JTiAKICAgIG9yZGVycyBiCk9OIAogICAgYS5pZCA9IGIuY3VzdG9tZXJfaWQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    a.id, 
+    a.name, 
+    b.order_id, 
+    b.amount
+FROM 
+    customers a
+INNER JOIN 
+    orders b
+ON 
+    a.id = b.customer_id;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>customers</code> and <code>orders</code> are the two tables.</li>
+<li>The <code>INNER JOIN</code> keyword is used to combine rows from both tables.</li>
+<li>The <code>ON</code> clause specifies the condition for the join, which is <code>a.id = b.customer_id</code>.</li>
+</ul>
+</div><h2>Left Join Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYS5pZCwgCiAgICBhLm5hbWUsIAogICAgYi5vcmRlcl9pZCwgCiAgICBiLmFtb3VudApGUk9NIAogICAgY3VzdG9tZXJzIGEKTEVGVCBKT0lOIAogICAgb3JkZXJzIGIKT04gCiAgICBhLmlkID0gYi5jdXN0b21lcl9pZDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    a.id, 
+    a.name, 
+    b.order_id, 
+    b.amount
+FROM 
+    customers a
+LEFT JOIN 
+    orders b
+ON 
+    a.id = b.customer_id;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query returns all customers, including those who have not placed any orders. For customers without orders, the <code>order_id</code> and <code>amount</code> columns will contain NULL values.</li>
+</ul>
+</div><h2>Right Join Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYS5pZCwgCiAgICBhLm5hbWUsIAogICAgYi5vcmRlcl9pZCwgCiAgICBiLmFtb3VudApGUk9NIAogICAgY3VzdG9tZXJzIGEKUklHSFQgSk9JTiAKICAgIG9yZGVycyBiCk9OIAogICAgYS5pZCA9IGIuY3VzdG9tZXJfaWQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    a.id, 
+    a.name, 
+    b.order_id, 
+    b.amount
+FROM 
+    customers a
+RIGHT JOIN 
+    orders b
+ON 
+    a.id = b.customer_id;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query returns all orders, including those that do not have a corresponding customer. For such orders, the <code>id</code> and <code>name</code> columns will contain NULL values.</li>
+</ul>
+</div><h2>Full Join Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYS5pZCwgCiAgICBhLm5hbWUsIAogICAgYi5vcmRlcl9pZCwgCiAgICBiLmFtb3VudApGUk9NIAogICAgY3VzdG9tZXJzIGEKRlVMTCBKT0lOIAogICAgb3JkZXJzIGIKT04gCiAgICBhLmlkID0gYi5jdXN0b21lcl9pZDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    a.id, 
+    a.name, 
+    b.order_id, 
+    b.amount
+FROM 
+    customers a
+FULL JOIN 
+    orders b
+ON 
+    a.id = b.customer_id;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query returns all customers and all orders. Rows without a match in one of the tables will have NULL values for columns from that table.</li>
+</ul>
+</div><h2>Cross Join Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYS5pZCwgCiAgICBhLm5hbWUsIAogICAgYi5vcmRlcl9pZCwgCiAgICBiLmFtb3VudApGUk9NIAogICAgY3VzdG9tZXJzIGEKQ1JPU1MgSk9JTiAKICAgIG9yZGVycyBiOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    a.id, 
+    a.name, 
+    b.order_id, 
+    b.amount
+FROM 
+    customers a
+CROSS JOIN 
+    orders b;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query returns the Cartesian product of the <code>customers</code> and <code>orders</code> tables, i.e., every possible combination of rows from both tables.</li>
+</ul>
+</div><h1>What are Unions?</h1>
+<div class='content'><p>Unions are used to combine the results of two or more SELECT queries into a single result set. The queries must have the same number of columns in the result sets with similar data types.</p>
+</div><h2>Union Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgaWQsIAogICAgbmFtZSAKRlJPTSAKICAgIGN1c3RvbWVycwpVTklPTgpTRUxFQ1QgCiAgICBpZCwgCiAgICBuYW1lIApGUk9NIAogICAgc3VwcGxpZXJzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    id, 
+    name 
+FROM 
+    customers
+UNION
+SELECT 
+    id, 
+    name 
+FROM 
+    suppliers;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query combines the results from the <code>customers</code> and <code>suppliers</code> tables.</li>
+<li>The <code>UNION</code> operator removes duplicate rows from the result set.</li>
+</ul>
+</div><h2>Union All Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgaWQsIAogICAgbmFtZSAKRlJPTSAKICAgIGN1c3RvbWVycwpVTklPTiBBTEwKU0VMRUNUIAogICAgaWQsIAogICAgbmFtZSAKRlJPTSAKICAgIHN1cHBsaWVyczs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    id, 
+    name 
+FROM 
+    customers
+UNION ALL
+SELECT 
+    id, 
+    name 
+FROM 
+    suppliers;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query combines the results from the <code>customers</code> and <code>suppliers</code> tables.</li>
+<li>The <code>UNION ALL</code> operator includes all rows, including duplicates.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Inner Join</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to find all orders along with the customer names who placed them.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYy5uYW1lLCAKICAgIG8ub3JkZXJfaWQsIAogICAgby5hbW91bnQKRlJPTSAKICAgIGN1c3RvbWVycyBjCklOTkVSIEpPSU4gCiAgICBvcmRlcnMgbwpPTiAKICAgIGMuaWQgPSBvLmN1c3RvbWVyX2lkOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    c.name, 
+    o.order_id, 
+    o.amount
+FROM 
+    customers c
+INNER JOIN 
+    orders o
+ON 
+    c.id = o.customer_id;</pre></div><div class='content'></div><h2>Exercise 2: Left Join</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to list all customers and their orders, including customers who have not placed any orders.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgYy5uYW1lLCAKICAgIG8ub3JkZXJfaWQsIAogICAgby5hbW91bnQKRlJPTSAKICAgIGN1c3RvbWVycyBjCkxFRlQgSk9JTiAKICAgIG9yZGVycyBvCk9OIAogICAgYy5pZCA9IG8uY3VzdG9tZXJfaWQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    c.name, 
+    o.order_id, 
+    o.amount
+FROM 
+    customers c
+LEFT JOIN 
+    orders o
+ON 
+    c.id = o.customer_id;</pre></div><div class='content'></div><h2>Exercise 3: Union</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to combine the names of all customers and suppliers into a single list.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgbmFtZSAKRlJPTSAKICAgIGN1c3RvbWVycwpVTklPTgpTRUxFQ1QgCiAgICBuYW1lIApGUk9NIAogICAgc3VwcGxpZXJzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    name 
+FROM 
+    customers
+UNION
+SELECT 
+    name 
+FROM 
+    suppliers;</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mismatched Columns in Unions</strong>: Ensure that the number of columns and their data types match in all SELECT statements used in a UNION.</li>
+<li><strong>NULL Handling in Joins</strong>: Be aware of how NULL values are handled in different types of joins, especially in LEFT and RIGHT joins.</li>
+<li><strong>Cartesian Product in Cross Joins</strong>: Use CROSS JOIN with caution as it can produce a very large result set.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Joins and Unions in SQL, which are essential for combining data from multiple tables. We explored different types of joins and how to use the UNION operator to merge result sets. Understanding these concepts is crucial for effective data analysis and manipulation in BigQuery. In the next section, we will delve into Subqueries, which allow for more complex and nested queries.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-aggregating-data' title="Aggregating Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subqueries">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

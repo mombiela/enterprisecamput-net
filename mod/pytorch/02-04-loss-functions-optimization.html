@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loss Functions and Optimization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/02-04-loss-functions-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/02-04-loss-functions-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/02-04-loss-functions-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/pytorch/02-04-loss-functions-optimization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/02-04-loss-functions-optimization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-activation-functions' title="Activation Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Loss Functions and Optimization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-data-loading-preprocessing' title="Data Loading and Preprocessing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the core concepts of loss functions and optimization techniques in PyTorch. These are fundamental components in training neural networks, as they guide the model to learn from data and improve its performance.</p>
+</div><h1>1. Understanding Loss Functions</h1>
+<div class='content'><p>Loss functions, also known as cost functions or objective functions, measure how well a neural network's predictions match the actual data. The goal of training a neural network is to minimize this loss.</p>
+</div><h2>Common Loss Functions</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Mean Squared Error (MSE) Loss</strong>:</p>
+<ul>
+<li>Used for regression tasks.</li>
+<li>Measures the average squared difference between predicted and actual values.</li>
+</ul>
+<pre><code class="language-python">import torch
+import torch.nn as nn
+
+# Example of MSE Loss
+loss_fn = nn.MSELoss()
+predictions = torch.tensor([2.5, 0.0, 2.1, 7.8])
+targets = torch.tensor([3.0, -0.5, 2.0, 7.0])
+loss = loss_fn(predictions, targets)
+print(f'MSE Loss: {loss.item()}')
+</code></pre>
+</li>
+<li>
+<p><strong>Cross-Entropy Loss</strong>:</p>
+<ul>
+<li>Used for classification tasks.</li>
+<li>Combines <code>LogSoftmax</code> and <code>NLLLoss</code> in one single class.</li>
+</ul>
+<pre><code class="language-python"># Example of Cross-Entropy Loss
+loss_fn = nn.CrossEntropyLoss()
+predictions = torch.tensor([[0.2, 0.8], [0.6, 0.4], [0.1, 0.9]])
+targets = torch.tensor([1, 0, 1])
+loss = loss_fn(predictions, targets)
+print(f'Cross-Entropy Loss: {loss.item()}')
+</code></pre>
+</li>
+<li>
+<p><strong>Binary Cross-Entropy Loss</strong>:</p>
+<ul>
+<li>Used for binary classification tasks.</li>
+</ul>
+<pre><code class="language-python"># Example of Binary Cross-Entropy Loss
+loss_fn = nn.BCELoss()
+predictions = torch.tensor([0.8, 0.4, 0.9])
+targets = torch.tensor([1.0, 0.0, 1.0])
+loss = loss_fn(predictions, targets)
+print(f'Binary Cross-Entropy Loss: {loss.item()}')
+</code></pre>
+</li>
+</ol>
+</div><h1>2. Optimization Techniques</h1>
+<div class='content'><p>Optimization algorithms adjust the weights of the neural network to minimize the loss function. PyTorch provides several optimization algorithms in the <code>torch.optim</code> module.</p>
+</div><h2>Common Optimization Algorithms</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Stochastic Gradient Descent (SGD)</strong>:</p>
+<ul>
+<li>Updates the weights using the gradient of the loss function.</li>
+</ul>
+<pre><code class="language-python">import torch.optim as optim
+
+# Example of SGD Optimizer
+model = nn.Linear(10, 2)  # A simple linear model
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+</code></pre>
+</li>
+<li>
+<p><strong>Adam (Adaptive Moment Estimation)</strong>:</p>
+<ul>
+<li>Combines the advantages of two other extensions of stochastic gradient descent.</li>
+</ul>
+<pre><code class="language-python"># Example of Adam Optimizer
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+</code></pre>
+</li>
+<li>
+<p><strong>RMSprop</strong>:</p>
+<ul>
+<li>Designed to work well on non-stationary problems.</li>
+</ul>
+<pre><code class="language-python"># Example of RMSprop Optimizer
+optimizer = optim.RMSprop(model.parameters(), lr=0.01)
+</code></pre>
+</li>
+</ol>
+</div><h2>Practical Example: Training a Simple Neural Network</h2>
+<div class='content'><p>Let's put these concepts into practice by training a simple neural network on a dummy dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRHVtbXkgZGF0YXNldApYID0gdG9yY2gucmFuZG4oMTAwLCAxMCkKeSA9IHRvcmNoLnJhbmRpbnQoMCwgMiwgKDEwMCwpKQoKIyBTaW1wbGUgbmV1cmFsIG5ldHdvcmsKY2xhc3MgU2ltcGxlTk4obm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzdXBlcihTaW1wbGVOTiwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMxID0gbm4uTGluZWFyKDEwLCA1MCkKICAgICAgICBzZWxmLmZjMiA9IG5uLkxpbmVhcig1MCwgMikKCiAgICBkZWYgZm9yd2FyZChzZWxmLCB4KToKICAgICAgICB4ID0gdG9yY2gucmVsdShzZWxmLmZjMSh4KSkKICAgICAgICB4ID0gc2VsZi5mYzIoeCkKICAgICAgICByZXR1cm4geAoKbW9kZWwgPSBTaW1wbGVOTigpCmxvc3NfZm4gPSBubi5Dcm9zc0VudHJvcHlMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uQWRhbShtb2RlbC5wYXJhbWV0ZXJzKCksIGxyPTAuMDAxKQoKIyBUcmFpbmluZyBsb29wCm51bV9lcG9jaHMgPSAyMApmb3IgZXBvY2ggaW4gcmFuZ2UobnVtX2Vwb2Nocyk6CiAgICBtb2RlbC50cmFpbigpCiAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dHMgPSBtb2RlbChYKQogICAgbG9zcyA9IGxvc3NfZm4ob3V0cHV0cywgeSkKICAgIGxvc3MuYmFja3dhcmQoKQogICAgb3B0aW1pemVyLnN0ZXAoKQogICAgcHJpbnQoZidFcG9jaCBbe2Vwb2NoKzF9L3tudW1fZXBvY2hzfV0sIExvc3M6IHtsb3NzLml0ZW0oKTouNGZ9Jyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Dummy dataset
+X = torch.randn(100, 10)
+y = torch.randint(0, 2, (100,))
+
+# Simple neural network
+class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(10, 50)
+        self.fc2 = nn.Linear(50, 2)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.fc2(x)
+        return x
+
+model = SimpleNN()
+loss_fn = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+# Training loop
+num_epochs = 20
+for epoch in range(num_epochs):
+    model.train()
+    optimizer.zero_grad()
+    outputs = model(X)
+    loss = loss_fn(outputs, y)
+    loss.backward()
+    optimizer.step()
+    print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')</pre></div><div class='content'></div><h1>3. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implementing MSE Loss</h2>
+<div class='content'><p><strong>Task</strong>: Create a simple linear regression model and train it using MSE loss.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRHVtbXkgZGF0YXNldApYID0gdG9yY2gucmFuZG4oMTAwLCAxKQp5ID0gMyAqIFggKyAyICsgdG9yY2gucmFuZG4oMTAwLCAxKSAqIDAuMQoKIyBMaW5lYXIgcmVncmVzc2lvbiBtb2RlbApjbGFzcyBMaW5lYXJSZWdyZXNzaW9uKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoTGluZWFyUmVncmVzc2lvbiwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYubGluZWFyID0gbm4uTGluZWFyKDEsIDEpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgcmV0dXJuIHNlbGYubGluZWFyKHgpCgptb2RlbCA9IExpbmVhclJlZ3Jlc3Npb24oKQpsb3NzX2ZuID0gbm4uTVNFTG9zcygpCm9wdGltaXplciA9IG9wdGltLlNHRChtb2RlbC5wYXJhbWV0ZXJzKCksIGxyPTAuMDEpCgojIFRyYWluaW5nIGxvb3AKbnVtX2Vwb2NocyA9IDEwMApmb3IgZXBvY2ggaW4gcmFuZ2UobnVtX2Vwb2Nocyk6CiAgICBtb2RlbC50cmFpbigpCiAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dHMgPSBtb2RlbChYKQogICAgbG9zcyA9IGxvc3NfZm4ob3V0cHV0cywgeSkKICAgIGxvc3MuYmFja3dhcmQoKQogICAgb3B0aW1pemVyLnN0ZXAoKQogICAgaWYgKGVwb2NoKzEpICUgMTAgPT0gMDoKICAgICAgICBwcmludChmJ0Vwb2NoIFt7ZXBvY2grMX0ve251bV9lcG9jaHN9XSwgTG9zczoge2xvc3MuaXRlbSgpOi40Zn0nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Dummy dataset
+X = torch.randn(100, 1)
+y = 3 * X + 2 + torch.randn(100, 1) * 0.1
+
+# Linear regression model
+class LinearRegression(nn.Module):
+    def __init__(self):
+        super(LinearRegression, self).__init__()
+        self.linear = nn.Linear(1, 1)
+
+    def forward(self, x):
+        return self.linear(x)
+
+model = LinearRegression()
+loss_fn = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Training loop
+num_epochs = 100
+for epoch in range(num_epochs):
+    model.train()
+    optimizer.zero_grad()
+    outputs = model(X)
+    loss = loss_fn(outputs, y)
+    loss.backward()
+    optimizer.step()
+    if (epoch+1) % 10 == 0:
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><p>The provided code snippet is the solution to the exercise. It demonstrates how to create a linear regression model, define the MSE loss function, and use the SGD optimizer to train the model.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essential concepts of loss functions and optimization techniques in PyTorch. We explored common loss functions like MSE and Cross-Entropy, and optimization algorithms like SGD and Adam. We also provided practical examples and exercises to reinforce the learned concepts. Understanding these fundamentals is crucial for training effective neural networks and will serve as a foundation for more advanced topics in the subsequent modules.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-activation-functions' title="Activation Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-data-loading-preprocessing' title="Data Loading and Preprocessing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

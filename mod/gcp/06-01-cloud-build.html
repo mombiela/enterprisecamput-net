@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Build</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/gcp/06-01-cloud-build" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/gcp/06-01-cloud-build" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/gcp/06-01-cloud-build" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/gcp/06-01-cloud-build" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/gcp/06-01-cloud-build" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-05-vision-api' title="Vision API">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Cloud Build</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-cloud-source-repositories' title="Cloud Source Repositories">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Cloud Build is a continuous integration and continuous delivery (CI/CD) service provided by Google Cloud Platform. It allows you to build, test, and deploy applications quickly and at scale. Cloud Build can import source code from various repositories, execute build scripts, and produce artifacts that can be deployed to various environments.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Build Steps</strong>: Individual tasks that are executed during the build process. Each step runs in its own container.</li>
+<li><strong>Build Triggers</strong>: Automated triggers that start a build when certain conditions are met, such as a code commit.</li>
+<li><strong>Build Configurations</strong>: YAML or JSON files that define the steps and settings for a build.</li>
+<li><strong>Artifacts</strong>: The output of a build process, such as compiled binaries, Docker images, or other deployable units.</li>
+</ol>
+</div><h1>Setting Up Cloud Build</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ol>
+<li><strong>GCP Account</strong>: Ensure you have a Google Cloud Platform account.</li>
+<li><strong>GCP Project</strong>: Create or select a GCP project.</li>
+<li><strong>Enable Cloud Build API</strong>: Enable the Cloud Build API for your project.</li>
+</ol>
+</div><h2>Enabling Cloud Build API</h2>
+<div class='content'><ol>
+<li>Go to the <a href="https://console.cloud.google.com/apis/library/cloudbuild.googleapis.com">Cloud Build API page</a>.</li>
+<li>Click &quot;Enable&quot; to activate the API for your project.</li>
+</ol>
+</div><h2>Granting Permissions</h2>
+<div class='content'><p>Ensure that the Cloud Build service account has the necessary permissions to access your source code and other resources.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIHByb2plY3RzIGFkZC1pYW0tcG9saWN5LWJpbmRpbmcgW1BST0pFQ1RfSURdIFwKICAgIC0tbWVtYmVyPXNlcnZpY2VBY2NvdW50OltQUk9KRUNUX05VTUJFUl1AY2xvdWRidWlsZC5nc2VydmljZWFjY291bnQuY29tIFwKICAgIC0tcm9sZT1yb2xlcy9vd25lcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud projects add-iam-policy-binding [PROJECT_ID] \
+    --member=serviceAccount:[PROJECT_NUMBER]@cloudbuild.gserviceaccount.com \
+    --role=roles/owner</pre></div><div class='content'><p>Replace <code>[PROJECT_ID]</code> and <code>[PROJECT_NUMBER]</code> with your project's ID and number.</p>
+</div><h1>Creating a Build Configuration</h1>
+<div class='content'><p>A build configuration file defines the steps and settings for your build. This file can be written in YAML or JSON. Below is an example of a simple <code>cloudbuild.yaml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RlcHM6Ci0gbmFtZTogJ2djci5pby9jbG91ZC1idWlsZGVycy9kb2NrZXInCiAgYXJnczogWydidWlsZCcsICctdCcsICdnY3IuaW8vJFBST0pFQ1RfSUQvbXktYXBwJywgJy4nXQppbWFnZXM6Ci0gJ2djci5pby8kUFJPSkVDVF9JRC9teS1hcHAn"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-app', '.']
+images:
+- 'gcr.io/$PROJECT_ID/my-app'</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>steps</strong>: Defines the build steps. Each step specifies a Docker image and the arguments to pass to it.
+<ul>
+<li><code>name</code>: The Docker image to use for this step.</li>
+<li><code>args</code>: The arguments to pass to the Docker image.</li>
+</ul>
+</li>
+<li><strong>images</strong>: Specifies the images to be pushed to the Container Registry after the build.</li>
+</ul>
+</div><h1>Running a Build</h1>
+<div class='content'><p>You can trigger a build manually using the <code>gcloud</code> command-line tool:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGJ1aWxkcyBzdWJtaXQgLS1jb25maWcgY2xvdWRidWlsZC55YW1sIC4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud builds submit --config cloudbuild.yaml .</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>submit</code>: Submits the build to Cloud Build.</li>
+<li><code>--config</code>: Specifies the build configuration file.</li>
+<li><code>.</code>: Indicates the current directory as the source code location.</li>
+</ul>
+</div><h1>Using Build Triggers</h1>
+<div class='content'><p>Build triggers allow you to automate builds based on events such as code commits. To create a build trigger:</p>
+<ol>
+<li>Go to the <a href="https://console.cloud.google.com/cloud-build/triggers">Cloud Build Triggers page</a>.</li>
+<li>Click &quot;Create Trigger&quot;.</li>
+<li>Configure the trigger settings, such as the source repository, branch, and build configuration file.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple Node.js application and set up a Cloud Build configuration to build and push a Docker image.</p>
+</div><h2>Step 1: Create a Node.js Application</h2>
+<div class='content'><p>Create a new directory and initialize a Node.js project:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgbXktbm9kZS1hcHAKY2QgbXktbm9kZS1hcHAKbnBtIGluaXQgLXk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir my-node-app
+cd my-node-app
+npm init -y</pre></div><div class='content'><p>Create a simple <code>index.js</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaHR0cCA9IHJlcXVpcmUoJ2h0dHAnKTsKCmNvbnN0IGhvc3RuYW1lID0gJzEyNy4wLjAuMSc7CmNvbnN0IHBvcnQgPSAzMDAwOwoKY29uc3Qgc2VydmVyID0gaHR0cC5jcmVhdGVTZXJ2ZXIoKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnN0YXR1c0NvZGUgPSAyMDA7CiAgcmVzLnNldEhlYWRlcignQ29udGVudC1UeXBlJywgJ3RleHQvcGxhaW4nKTsKICByZXMuZW5kKCdIZWxsbyBXb3JsZFxuJyk7Cn0pOwoKc2VydmVyLmxpc3Rlbihwb3J0LCBob3N0bmFtZSwgKCkgPT4gewogIGNvbnNvbGUubG9nKGBTZXJ2ZXIgcnVubmluZyBhdCBodHRwOi8vJHtob3N0bmFtZX06JHtwb3J0fS9gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const http = require('http');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) =&gt; {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello World\n');
+});
+
+server.listen(port, hostname, () =&gt; {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});</pre></div><div class='content'></div><h2>Step 2: Create a Dockerfile</h2>
+<div class='content'><p>Create a <code>Dockerfile</code> to containerize the application:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RlJPTSBub2RlOjE0CgpXT1JLRElSIC91c3Ivc3JjL2FwcAoKQ09QWSBwYWNrYWdlKi5qc29uIC4vClJVTiBucG0gaW5zdGFsbAoKQ09QWSAuIC4KCkVYUE9TRSAzMDAwCkNNRCBbICJub2RlIiwgImluZGV4LmpzIiBd"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>FROM node:14
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 3000
+CMD [ &quot;node&quot;, &quot;index.js&quot; ]</pre></div><div class='content'></div><h2>Step 3: Create a Build Configuration</h2>
+<div class='content'><p>Create a <code>cloudbuild.yaml</code> file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RlcHM6Ci0gbmFtZTogJ2djci5pby9jbG91ZC1idWlsZGVycy9kb2NrZXInCiAgYXJnczogWydidWlsZCcsICctdCcsICdnY3IuaW8vJFBST0pFQ1RfSUQvbXktbm9kZS1hcHAnLCAnLiddCmltYWdlczoKLSAnZ2NyLmlvLyRQUk9KRUNUX0lEL215LW5vZGUtYXBwJw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/my-node-app', '.']
+images:
+- 'gcr.io/$PROJECT_ID/my-node-app'</pre></div><div class='content'></div><h2>Step 4: Submit the Build</h2>
+<div class='content'><p>Run the following command to submit the build:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGJ1aWxkcyBzdWJtaXQgLS1jb25maWcgY2xvdWRidWlsZC55YW1sIC4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud builds submit --config cloudbuild.yaml .</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Build Configuration</h2>
+<div class='content'><p>Create a <code>cloudbuild.yaml</code> file for a simple Python application that prints &quot;Hello, World!&quot;.</p>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>Create a <code>main.py</code> file:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJpbnQoIkhlbGxvLCBXb3JsZCEiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>print(&quot;Hello, World!&quot;)</pre></div><div class='content'><ol start="2">
+<li>Create a <code>Dockerfile</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RlJPTSBweXRob246My44LXNsaW0KCldPUktESVIgL2FwcAoKQ09QWSAuIC4KCkNNRCBbInB5dGhvbiIsICJtYWluLnB5Il0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY . .
+
+CMD [&quot;python&quot;, &quot;main.py&quot;]</pre></div><div class='content'><ol start="3">
+<li>Create a <code>cloudbuild.yaml</code> file:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RlcHM6Ci0gbmFtZTogJ2djci5pby9jbG91ZC1idWlsZGVycy9kb2NrZXInCiAgYXJnczogWydidWlsZCcsICctdCcsICdnY3IuaW8vJFBST0pFQ1RfSUQvaGVsbG8td29ybGQnLCAnLiddCmltYWdlczoKLSAnZ2NyLmlvLyRQUk9KRUNUX0lEL2hlbGxvLXdvcmxkJw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/hello-world', '.']
+images:
+- 'gcr.io/$PROJECT_ID/hello-world'</pre></div><div class='content'><ol start="4">
+<li>Submit the build:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGJ1aWxkcyBzdWJtaXQgLS1jb25maWcgY2xvdWRidWlsZC55YW1sIC4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud builds submit --config cloudbuild.yaml .</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned about Cloud Build, its key concepts, and how to set up and run builds. You also created a practical example to build and push a Docker image for a Node.js application. In the next module, we will explore Cloud Source Repositories and how to integrate them with Cloud Build for a seamless CI/CD pipeline.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-05-vision-api' title="Vision API">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-cloud-source-repositories' title="Cloud Source Repositories">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

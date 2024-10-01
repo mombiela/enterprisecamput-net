@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deploying to Heroku</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/08-02-deploying-heroku" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/08-02-deploying-heroku" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/08-02-deploying-heroku" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/flask/08-02-deploying-heroku" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/08-02-deploying-heroku" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-configuring-production' title="Configuring Flask for Production">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deploying to Heroku</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-deploying-aws' title="Deploying to AWS">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Deploying a Flask application to Heroku is a straightforward process that allows you to host your web application on a cloud platform. Heroku provides a platform-as-a-service (PaaS) that supports several programming languages, including Python. This guide will walk you through the steps to deploy your Flask application to Heroku.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before you begin, ensure you have the following:</p>
+<ul>
+<li>A Heroku account (sign up at <a href="https://www.heroku.com/">Heroku</a>)</li>
+<li>Git installed on your local machine</li>
+<li>The Heroku CLI installed (download from <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI</a>)</li>
+</ul>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Prepare Your Flask Application</h2>
+<div class='content'><p>Ensure your Flask application is ready for deployment. Your project structure should look something like this:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlfZmxhc2tfYXBwLwrilIIK4pSc4pSA4pSAIGFwcC8K4pSCICAg4pSc4pSA4pSAIF9faW5pdF9fLnB5CuKUgiAgIOKUnOKUgOKUgCByb3V0ZXMucHkK4pSCICAg4pSU4pSA4pSAIHRlbXBsYXRlcy8K4pSCICAgICAgIOKUlOKUgOKUgCBpbmRleC5odG1sCuKUggrilJzilIDilIAgdmVudi8K4pSCCuKUnOKUgOKUgCByZXF1aXJlbWVudHMudHh0CuKUnOKUgOKUgCBQcm9jZmlsZQrilJzilIDilIAgcnVudGltZS50eHQK4pSc4pSA4pSAIGNvbmZpZy5weQrilJTilIDilIAgd3NnaS5weQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>my_flask_app/
+│
+├── app/
+│   ├── __init__.py
+│   ├── routes.py
+│   └── templates/
+│       └── index.html
+│
+├── venv/
+│
+├── requirements.txt
+├── Procfile
+├── runtime.txt
+├── config.py
+└── wsgi.py</pre></div><div class='content'></div><h2>2. Create a `requirements.txt` File</h2>
+<div class='content'><p>The <code>requirements.txt</code> file lists all the dependencies your application needs. You can generate this file using pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGZyZWV6ZSA+IHJlcXVpcmVtZW50cy50eHQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip freeze &gt; requirements.txt</pre></div><div class='content'></div><h2>3. Create a `Procfile`</h2>
+<div class='content'><p>The <code>Procfile</code> tells Heroku how to run your application. Create a file named <code>Procfile</code> in the root directory of your project with the following content:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBndW5pY29ybiB3c2dpOmFwcA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: gunicorn wsgi:app</pre></div><div class='content'></div><h2>4. Create a `runtime.txt` File</h2>
+<div class='content'><p>Specify the Python version your application uses by creating a <code>runtime.txt</code> file in the root directory:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uLTMuOS42"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python-3.9.6</pre></div><div class='content'></div><h2>5. Create a `wsgi.py` File</h2>
+<div class='content'><p>The <code>wsgi.py</code> file is the entry point for your application. Create this file in the root directory with the following content:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBhcHAgaW1wb3J0IGNyZWF0ZV9hcHAKCmFwcCA9IGNyZWF0ZV9hcHAoKQoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIGFwcC5ydW4oKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from app import create_app
+
+app = create_app()
+
+if __name__ == &quot;__main__&quot;:
+    app.run()</pre></div><div class='content'></div><h2>6. Initialize a Git Repository</h2>
+<div class='content'><p>If you haven't already, initialize a Git repository in your project directory:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGluaXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git init</pre></div><div class='content'></div><h2>7. Commit Your Code</h2>
+<div class='content'><p>Add all your files to the Git repository and commit them:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkluaXRpYWwgY29tbWl0Ig=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git add .
+git commit -m &quot;Initial commit&quot;</pre></div><div class='content'></div><h2>8. Create a Heroku App</h2>
+<div class='content'><p>Log in to Heroku using the Heroku CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ2lu"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku login</pre></div><div class='content'><p>Create a new Heroku app:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNyZWF0ZSBteS1mbGFzay1hcHA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku create my-flask-app</pre></div><div class='content'><p>Replace <code>my-flask-app</code> with a unique name for your application.</p>
+</div><h2>9. Deploy Your Application</h2>
+<div class='content'><p>Push your code to Heroku:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IHB1c2ggaGVyb2t1IG1hc3Rlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git push heroku master</pre></div><div class='content'></div><h2>10. Open Your Application</h2>
+<div class='content'><p>Once the deployment is complete, you can open your application in a web browser:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IG9wZW4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku open</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's go through a practical example of deploying a simple Flask application to Heroku.</p>
+</div><h2>Example Application</h2>
+<div class='content'><p>Create a simple Flask application with the following structure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2ltcGxlX2ZsYXNrX2FwcC8K4pSCCuKUnOKUgOKUgCBhcHAvCuKUgiAgIOKUnOKUgOKUgCBfX2luaXRfXy5weQrilIIgICDilJTilIDilIAgcm91dGVzLnB5CuKUggrilJzilIDilIAgcmVxdWlyZW1lbnRzLnR4dArilJzilIDilIAgUHJvY2ZpbGUK4pSc4pSA4pSAIHJ1bnRpbWUudHh0CuKUlOKUgOKUgCB3c2dpLnB5"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>simple_flask_app/
+│
+├── app/
+│   ├── __init__.py
+│   └── routes.py
+│
+├── requirements.txt
+├── Procfile
+├── runtime.txt
+└── wsgi.py</pre></div><div class='content'><h4><code>app/__init__.py</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKCmRlZiBjcmVhdGVfYXBwKCk6CiAgICBhcHAgPSBGbGFzayhfX25hbWVfXykKICAgIGZyb20gLiBpbXBvcnQgcm91dGVzCiAgICBhcHAucmVnaXN0ZXJfYmx1ZXByaW50KHJvdXRlcy5icCkKICAgIHJldHVybiBhcHA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+
+def create_app():
+    app = Flask(__name__)
+    from . import routes
+    app.register_blueprint(routes.bp)
+    return app</pre></div><div class='content'><h4><code>app/routes.py</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgQmx1ZXByaW50LCByZW5kZXJfdGVtcGxhdGUKCmJwID0gQmx1ZXByaW50KCdtYWluJywgX19uYW1lX18pCgpAYnAucm91dGUoJy8nKQpkZWYgaW5kZXgoKToKICAgIHJldHVybiAiSGVsbG8sIEhlcm9rdSEi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Blueprint, render_template
+
+bp = Blueprint('main', __name__)
+
+@bp.route('/')
+def index():
+    return &quot;Hello, Heroku!&quot;</pre></div><div class='content'><h4><code>requirements.txt</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Rmxhc2s9PTIuMC4xCmd1bmljb3JuPT0yMC4xLjA="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Flask==2.0.1
+gunicorn==20.1.0</pre></div><div class='content'><h4><code>Procfile</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBndW5pY29ybiB3c2dpOmFwcA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: gunicorn wsgi:app</pre></div><div class='content'><h4><code>runtime.txt</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uLTMuOS42"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python-3.9.6</pre></div><div class='content'><h4><code>wsgi.py</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBhcHAgaW1wb3J0IGNyZWF0ZV9hcHAKCmFwcCA9IGNyZWF0ZV9hcHAoKQoKaWYgX19uYW1lX18gPT0gIl9fbWFpbl9fIjoKICAgIGFwcC5ydW4oKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from app import create_app
+
+app = create_app()
+
+if __name__ == &quot;__main__&quot;:
+    app.run()</pre></div><div class='content'></div><h2>Deploying the Example Application</h2>
+<div class='content'><ol>
+<li>
+<p>Initialize a Git repository:</p>
+<pre><code class="language-bash">git init
+</code></pre>
+</li>
+<li>
+<p>Add and commit your files:</p>
+<pre><code class="language-bash">git add .
+git commit -m &quot;Initial commit&quot;
+</code></pre>
+</li>
+<li>
+<p>Create a Heroku app:</p>
+<pre><code class="language-bash">heroku create simple-flask-app
+</code></pre>
+</li>
+<li>
+<p>Push your code to Heroku:</p>
+<pre><code class="language-bash">git push heroku master
+</code></pre>
+</li>
+<li>
+<p>Open your application:</p>
+<pre><code class="language-bash">heroku open
+</code></pre>
+</li>
+</ol>
+<p>You should see &quot;Hello, Heroku!&quot; displayed in your web browser.</p>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to deploy a Flask application to Heroku. You prepared your application, created necessary configuration files, initialized a Git repository, and deployed your application to Heroku. This process allows you to host your Flask applications on a reliable cloud platform, making them accessible to users worldwide. In the next section, we will explore deploying Flask applications to AWS.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-configuring-production' title="Configuring Flask for Production">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-deploying-aws' title="Deploying to AWS">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

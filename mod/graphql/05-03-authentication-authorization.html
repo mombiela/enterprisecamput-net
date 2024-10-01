@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication and Authorization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/05-03-authentication-authorization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/05-03-authentication-authorization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/05-03-authentication-authorization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/05-03-authentication-authorization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/05-03-authentication-authorization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-rate-limiting' title="Rate Limiting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Authentication and Authorization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-persisted-queries' title="Persisted Queries">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to implement authentication and authorization in a GraphQL server. These are critical aspects of any application to ensure that only authenticated users can access certain resources and that users have the appropriate permissions to perform specific actions.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Authentication</strong>: The process of verifying the identity of a user.</li>
+<li><strong>Authorization</strong>: The process of determining whether a user has permission to perform a specific action or access a specific resource.</li>
+</ol>
+</div><h1>Why Authentication and Authorization are Important</h1>
+<div class='content'><ul>
+<li><strong>Security</strong>: Protect sensitive data and resources from unauthorized access.</li>
+<li><strong>User Management</strong>: Ensure that users can only perform actions they are permitted to.</li>
+<li><strong>Compliance</strong>: Meet regulatory requirements for data protection and privacy.</li>
+</ul>
+</div><h1>Implementing Authentication</h1>
+<div class='content'></div><h2>Step 1: Setting Up User Authentication</h2>
+<div class='content'><p>We'll use JSON Web Tokens (JWT) for authentication. JWT is a compact, URL-safe means of representing claims to be transferred between two parties.</p>
+</div><h2>Example: User Authentication with JWT</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Dependencies</strong>:</p>
+<pre><code class="language-bash">npm install jsonwebtoken bcryptjs
+</code></pre>
+</li>
+<li>
+<p><strong>Create a User Model</strong>:</p>
+<pre><code class="language-javascript">const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+});
+
+userSchema.pre('save', async function (next) {
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
+  next();
+});
+
+const User = mongoose.model('User', userSchema);
+module.exports = User;
+</code></pre>
+</li>
+<li>
+<p><strong>Generate JWT Token</strong>:</p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+
+const generateToken = (user) =&gt; {
+  return jwt.sign({ id: user._id, username: user.username }, 'your_secret_key', { expiresIn: '1h' });
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Create Login Mutation</strong>:</p>
+<pre><code class="language-javascript">const { User } = require('./models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const resolvers = {
+  Mutation: {
+    login: async (_, { username, password }) =&gt; {
+      const user = await User.findOne({ username });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) {
+        throw new Error('Invalid password');
+      }
+
+      const token = jwt.sign({ id: user._id, username: user.username }, 'your_secret_key', { expiresIn: '1h' });
+      return { token };
+    },
+  },
+};
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Protecting Resolvers with Authentication</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Middleware for Authentication</strong>:</p>
+<pre><code class="language-javascript">const jwt = require('jsonwebtoken');
+
+const authenticate = (req) =&gt; {
+  const token = req.headers.authorization || '';
+  try {
+    const user = jwt.verify(token, 'your_secret_key');
+    return user;
+  } catch (e) {
+    throw new Error('Authentication required');
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Applying Middleware</strong>:</p>
+<pre><code class="language-javascript">const { ApolloServer } = require('apollo-server');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) =&gt; {
+    const user = authenticate(req);
+    return { user };
+  },
+});
+
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Implementing Authorization</h1>
+<div class='content'></div><h2>Step 1: Define User Roles</h2>
+<div class='content'><ol>
+<li><strong>Extend User Model</strong>:
+<pre><code class="language-javascript">const userSchema = new mongoose.Schema({
+  username: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Protecting Resolvers with Authorization</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Authorization Middleware</strong>:</p>
+<pre><code class="language-javascript">const authorize = (user, roles) =&gt; {
+  if (!roles.includes(user.role)) {
+    throw new Error('Not authorized');
+  }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Applying Authorization</strong>:</p>
+<pre><code class="language-javascript">const resolvers = {
+  Query: {
+    adminData: (_, __, { user }) =&gt; {
+      authorize(user, ['ADMIN']);
+      return &quot;Sensitive admin data&quot;;
+    },
+  },
+};
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Authentication and Authorization</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Task</strong>: Implement a GraphQL server with the following features:</p>
+<ul>
+<li>User registration and login with JWT.</li>
+<li>Protect a resolver so that only authenticated users can access it.</li>
+<li>Add roles to users and protect a resolver so that only users with the 'ADMIN' role can access it.</li>
+</ul>
+</li>
+<li>
+<p><strong>Solution</strong>:</p>
+<ul>
+<li>Follow the steps outlined above to set up user authentication and authorization.</li>
+<li>Create a new resolver that returns sensitive data and protect it using the <code>authorize</code> middleware.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Forgetting to hash passwords before saving them.
+<ul>
+<li><strong>Tip</strong>: Always use a pre-save hook to hash passwords.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Not handling token expiration.
+<ul>
+<li><strong>Tip</strong>: Ensure your client handles token expiration and refreshes tokens as needed.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Hardcoding secret keys.
+<ul>
+<li><strong>Tip</strong>: Use environment variables to store secret keys securely.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of implementing authentication and authorization in a GraphQL server. We learned how to use JWT for user authentication, protect resolvers with authentication middleware, and implement role-based authorization. These concepts are crucial for building secure and robust applications. In the next module, we will explore performance optimization techniques to ensure our GraphQL server runs efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-rate-limiting' title="Rate Limiting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-persisted-queries' title="Persisted Queries">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

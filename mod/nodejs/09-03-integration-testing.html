@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/09-03-integration-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/09-03-integration-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/09-03-integration-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/09-03-integration-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/09-03-integration-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-unit-testing-mocha-chai' title="Unit Testing with Mocha and Chai">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integration Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-debugging-nodejs' title="Debugging Node.js Applications">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Integration testing is a crucial phase in the software development lifecycle where individual units or components of a software application are combined and tested as a group. The primary goal is to identify any issues that arise when different modules interact with each other. In the context of Node.js, integration testing ensures that various parts of your application work together as expected.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Integration Testing vs. Unit Testing</strong>:</p>
+<ul>
+<li><strong>Unit Testing</strong>: Focuses on testing individual components in isolation.</li>
+<li><strong>Integration Testing</strong>: Focuses on testing the interaction between integrated components.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Environment</strong>:</p>
+<ul>
+<li>Setting up a test environment that closely mimics the production environment.</li>
+<li>Using test databases and mock services to simulate real-world scenarios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Test Tools</strong>:</p>
+<ul>
+<li><strong>Mocha</strong>: A feature-rich JavaScript test framework running on Node.js.</li>
+<li><strong>Chai</strong>: A BDD/TDD assertion library for Node.js.</li>
+<li><strong>Supertest</strong>: A library for testing HTTP endpoints.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Setting Up Integration Tests</h1>
+<div class='content'></div><h2>Step 1: Install Required Packages</h2>
+<div class='content'><p>First, ensure you have the necessary packages installed. You can install Mocha, Chai, and Supertest using npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiBtb2NoYSBjaGFpIHN1cGVydGVzdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev mocha chai supertest</pre></div><div class='content'></div><h2>Step 2: Create a Test Directory</h2>
+<div class='content'><p>Organize your tests by creating a <code>test</code> directory in your project root:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgdGVzdA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir test</pre></div><div class='content'></div><h2>Step 3: Write an Integration Test</h2>
+<div class='content'><p>Let's write an integration test for a simple Express.js application. Assume you have an Express server with a <code>/users</code> endpoint that returns a list of users.</p>
+<p><strong>app.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLmdldCgnL3VzZXJzJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLmpzb24oW3sgaWQ6IDEsIG5hbWU6ICdKb2huIERvZScgfSwgeyBpZDogMiwgbmFtZTogJ0phbmUgRG9lJyB9XSk7Cn0pOwoKbW9kdWxlLmV4cG9ydHMgPSBhcHA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+
+app.get('/users', (req, res) =&gt; {
+  res.json([{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }]);
+});
+
+module.exports = app;</pre></div><div class='content'><p><strong>test/integration/users.test.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmVxdWVzdCA9IHJlcXVpcmUoJ3N1cGVydGVzdCcpOwpjb25zdCBhcHAgPSByZXF1aXJlKCcuLi8uLi9hcHAnKTsKY29uc3QgY2hhaSA9IHJlcXVpcmUoJ2NoYWknKTsKY29uc3QgZXhwZWN0ID0gY2hhaS5leHBlY3Q7CgpkZXNjcmliZSgnR0VUIC91c2VycycsICgpID0+IHsKICBpdCgnc2hvdWxkIHJldHVybiBhIGxpc3Qgb2YgdXNlcnMnLCAoZG9uZSkgPT4gewogICAgcmVxdWVzdChhcHApCiAgICAgIC5nZXQoJy91c2VycycpCiAgICAgIC5lbmQoKGVyciwgcmVzKSA9PiB7CiAgICAgICAgaWYgKGVycikgcmV0dXJuIGRvbmUoZXJyKTsKICAgICAgICBleHBlY3QocmVzLnN0YXR1cykudG8uZXF1YWwoMjAwKTsKICAgICAgICBleHBlY3QocmVzLmJvZHkpLnRvLmJlLmFuKCdhcnJheScpOwogICAgICAgIGV4cGVjdChyZXMuYm9keS5sZW5ndGgpLnRvLmVxdWFsKDIpOwogICAgICAgIGV4cGVjdChyZXMuYm9keVswXSkudG8uaGF2ZS5wcm9wZXJ0eSgnbmFtZScsICdKb2huIERvZScpOwogICAgICAgIGRvbmUoKTsKICAgICAgfSk7CiAgfSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const request = require('supertest');
+const app = require('../../app');
+const chai = require('chai');
+const expect = chai.expect;
+
+describe('GET /users', () =&gt; {
+  it('should return a list of users', (done) =&gt; {
+    request(app)
+      .get('/users')
+      .end((err, res) =&gt; {
+        if (err) return done(err);
+        expect(res.status).to.equal(200);
+        expect(res.body).to.be.an('array');
+        expect(res.body.length).to.equal(2);
+        expect(res.body[0]).to.have.property('name', 'John Doe');
+        done();
+      });
+  });
+});</pre></div><div class='content'></div><h2>Step 4: Run the Tests</h2>
+<div class='content'><p>Add a test script to your <code>package.json</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("InNjcmlwdHMiOiB7CiAgInRlc3QiOiAibW9jaGEiCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&quot;scripts&quot;: {
+  &quot;test&quot;: &quot;mocha&quot;
+}</pre></div><div class='content'><p>Run the tests using npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIHRlc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm test</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Integration Test for a POST Endpoint</h2>
+<div class='content'><p><strong>Task</strong>: Write an integration test for a POST <code>/users</code> endpoint that adds a new user.</p>
+<p><strong>app.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwphcHAudXNlKGV4cHJlc3MuanNvbigpKTsKCmxldCB1c2VycyA9IFt7IGlkOiAxLCBuYW1lOiAnSm9obiBEb2UnIH0sIHsgaWQ6IDIsIG5hbWU6ICdKYW5lIERvZScgfV07CgphcHAucG9zdCgnL3VzZXJzJywgKHJlcSwgcmVzKSA9PiB7CiAgY29uc3QgbmV3VXNlciA9IHsgaWQ6IHVzZXJzLmxlbmd0aCArIDEsIG5hbWU6IHJlcS5ib2R5Lm5hbWUgfTsKICB1c2Vycy5wdXNoKG5ld1VzZXIpOwogIHJlcy5zdGF0dXMoMjAxKS5qc29uKG5ld1VzZXIpOwp9KTsKCm1vZHVsZS5leHBvcnRzID0gYXBwOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+app.use(express.json());
+
+let users = [{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Doe' }];
+
+app.post('/users', (req, res) =&gt; {
+  const newUser = { id: users.length + 1, name: req.body.name };
+  users.push(newUser);
+  res.status(201).json(newUser);
+});
+
+module.exports = app;</pre></div><div class='content'><p><strong>test/integration/users.test.js</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ1BPU1QgL3VzZXJzJywgKCkgPT4gewogIGl0KCdzaG91bGQgYWRkIGEgbmV3IHVzZXInLCAoZG9uZSkgPT4gewogICAgY29uc3QgbmV3VXNlciA9IHsgbmFtZTogJ0FsaWNlJyB9OwogICAgcmVxdWVzdChhcHApCiAgICAgIC5wb3N0KCcvdXNlcnMnKQogICAgICAuc2VuZChuZXdVc2VyKQogICAgICAuZW5kKChlcnIsIHJlcykgPT4gewogICAgICAgIGlmIChlcnIpIHJldHVybiBkb25lKGVycik7CiAgICAgICAgZXhwZWN0KHJlcy5zdGF0dXMpLnRvLmVxdWFsKDIwMSk7CiAgICAgICAgZXhwZWN0KHJlcy5ib2R5KS50by5oYXZlLnByb3BlcnR5KCduYW1lJywgJ0FsaWNlJyk7CiAgICAgICAgZG9uZSgpOwogICAgICB9KTsKICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('POST /users', () =&gt; {
+  it('should add a new user', (done) =&gt; {
+    const newUser = { name: 'Alice' };
+    request(app)
+      .post('/users')
+      .send(newUser)
+      .end((err, res) =&gt; {
+        if (err) return done(err);
+        expect(res.status).to.equal(201);
+        expect(res.body).to.have.property('name', 'Alice');
+        done();
+      });
+  });
+});</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><p>Run the tests to ensure they pass:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIHRlc3Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm test</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mocking External Services</strong>: When your application interacts with external services, use mocking libraries like <code>nock</code> to simulate these interactions.</li>
+<li><strong>Database State</strong>: Ensure your test database is in a known state before each test. Use libraries like <code>mongoose</code> for MongoDB or <code>sequelize</code> for SQL databases to manage test data.</li>
+<li><strong>Isolation</strong>: Each test should be independent. Avoid tests that depend on the outcome of other tests.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Integration testing is essential for ensuring that different parts of your Node.js application work together seamlessly. By using tools like Mocha, Chai, and Supertest, you can write effective integration tests that help catch issues early in the development process. Remember to keep your tests isolated and your test environment as close to production as possible.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-unit-testing-mocha-chai' title="Unit Testing with Mocha and Chai">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-debugging-nodejs' title="Debugging Node.js Applications">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

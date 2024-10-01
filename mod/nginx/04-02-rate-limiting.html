@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Limiting</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/04-02-rate-limiting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/04-02-rate-limiting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/04-02-rate-limiting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/04-02-rate-limiting" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/04-02-rate-limiting" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-basic-security-practices' title="Basic Security Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Rate Limiting</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-ssl-tls-configuration' title="SSL/TLS Configuration">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Rate limiting is a crucial feature in NGINX that helps control the rate of requests sent to your server. This can prevent abuse, ensure fair usage, and protect your server from being overwhelmed by too many requests in a short period. In this section, we will cover the basics of rate limiting, how to configure it, and provide practical examples and exercises.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Rate Limiting Zones</strong>: Define shared memory zones to store the state of rate limiting.</li>
+<li><strong>Limit Request Module</strong>: The module used to configure rate limiting in NGINX.</li>
+<li><strong>Burst</strong>: Allows a temporary surge of requests beyond the defined rate.</li>
+<li><strong>Delay</strong>: Introduces a delay for requests that exceed the rate limit but are within the burst limit.</li>
+</ol>
+</div><h1>Configuring Rate Limiting</h1>
+<div class='content'></div><h2>Step 1: Define a Rate Limiting Zone</h2>
+<div class='content'><p>First, you need to define a shared memory zone to store the state of rate limiting. This is done using the <code>limit_req_zone</code> directive.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsaW1pdF9yZXFfem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9b25lOjEwbSByYXRlPTFyL3M7CiAgICAuLi4KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+    ...
+}</pre></div><div class='content'><ul>
+<li><code>$binary_remote_addr</code>: The variable used to identify the client (IP address).</li>
+<li><code>zone=one:10m</code>: Defines a shared memory zone named &quot;one&quot; with 10MB of storage.</li>
+<li><code>rate=1r/s</code>: Limits the rate to 1 request per second.</li>
+</ul>
+</div><h2>Step 2: Apply Rate Limiting to a Location</h2>
+<div class='content'><p>Next, apply the rate limiting to a specific location using the <code>limit_req</code> directive.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxvY2F0aW9uIC8gewogICAgICAgIGxpbWl0X3JlcSB6b25lPW9uZSBidXJzdD01IG5vZGVsYXk7CiAgICAgICAgLi4uCiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    location / {
+        limit_req zone=one burst=5 nodelay;
+        ...
+    }
+}</pre></div><div class='content'><ul>
+<li><code>zone=one</code>: Refers to the previously defined rate limiting zone.</li>
+<li><code>burst=5</code>: Allows up to 5 requests to be queued beyond the rate limit.</li>
+<li><code>nodelay</code>: Ensures that requests exceeding the rate limit are immediately rejected.</li>
+</ul>
+</div><h2>Example Configuration</h2>
+<div class='content'><p>Here is a complete example of an NGINX configuration with rate limiting:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsaW1pdF9yZXFfem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9b25lOjEwbSByYXRlPTFyL3M7CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CiAgICAgICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBsaW1pdF9yZXEgem9uZT1vbmUgYnVyc3Q9NSBub2RlbGF5OwogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    limit_req_zone $binary_remote_addr zone=one:10m rate=1r/s;
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            limit_req zone=one burst=5 nodelay;
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>limit_req_zone</code> directive creates a shared memory zone named &quot;one&quot; with a rate limit of 1 request per second.</li>
+<li>The <code>limit_req</code> directive in the <code>location /</code> block applies this rate limit to all requests to the root URL, allowing a burst of up to 5 requests.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Rate Limiting</h2>
+<div class='content'><p><strong>Task</strong>: Configure NGINX to limit requests to 2 requests per second with a burst of 3 for the <code>/api</code> endpoint.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsaW1pdF9yZXFfem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9YXBpX3pvbmU6MTBtIHJhdGU9MnIvczsKCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gL2FwaSB7CiAgICAgICAgICAgIGxpbWl0X3JlcSB6b25lPWFwaV96b25lIGJ1cnN0PTMgbm9kZWxheTsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZF9hcGk7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    limit_req_zone $binary_remote_addr zone=api_zone:10m rate=2r/s;
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location /api {
+            limit_req zone=api_zone burst=3 nodelay;
+            proxy_pass http://backend_api;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Rate Limiting with Delay</h2>
+<div class='content'><p><strong>Task</strong>: Configure NGINX to limit requests to 1 request per second with a burst of 5 and introduce a delay for requests exceeding the rate limit.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsaW1pdF9yZXFfem9uZSAkYmluYXJ5X3JlbW90ZV9hZGRyIHpvbmU9ZGVsYXllZF96b25lOjEwbSByYXRlPTFyL3M7CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CiAgICAgICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBsaW1pdF9yZXEgem9uZT1kZWxheWVkX3pvbmUgYnVyc3Q9NTsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    limit_req_zone $binary_remote_addr zone=delayed_zone:10m rate=1r/s;
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            limit_req zone=delayed_zone burst=5;
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Mistake</strong>: Not defining a shared memory zone.</p>
+<ul>
+<li><strong>Tip</strong>: Always ensure you have a <code>limit_req_zone</code> directive in the <code>http</code> block.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake</strong>: Misconfiguring the rate limit.</p>
+<ul>
+<li><strong>Tip</strong>: Double-check the rate and burst values to ensure they meet your requirements.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mistake</strong>: Forgetting to apply the rate limit to a specific location.</p>
+<ul>
+<li><strong>Tip</strong>: Use the <code>limit_req</code> directive within the appropriate <code>location</code> block.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of rate limiting in NGINX, including how to define rate limiting zones and apply them to specific locations. We also provided practical examples and exercises to help you understand and implement rate limiting effectively. Rate limiting is a powerful tool to protect your server from abuse and ensure fair usage among clients. In the next section, we will explore SSL/TLS configuration to secure your NGINX server.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-basic-security-practices' title="Basic Security Practices">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-ssl-tls-configuration' title="SSL/TLS Configuration">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

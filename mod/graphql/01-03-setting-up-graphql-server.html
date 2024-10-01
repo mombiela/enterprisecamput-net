@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setting Up a GraphQL Server</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/01-03-setting-up-graphql-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/01-03-setting-up-graphql-server" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/01-03-setting-up-graphql-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/01-03-setting-up-graphql-server" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/01-03-setting-up-graphql-server" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-graphql-vs-rest' title="GraphQL vs REST">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Setting Up a GraphQL Server</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-graphql-schema-basics' title="GraphQL Schema Basics">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will walk through the steps to set up a basic GraphQL server. By the end of this lesson, you will have a working GraphQL server that you can query and extend as you learn more about GraphQL.</p>
+</div><h1>Prerequisites</h1>
+<div class='content'><p>Before we start, ensure you have the following installed:</p>
+<ul>
+<li>Node.js (v12 or higher)</li>
+<li>npm (Node Package Manager)</li>
+</ul>
+</div><h1>Step 1: Initialize a Node.js Project</h1>
+<div class='content'><p>First, create a new directory for your project and navigate into it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgZ3JhcGhxbC1zZXJ2ZXIKY2QgZ3JhcGhxbC1zZXJ2ZXI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir graphql-server
+cd graphql-server</pre></div><div class='content'><p>Initialize a new Node.js project:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluaXQgLXk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm init -y</pre></div><div class='content'><p>This command will create a <code>package.json</code> file with default settings.</p>
+</div><h1>Step 2: Install Required Packages</h1>
+<div class='content'><p>We need to install the following packages:</p>
+<ul>
+<li><code>express</code>: A web framework for Node.js.</li>
+<li><code>express-graphql</code>: A middleware to connect Express and GraphQL.</li>
+<li><code>graphql</code>: The core GraphQL library.</li>
+</ul>
+<p>Run the following command to install these packages:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgZXhwcmVzcyBleHByZXNzLWdyYXBocWwgZ3JhcGhxbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install express express-graphql graphql</pre></div><div class='content'></div><h1>Step 3: Create the Server</h1>
+<div class='content'><p>Create a new file named <code>server.js</code> in the root of your project directory. This file will contain the code to set up and run your GraphQL server.</p>
+</div><h2>Basic Server Setup</h2>
+<div class='content'><p>First, let's set up a basic Express server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKCmNvbnN0IGFwcCA9IGV4cHJlc3MoKTsKY29uc3QgcG9ydCA9IDQwMDA7CgovLyBEZWZpbmUgYSBzaW1wbGUgc2NoZW1hCmNvbnN0IHNjaGVtYSA9IGJ1aWxkU2NoZW1hKGAKICB0eXBlIFF1ZXJ5IHsKICAgIGhlbGxvOiBTdHJpbmcKICB9CmApOwoKLy8gRGVmaW5lIGEgcmVzb2x2ZXIgZm9yIHRoZSBzY2hlbWEKY29uc3Qgcm9vdCA9IHsKICBoZWxsbzogKCkgPT4gewogICAgcmV0dXJuICdIZWxsbywgd29ybGQhJzsKICB9LAp9OwoKLy8gU2V0IHVwIHRoZSBHcmFwaFFMIGVuZHBvaW50CmFwcC51c2UoJy9ncmFwaHFsJywgZ3JhcGhxbEhUVFAoewogIHNjaGVtYTogc2NoZW1hLAogIHJvb3RWYWx1ZTogcm9vdCwKICBncmFwaGlxbDogdHJ1ZSwgLy8gRW5hYmxlIEdyYXBoaVFMIGludGVyZmFjZQp9KSk7CgphcHAubGlzdGVuKHBvcnQsICgpID0+IHsKICBjb25zb2xlLmxvZyhgR3JhcGhRTCBzZXJ2ZXIgcnVubmluZyBhdCBodHRwOi8vbG9jYWxob3N0OiR7cG9ydH0vZ3JhcGhxbGApOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+const app = express();
+const port = 4000;
+
+// Define a simple schema
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Define a resolver for the schema
+const root = {
+  hello: () =&gt; {
+    return 'Hello, world!';
+  },
+};
+
+// Set up the GraphQL endpoint
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true, // Enable GraphiQL interface
+}));
+
+app.listen(port, () =&gt; {
+  console.log(`GraphQL server running at http://localhost:${port}/graphql`);
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Express Setup</strong>: We create an Express application and set it to listen on port 4000.</li>
+<li><strong>GraphQL Schema</strong>: We define a simple schema with a single query <code>hello</code> that returns a string.</li>
+<li><strong>Resolver</strong>: We define a resolver for the <code>hello</code> query that returns the string &quot;Hello, world!&quot;.</li>
+<li><strong>GraphQL Endpoint</strong>: We set up the <code>/graphql</code> endpoint using <code>express-graphql</code> middleware and enable the GraphiQL interface for testing.</li>
+</ul>
+</div><h1>Step 4: Run the Server</h1>
+<div class='content'><p>To start the server, run the following command in your terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSBzZXJ2ZXIuanM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node server.js</pre></div><div class='content'><p>You should see the following output:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R3JhcGhRTCBzZXJ2ZXIgcnVubmluZyBhdCBodHRwOi8vbG9jYWxob3N0OjQwMDAvZ3JhcGhxbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GraphQL server running at http://localhost:4000/graphql</pre></div><div class='content'></div><h1>Step 5: Test the Server</h1>
+<div class='content'><p>Open your browser and navigate to <code>http://localhost:4000/graphql</code>. You should see the GraphiQL interface. In the left pane, enter the following query:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogIGhlbGxvCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  hello
+}</pre></div><div class='content'><p>Click the &quot;Execute Query&quot; button (the play button). You should see the following response in the right pane:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJkYXRhIjogewogICAgImhlbGxvIjogIkhlbGxvLCB3b3JsZCEiCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;data&quot;: {
+    &quot;hello&quot;: &quot;Hello, world!&quot;
+  }
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this lesson, we set up a basic GraphQL server using Node.js, Express, and the <code>express-graphql</code> middleware. We defined a simple schema and resolver, and tested our server using the GraphiQL interface. This setup provides a foundation that you can build upon as you learn more about GraphQL.</p>
+<p>Next, we will dive into the core concepts of GraphQL, starting with queries.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-graphql-vs-rest' title="GraphQL vs REST">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-graphql-schema-basics' title="GraphQL Schema Basics">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

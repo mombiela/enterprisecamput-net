@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapReduce Job Workflow</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/04-02-mapreduce-job-workflow" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/04-02-mapreduce-job-workflow" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-mapreduce' title="Introduction to MapReduce">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">MapReduce Job Workflow</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-writing-a-mapreduce-program' title="Writing a MapReduce Program">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the workflow of a MapReduce job. Understanding the workflow is crucial for effectively writing and optimizing MapReduce programs. We will break down the process into clear steps, provide practical examples, and include exercises to reinforce the concepts.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Job Submission</strong>: The process of submitting a MapReduce job to the Hadoop cluster.</li>
+<li><strong>Job Initialization</strong>: Setting up the job configuration and preparing the necessary resources.</li>
+<li><strong>Task Assignment</strong>: Distributing the tasks (Map and Reduce) across the cluster nodes.</li>
+<li><strong>Task Execution</strong>: Running the Map and Reduce tasks on the assigned nodes.</li>
+<li><strong>Job Completion</strong>: Finalizing the job and collecting the output.</li>
+</ol>
+</div><h1>Detailed Workflow</h1>
+<div class='content'></div><h2>1. Job Submission</h2>
+<div class='content'><p>When a client submits a MapReduce job, the following steps occur:</p>
+<ul>
+<li><strong>Client</strong>: The client submits the job to the JobTracker (in Hadoop 1) or ResourceManager (in Hadoop 2/YARN).</li>
+<li><strong>Job Configuration</strong>: The client specifies the job configuration, including input/output paths, Mapper and Reducer classes, and other parameters.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZTogU3VibWl0dGluZyBhIE1hcFJlZHVjZSBqb2IgaW4gSmF2YQpKb2Igam9iID0gSm9iLmdldEluc3RhbmNlKGNvbmYsICJ3b3JkIGNvdW50Iik7CmpvYi5zZXRKYXJCeUNsYXNzKFdvcmRDb3VudC5jbGFzcyk7CmpvYi5zZXRNYXBwZXJDbGFzcyhUb2tlbml6ZXJNYXBwZXIuY2xhc3MpOwpqb2Iuc2V0Q29tYmluZXJDbGFzcyhJbnRTdW1SZWR1Y2VyLmNsYXNzKTsKam9iLnNldFJlZHVjZXJDbGFzcyhJbnRTdW1SZWR1Y2VyLmNsYXNzKTsKam9iLnNldE91dHB1dEtleUNsYXNzKFRleHQuY2xhc3MpOwpqb2Iuc2V0T3V0cHV0VmFsdWVDbGFzcyhJbnRXcml0YWJsZS5jbGFzcyk7CkZpbGVJbnB1dEZvcm1hdC5hZGRJbnB1dFBhdGgoam9iLCBuZXcgUGF0aChhcmdzWzBdKSk7CkZpbGVPdXRwdXRGb3JtYXQuc2V0T3V0cHV0UGF0aChqb2IsIG5ldyBQYXRoKGFyZ3NbMV0pKTsKU3lzdGVtLmV4aXQoam9iLndhaXRGb3JDb21wbGV0aW9uKHRydWUpID8gMCA6IDEpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example: Submitting a MapReduce job in Java
+Job job = Job.getInstance(conf, &quot;word count&quot;);
+job.setJarByClass(WordCount.class);
+job.setMapperClass(TokenizerMapper.class);
+job.setCombinerClass(IntSumReducer.class);
+job.setReducerClass(IntSumReducer.class);
+job.setOutputKeyClass(Text.class);
+job.setOutputValueClass(IntWritable.class);
+FileInputFormat.addInputPath(job, new Path(args[0]));
+FileOutputFormat.setOutputPath(job, new Path(args[1]));
+System.exit(job.waitForCompletion(true) ? 0 : 1);</pre></div><div class='content'></div><h2>2. Job Initialization</h2>
+<div class='content'><p>Once the job is submitted, the JobTracker/ResourceManager initializes the job:</p>
+<ul>
+<li><strong>Job ID</strong>: A unique job ID is assigned.</li>
+<li><strong>Input Splits</strong>: The input data is split into smaller chunks called input splits.</li>
+<li><strong>Task Assignment</strong>: Tasks are created for each input split.</li>
+</ul>
+</div><h2>3. Task Assignment</h2>
+<div class='content'><p>The JobTracker/ResourceManager assigns tasks to TaskTrackers (in Hadoop 1) or NodeManagers (in Hadoop 2/YARN):</p>
+<ul>
+<li><strong>Map Tasks</strong>: Each input split is processed by a Map task.</li>
+<li><strong>Reduce Tasks</strong>: The output of the Map tasks is shuffled and sorted, then processed by Reduce tasks.</li>
+</ul>
+</div><h2>4. Task Execution</h2>
+<div class='content'><p>The assigned tasks are executed on the cluster nodes:</p>
+<ul>
+<li><strong>Map Phase</strong>: The Mapper processes each input split and produces intermediate key-value pairs.</li>
+<li><strong>Shuffle and Sort</strong>: The intermediate data is shuffled and sorted by key.</li>
+<li><strong>Reduce Phase</strong>: The Reducer processes the sorted data and produces the final output.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXhhbXBsZTogTWFwcGVyIGNsYXNzIGluIEphdmEKcHVibGljIHN0YXRpYyBjbGFzcyBUb2tlbml6ZXJNYXBwZXIgZXh0ZW5kcyBNYXBwZXI8T2JqZWN0LCBUZXh0LCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHJpdmF0ZSBmaW5hbCBzdGF0aWMgSW50V3JpdGFibGUgb25lID0gbmV3IEludFdyaXRhYmxlKDEpOwogICAgcHJpdmF0ZSBUZXh0IHdvcmQgPSBuZXcgVGV4dCgpOwoKICAgIHB1YmxpYyB2b2lkIG1hcChPYmplY3Qga2V5LCBUZXh0IHZhbHVlLCBDb250ZXh0IGNvbnRleHQpIHRocm93cyBJT0V4Y2VwdGlvbiwgSW50ZXJydXB0ZWRFeGNlcHRpb24gewogICAgICAgIFN0cmluZ1Rva2VuaXplciBpdHIgPSBuZXcgU3RyaW5nVG9rZW5pemVyKHZhbHVlLnRvU3RyaW5nKCkpOwogICAgICAgIHdoaWxlIChpdHIuaGFzTW9yZVRva2VucygpKSB7CiAgICAgICAgICAgIHdvcmQuc2V0KGl0ci5uZXh0VG9rZW4oKSk7CiAgICAgICAgICAgIGNvbnRleHQud3JpdGUod29yZCwgb25lKTsKICAgICAgICB9CiAgICB9Cn0KCi8vIEV4YW1wbGU6IFJlZHVjZXIgY2xhc3MgaW4gSmF2YQpwdWJsaWMgc3RhdGljIGNsYXNzIEludFN1bVJlZHVjZXIgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHVibGljIHZvaWQgcmVkdWNlKFRleHQga2V5LCBJdGVyYWJsZTxJbnRXcml0YWJsZT4gdmFsdWVzLCBDb250ZXh0IGNvbnRleHQpIHRocm93cyBJT0V4Y2VwdGlvbiwgSW50ZXJydXB0ZWRFeGNlcHRpb24gewogICAgICAgIGludCBzdW0gPSAwOwogICAgICAgIGZvciAoSW50V3JpdGFibGUgdmFsIDogdmFsdWVzKSB7CiAgICAgICAgICAgIHN1bSArPSB2YWwuZ2V0KCk7CiAgICAgICAgfQogICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCBuZXcgSW50V3JpdGFibGUoc3VtKSk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Example: Mapper class in Java
+public static class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        StringTokenizer itr = new StringTokenizer(value.toString());
+        while (itr.hasMoreTokens()) {
+            word.set(itr.nextToken());
+            context.write(word, one);
+        }
+    }
+}
+
+// Example: Reducer class in Java
+public static class IntSumReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        context.write(key, new IntWritable(sum));
+    }
+}</pre></div><div class='content'></div><h2>5. Job Completion</h2>
+<div class='content'><p>After all tasks are completed:</p>
+<ul>
+<li><strong>Output Collection</strong>: The final output is collected and written to the specified output path.</li>
+<li><strong>Job Status</strong>: The job status is updated, and the client is notified of the job completion.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise 1: Word Count Program</h2>
+<div class='content'><p>Write a MapReduce program to count the occurrences of each word in a given text file.</p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Set up the job configuration.</li>
+<li>Implement the Mapper class to tokenize the input text.</li>
+<li>Implement the Reducer class to sum the word counts.</li>
+<li>Submit the job and verify the output.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<p>Refer to the provided code snippets for the Mapper and Reducer classes. Use the following command to run the job:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGFkb29wIGphciB3b3JkY291bnQuamFyIFdvcmRDb3VudCBpbnB1dC50eHQgb3V0cHV0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>hadoop jar wordcount.jar WordCount input.txt output</pre></div><div class='content'></div><h2>Exercise 2: Analyzing Job Logs</h2>
+<div class='content'><p>Analyze the logs of a MapReduce job to understand the task execution details.</p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Submit a MapReduce job.</li>
+<li>Access the job logs from the Hadoop web interface or command line.</li>
+<li>Identify the stages of the job (Map, Shuffle, Reduce) and note the execution times.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+<p>Use the Hadoop web interface or the following command to access the logs:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGFkb29wIGpvYiAtaGlzdG9yeSBqb2JfMjAyMzAxMDExMjM0XzAwMDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>hadoop job -history job_202301011234_0001</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Configuration</strong>: Ensure that the job configuration is correctly set up, including input/output paths and classes.</li>
+<li><strong>Resource Management</strong>: Monitor resource usage to avoid bottlenecks and optimize performance.</li>
+<li><strong>Debugging</strong>: Use the job logs to debug issues and understand the job execution flow.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the MapReduce job workflow, including job submission, initialization, task assignment, execution, and completion. We provided practical examples and exercises to reinforce the concepts. Understanding this workflow is essential for writing efficient MapReduce programs and optimizing their performance. In the next section, we will explore MapReduce optimization techniques to further enhance your skills.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-mapreduce' title="Introduction to MapReduce">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-writing-a-mapreduce-program' title="Writing a MapReduce Program">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Layers and Models</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/07-01-custom-layers-and-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/07-01-custom-layers-and-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/07-01-custom-layers-and-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/07-01-custom-layers-and-models" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/07-01-custom-layers-and-models" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-gated-recurrent-units' title="Gated Recurrent Units (GRUs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Custom Layers and Models</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-tensorflow-hub' title="TensorFlow Hub">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to create custom layers and models in TensorFlow. This is an advanced topic that allows you to extend TensorFlow's capabilities by defining your own layers and models, which can be particularly useful for implementing novel architectures or custom operations.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Custom Layers</strong>: Creating layers that are not available in TensorFlow's predefined layers.</li>
+<li><strong>Custom Models</strong>: Building models by combining custom and predefined layers.</li>
+<li><strong>Subclassing <code>tf.keras.layers.Layer</code></strong>: The base class for creating custom layers.</li>
+<li><strong>Subclassing <code>tf.keras.Model</code></strong>: The base class for creating custom models.</li>
+</ol>
+</div><h1>Creating Custom Layers</h1>
+<div class='content'></div><h2>Subclassing `tf.keras.layers.Layer`</h2>
+<div class='content'><p>To create a custom layer, you need to subclass <code>tf.keras.layers.Layer</code> and implement the following methods:</p>
+<ul>
+<li><code>__init__</code>: Initialize the layer's attributes.</li>
+<li><code>build</code>: Create the layer's weights.</li>
+<li><code>call</code>: Define the forward pass.</li>
+</ul>
+</div><h2>Example: Custom Dense Layer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCmNsYXNzIEN1c3RvbURlbnNlTGF5ZXIodGYua2VyYXMubGF5ZXJzLkxheWVyKToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCB1bml0cz0zMik6CiAgICAgICAgc3VwZXIoQ3VzdG9tRGVuc2VMYXllciwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYudW5pdHMgPSB1bml0cwoKICAgIGRlZiBidWlsZChzZWxmLCBpbnB1dF9zaGFwZSk6CiAgICAgICAgc2VsZi53ID0gc2VsZi5hZGRfd2VpZ2h0KHNoYXBlPShpbnB1dF9zaGFwZVstMV0sIHNlbGYudW5pdHMpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbml0aWFsaXplcj0ncmFuZG9tX25vcm1hbCcsCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRyYWluYWJsZT1UcnVlKQogICAgICAgIHNlbGYuYiA9IHNlbGYuYWRkX3dlaWdodChzaGFwZT0oc2VsZi51bml0cywpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbml0aWFsaXplcj0nemVyb3MnLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB0cmFpbmFibGU9VHJ1ZSkKCiAgICBkZWYgY2FsbChzZWxmLCBpbnB1dHMpOgogICAgICAgIHJldHVybiB0Zi5tYXRtdWwoaW5wdXRzLCBzZWxmLncpICsgc2VsZi5iCgojIEV4YW1wbGUgdXNhZ2UKbGF5ZXIgPSBDdXN0b21EZW5zZUxheWVyKDEwKQppbnB1dF90ZW5zb3IgPSB0Zi5yYW5kb20ubm9ybWFsKFs0LCA1XSkKb3V0cHV0X3RlbnNvciA9IGxheWVyKGlucHV0X3RlbnNvcikKcHJpbnQob3V0cHV0X3RlbnNvcik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+class CustomDenseLayer(tf.keras.layers.Layer):
+    def __init__(self, units=32):
+        super(CustomDenseLayer, self).__init__()
+        self.units = units
+
+    def build(self, input_shape):
+        self.w = self.add_weight(shape=(input_shape[-1], self.units),
+                                 initializer='random_normal',
+                                 trainable=True)
+        self.b = self.add_weight(shape=(self.units,),
+                                 initializer='zeros',
+                                 trainable=True)
+
+    def call(self, inputs):
+        return tf.matmul(inputs, self.w) + self.b
+
+# Example usage
+layer = CustomDenseLayer(10)
+input_tensor = tf.random.normal([4, 5])
+output_tensor = layer(input_tensor)
+print(output_tensor)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>__init__</code></strong>: Initializes the layer with the number of units.</li>
+<li><strong><code>build</code></strong>: Creates the weights <code>w</code> and <code>b</code> with the appropriate shapes.</li>
+<li><strong><code>call</code></strong>: Implements the forward pass, performing a matrix multiplication followed by a bias addition.</li>
+</ul>
+</div><h1>Creating Custom Models</h1>
+<div class='content'></div><h2>Subclassing `tf.keras.Model`</h2>
+<div class='content'><p>To create a custom model, you need to subclass <code>tf.keras.Model</code> and implement the following methods:</p>
+<ul>
+<li><code>__init__</code>: Initialize the model's layers.</li>
+<li><code>call</code>: Define the forward pass using the layers.</li>
+</ul>
+</div><h2>Example: Custom Model with Custom Layer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQ3VzdG9tTW9kZWwodGYua2VyYXMuTW9kZWwpOgogICAgZGVmIF9faW5pdF9fKHNlbGYpOgogICAgICAgIHN1cGVyKEN1c3RvbU1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5kZW5zZTEgPSBDdXN0b21EZW5zZUxheWVyKDMyKQogICAgICAgIHNlbGYuZGVuc2UyID0gQ3VzdG9tRGVuc2VMYXllcigxMCkKCiAgICBkZWYgY2FsbChzZWxmLCBpbnB1dHMpOgogICAgICAgIHggPSBzZWxmLmRlbnNlMShpbnB1dHMpCiAgICAgICAgcmV0dXJuIHNlbGYuZGVuc2UyKHgpCgojIEV4YW1wbGUgdXNhZ2UKbW9kZWwgPSBDdXN0b21Nb2RlbCgpCmlucHV0X3RlbnNvciA9IHRmLnJhbmRvbS5ub3JtYWwoWzQsIDVdKQpvdXRwdXRfdGVuc29yID0gbW9kZWwoaW5wdXRfdGVuc29yKQpwcmludChvdXRwdXRfdGVuc29yKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class CustomModel(tf.keras.Model):
+    def __init__(self):
+        super(CustomModel, self).__init__()
+        self.dense1 = CustomDenseLayer(32)
+        self.dense2 = CustomDenseLayer(10)
+
+    def call(self, inputs):
+        x = self.dense1(inputs)
+        return self.dense2(x)
+
+# Example usage
+model = CustomModel()
+input_tensor = tf.random.normal([4, 5])
+output_tensor = model(input_tensor)
+print(output_tensor)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong><code>__init__</code></strong>: Initializes the model with two custom dense layers.</li>
+<li><strong><code>call</code></strong>: Defines the forward pass by chaining the custom layers.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Create a custom convolutional layer and use it in a custom model.</p>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQ3VzdG9tQ29udkxheWVyKHRmLmtlcmFzLmxheWVycy5MYXllcik6CiAgICBkZWYgX19pbml0X18oc2VsZiwgZmlsdGVycywga2VybmVsX3NpemUpOgogICAgICAgIHN1cGVyKEN1c3RvbUNvbnZMYXllciwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmlsdGVycyA9IGZpbHRlcnMKICAgICAgICBzZWxmLmtlcm5lbF9zaXplID0ga2VybmVsX3NpemUKCiAgICBkZWYgYnVpbGQoc2VsZiwgaW5wdXRfc2hhcGUpOgogICAgICAgIHNlbGYua2VybmVsID0gc2VsZi5hZGRfd2VpZ2h0KHNoYXBlPShzZWxmLmtlcm5lbF9zaXplLCBzZWxmLmtlcm5lbF9zaXplLCBpbnB1dF9zaGFwZVstMV0sIHNlbGYuZmlsdGVycyksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW5pdGlhbGl6ZXI9J3JhbmRvbV9ub3JtYWwnLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRyYWluYWJsZT1UcnVlKQoKICAgIGRlZiBjYWxsKHNlbGYsIGlucHV0cyk6CiAgICAgICAgcmV0dXJuIHRmLm5uLmNvbnYyZChpbnB1dHMsIHNlbGYua2VybmVsLCBzdHJpZGVzPTEsIHBhZGRpbmc9J1NBTUUnKQoKY2xhc3MgQ3VzdG9tQ29udk1vZGVsKHRmLmtlcmFzLk1vZGVsKToKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzdXBlcihDdXN0b21Db252TW9kZWwsIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmNvbnYxID0gQ3VzdG9tQ29udkxheWVyKDMyLCAzKQogICAgICAgIHNlbGYuZmxhdHRlbiA9IHRmLmtlcmFzLmxheWVycy5GbGF0dGVuKCkKICAgICAgICBzZWxmLmRlbnNlID0gdGYua2VyYXMubGF5ZXJzLkRlbnNlKDEwKQoKICAgIGRlZiBjYWxsKHNlbGYsIGlucHV0cyk6CiAgICAgICAgeCA9IHNlbGYuY29udjEoaW5wdXRzKQogICAgICAgIHggPSBzZWxmLmZsYXR0ZW4oeCkKICAgICAgICByZXR1cm4gc2VsZi5kZW5zZSh4KQoKIyBFeGFtcGxlIHVzYWdlCm1vZGVsID0gQ3VzdG9tQ29udk1vZGVsKCkKaW5wdXRfdGVuc29yID0gdGYucmFuZG9tLm5vcm1hbChbNCwgMjgsIDI4LCAxXSkKb3V0cHV0X3RlbnNvciA9IG1vZGVsKGlucHV0X3RlbnNvcikKcHJpbnQob3V0cHV0X3RlbnNvcik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class CustomConvLayer(tf.keras.layers.Layer):
+    def __init__(self, filters, kernel_size):
+        super(CustomConvLayer, self).__init__()
+        self.filters = filters
+        self.kernel_size = kernel_size
+
+    def build(self, input_shape):
+        self.kernel = self.add_weight(shape=(self.kernel_size, self.kernel_size, input_shape[-1], self.filters),
+                                      initializer='random_normal',
+                                      trainable=True)
+
+    def call(self, inputs):
+        return tf.nn.conv2d(inputs, self.kernel, strides=1, padding='SAME')
+
+class CustomConvModel(tf.keras.Model):
+    def __init__(self):
+        super(CustomConvModel, self).__init__()
+        self.conv1 = CustomConvLayer(32, 3)
+        self.flatten = tf.keras.layers.Flatten()
+        self.dense = tf.keras.layers.Dense(10)
+
+    def call(self, inputs):
+        x = self.conv1(inputs)
+        x = self.flatten(x)
+        return self.dense(x)
+
+# Example usage
+model = CustomConvModel()
+input_tensor = tf.random.normal([4, 28, 28, 1])
+output_tensor = model(input_tensor)
+print(output_tensor)</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>CustomConvLayer</strong>: A custom convolutional layer with a specified number of filters and kernel size.</li>
+<li><strong>CustomConvModel</strong>: A custom model that uses the custom convolutional layer, followed by a flattening layer and a dense layer.</li>
+</ul>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we learned how to create custom layers and models in TensorFlow by subclassing <code>tf.keras.layers.Layer</code> and <code>tf.keras.Model</code>. This allows for greater flexibility and customization in building neural network architectures. We also provided practical examples and exercises to reinforce the concepts.</p>
+<p>Next, we will explore TensorFlow Hub and how to use pre-trained models to enhance your machine learning projects.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-gated-recurrent-units' title="Gated Recurrent Units (GRUs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-tensorflow-hub' title="TensorFlow Hub">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

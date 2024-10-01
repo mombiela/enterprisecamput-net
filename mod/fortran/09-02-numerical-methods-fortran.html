@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numerical Methods in Fortran</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/09-02-numerical-methods-fortran" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/09-02-numerical-methods-fortran" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/09-02-numerical-methods-fortran" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/fortran/09-02-numerical-methods-fortran" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/09-02-numerical-methods-fortran" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-building-scientific-calculator' title="Building a Scientific Calculator">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Numerical Methods in Fortran</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-simulation-physical-systems' title="Simulation of Physical Systems">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Numerical methods are essential for solving mathematical problems that cannot be addressed analytically. Fortran, with its strong numerical computation capabilities, is an excellent language for implementing these methods. In this section, we will cover some fundamental numerical methods and how to implement them in Fortran.</p>
+</div><h1>Topics Covered</h1>
+<div class='content'><ol>
+<li><strong>Introduction to Numerical Methods</strong></li>
+<li><strong>Root Finding Methods</strong></li>
+<li><strong>Numerical Integration</strong></li>
+<li><strong>Solving Ordinary Differential Equations (ODEs)</strong></li>
+<li><strong>Practical Exercises</strong></li>
+</ol>
+</div><h1>1. Introduction to Numerical Methods</h1>
+<div class='content'><p>Numerical methods involve algorithms for approximating solutions to mathematical problems. These methods are crucial in various fields such as engineering, physics, and finance.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Accuracy</strong>: How close the numerical solution is to the exact solution.</li>
+<li><strong>Stability</strong>: The behavior of the algorithm when subjected to small changes in input.</li>
+<li><strong>Efficiency</strong>: The computational resources required by the algorithm.</li>
+</ul>
+</div><h1>2. Root Finding Methods</h1>
+<div class='content'><p>Root finding methods are used to determine the roots of a function, i.e., the values of \( x \) for which \( f(x) = 0 \).</p>
+</div><h2>Bisection Method</h2>
+<div class='content'><p>The bisection method is a simple and robust root-finding method. It works by repeatedly dividing an interval in half and selecting the subinterval that contains the root.</p>
+<h4>Algorithm</h4>
+<ol>
+<li>Choose initial interval \([a, b]\) such that \( f(a) \cdot f(b) &lt; 0 \).</li>
+<li>Compute the midpoint \( c = \frac{a + b}{2} \).</li>
+<li>If \( f(c) = 0 \) or the interval is sufficiently small, return \( c \).</li>
+<li>If \( f(a) \cdot f(c) &lt; 0 \), set \( b = c \); otherwise, set \( a = c \).</li>
+<li>Repeat steps 2-4 until convergence.</li>
+</ol>
+<h4>Fortran Implementation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBiaXNlY3Rpb25fbWV0aG9kCiAgaW1wbGljaXQgbm9uZQogIHJlYWwoOCkgOjogYSwgYiwgYywgdG9sCiAgaW50ZWdlciA6OiBtYXhfaXRlciwgaXRlcgoKICAhIEZ1bmN0aW9uIHByb3RvdHlwZQogIHJlYWwoOCkgOjogZihyZWFsKDgpKQoKICAhIEluaXRpYWxpemUgdmFyaWFibGVzCiAgYSA9IDEuMAogIGIgPSAyLjAKICB0b2wgPSAxLjBlLTYKICBtYXhfaXRlciA9IDEwMAogIGl0ZXIgPSAwCgogICEgQmlzZWN0aW9uIG1ldGhvZAogIGRvIHdoaWxlIChhYnMoYiAtIGEpID4gdG9sIC5hbmQuIGl0ZXIgPCBtYXhfaXRlcikKICAgIGMgPSAoYSArIGIpIC8gMi4wCiAgICBpZiAoZihjKSA9PSAwLjApIGV4aXQKICAgIGlmIChmKGEpICogZihjKSA8IDAuMCkgdGhlbgogICAgICBiID0gYwogICAgZWxzZQogICAgICBhID0gYwogICAgZW5kIGlmCiAgICBpdGVyID0gaXRlciArIDEKICBlbmQgZG8KCiAgISBPdXRwdXQgcmVzdWx0CiAgcHJpbnQgKiwgJ1Jvb3QgZm91bmQgYXQgeCA9ICcsIGMKICBwcmludCAqLCAnTnVtYmVyIG9mIGl0ZXJhdGlvbnM6ICcsIGl0ZXIKCmNvbnRhaW5zCiAgISBGdW5jdGlvbiBkZWZpbml0aW9uCiAgcmVhbCg4KSBmdW5jdGlvbiBmKHgpCiAgICByZWFsKDgpLCBpbnRlbnQoaW4pIDo6IHgKICAgIGYgPSB4KiozIC0geCAtIDIuMAogIGVuZCBmdW5jdGlvbiBmCmVuZCBwcm9ncmFtIGJpc2VjdGlvbl9tZXRob2Q="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program bisection_method
+  implicit none
+  real(8) :: a, b, c, tol
+  integer :: max_iter, iter
+
+  ! Function prototype
+  real(8) :: f(real(8))
+
+  ! Initialize variables
+  a = 1.0
+  b = 2.0
+  tol = 1.0e-6
+  max_iter = 100
+  iter = 0
+
+  ! Bisection method
+  do while (abs(b - a) &gt; tol .and. iter &lt; max_iter)
+    c = (a + b) / 2.0
+    if (f(c) == 0.0) exit
+    if (f(a) * f(c) &lt; 0.0) then
+      b = c
+    else
+      a = c
+    end if
+    iter = iter + 1
+  end do
+
+  ! Output result
+  print *, 'Root found at x = ', c
+  print *, 'Number of iterations: ', iter
+
+contains
+  ! Function definition
+  real(8) function f(x)
+    real(8), intent(in) :: x
+    f = x**3 - x - 2.0
+  end function f
+end program bisection_method</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Function <code>f</code></strong>: Defines the function whose root we are finding.</li>
+<li><strong>Variables <code>a</code> and <code>b</code></strong>: Initial interval endpoints.</li>
+<li><strong>Variable <code>tol</code></strong>: Tolerance for convergence.</li>
+<li><strong>Variable <code>max_iter</code></strong>: Maximum number of iterations.</li>
+<li><strong>Loop</strong>: Repeatedly halves the interval until the root is found or the maximum number of iterations is reached.</li>
+</ul>
+</div><h1>3. Numerical Integration</h1>
+<div class='content'><p>Numerical integration approximates the integral of a function over an interval.</p>
+</div><h2>Trapezoidal Rule</h2>
+<div class='content'><p>The trapezoidal rule approximates the integral by dividing the area under the curve into trapezoids.</p>
+<h4>Formula</h4>
+<p>\[ \int_a^b f(x) , dx \approx \frac{b - a}{2} \left[ f(a) + f(b) \right] \]</p>
+<h4>Fortran Implementation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSB0cmFwZXpvaWRhbF9ydWxlCiAgaW1wbGljaXQgbm9uZQogIHJlYWwoOCkgOjogYSwgYiwgaW50ZWdyYWwKICBpbnRlZ2VyIDo6IG4KCiAgISBGdW5jdGlvbiBwcm90b3R5cGUKICByZWFsKDgpIDo6IGYocmVhbCg4KSkKCiAgISBJbml0aWFsaXplIHZhcmlhYmxlcwogIGEgPSAwLjAKICBiID0gMS4wCiAgbiA9IDEwMAoKICAhIENvbXB1dGUgaW50ZWdyYWwKICBpbnRlZ3JhbCA9IHRyYXBlem9pZGFsKGEsIGIsIG4pCgogICEgT3V0cHV0IHJlc3VsdAogIHByaW50ICosICdJbnRlZ3JhbCA9ICcsIGludGVncmFsCgpjb250YWlucwogICEgRnVuY3Rpb24gZGVmaW5pdGlvbgogIHJlYWwoOCkgZnVuY3Rpb24gZih4KQogICAgcmVhbCg4KSwgaW50ZW50KGluKSA6OiB4CiAgICBmID0geCoqMgogIGVuZCBmdW5jdGlvbiBmCgogICEgVHJhcGV6b2lkYWwgcnVsZSBmdW5jdGlvbgogIHJlYWwoOCkgZnVuY3Rpb24gdHJhcGV6b2lkYWwoYSwgYiwgbikKICAgIHJlYWwoOCksIGludGVudChpbikgOjogYSwgYgogICAgaW50ZWdlciwgaW50ZW50KGluKSA6OiBuCiAgICByZWFsKDgpIDo6IGgsIHN1bQogICAgaW50ZWdlciA6OiBpCgogICAgaCA9IChiIC0gYSkgLyBuCiAgICBzdW0gPSAwLjUgKiAoZihhKSArIGYoYikpCiAgICBkbyBpID0gMSwgbi0xCiAgICAgIHN1bSA9IHN1bSArIGYoYSArIGkgKiBoKQogICAgZW5kIGRvCiAgICB0cmFwZXpvaWRhbCA9IGggKiBzdW0KICBlbmQgZnVuY3Rpb24gdHJhcGV6b2lkYWwKZW5kIHByb2dyYW0gdHJhcGV6b2lkYWxfcnVsZQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program trapezoidal_rule
+  implicit none
+  real(8) :: a, b, integral
+  integer :: n
+
+  ! Function prototype
+  real(8) :: f(real(8))
+
+  ! Initialize variables
+  a = 0.0
+  b = 1.0
+  n = 100
+
+  ! Compute integral
+  integral = trapezoidal(a, b, n)
+
+  ! Output result
+  print *, 'Integral = ', integral
+
+contains
+  ! Function definition
+  real(8) function f(x)
+    real(8), intent(in) :: x
+    f = x**2
+  end function f
+
+  ! Trapezoidal rule function
+  real(8) function trapezoidal(a, b, n)
+    real(8), intent(in) :: a, b
+    integer, intent(in) :: n
+    real(8) :: h, sum
+    integer :: i
+
+    h = (b - a) / n
+    sum = 0.5 * (f(a) + f(b))
+    do i = 1, n-1
+      sum = sum + f(a + i * h)
+    end do
+    trapezoidal = h * sum
+  end function trapezoidal
+end program trapezoidal_rule</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Function <code>f</code></strong>: Defines the function to integrate.</li>
+<li><strong>Variables <code>a</code> and <code>b</code></strong>: Integration limits.</li>
+<li><strong>Variable <code>n</code></strong>: Number of subintervals.</li>
+<li><strong>Function <code>trapezoidal</code></strong>: Implements the trapezoidal rule.</li>
+</ul>
+</div><h1>4. Solving Ordinary Differential Equations (ODEs)</h1>
+<div class='content'><p>ODEs describe the relationship between a function and its derivatives. Numerical methods can approximate solutions to ODEs.</p>
+</div><h2>Euler's Method</h2>
+<div class='content'><p>Euler's method is a simple numerical technique for solving first-order ODEs.</p>
+<h4>Formula</h4>
+<p>\[ y_{n+1} = y_n + h f(t_n, y_n) \]</p>
+<h4>Fortran Implementation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBldWxlcl9tZXRob2QKICBpbXBsaWNpdCBub25lCiAgcmVhbCg4KSA6OiB0LCB5LCBoLCB0X2VuZAogIGludGVnZXIgOjogbiwgaQoKICAhIEZ1bmN0aW9uIHByb3RvdHlwZQogIHJlYWwoOCkgOjogZihyZWFsKDgpLCByZWFsKDgpKQoKICAhIEluaXRpYWxpemUgdmFyaWFibGVzCiAgdCA9IDAuMAogIHkgPSAxLjAKICBoID0gMC4xCiAgdF9lbmQgPSAyLjAKICBuID0gaW50KCh0X2VuZCAtIHQpIC8gaCkKCiAgISBFdWxlcidzIG1ldGhvZAogIGRvIGkgPSAxLCBuCiAgICB5ID0geSArIGggKiBmKHQsIHkpCiAgICB0ID0gdCArIGgKICBlbmQgZG8KCiAgISBPdXRwdXQgcmVzdWx0CiAgcHJpbnQgKiwgJ1NvbHV0aW9uIGF0IHQgPSAnLCB0LCAnIGlzIHkgPSAnLCB5Cgpjb250YWlucwogICEgRnVuY3Rpb24gZGVmaW5pdGlvbgogIHJlYWwoOCkgZnVuY3Rpb24gZih0LCB5KQogICAgcmVhbCg4KSwgaW50ZW50KGluKSA6OiB0LCB5CiAgICBmID0gLTIuMCAqIHQgKiB5CiAgZW5kIGZ1bmN0aW9uIGYKZW5kIHByb2dyYW0gZXVsZXJfbWV0aG9k"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program euler_method
+  implicit none
+  real(8) :: t, y, h, t_end
+  integer :: n, i
+
+  ! Function prototype
+  real(8) :: f(real(8), real(8))
+
+  ! Initialize variables
+  t = 0.0
+  y = 1.0
+  h = 0.1
+  t_end = 2.0
+  n = int((t_end - t) / h)
+
+  ! Euler's method
+  do i = 1, n
+    y = y + h * f(t, y)
+    t = t + h
+  end do
+
+  ! Output result
+  print *, 'Solution at t = ', t, ' is y = ', y
+
+contains
+  ! Function definition
+  real(8) function f(t, y)
+    real(8), intent(in) :: t, y
+    f = -2.0 * t * y
+  end function f
+end program euler_method</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Function <code>f</code></strong>: Defines the ODE \( \frac{dy}{dt} = f(t, y) \).</li>
+<li><strong>Variables <code>t</code> and <code>y</code></strong>: Initial conditions.</li>
+<li><strong>Variable <code>h</code></strong>: Step size.</li>
+<li><strong>Loop</strong>: Iteratively applies Euler's method to approximate the solution.</li>
+</ul>
+</div><h1>5. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implement the Secant Method</h2>
+<div class='content'><p>The secant method is another root-finding algorithm that uses two initial guesses to approximate the root.</p>
+<h4>Task</h4>
+<ul>
+<li>Implement the secant method in Fortran.</li>
+<li>Use the function \( f(x) = x^2 - 4 \).</li>
+<li>Choose initial guesses \( x_0 = 1.0 \) and \( x_1 = 2.0 \).</li>
+</ul>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBzZWNhbnRfbWV0aG9kCiAgaW1wbGljaXQgbm9uZQogIHJlYWwoOCkgOjogeDAsIHgxLCB4MiwgdG9sCiAgaW50ZWdlciA6OiBtYXhfaXRlciwgaXRlcgoKICAhIEZ1bmN0aW9uIHByb3RvdHlwZQogIHJlYWwoOCkgOjogZihyZWFsKDgpKQoKICAhIEluaXRpYWxpemUgdmFyaWFibGVzCiAgeDAgPSAxLjAKICB4MSA9IDIuMAogIHRvbCA9IDEuMGUtNgogIG1heF9pdGVyID0gMTAwCiAgaXRlciA9IDAKCiAgISBTZWNhbnQgbWV0aG9kCiAgZG8gd2hpbGUgKGFicyh4MSAtIHgwKSA+IHRvbCAuYW5kLiBpdGVyIDwgbWF4X2l0ZXIpCiAgICB4MiA9IHgxIC0gZih4MSkgKiAoeDEgLSB4MCkgLyAoZih4MSkgLSBmKHgwKSkKICAgIHgwID0geDEKICAgIHgxID0geDIKICAgIGl0ZXIgPSBpdGVyICsgMQogIGVuZCBkbwoKICAhIE91dHB1dCByZXN1bHQKICBwcmludCAqLCAnUm9vdCBmb3VuZCBhdCB4ID0gJywgeDEKICBwcmludCAqLCAnTnVtYmVyIG9mIGl0ZXJhdGlvbnM6ICcsIGl0ZXIKCmNvbnRhaW5zCiAgISBGdW5jdGlvbiBkZWZpbml0aW9uCiAgcmVhbCg4KSBmdW5jdGlvbiBmKHgpCiAgICByZWFsKDgpLCBpbnRlbnQoaW4pIDo6IHgKICAgIGYgPSB4KioyIC0gNC4wCiAgZW5kIGZ1bmN0aW9uIGYKZW5kIHByb2dyYW0gc2VjYW50X21ldGhvZA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program secant_method
+  implicit none
+  real(8) :: x0, x1, x2, tol
+  integer :: max_iter, iter
+
+  ! Function prototype
+  real(8) :: f(real(8))
+
+  ! Initialize variables
+  x0 = 1.0
+  x1 = 2.0
+  tol = 1.0e-6
+  max_iter = 100
+  iter = 0
+
+  ! Secant method
+  do while (abs(x1 - x0) &gt; tol .and. iter &lt; max_iter)
+    x2 = x1 - f(x1) * (x1 - x0) / (f(x1) - f(x0))
+    x0 = x1
+    x1 = x2
+    iter = iter + 1
+  end do
+
+  ! Output result
+  print *, 'Root found at x = ', x1
+  print *, 'Number of iterations: ', iter
+
+contains
+  ! Function definition
+  real(8) function f(x)
+    real(8), intent(in) :: x
+    f = x**2 - 4.0
+  end function f
+end program secant_method</pre></div><div class='content'></div><h2>Exercise 2: Implement Simpson's Rule</h2>
+<div class='content'><p>Simpson's rule is a more accurate numerical integration method that approximates the integral using parabolic segments.</p>
+<h4>Task</h4>
+<ul>
+<li>Implement Simpson's rule in Fortran.</li>
+<li>Use the function \( f(x) = \sin(x) \).</li>
+<li>Integrate over the interval \([0, \pi]\) with \( n = 100 \).</li>
+</ul>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBzaW1wc29uc19ydWxlCiAgaW1wbGljaXQgbm9uZQogIHJlYWwoOCkgOjogYSwgYiwgaW50ZWdyYWwKICBpbnRlZ2VyIDo6IG4KCiAgISBGdW5jdGlvbiBwcm90b3R5cGUKICByZWFsKDgpIDo6IGYocmVhbCg4KSkKCiAgISBJbml0aWFsaXplIHZhcmlhYmxlcwogIGEgPSAwLjAKICBiID0gMy4xNDE1OTI2NTM1ODk3OTMKICBuID0gMTAwCgogICEgQ29tcHV0ZSBpbnRlZ3JhbAogIGludGVncmFsID0gc2ltcHNvbihhLCBiLCBuKQoKICAhIE91dHB1dCByZXN1bHQKICBwcmludCAqLCAnSW50ZWdyYWwgPSAnLCBpbnRlZ3JhbAoKY29udGFpbnMKICAhIEZ1bmN0aW9uIGRlZmluaXRpb24KICByZWFsKDgpIGZ1bmN0aW9uIGYoeCkKICAgIHJlYWwoOCksIGludGVudChpbikgOjogeAogICAgZiA9IHNpbih4KQogIGVuZCBmdW5jdGlvbiBmCgogICEgU2ltcHNvbidzIHJ1bGUgZnVuY3Rpb24KICByZWFsKDgpIGZ1bmN0aW9uIHNpbXBzb24oYSwgYiwgbikKICAgIHJlYWwoOCksIGludGVudChpbikgOjogYSwgYgogICAgaW50ZWdlciwgaW50ZW50KGluKSA6OiBuCiAgICByZWFsKDgpIDo6IGgsIHN1bQogICAgaW50ZWdlciA6OiBpCgogICAgaCA9IChiIC0gYSkgLyBuCiAgICBzdW0gPSBmKGEpICsgZihiKQogICAgZG8gaSA9IDEsIG4tMQogICAgICBpZiAobW9kKGksIDIpID09IDApIHRoZW4KICAgICAgICBzdW0gPSBzdW0gKyAyLjAgKiBmKGEgKyBpICogaCkKICAgICAgZWxzZQogICAgICAgIHN1bSA9IHN1bSArIDQuMCAqIGYoYSArIGkgKiBoKQogICAgICBlbmQgaWYKICAgIGVuZCBkbwogICAgc2ltcHNvbiA9IGggLyAzLjAgKiBzdW0KICBlbmQgZnVuY3Rpb24gc2ltcHNvbgplbmQgcHJvZ3JhbSBzaW1wc29uc19ydWxl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program simpsons_rule
+  implicit none
+  real(8) :: a, b, integral
+  integer :: n
+
+  ! Function prototype
+  real(8) :: f(real(8))
+
+  ! Initialize variables
+  a = 0.0
+  b = 3.141592653589793
+  n = 100
+
+  ! Compute integral
+  integral = simpson(a, b, n)
+
+  ! Output result
+  print *, 'Integral = ', integral
+
+contains
+  ! Function definition
+  real(8) function f(x)
+    real(8), intent(in) :: x
+    f = sin(x)
+  end function f
+
+  ! Simpson's rule function
+  real(8) function simpson(a, b, n)
+    real(8), intent(in) :: a, b
+    integer, intent(in) :: n
+    real(8) :: h, sum
+    integer :: i
+
+    h = (b - a) / n
+    sum = f(a) + f(b)
+    do i = 1, n-1
+      if (mod(i, 2) == 0) then
+        sum = sum + 2.0 * f(a + i * h)
+      else
+        sum = sum + 4.0 * f(a + i * h)
+      end if
+    end do
+    simpson = h / 3.0 * sum
+  end function simpson
+end program simpsons_rule</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored several fundamental numerical methods and their implementation in Fortran. We covered root-finding methods, numerical integration, and solving ODEs. By practicing these methods, you will gain a deeper understanding of numerical computation and enhance your Fortran programming skills. In the next section, we will delve into more advanced topics and applications of numerical methods in Fortran.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-building-scientific-calculator' title="Building a Scientific Calculator">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-simulation-physical-systems' title="Simulation of Physical Systems">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

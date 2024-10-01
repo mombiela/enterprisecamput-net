@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multithreading and Concurrency</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/objective_c/06-04-multithreading-and-concurrency" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/objective_c/06-04-multithreading-and-concurrency" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-blocks-and-closures' title="Blocks and Closures">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Multithreading and Concurrency</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-file-handling' title="File Handling">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Multithreading and concurrency are essential concepts in modern programming, allowing applications to perform multiple tasks simultaneously, thus improving performance and responsiveness. In Objective-C, these concepts are implemented using various techniques and frameworks. This section will cover the basics of multithreading, the Grand Central Dispatch (GCD) framework, and how to manage concurrency in your applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Thread</strong>: A thread is the smallest unit of execution within a process. Multiple threads can run concurrently within a single process.</li>
+<li><strong>Concurrency</strong>: The ability of a system to handle multiple tasks at the same time.</li>
+<li><strong>Parallelism</strong>: The simultaneous execution of multiple tasks.</li>
+<li><strong>Grand Central Dispatch (GCD)</strong>: A low-level API provided by Apple to manage concurrent code execution on multicore hardware.</li>
+</ol>
+</div><h1>Grand Central Dispatch (GCD)</h1>
+<div class='content'><p>GCD is a powerful framework for managing concurrent operations in Objective-C. It provides a simple and efficient way to execute tasks asynchronously and concurrently.</p>
+</div><h2>Key Components of GCD</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Dispatch Queues</strong>: Queues that manage the execution of tasks. There are two types:</p>
+<ul>
+<li><strong>Serial Queues</strong>: Execute one task at a time in the order they are added.</li>
+<li><strong>Concurrent Queues</strong>: Execute multiple tasks simultaneously.</li>
+</ul>
+</li>
+<li>
+<p><strong>Dispatch Groups</strong>: Allow you to group multiple tasks and be notified when they all complete.</p>
+</li>
+<li>
+<p><strong>Dispatch Semaphores</strong>: Used to control access to a resource by multiple threads.</p>
+</li>
+</ol>
+</div><h2>Using Dispatch Queues</h2>
+<div class='content'><h4>Creating and Using Serial Queues</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzcGF0Y2hfcXVldWVfdCBzZXJpYWxRdWV1ZSA9IGRpc3BhdGNoX3F1ZXVlX2NyZWF0ZSgiY29tLmV4YW1wbGUuc2VyaWFsUXVldWUiLCBESVNQQVRDSF9RVUVVRV9TRVJJQUwpOwoKZGlzcGF0Y2hfYXN5bmMoc2VyaWFsUXVldWUsIF57CiAgICAvLyBUYXNrIDEKICAgIE5TTG9nKEAiVGFzayAxIik7Cn0pOwoKZGlzcGF0Y2hfYXN5bmMoc2VyaWFsUXVldWUsIF57CiAgICAvLyBUYXNrIDIKICAgIE5TTG9nKEAiVGFzayAyIik7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.example.serialQueue&quot;, DISPATCH_QUEUE_SERIAL);
+
+dispatch_async(serialQueue, ^{
+    // Task 1
+    NSLog(@&quot;Task 1&quot;);
+});
+
+dispatch_async(serialQueue, ^{
+    // Task 2
+    NSLog(@&quot;Task 2&quot;);
+});</pre></div><div class='content'><h4>Creating and Using Concurrent Queues</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzcGF0Y2hfcXVldWVfdCBjb25jdXJyZW50UXVldWUgPSBkaXNwYXRjaF9xdWV1ZV9jcmVhdGUoImNvbS5leGFtcGxlLmNvbmN1cnJlbnRRdWV1ZSIsIERJU1BBVENIX1FVRVVFX0NPTkNVUlJFTlQpOwoKZGlzcGF0Y2hfYXN5bmMoY29uY3VycmVudFF1ZXVlLCBeewogICAgLy8gVGFzayAxCiAgICBOU0xvZyhAIlRhc2sgMSIpOwp9KTsKCmRpc3BhdGNoX2FzeW5jKGNvbmN1cnJlbnRRdWV1ZSwgXnsKICAgIC8vIFRhc2sgMgogICAgTlNMb2coQCJUYXNrIDIiKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dispatch_queue_t concurrentQueue = dispatch_queue_create(&quot;com.example.concurrentQueue&quot;, DISPATCH_QUEUE_CONCURRENT);
+
+dispatch_async(concurrentQueue, ^{
+    // Task 1
+    NSLog(@&quot;Task 1&quot;);
+});
+
+dispatch_async(concurrentQueue, ^{
+    // Task 2
+    NSLog(@&quot;Task 2&quot;);
+});</pre></div><div class='content'></div><h2>Using Dispatch Groups</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzcGF0Y2hfZ3JvdXBfdCBncm91cCA9IGRpc3BhdGNoX2dyb3VwX2NyZWF0ZSgpOwpkaXNwYXRjaF9xdWV1ZV90IHF1ZXVlID0gZGlzcGF0Y2hfZ2V0X2dsb2JhbF9xdWV1ZShESVNQQVRDSF9RVUVVRV9QUklPUklUWV9ERUZBVUxULCAwKTsKCmRpc3BhdGNoX2dyb3VwX2FzeW5jKGdyb3VwLCBxdWV1ZSwgXnsKICAgIC8vIFRhc2sgMQogICAgTlNMb2coQCJUYXNrIDEiKTsKfSk7CgpkaXNwYXRjaF9ncm91cF9hc3luYyhncm91cCwgcXVldWUsIF57CiAgICAvLyBUYXNrIDIKICAgIE5TTG9nKEAiVGFzayAyIik7Cn0pOwoKZGlzcGF0Y2hfZ3JvdXBfbm90aWZ5KGdyb3VwLCBkaXNwYXRjaF9nZXRfbWFpbl9xdWV1ZSgpLCBeewogICAgLy8gQWxsIHRhc2tzIGFyZSBjb21wbGV0ZQogICAgTlNMb2coQCJBbGwgdGFza3MgYXJlIGNvbXBsZXRlIik7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dispatch_group_t group = dispatch_group_create();
+dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+dispatch_group_async(group, queue, ^{
+    // Task 1
+    NSLog(@&quot;Task 1&quot;);
+});
+
+dispatch_group_async(group, queue, ^{
+    // Task 2
+    NSLog(@&quot;Task 2&quot;);
+});
+
+dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+    // All tasks are complete
+    NSLog(@&quot;All tasks are complete&quot;);
+});</pre></div><div class='content'></div><h2>Using Dispatch Semaphores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzcGF0Y2hfc2VtYXBob3JlX3Qgc2VtYXBob3JlID0gZGlzcGF0Y2hfc2VtYXBob3JlX2NyZWF0ZSgxKTsKCmRpc3BhdGNoX2FzeW5jKGRpc3BhdGNoX2dldF9nbG9iYWxfcXVldWUoRElTUEFUQ0hfUVVFVUVfUFJJT1JJVFlfREVGQVVMVCwgMCksIF57CiAgICBkaXNwYXRjaF9zZW1hcGhvcmVfd2FpdChzZW1hcGhvcmUsIERJU1BBVENIX1RJTUVfRk9SRVZFUik7CiAgICAvLyBDcml0aWNhbCBzZWN0aW9uCiAgICBOU0xvZyhAIlRhc2sgMSIpOwogICAgZGlzcGF0Y2hfc2VtYXBob3JlX3NpZ25hbChzZW1hcGhvcmUpOwp9KTsKCmRpc3BhdGNoX2FzeW5jKGRpc3BhdGNoX2dldF9nbG9iYWxfcXVldWUoRElTUEFUQ0hfUVVFVUVfUFJJT1JJVFlfREVGQVVMVCwgMCksIF57CiAgICBkaXNwYXRjaF9zZW1hcGhvcmVfd2FpdChzZW1hcGhvcmUsIERJU1BBVENIX1RJTUVfRk9SRVZFUik7CiAgICAvLyBDcml0aWNhbCBzZWN0aW9uCiAgICBOU0xvZyhAIlRhc2sgMiIpOwogICAgZGlzcGF0Y2hfc2VtYXBob3JlX3NpZ25hbChzZW1hcGhvcmUpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dispatch_semaphore_t semaphore = dispatch_semaphore_create(1);
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    // Critical section
+    NSLog(@&quot;Task 1&quot;);
+    dispatch_semaphore_signal(semaphore);
+});
+
+dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    // Critical section
+    NSLog(@&quot;Task 2&quot;);
+    dispatch_semaphore_signal(semaphore);
+});</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implementing Concurrent Tasks</h2>
+<div class='content'><p><strong>Objective</strong>: Create a simple Objective-C program that uses GCD to perform three tasks concurrently and notify when all tasks are complete.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Create a new Objective-C project.</li>
+<li>Implement three tasks that print messages to the console.</li>
+<li>Use a dispatch group to manage the tasks and notify when all tasks are complete.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8Rm91bmRhdGlvbi9Gb3VuZGF0aW9uLmg+CgppbnQgbWFpbihpbnQgYXJnYywgY29uc3QgY2hhciAqIGFyZ3ZbXSkgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgZGlzcGF0Y2hfZ3JvdXBfdCBncm91cCA9IGRpc3BhdGNoX2dyb3VwX2NyZWF0ZSgpOwogICAgICAgIGRpc3BhdGNoX3F1ZXVlX3QgcXVldWUgPSBkaXNwYXRjaF9nZXRfZ2xvYmFsX3F1ZXVlKERJU1BBVENIX1FVRVVFX1BSSU9SSVRZX0RFRkFVTFQsIDApOwoKICAgICAgICBkaXNwYXRjaF9ncm91cF9hc3luYyhncm91cCwgcXVldWUsIF57CiAgICAgICAgICAgIE5TTG9nKEAiVGFzayAxIik7CiAgICAgICAgfSk7CgogICAgICAgIGRpc3BhdGNoX2dyb3VwX2FzeW5jKGdyb3VwLCBxdWV1ZSwgXnsKICAgICAgICAgICAgTlNMb2coQCJUYXNrIDIiKTsKICAgICAgICB9KTsKCiAgICAgICAgZGlzcGF0Y2hfZ3JvdXBfYXN5bmMoZ3JvdXAsIHF1ZXVlLCBeewogICAgICAgICAgICBOU0xvZyhAIlRhc2sgMyIpOwogICAgICAgIH0pOwoKICAgICAgICBkaXNwYXRjaF9ncm91cF9ub3RpZnkoZ3JvdXAsIGRpc3BhdGNoX2dldF9tYWluX3F1ZXVlKCksIF57CiAgICAgICAgICAgIE5TTG9nKEAiQWxsIHRhc2tzIGFyZSBjb21wbGV0ZSIpOwogICAgICAgIH0pOwoKICAgICAgICAvLyBLZWVwIHRoZSBtYWluIHRocmVhZCBhbGl2ZSB0byBzZWUgdGhlIG91dHB1dAogICAgICAgIFtbTlNSdW5Mb29wIG1haW5SdW5Mb29wXSBydW5dOwogICAgfQogICAgcmV0dXJuIDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;Foundation/Foundation.h&gt;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+        dispatch_group_async(group, queue, ^{
+            NSLog(@&quot;Task 1&quot;);
+        });
+
+        dispatch_group_async(group, queue, ^{
+            NSLog(@&quot;Task 2&quot;);
+        });
+
+        dispatch_group_async(group, queue, ^{
+            NSLog(@&quot;Task 3&quot;);
+        });
+
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            NSLog(@&quot;All tasks are complete&quot;);
+        });
+
+        // Keep the main thread alive to see the output
+        [[NSRunLoop mainRunLoop] run];
+    }
+    return 0;
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Deadlocks</strong>: Avoid using synchronous dispatches on the main queue as it can lead to deadlocks.</li>
+<li><strong>Thread Safety</strong>: Ensure that shared resources are accessed in a thread-safe manner.</li>
+<li><strong>Overusing Threads</strong>: Creating too many threads can lead to performance degradation. Use GCD to manage the number of concurrent tasks efficiently.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of multithreading and concurrency in Objective-C using the Grand Central Dispatch framework. We learned how to create and use dispatch queues, dispatch groups, and dispatch semaphores to manage concurrent tasks. By understanding and applying these concepts, you can improve the performance and responsiveness of your applications. In the next module, we will explore working with data, including file handling and networking basics.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-blocks-and-closures' title="Blocks and Closures">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-file-handling' title="File Handling">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Collect</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/03-03-bulk-collect" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/03-03-bulk-collect" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/03-03-bulk-collect" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/plsql/03-03-bulk-collect" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/03-03-bulk-collect" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-implicit-explicit-cursors' title="Implicit and Explicit Cursors">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Bulk Collect</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-forall-statement' title="FORALL Statement">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the <code>BULK COLLECT</code> feature in PL/SQL, which allows you to fetch multiple rows from a query into a collection in a single context switch. This can significantly improve the performance of your PL/SQL code by reducing the number of context switches between the PL/SQL and SQL engines.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Bulk Collect</strong>: A method to fetch multiple rows from a SQL query into a PL/SQL collection in a single operation.</li>
+<li><strong>Collections</strong>: PL/SQL data structures that can hold multiple values, such as arrays, nested tables, and associative arrays.</li>
+<li><strong>Context Switch</strong>: The process of switching between the PL/SQL engine and the SQL engine, which can be costly in terms of performance.</li>
+</ol>
+</div><h1>Syntax</h1>
+<div class='content'><p>The basic syntax for using <code>BULK COLLECT</code> is as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbjEsIGNvbHVtbjIsIC4uLgpCVUxLIENPTExFQ1QgSU5UTyBjb2xsZWN0aW9uMSwgY29sbGVjdGlvbjIsIC4uLgpGUk9NIHRhYmxlX25hbWUKV0hFUkUgY29uZGl0aW9uOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT column1, column2, ...
+BULK COLLECT INTO collection1, collection2, ...
+FROM table_name
+WHERE condition;</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's look at a practical example to understand how <code>BULK COLLECT</code> works.</p>
+</div><h2>Step-by-Step Example</h2>
+<div class='content'><ol>
+<li><strong>Create a Table</strong>: First, we will create a sample table to work with.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxveWVlcyAoCiAgICBlbXBsb3llZV9pZCBOVU1CRVIsCiAgICBmaXJzdF9uYW1lIFZBUkNIQVIyKDUwKSwKICAgIGxhc3RfbmFtZSBWQVJDSEFSMig1MCksCiAgICBzYWxhcnkgTlVNQkVSCik7CgpJTlNFUlQgSU5UTyBlbXBsb3llZXMgKGVtcGxveWVlX2lkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIHNhbGFyeSkgVkFMVUVTICgxLCAnSm9obicsICdEb2UnLCA1MDAwMCk7CklOU0VSVCBJTlRPIGVtcGxveWVlcyAoZW1wbG95ZWVfaWQsIGZpcnN0X25hbWUsIGxhc3RfbmFtZSwgc2FsYXJ5KSBWQUxVRVMgKDIsICdKYW5lJywgJ1NtaXRoJywgNjAwMDApOwpJTlNFUlQgSU5UTyBlbXBsb3llZXMgKGVtcGxveWVlX2lkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIHNhbGFyeSkgVkFMVUVTICgzLCAnSmltJywgJ0Jyb3duJywgNTUwMDApOwpDT01NSVQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE employees (
+    employee_id NUMBER,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    salary NUMBER
+);
+
+INSERT INTO employees (employee_id, first_name, last_name, salary) VALUES (1, 'John', 'Doe', 50000);
+INSERT INTO employees (employee_id, first_name, last_name, salary) VALUES (2, 'Jane', 'Smith', 60000);
+INSERT INTO employees (employee_id, first_name, last_name, salary) VALUES (3, 'Jim', 'Brown', 55000);
+COMMIT;</pre></div><div class='content'><ol start="2">
+<li><strong>Declare Collections</strong>: Next, we declare collections to hold the data fetched from the table.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgVFlQRSBlbXBsb3llZV9pZF90YWJsZSBJUyBUQUJMRSBPRiBlbXBsb3llZXMuZW1wbG95ZWVfaWQlVFlQRTsKICAgIFRZUEUgZmlyc3RfbmFtZV90YWJsZSBJUyBUQUJMRSBPRiBlbXBsb3llZXMuZmlyc3RfbmFtZSVUWVBFOwogICAgVFlQRSBsYXN0X25hbWVfdGFibGUgSVMgVEFCTEUgT0YgZW1wbG95ZWVzLmxhc3RfbmFtZSVUWVBFOwogICAgVFlQRSBzYWxhcnlfdGFibGUgSVMgVEFCTEUgT0YgZW1wbG95ZWVzLnNhbGFyeSVUWVBFOwoKICAgIGVtcGxveWVlX2lkcyBlbXBsb3llZV9pZF90YWJsZTsKICAgIGZpcnN0X25hbWVzIGZpcnN0X25hbWVfdGFibGU7CiAgICBsYXN0X25hbWVzIGxhc3RfbmFtZV90YWJsZTsKICAgIHNhbGFyaWVzIHNhbGFyeV90YWJsZTsKQkVHSU4KICAgIC0tIEZldGNoIGRhdGEgdXNpbmcgQlVMSyBDT0xMRUNUCiAgICBTRUxFQ1QgZW1wbG95ZWVfaWQsIGZpcnN0X25hbWUsIGxhc3RfbmFtZSwgc2FsYXJ5CiAgICBCVUxLIENPTExFQ1QgSU5UTyBlbXBsb3llZV9pZHMsIGZpcnN0X25hbWVzLCBsYXN0X25hbWVzLCBzYWxhcmllcwogICAgRlJPTSBlbXBsb3llZXM7CgogICAgLS0gRGlzcGxheSB0aGUgZmV0Y2hlZCBkYXRhCiAgICBGT1IgaSBJTiAxLi5lbXBsb3llZV9pZHMuQ09VTlQgTE9PUAogICAgICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdFbXBsb3llZSBJRDogJyB8fCBlbXBsb3llZV9pZHMoaSkgfHwgJywgTmFtZTogJyB8fCBmaXJzdF9uYW1lcyhpKSB8fCAnICcgfHwgbGFzdF9uYW1lcyhpKSB8fCAnLCBTYWxhcnk6ICcgfHwgc2FsYXJpZXMoaSkpOwogICAgRU5EIExPT1A7CkVORDsKLw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    TYPE employee_id_table IS TABLE OF employees.employee_id%TYPE;
+    TYPE first_name_table IS TABLE OF employees.first_name%TYPE;
+    TYPE last_name_table IS TABLE OF employees.last_name%TYPE;
+    TYPE salary_table IS TABLE OF employees.salary%TYPE;
+
+    employee_ids employee_id_table;
+    first_names first_name_table;
+    last_names last_name_table;
+    salaries salary_table;
+BEGIN
+    -- Fetch data using BULK COLLECT
+    SELECT employee_id, first_name, last_name, salary
+    BULK COLLECT INTO employee_ids, first_names, last_names, salaries
+    FROM employees;
+
+    -- Display the fetched data
+    FOR i IN 1..employee_ids.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE('Employee ID: ' || employee_ids(i) || ', Name: ' || first_names(i) || ' ' || last_names(i) || ', Salary: ' || salaries(i));
+    END LOOP;
+END;
+/</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Declare Collections</strong>: We declare four collections to hold the <code>employee_id</code>, <code>first_name</code>, <code>last_name</code>, and <code>salary</code> columns.</li>
+<li><strong>Bulk Collect</strong>: We use the <code>BULK COLLECT</code> clause to fetch all rows from the <code>employees</code> table into the declared collections.</li>
+<li><strong>Display Data</strong>: We loop through the collections and display the fetched data using <code>DBMS_OUTPUT.PUT_LINE</code>.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Fetch Data Using Bulk Collect</h2>
+<div class='content'><p><strong>Task</strong>: Create a table named <code>departments</code> with columns <code>department_id</code>, <code>department_name</code>, and <code>manager_id</code>. Insert some sample data and write a PL/SQL block to fetch all rows using <code>BULK COLLECT</code> into collections and display the data.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXRlIHRoZSBkZXBhcnRtZW50cyB0YWJsZQpDUkVBVEUgVEFCTEUgZGVwYXJ0bWVudHMgKAogICAgZGVwYXJ0bWVudF9pZCBOVU1CRVIsCiAgICBkZXBhcnRtZW50X25hbWUgVkFSQ0hBUjIoNTApLAogICAgbWFuYWdlcl9pZCBOVU1CRVIKKTsKCi0tIEluc2VydCBzYW1wbGUgZGF0YQpJTlNFUlQgSU5UTyBkZXBhcnRtZW50cyAoZGVwYXJ0bWVudF9pZCwgZGVwYXJ0bWVudF9uYW1lLCBtYW5hZ2VyX2lkKSBWQUxVRVMgKDEsICdIUicsIDEwMSk7CklOU0VSVCBJTlRPIGRlcGFydG1lbnRzIChkZXBhcnRtZW50X2lkLCBkZXBhcnRtZW50X25hbWUsIG1hbmFnZXJfaWQpIFZBTFVFUyAoMiwgJ0ZpbmFuY2UnLCAxMDIpOwpJTlNFUlQgSU5UTyBkZXBhcnRtZW50cyAoZGVwYXJ0bWVudF9pZCwgZGVwYXJ0bWVudF9uYW1lLCBtYW5hZ2VyX2lkKSBWQUxVRVMgKDMsICdJVCcsIDEwMyk7CkNPTU1JVDsKCi0tIFBML1NRTCBibG9jayB0byBmZXRjaCBkYXRhIHVzaW5nIEJVTEsgQ09MTEVDVApERUNMQVJFCiAgICBUWVBFIGRlcGFydG1lbnRfaWRfdGFibGUgSVMgVEFCTEUgT0YgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9pZCVUWVBFOwogICAgVFlQRSBkZXBhcnRtZW50X25hbWVfdGFibGUgSVMgVEFCTEUgT0YgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lJVRZUEU7CiAgICBUWVBFIG1hbmFnZXJfaWRfdGFibGUgSVMgVEFCTEUgT0YgZGVwYXJ0bWVudHMubWFuYWdlcl9pZCVUWVBFOwoKICAgIGRlcGFydG1lbnRfaWRzIGRlcGFydG1lbnRfaWRfdGFibGU7CiAgICBkZXBhcnRtZW50X25hbWVzIGRlcGFydG1lbnRfbmFtZV90YWJsZTsKICAgIG1hbmFnZXJfaWRzIG1hbmFnZXJfaWRfdGFibGU7CkJFR0lOCiAgICAtLSBGZXRjaCBkYXRhIHVzaW5nIEJVTEsgQ09MTEVDVAogICAgU0VMRUNUIGRlcGFydG1lbnRfaWQsIGRlcGFydG1lbnRfbmFtZSwgbWFuYWdlcl9pZAogICAgQlVMSyBDT0xMRUNUIElOVE8gZGVwYXJ0bWVudF9pZHMsIGRlcGFydG1lbnRfbmFtZXMsIG1hbmFnZXJfaWRzCiAgICBGUk9NIGRlcGFydG1lbnRzOwoKICAgIC0tIERpc3BsYXkgdGhlIGZldGNoZWQgZGF0YQogICAgRk9SIGkgSU4gMS4uZGVwYXJ0bWVudF9pZHMuQ09VTlQgTE9PUAogICAgICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdEZXBhcnRtZW50IElEOiAnIHx8IGRlcGFydG1lbnRfaWRzKGkpIHx8ICcsIE5hbWU6ICcgfHwgZGVwYXJ0bWVudF9uYW1lcyhpKSB8fCAnLCBNYW5hZ2VyIElEOiAnIHx8IG1hbmFnZXJfaWRzKGkpKTsKICAgIEVORCBMT09QOwpFTkQ7Ci8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Create the departments table
+CREATE TABLE departments (
+    department_id NUMBER,
+    department_name VARCHAR2(50),
+    manager_id NUMBER
+);
+
+-- Insert sample data
+INSERT INTO departments (department_id, department_name, manager_id) VALUES (1, 'HR', 101);
+INSERT INTO departments (department_id, department_name, manager_id) VALUES (2, 'Finance', 102);
+INSERT INTO departments (department_id, department_name, manager_id) VALUES (3, 'IT', 103);
+COMMIT;
+
+-- PL/SQL block to fetch data using BULK COLLECT
+DECLARE
+    TYPE department_id_table IS TABLE OF departments.department_id%TYPE;
+    TYPE department_name_table IS TABLE OF departments.department_name%TYPE;
+    TYPE manager_id_table IS TABLE OF departments.manager_id%TYPE;
+
+    department_ids department_id_table;
+    department_names department_name_table;
+    manager_ids manager_id_table;
+BEGIN
+    -- Fetch data using BULK COLLECT
+    SELECT department_id, department_name, manager_id
+    BULK COLLECT INTO department_ids, department_names, manager_ids
+    FROM departments;
+
+    -- Display the fetched data
+    FOR i IN 1..department_ids.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE('Department ID: ' || department_ids(i) || ', Name: ' || department_names(i) || ', Manager ID: ' || manager_ids(i));
+    END LOOP;
+END;
+/</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Collection Size</strong>: Ensure that the collections are large enough to hold the fetched data. If the data set is very large, consider using <code>LIMIT</code> with <code>BULK COLLECT</code>.</li>
+<li><strong>Memory Usage</strong>: Be cautious of memory usage when fetching large data sets. Use <code>LIMIT</code> to fetch data in chunks if necessary.</li>
+<li><strong>Error Handling</strong>: Always include proper error handling to manage exceptions that may occur during data fetching.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned about the <code>BULK COLLECT</code> feature in PL/SQL, which allows for efficient data fetching by reducing context switches. We covered the syntax, a practical example, and exercises to reinforce the concepts. Understanding and using <code>BULK COLLECT</code> can significantly improve the performance of your PL/SQL programs, especially when dealing with large data sets.</p>
+<p>Next, we will explore the <code>FORALL</code> statement, which complements <code>BULK COLLECT</code> by allowing bulk DML operations.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-implicit-explicit-cursors' title="Implicit and Explicit Cursors">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-forall-statement' title="FORALL Statement">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Security</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/08-04-image-security" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/08-04-image-security" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/08-04-image-security" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/08-04-image-security" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/08-04-image-security" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-network-security' title="Network Security">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Image Security</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-horizontal-pod-autoscaling' title="Horizontal Pod Autoscaling">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the importance of image security in Kubernetes, best practices for securing container images, and tools that can help ensure your images are safe and compliant.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Container Image</strong>: A lightweight, standalone, executable package that includes everything needed to run a piece of software, including the code, runtime, libraries, and settings.</li>
+<li><strong>Image Vulnerabilities</strong>: Security flaws within the container image that can be exploited by attackers.</li>
+<li><strong>Image Scanning</strong>: The process of analyzing container images for known vulnerabilities and misconfigurations.</li>
+<li><strong>Image Signing</strong>: A method to ensure the integrity and authenticity of a container image.</li>
+</ol>
+</div><h1>Best Practices for Image Security</h1>
+<div class='content'></div><h2>1. Use Official and Trusted Images</h2>
+<div class='content'><ul>
+<li><strong>Official Images</strong>: Always prefer using official images from trusted sources like Docker Hub or other verified repositories.</li>
+<li><strong>Minimal Base Images</strong>: Use minimal base images to reduce the attack surface. Examples include <code>alpine</code> or <code>scratch</code>.</li>
+</ul>
+</div><h2>2. Regularly Scan Images for Vulnerabilities</h2>
+<div class='content'><ul>
+<li><strong>Automated Scanning</strong>: Integrate automated image scanning tools into your CI/CD pipeline to detect vulnerabilities early.</li>
+<li><strong>Manual Scanning</strong>: Periodically perform manual scans to ensure no vulnerabilities are missed.</li>
+</ul>
+</div><h2>3. Keep Images Up-to-Date</h2>
+<div class='content'><ul>
+<li><strong>Patch Management</strong>: Regularly update your images to include the latest security patches.</li>
+<li><strong>Rebuild Images</strong>: Rebuild and redeploy images whenever there are updates to the base image or dependencies.</li>
+</ul>
+</div><h2>4. Use Image Signing</h2>
+<div class='content'><ul>
+<li><strong>Digital Signatures</strong>: Sign your images using tools like Docker Content Trust (DCT) to ensure their integrity and authenticity.</li>
+<li><strong>Verification</strong>: Configure your Kubernetes cluster to verify image signatures before deployment.</li>
+</ul>
+</div><h2>5. Implement Least Privilege</h2>
+<div class='content'><ul>
+<li><strong>Non-Root User</strong>: Run containers as a non-root user whenever possible.</li>
+<li><strong>Read-Only Filesystem</strong>: Use read-only filesystems to prevent unauthorized modifications.</li>
+</ul>
+</div><h1>Tools for Image Security</h1>
+<div class='content'></div><h2>1. Clair</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Clair is an open-source project for the static analysis of vulnerabilities in application containers (currently including appc and docker).</li>
+<li><strong>Usage</strong>: Integrate Clair with your CI/CD pipeline to scan images for vulnerabilities.</li>
+</ul>
+</div><h2>2. Trivy</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Trivy is a comprehensive and easy-to-use vulnerability scanner for containers.</li>
+<li><strong>Usage</strong>: Use Trivy to scan your container images for vulnerabilities and misconfigurations.</li>
+</ul>
+</div><h2>3. Docker Content Trust (DCT)</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: DCT uses digital signatures to ensure the integrity and publisher of Docker images.</li>
+<li><strong>Usage</strong>: Enable DCT to sign and verify your Docker images.</li>
+</ul>
+</div><h2>4. Notary</h2>
+<div class='content'><ul>
+<li><strong>Description</strong>: Notary is a project that provides a server and client for running and interacting with trusted collections.</li>
+<li><strong>Usage</strong>: Use Notary to sign and verify the integrity of your container images.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Scanning an Image with Trivy</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Trivy</strong>:</p>
+<pre><code class="language-bash">brew install trivy
+</code></pre>
+</li>
+<li>
+<p><strong>Scan an Image</strong>:</p>
+<pre><code class="language-bash">trivy image nginx:latest
+</code></pre>
+<p><strong>Output</strong>:</p>
+<pre><code>2023-10-01T12:00:00.000Z    INFO    Need to update DB
+2023-10-01T12:00:00.000Z    INFO    Downloading DB...
+2023-10-01T12:00:00.000Z    INFO    Detecting Debian vulnerabilities...
+
+nginx:latest (debian 10.9)
+=================================
+Total: 5 (UNKNOWN: 0, LOW: 2, MEDIUM: 2, HIGH: 1, CRITICAL: 0)
+
++------------------+------------------+----------+-------------------+---------------+--------------------------------+
+|     LIBRARY      | VULNERABILITY ID | SEVERITY | INSTALLED VERSION | FIXED VERSION |             TITLE              |
++------------------+------------------+----------+-------------------+---------------+--------------------------------+
+| apt              | CVE-2021-XXXX     | MEDIUM   | 1.8.2.1           | 1.8.2.2       | apt: integer overflow in...    |
+| libc-bin         | CVE-2021-YYYY     | HIGH     | 2.28-10           | 2.28-10+deb10u1| glibc: buffer overflow in...   |
++------------------+------------------+----------+-------------------+---------------+--------------------------------+
+</code></pre>
+</li>
+</ol>
+</div><h2>Signing an Image with Docker Content Trust</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Enable Docker Content Trust</strong>:</p>
+<pre><code class="language-bash">export DOCKER_CONTENT_TRUST=1
+</code></pre>
+</li>
+<li>
+<p><strong>Sign an Image</strong>:</p>
+<pre><code class="language-bash">docker push your-repo/your-image:tag
+</code></pre>
+<p>Docker will automatically sign the image before pushing it to the repository.</p>
+</li>
+</ol>
+</div><h1>Exercise</h1>
+<div class='content'></div><h2>Task: Scan and Sign a Docker Image</h2>
+<div class='content'><ol>
+<li><strong>Scan the <code>nginx:latest</code> image using Trivy</strong>.</li>
+<li><strong>Sign the <code>nginx:latest</code> image using Docker Content Trust</strong>.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Scan the Image</strong>:</p>
+<pre><code class="language-bash">trivy image nginx:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Sign the Image</strong>:</p>
+<pre><code class="language-bash">export DOCKER_CONTENT_TRUST=1
+docker push your-repo/nginx:latest
+</code></pre>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Ignoring Vulnerabilities</strong>: Do not ignore vulnerabilities flagged by scanning tools. Always assess and address them.</li>
+<li><strong>Running as Root</strong>: Avoid running containers as the root user. Use a non-root user to minimize security risks.</li>
+<li><strong>Outdated Images</strong>: Regularly update your images to include the latest security patches and fixes.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of image security in Kubernetes, best practices for securing container images, and tools to help ensure your images are safe. By following these practices and using the right tools, you can significantly reduce the risk of vulnerabilities in your containerized applications. In the next section, we will explore scaling and performance in Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-network-security' title="Network Security">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-horizontal-pod-autoscaling' title="Horizontal Pod Autoscaling">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

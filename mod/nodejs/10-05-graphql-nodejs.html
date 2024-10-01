@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL with Node.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/10-05-graphql-nodejs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/10-05-graphql-nodejs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/10-05-graphql-nodejs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/10-05-graphql-nodejs" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/10-05-graphql-nodejs" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-building-restful-apis' title="Building RESTful APIs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">GraphQL with Node.js</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-01-environment-variables' title="Environment Variables">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>GraphQL is a query language for APIs and a runtime for executing those queries by using a type system you define for your data. It provides a more efficient, powerful, and flexible alternative to REST. In this section, we will explore how to integrate GraphQL with Node.js.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>GraphQL Schema</strong>: Defines the structure of the API, including types, queries, and mutations.</li>
+<li><strong>Resolvers</strong>: Functions that handle the logic for fetching the data for each type in the schema.</li>
+<li><strong>Queries</strong>: Read operations to fetch data.</li>
+<li><strong>Mutations</strong>: Write operations to modify data.</li>
+<li><strong>GraphQL Server</strong>: The server that processes GraphQL queries and returns the results.</li>
+</ol>
+</div><h1>Setting Up GraphQL with Node.js</h1>
+<div class='content'></div><h2>Step 1: Initialize a Node.js Project</h2>
+<div class='content'><p>First, create a new Node.js project and install the necessary dependencies.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgZ3JhcGhxbC1ub2RlanMKY2QgZ3JhcGhxbC1ub2RlanMKbnBtIGluaXQgLXkKbnBtIGluc3RhbGwgZXhwcmVzcyBleHByZXNzLWdyYXBocWwgZ3JhcGhxbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir graphql-nodejs
+cd graphql-nodejs
+npm init -y
+npm install express express-graphql graphql</pre></div><div class='content'></div><h2>Step 2: Create the Server</h2>
+<div class='content'><p>Create a file named <code>server.js</code> and set up a basic Express server with GraphQL.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKCi8vIERlZmluZSB0aGUgc2NoZW1hCmNvbnN0IHNjaGVtYSA9IGJ1aWxkU2NoZW1hKGAKICB0eXBlIFF1ZXJ5IHsKICAgIGhlbGxvOiBTdHJpbmcKICB9CmApOwoKLy8gRGVmaW5lIHRoZSByZXNvbHZlcnMKY29uc3Qgcm9vdCA9IHsKICBoZWxsbzogKCkgPT4gewogICAgcmV0dXJuICdIZWxsbywgd29ybGQhJzsKICB9LAp9OwoKLy8gQ3JlYXRlIGFuIEV4cHJlc3Mgc2VydmVyIGFuZCBhIEdyYXBoUUwgZW5kcG9pbnQKY29uc3QgYXBwID0gZXhwcmVzcygpOwphcHAudXNlKCcvZ3JhcGhxbCcsIGdyYXBocWxIVFRQKHsKICBzY2hlbWE6IHNjaGVtYSwKICByb290VmFsdWU6IHJvb3QsCiAgZ3JhcGhpcWw6IHRydWUsCn0pKTsKCmFwcC5saXN0ZW4oNDAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIGh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC9ncmFwaHFsJykpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+// Define the schema
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Define the resolvers
+const root = {
+  hello: () =&gt; {
+    return 'Hello, world!';
+  },
+};
+
+// Create an Express server and a GraphQL endpoint
+const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Server running on http://localhost:4000/graphql'));</pre></div><div class='content'></div><h2>Step 3: Run the Server</h2>
+<div class='content'><p>Run the server using the following command:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSBzZXJ2ZXIuanM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node server.js</pre></div><div class='content'><p>You can now navigate to <code>http://localhost:4000/graphql</code> in your browser and use the GraphiQL interface to run the query:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogIGhlbGxvCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  hello
+}</pre></div><div class='content'></div><h1>Defining a More Complex Schema</h1>
+<div class='content'><p>Let's expand our schema to include more complex types and operations.</p>
+</div><h2>Step 1: Update the Schema</h2>
+<div class='content'><p>Modify the schema to include a <code>User</code> type and queries to fetch users.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgVXNlciB7CiAgICBpZDogSUQhCiAgICBuYW1lOiBTdHJpbmchCiAgICBlbWFpbDogU3RyaW5nIQogIH0KCiAgdHlwZSBRdWVyeSB7CiAgICB1c2VyKGlkOiBJRCEpOiBVc2VyCiAgICB1c2VyczogW1VzZXJdCiAgfQpgKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Query {
+    user(id: ID!): User
+    users: [User]
+  }
+`);</pre></div><div class='content'></div><h2>Step 2: Add Resolvers</h2>
+<div class='content'><p>Update the resolvers to handle the new queries.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdXNlcnMgPSBbCiAgeyBpZDogJzEnLCBuYW1lOiAnSm9obiBEb2UnLCBlbWFpbDogJ2pvaG5AZXhhbXBsZS5jb20nIH0sCiAgeyBpZDogJzInLCBuYW1lOiAnSmFuZSBEb2UnLCBlbWFpbDogJ2phbmVAZXhhbXBsZS5jb20nIH0sCl07Cgpjb25zdCByb290ID0gewogIHVzZXI6ICh7IGlkIH0pID0+IHVzZXJzLmZpbmQodXNlciA9PiB1c2VyLmlkID09PSBpZCksCiAgdXNlcnM6ICgpID0+IHVzZXJzLAp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const users = [
+  { id: '1', name: 'John Doe', email: 'john@example.com' },
+  { id: '2', name: 'Jane Doe', email: 'jane@example.com' },
+];
+
+const root = {
+  user: ({ id }) =&gt; users.find(user =&gt; user.id === id),
+  users: () =&gt; users,
+};</pre></div><div class='content'></div><h2>Step 3: Test the Queries</h2>
+<div class='content'><p>Restart the server and test the following queries in the GraphiQL interface:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogIHVzZXIoaWQ6ICIxIikgewogICAgaWQKICAgIG5hbWUKICAgIGVtYWlsCiAgfQp9Cgp7CiAgdXNlcnMgewogICAgaWQKICAgIG5hbWUKICAgIGVtYWlsCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  user(id: &quot;1&quot;) {
+    id
+    name
+    email
+  }
+}
+
+{
+  users {
+    id
+    name
+    email
+  }
+}</pre></div><div class='content'></div><h1>Adding Mutations</h1>
+<div class='content'><p>Mutations allow you to modify data. Let's add a mutation to create a new user.</p>
+</div><h2>Step 1: Update the Schema</h2>
+<div class='content'><p>Add a mutation to the schema.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgVXNlciB7CiAgICBpZDogSUQhCiAgICBuYW1lOiBTdHJpbmchCiAgICBlbWFpbDogU3RyaW5nIQogIH0KCiAgdHlwZSBRdWVyeSB7CiAgICB1c2VyKGlkOiBJRCEpOiBVc2VyCiAgICB1c2VyczogW1VzZXJdCiAgfQoKICB0eXBlIE11dGF0aW9uIHsKICAgIGNyZWF0ZVVzZXIobmFtZTogU3RyaW5nISwgZW1haWw6IFN0cmluZyEpOiBVc2VyCiAgfQpgKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Query {
+    user(id: ID!): User
+    users: [User]
+  }
+
+  type Mutation {
+    createUser(name: String!, email: String!): User
+  }
+`);</pre></div><div class='content'></div><h2>Step 2: Add the Mutation Resolver</h2>
+<div class='content'><p>Update the resolvers to handle the new mutation.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyB2NDogdXVpZHY0IH0gPSByZXF1aXJlKCd1dWlkJyk7Cgpjb25zdCByb290ID0gewogIHVzZXI6ICh7IGlkIH0pID0+IHVzZXJzLmZpbmQodXNlciA9PiB1c2VyLmlkID09PSBpZCksCiAgdXNlcnM6ICgpID0+IHVzZXJzLAogIGNyZWF0ZVVzZXI6ICh7IG5hbWUsIGVtYWlsIH0pID0+IHsKICAgIGNvbnN0IG5ld1VzZXIgPSB7IGlkOiB1dWlkdjQoKSwgbmFtZSwgZW1haWwgfTsKICAgIHVzZXJzLnB1c2gobmV3VXNlcik7CiAgICByZXR1cm4gbmV3VXNlcjsKICB9LAp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { v4: uuidv4 } = require('uuid');
+
+const root = {
+  user: ({ id }) =&gt; users.find(user =&gt; user.id === id),
+  users: () =&gt; users,
+  createUser: ({ name, email }) =&gt; {
+    const newUser = { id: uuidv4(), name, email };
+    users.push(newUser);
+    return newUser;
+  },
+};</pre></div><div class='content'></div><h2>Step 3: Test the Mutation</h2>
+<div class='content'><p>Restart the server and test the following mutation in the GraphiQL interface:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXV0YXRpb24gewogIGNyZWF0ZVVzZXIobmFtZTogIkFsaWNlIiwgZW1haWw6ICJhbGljZUBleGFtcGxlLmNvbSIpIHsKICAgIGlkCiAgICBuYW1lCiAgICBlbWFpbAogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mutation {
+  createUser(name: &quot;Alice&quot;, email: &quot;alice@example.com&quot;) {
+    id
+    name
+    email
+  }
+}</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Extend the Schema</h2>
+<div class='content'><ol>
+<li>Add a <code>Post</code> type with fields <code>id</code>, <code>title</code>, <code>content</code>, and <code>authorId</code>.</li>
+<li>Add queries to fetch a single post and all posts.</li>
+<li>Add a mutation to create a new post.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Step 1: Update the Schema</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgVXNlciB7CiAgICBpZDogSUQhCiAgICBuYW1lOiBTdHJpbmchCiAgICBlbWFpbDogU3RyaW5nIQogIH0KCiAgdHlwZSBQb3N0IHsKICAgIGlkOiBJRCEKICAgIHRpdGxlOiBTdHJpbmchCiAgICBjb250ZW50OiBTdHJpbmchCiAgICBhdXRob3JJZDogSUQhCiAgfQoKICB0eXBlIFF1ZXJ5IHsKICAgIHVzZXIoaWQ6IElEISk6IFVzZXIKICAgIHVzZXJzOiBbVXNlcl0KICAgIHBvc3QoaWQ6IElEISk6IFBvc3QKICAgIHBvc3RzOiBbUG9zdF0KICB9CgogIHR5cGUgTXV0YXRpb24gewogICAgY3JlYXRlVXNlcihuYW1lOiBTdHJpbmchLCBlbWFpbDogU3RyaW5nISk6IFVzZXIKICAgIGNyZWF0ZVBvc3QodGl0bGU6IFN0cmluZyEsIGNvbnRlbnQ6IFN0cmluZyEsIGF1dGhvcklkOiBJRCEpOiBQb3N0CiAgfQpgKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Post {
+    id: ID!
+    title: String!
+    content: String!
+    authorId: ID!
+  }
+
+  type Query {
+    user(id: ID!): User
+    users: [User]
+    post(id: ID!): Post
+    posts: [Post]
+  }
+
+  type Mutation {
+    createUser(name: String!, email: String!): User
+    createPost(title: String!, content: String!, authorId: ID!): Post
+  }
+`);</pre></div><div class='content'><h4>Step 2: Add Resolvers</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcG9zdHMgPSBbXTsKCmNvbnN0IHJvb3QgPSB7CiAgdXNlcjogKHsgaWQgfSkgPT4gdXNlcnMuZmluZCh1c2VyID0+IHVzZXIuaWQgPT09IGlkKSwKICB1c2VyczogKCkgPT4gdXNlcnMsCiAgcG9zdDogKHsgaWQgfSkgPT4gcG9zdHMuZmluZChwb3N0ID0+IHBvc3QuaWQgPT09IGlkKSwKICBwb3N0czogKCkgPT4gcG9zdHMsCiAgY3JlYXRlVXNlcjogKHsgbmFtZSwgZW1haWwgfSkgPT4gewogICAgY29uc3QgbmV3VXNlciA9IHsgaWQ6IHV1aWR2NCgpLCBuYW1lLCBlbWFpbCB9OwogICAgdXNlcnMucHVzaChuZXdVc2VyKTsKICAgIHJldHVybiBuZXdVc2VyOwogIH0sCiAgY3JlYXRlUG9zdDogKHsgdGl0bGUsIGNvbnRlbnQsIGF1dGhvcklkIH0pID0+IHsKICAgIGNvbnN0IG5ld1Bvc3QgPSB7IGlkOiB1dWlkdjQoKSwgdGl0bGUsIGNvbnRlbnQsIGF1dGhvcklkIH07CiAgICBwb3N0cy5wdXNoKG5ld1Bvc3QpOwogICAgcmV0dXJuIG5ld1Bvc3Q7CiAgfSwKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const posts = [];
+
+const root = {
+  user: ({ id }) =&gt; users.find(user =&gt; user.id === id),
+  users: () =&gt; users,
+  post: ({ id }) =&gt; posts.find(post =&gt; post.id === id),
+  posts: () =&gt; posts,
+  createUser: ({ name, email }) =&gt; {
+    const newUser = { id: uuidv4(), name, email };
+    users.push(newUser);
+    return newUser;
+  },
+  createPost: ({ title, content, authorId }) =&gt; {
+    const newPost = { id: uuidv4(), title, content, authorId };
+    posts.push(newPost);
+    return newPost;
+  },
+};</pre></div><div class='content'><h4>Step 3: Test the Queries and Mutations</h4>
+<p>Restart the server and test the following queries and mutations in the GraphiQL interface:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXV0YXRpb24gewogIGNyZWF0ZVBvc3QodGl0bGU6ICJNeSBGaXJzdCBQb3N0IiwgY29udGVudDogIlRoaXMgaXMgdGhlIGNvbnRlbnQgb2YgbXkgZmlyc3QgcG9zdCIsIGF1dGhvcklkOiAiMSIpIHsKICAgIGlkCiAgICB0aXRsZQogICAgY29udGVudAogICAgYXV0aG9ySWQKICB9Cn0KCnsKICBwb3N0cyB7CiAgICBpZAogICAgdGl0bGUKICAgIGNvbnRlbnQKICAgIGF1dGhvcklkCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mutation {
+  createPost(title: &quot;My First Post&quot;, content: &quot;This is the content of my first post&quot;, authorId: &quot;1&quot;) {
+    id
+    title
+    content
+    authorId
+  }
+}
+
+{
+  posts {
+    id
+    title
+    content
+    authorId
+  }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of integrating GraphQL with Node.js. We learned how to set up a GraphQL server, define schemas, create resolvers, and handle queries and mutations. By extending the schema and adding more complex types and operations, you can build powerful and flexible APIs with GraphQL and Node.js.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-building-restful-apis' title="Building RESTful APIs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-01-environment-variables' title="Environment Variables">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

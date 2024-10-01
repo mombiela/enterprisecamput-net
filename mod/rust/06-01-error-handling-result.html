@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Handling with Result</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/06-01-error-handling-result" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/06-01-error-handling-result" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/06-01-error-handling-result" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rust/06-01-error-handling-result" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/06-01-error-handling-result" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-hashmaps' title="HashMaps">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Error Handling with Result</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Error handling is a crucial aspect of programming, and Rust provides robust mechanisms to handle errors gracefully. One of the primary tools for error handling in Rust is the <code>Result</code> type. In this section, we will explore how to use <code>Result</code> to manage errors effectively.</p>
+</div><h1>What is `Result`?</h1>
+<div class='content'><p>The <code>Result</code> type is an enum that represents either success (<code>Ok</code>) or failure (<code>Err</code>). It is defined as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBSZXN1bHQ8VCwgRT4gewogICAgT2soVCksCiAgICBFcnIoRSksCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Result&lt;T, E&gt; {
+    Ok(T),
+    Err(E),
+}</pre></div><div class='content'><ul>
+<li><code>T</code> represents the type of the value in the case of success.</li>
+<li><code>E</code> represents the type of the error in the case of failure.</li>
+</ul>
+</div><h1>Basic Usage</h1>
+<div class='content'><p>Let's start with a simple example to understand how <code>Result</code> works.</p>
+</div><h2>Example: Division Function</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlKGRpdmlkZW5kOiBmNjQsIGRpdmlzb3I6IGY2NCkgLT4gUmVzdWx0PGY2NCwgU3RyaW5nPiB7CiAgICBpZiBkaXZpc29yID09IDAuMCB7CiAgICAgICAgRXJyKFN0cmluZzo6ZnJvbSgiQ2Fubm90IGRpdmlkZSBieSB6ZXJvIikpCiAgICB9IGVsc2UgewogICAgICAgIE9rKGRpdmlkZW5kIC8gZGl2aXNvcikKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCByZXN1bHQgPSBkaXZpZGUoMTAuMCwgMi4wKTsKICAgIG1hdGNoIHJlc3VsdCB7CiAgICAgICAgT2sodmFsdWUpID0+IHByaW50bG4hKCJSZXN1bHQ6IHt9IiwgdmFsdWUpLAogICAgICAgIEVycihlKSA9PiBwcmludGxuISgiRXJyb3I6IHt9IiwgZSksCiAgICB9CgogICAgbGV0IHJlc3VsdCA9IGRpdmlkZSgxMC4wLCAwLjApOwogICAgbWF0Y2ggcmVzdWx0IHsKICAgICAgICBPayh2YWx1ZSkgPT4gcHJpbnRsbiEoIlJlc3VsdDoge30iLCB2YWx1ZSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjoge30iLCBlKSwKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide(dividend: f64, divisor: f64) -&gt; Result&lt;f64, String&gt; {
+    if divisor == 0.0 {
+        Err(String::from(&quot;Cannot divide by zero&quot;))
+    } else {
+        Ok(dividend / divisor)
+    }
+}
+
+fn main() {
+    let result = divide(10.0, 2.0);
+    match result {
+        Ok(value) =&gt; println!(&quot;Result: {}&quot;, value),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+
+    let result = divide(10.0, 0.0);
+    match result {
+        Ok(value) =&gt; println!(&quot;Result: {}&quot;, value),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>divide</code> function returns a <code>Result&lt;f64, String&gt;</code>.</li>
+<li>If the divisor is zero, it returns an <code>Err</code> with an error message.</li>
+<li>Otherwise, it returns <code>Ok</code> with the result of the division.</li>
+<li>In the <code>main</code> function, we use a <code>match</code> statement to handle both <code>Ok</code> and <code>Err</code> cases.</li>
+</ul>
+</div><h1>Propagating Errors</h1>
+<div class='content'><p>Often, you will want to propagate errors to the calling function rather than handling them immediately. Rust provides the <code>?</code> operator to make this easier.</p>
+</div><h2>Example: Propagating Errors</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gcmVhZF9maWxlX2NvbnRlbnQoZmlsZV9wYXRoOiAmc3RyKSAtPiBSZXN1bHQ8U3RyaW5nLCBzdGQ6OmlvOjpFcnJvcj4gewogICAgbGV0IGNvbnRlbnQgPSBzdGQ6OmZzOjpyZWFkX3RvX3N0cmluZyhmaWxlX3BhdGgpPzsKICAgIE9rKGNvbnRlbnQpCn0KCmZuIG1haW4oKSB7CiAgICBtYXRjaCByZWFkX2ZpbGVfY29udGVudCgiZXhhbXBsZS50eHQiKSB7CiAgICAgICAgT2soY29udGVudCkgPT4gcHJpbnRsbiEoIkZpbGUgY29udGVudDoge30iLCBjb250ZW50KSwKICAgICAgICBFcnIoZSkgPT4gcHJpbnRsbiEoIkVycm9yIHJlYWRpbmcgZmlsZToge30iLCBlKSwKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn read_file_content(file_path: &amp;str) -&gt; Result&lt;String, std::io::Error&gt; {
+    let content = std::fs::read_to_string(file_path)?;
+    Ok(content)
+}
+
+fn main() {
+    match read_file_content(&quot;example.txt&quot;) {
+        Ok(content) =&gt; println!(&quot;File content: {}&quot;, content),
+        Err(e) =&gt; println!(&quot;Error reading file: {}&quot;, e),
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>The <code>read_file_content</code> function reads the content of a file and returns a <code>Result&lt;String, std::io::Error&gt;</code>.</li>
+<li>The <code>?</code> operator is used to propagate the error if <code>std::fs::read_to_string</code> fails.</li>
+<li>In the <code>main</code> function, we handle the <code>Result</code> using a <code>match</code> statement.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: File Reading</h2>
+<div class='content'><p>Write a function <code>read_first_line</code> that reads the first line of a file and returns it as a <code>Result&lt;String, std::io::Error&gt;</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6ZnM6OkZpbGU7CnVzZSBzdGQ6OmlvOjp7c2VsZiwgQnVmUmVhZCwgQnVmUmVhZGVyfTsKCmZuIHJlYWRfZmlyc3RfbGluZShmaWxlX3BhdGg6ICZzdHIpIC0+IFJlc3VsdDxTdHJpbmcsIGlvOjpFcnJvcj4gewogICAgbGV0IGZpbGUgPSBGaWxlOjpvcGVuKGZpbGVfcGF0aCk/OwogICAgbGV0IG11dCByZWFkZXIgPSBCdWZSZWFkZXI6Om5ldyhmaWxlKTsKICAgIGxldCBtdXQgZmlyc3RfbGluZSA9IFN0cmluZzo6bmV3KCk7CiAgICByZWFkZXIucmVhZF9saW5lKCZtdXQgZmlyc3RfbGluZSk/OwogICAgT2soZmlyc3RfbGluZSkKfQoKZm4gbWFpbigpIHsKICAgIG1hdGNoIHJlYWRfZmlyc3RfbGluZSgiZXhhbXBsZS50eHQiKSB7CiAgICAgICAgT2sobGluZSkgPT4gcHJpbnRsbiEoIkZpcnN0IGxpbmU6IHt9IiwgbGluZSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjoge30iLCBlKSwKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::fs::File;
+use std::io::{self, BufRead, BufReader};
+
+fn read_first_line(file_path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let file = File::open(file_path)?;
+    let mut reader = BufReader::new(file);
+    let mut first_line = String::new();
+    reader.read_line(&amp;mut first_line)?;
+    Ok(first_line)
+}
+
+fn main() {
+    match read_first_line(&quot;example.txt&quot;) {
+        Ok(line) =&gt; println!(&quot;First line: {}&quot;, line),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+}</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ul>
+<li>The <code>read_first_line</code> function opens the file and reads the first line.</li>
+<li>It uses the <code>?</code> operator to propagate errors from <code>File::open</code> and <code>reader.read_line</code>.</li>
+<li>In the <code>main</code> function, we handle the <code>Result</code> using a <code>match</code> statement.</li>
+</ul>
+</div><h2>Exercise 2: Custom Error Types</h2>
+<div class='content'><p>Create a custom error type and use it in a function that parses an integer from a string.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I1tkZXJpdmUoRGVidWcpXQplbnVtIFBhcnNlRXJyb3IgewogICAgRW1wdHlTdHJpbmcsCiAgICBJbnZhbGlkTnVtYmVyLAp9CgpmbiBwYXJzZV9pbnRlZ2VyKGlucHV0OiAmc3RyKSAtPiBSZXN1bHQ8aTMyLCBQYXJzZUVycm9yPiB7CiAgICBpZiBpbnB1dC5pc19lbXB0eSgpIHsKICAgICAgICByZXR1cm4gRXJyKFBhcnNlRXJyb3I6OkVtcHR5U3RyaW5nKTsKICAgIH0KICAgIGlucHV0LnBhcnNlOjo8aTMyPigpLm1hcF9lcnIofF98IFBhcnNlRXJyb3I6OkludmFsaWROdW1iZXIpCn0KCmZuIG1haW4oKSB7CiAgICBtYXRjaCBwYXJzZV9pbnRlZ2VyKCI0MiIpIHsKICAgICAgICBPayhudW0pID0+IHByaW50bG4hKCJQYXJzZWQgbnVtYmVyOiB7fSIsIG51bSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjogezo/fSIsIGUpLAogICAgfQoKICAgIG1hdGNoIHBhcnNlX2ludGVnZXIoIiIpIHsKICAgICAgICBPayhudW0pID0+IHByaW50bG4hKCJQYXJzZWQgbnVtYmVyOiB7fSIsIG51bSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjogezo/fSIsIGUpLAogICAgfQoKICAgIG1hdGNoIHBhcnNlX2ludGVnZXIoImFiYyIpIHsKICAgICAgICBPayhudW0pID0+IHByaW50bG4hKCJQYXJzZWQgbnVtYmVyOiB7fSIsIG51bSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjogezo/fSIsIGUpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#[derive(Debug)]
+enum ParseError {
+    EmptyString,
+    InvalidNumber,
+}
+
+fn parse_integer(input: &amp;str) -&gt; Result&lt;i32, ParseError&gt; {
+    if input.is_empty() {
+        return Err(ParseError::EmptyString);
+    }
+    input.parse::&lt;i32&gt;().map_err(|_| ParseError::InvalidNumber)
+}
+
+fn main() {
+    match parse_integer(&quot;42&quot;) {
+        Ok(num) =&gt; println!(&quot;Parsed number: {}&quot;, num),
+        Err(e) =&gt; println!(&quot;Error: {:?}&quot;, e),
+    }
+
+    match parse_integer(&quot;&quot;) {
+        Ok(num) =&gt; println!(&quot;Parsed number: {}&quot;, num),
+        Err(e) =&gt; println!(&quot;Error: {:?}&quot;, e),
+    }
+
+    match parse_integer(&quot;abc&quot;) {
+        Ok(num) =&gt; println!(&quot;Parsed number: {}&quot;, num),
+        Err(e) =&gt; println!(&quot;Error: {:?}&quot;, e),
+    }
+}</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ul>
+<li>We define a custom error type <code>ParseError</code> with two variants: <code>EmptyString</code> and <code>InvalidNumber</code>.</li>
+<li>The <code>parse_integer</code> function returns a <code>Result&lt;i32, ParseError&gt;</code>.</li>
+<li>It checks if the input string is empty and returns <code>Err(ParseError::EmptyString)</code> if true.</li>
+<li>It attempts to parse the string as an integer and maps any parsing error to <code>ParseError::InvalidNumber</code>.</li>
+<li>In the <code>main</code> function, we handle the <code>Result</code> using a <code>match</code> statement.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to handle errors</strong>: Always handle the <code>Result</code> type using <code>match</code>, <code>unwrap</code>, or the <code>?</code> operator.</li>
+<li><strong>Using <code>unwrap</code> carelessly</strong>: <code>unwrap</code> will panic if the <code>Result</code> is an <code>Err</code>. Use it only when you are sure the <code>Result</code> is <code>Ok</code>.</li>
+<li><strong>Not propagating errors</strong>: Use the <code>?</code> operator to propagate errors to the calling function.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned how to use the <code>Result</code> type for error handling in Rust. We covered basic usage, error propagation, and custom error types. By mastering <code>Result</code>, you can write more robust and error-resistant Rust programs. In the next section, we will explore error handling with the <code>Option</code> type.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-hashmaps' title="HashMaps">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Inventory</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/10-02-dynamic-inventory" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/10-02-dynamic-inventory" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/10-02-dynamic-inventory" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ansible/10-02-dynamic-inventory" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/10-02-dynamic-inventory" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-custom-modules' title="Custom Modules">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Dynamic Inventory</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-ansible-plugins' title="Ansible Plugins">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Dynamic Inventory in Ansible allows you to manage and configure your infrastructure dynamically, without the need to manually update static inventory files. This is particularly useful in environments where the infrastructure is constantly changing, such as cloud environments.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Static vs. Dynamic Inventory</strong>:</p>
+<ul>
+<li><strong>Static Inventory</strong>: A predefined list of hosts and groups in a file.</li>
+<li><strong>Dynamic Inventory</strong>: Inventory is generated dynamically by querying external sources like cloud providers, databases, or other APIs.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inventory Scripts</strong>: Custom scripts that generate inventory data dynamically.</p>
+</li>
+<li>
+<p><strong>Inventory Plugins</strong>: Built-in or custom plugins that can be used to fetch inventory data from various sources.</p>
+</li>
+</ol>
+</div><h1>Why Use Dynamic Inventory?</h1>
+<div class='content'><ul>
+<li><strong>Scalability</strong>: Automatically adapt to changes in your infrastructure.</li>
+<li><strong>Flexibility</strong>: Integrate with various cloud providers and services.</li>
+<li><strong>Automation</strong>: Reduce manual intervention and errors.</li>
+</ul>
+</div><h1>Setting Up Dynamic Inventory</h1>
+<div class='content'></div><h2>Using Inventory Scripts</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create an Inventory Script</strong>:</p>
+<ul>
+<li>Write a script that outputs JSON data in the format expected by Ansible.</li>
+</ul>
+<pre><code class="language-python"># dynamic_inventory.py
+import json
+
+inventory = {
+    &quot;all&quot;: {
+        &quot;hosts&quot;: [&quot;host1.example.com&quot;, &quot;host2.example.com&quot;],
+        &quot;vars&quot;: {
+            &quot;ansible_user&quot;: &quot;admin&quot;
+        }
+    },
+    &quot;_meta&quot;: {
+        &quot;hostvars&quot;: {
+            &quot;host1.example.com&quot;: {
+                &quot;ansible_host&quot;: &quot;192.168.1.1&quot;
+            },
+            &quot;host2.example.com&quot;: {
+                &quot;ansible_host&quot;: &quot;192.168.1.2&quot;
+            }
+        }
+    }
+}
+
+print(json.dumps(inventory))
+</code></pre>
+</li>
+<li>
+<p><strong>Make the Script Executable</strong>:</p>
+<pre><code class="language-bash">chmod +x dynamic_inventory.py
+</code></pre>
+</li>
+<li>
+<p><strong>Use the Script in Ansible</strong>:</p>
+<ul>
+<li>Specify the script as the inventory source when running Ansible commands.</li>
+</ul>
+<pre><code class="language-bash">ansible -i dynamic_inventory.py all -m ping
+</code></pre>
+</li>
+</ol>
+</div><h2>Using Inventory Plugins</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Enable the Plugin</strong>:</p>
+<ul>
+<li>Ensure the required plugin is enabled in your <code>ansible.cfg</code> file.</li>
+</ul>
+<pre><code class="language-ini">[defaults]
+inventory = ./inventory/aws_ec2.yml
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the Plugin</strong>:</p>
+<ul>
+<li>Create a configuration file for the plugin.</li>
+</ul>
+<pre><code class="language-yaml"># inventory/aws_ec2.yml
+plugin: aws_ec2
+regions:
+  - us-east-1
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+</code></pre>
+</li>
+<li>
+<p><strong>Run Ansible Commands</strong>:</p>
+<ul>
+<li>Use the configuration file as the inventory source.</li>
+</ul>
+<pre><code class="language-bash">ansible -i inventory/aws_ec2.yml all -m ping
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Example: Using AWS EC2 Plugin</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Boto3</strong>:</p>
+<ul>
+<li>Ensure you have the <code>boto3</code> library installed.</li>
+</ul>
+<pre><code class="language-bash">pip install boto3
+</code></pre>
+</li>
+<li>
+<p><strong>Create AWS EC2 Inventory Configuration</strong>:</p>
+<pre><code class="language-yaml"># inventory/aws_ec2.yml
+plugin: aws_ec2
+regions:
+  - us-west-2
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Name
+    prefix: tag
+</code></pre>
+</li>
+<li>
+<p><strong>Run Ansible Command</strong>:</p>
+<pre><code class="language-bash">ansible -i inventory/aws_ec2.yml all -m ping
+</code></pre>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Custom Inventory Script</h2>
+<div class='content'><ol>
+<li>Write a Python script that generates a dynamic inventory for a set of hosts.</li>
+<li>Make the script executable.</li>
+<li>Use the script as the inventory source in an Ansible command.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBjdXN0b21faW52ZW50b3J5LnB5CmltcG9ydCBqc29uCgppbnZlbnRvcnkgPSB7CiAgICAiYWxsIjogewogICAgICAgICJob3N0cyI6IFsid2ViMS5leGFtcGxlLmNvbSIsICJ3ZWIyLmV4YW1wbGUuY29tIl0sCiAgICAgICAgInZhcnMiOiB7CiAgICAgICAgICAgICJhbnNpYmxlX3VzZXIiOiAiYWRtaW4iCiAgICAgICAgfQogICAgfSwKICAgICJfbWV0YSI6IHsKICAgICAgICAiaG9zdHZhcnMiOiB7CiAgICAgICAgICAgICJ3ZWIxLmV4YW1wbGUuY29tIjogewogICAgICAgICAgICAgICAgImFuc2libGVfaG9zdCI6ICIxMC4wLjAuMSIKICAgICAgICAgICAgfSwKICAgICAgICAgICAgIndlYjIuZXhhbXBsZS5jb20iOiB7CiAgICAgICAgICAgICAgICAiYW5zaWJsZV9ob3N0IjogIjEwLjAuMC4yIgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9CgpwcmludChqc29uLmR1bXBzKGludmVudG9yeSkp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># custom_inventory.py
+import json
+
+inventory = {
+    &quot;all&quot;: {
+        &quot;hosts&quot;: [&quot;web1.example.com&quot;, &quot;web2.example.com&quot;],
+        &quot;vars&quot;: {
+            &quot;ansible_user&quot;: &quot;admin&quot;
+        }
+    },
+    &quot;_meta&quot;: {
+        &quot;hostvars&quot;: {
+            &quot;web1.example.com&quot;: {
+                &quot;ansible_host&quot;: &quot;10.0.0.1&quot;
+            },
+            &quot;web2.example.com&quot;: {
+                &quot;ansible_host&quot;: &quot;10.0.0.2&quot;
+            }
+        }
+    }
+}
+
+print(json.dumps(inventory))</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2htb2QgK3ggY3VzdG9tX2ludmVudG9yeS5weQphbnNpYmxlIC1pIGN1c3RvbV9pbnZlbnRvcnkucHkgYWxsIC1tIHBpbmc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>chmod +x custom_inventory.py
+ansible -i custom_inventory.py all -m ping</pre></div><div class='content'></div><h2>Exercise 2: Configure and Use an Inventory Plugin</h2>
+<div class='content'><ol>
+<li>Choose a cloud provider plugin (e.g., AWS EC2).</li>
+<li>Create a configuration file for the plugin.</li>
+<li>Run an Ansible command using the plugin configuration.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBpbnZlbnRvcnkvYXdzX2VjMi55bWwKcGx1Z2luOiBhd3NfZWMyCnJlZ2lvbnM6CiAgLSB1cy13ZXN0LTIKZmlsdGVyczoKICBpbnN0YW5jZS1zdGF0ZS1uYW1lOiBydW5uaW5nCmtleWVkX2dyb3VwczoKICAtIGtleTogdGFncy5OYW1lCiAgICBwcmVmaXg6IHRhZw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># inventory/aws_ec2.yml
+plugin: aws_ec2
+regions:
+  - us-west-2
+filters:
+  instance-state-name: running
+keyed_groups:
+  - key: tags.Name
+    prefix: tag</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YW5zaWJsZSAtaSBpbnZlbnRvcnkvYXdzX2VjMi55bWwgYWxsIC1tIHBpbmc="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ansible -i inventory/aws_ec2.yml all -m ping</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>JSON Format</strong>: Ensure your inventory script outputs valid JSON.</li>
+<li><strong>Permissions</strong>: Make sure your script is executable.</li>
+<li><strong>Dependencies</strong>: Install necessary libraries (e.g., <code>boto3</code> for AWS).</li>
+<li><strong>Configuration</strong>: Double-check your plugin configuration for typos or incorrect settings.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Dynamic Inventory in Ansible provides a powerful way to manage and scale your infrastructure dynamically. By using inventory scripts or plugins, you can automate the process of keeping your inventory up-to-date, reducing manual effort and potential errors. This module has covered the basics of setting up and using dynamic inventory, providing you with the tools to integrate it into your Ansible workflows.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-custom-modules' title="Custom Modules">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-ansible-plugins' title="Ansible Plugins">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

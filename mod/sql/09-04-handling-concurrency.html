@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Concurrency</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/09-04-handling-concurrency" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/09-04-handling-concurrency" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/09-04-handling-concurrency" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/sql/09-04-handling-concurrency" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/09-04-handling-concurrency" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-transaction-control-statements' title="Transaction Control Statements">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Concurrency</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-stored-procedures' title="Stored Procedures">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Concurrency in databases refers to the ability of the database to handle multiple transactions simultaneously. This is crucial for maintaining data integrity and ensuring that transactions are executed in a way that does not lead to conflicts or data corruption. In this section, we will explore the key concepts and techniques for handling concurrency in SQL databases.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Transactions</strong>: A transaction is a sequence of one or more SQL operations treated as a single unit. Transactions ensure that either all operations are completed successfully or none are.</li>
+<li><strong>Concurrency Control</strong>: Mechanisms to manage simultaneous operations without conflicting.</li>
+<li><strong>Isolation Levels</strong>: Define the degree to which the operations in one transaction are isolated from those in other transactions.</li>
+<li><strong>Locks</strong>: Mechanisms to control access to database resources.</li>
+</ol>
+</div><h1>Isolation Levels</h1>
+<div class='content'><p>Isolation levels determine how transaction integrity is visible to other transactions and how changes made by one transaction are isolated from others. SQL standard defines four isolation levels:</p>
+<ol>
+<li><strong>Read Uncommitted</strong>: The lowest isolation level, where transactions can read uncommitted changes made by other transactions. This can lead to dirty reads.</li>
+<li><strong>Read Committed</strong>: Ensures that any data read is committed at the moment it is read. This prevents dirty reads but not non-repeatable reads.</li>
+<li><strong>Repeatable Read</strong>: Ensures that if a transaction reads a row, it will read the same value if it reads that row again. This prevents dirty reads and non-repeatable reads but not phantom reads.</li>
+<li><strong>Serializable</strong>: The highest isolation level, which ensures complete isolation from other transactions. This prevents dirty reads, non-repeatable reads, and phantom reads.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Isolation Level</th>
+<th>Dirty Reads</th>
+<th>Non-Repeatable Reads</th>
+<th>Phantom Reads</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read Uncommitted</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Read Committed</td>
+<td>No</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Repeatable Read</td>
+<td>No</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Serializable</td>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Locking Mechanisms</h1>
+<div class='content'><p>Locks are used to control access to database resources. There are different types of locks:</p>
+<ol>
+<li><strong>Shared Locks (S)</strong>: Allow multiple transactions to read a resource but not modify it.</li>
+<li><strong>Exclusive Locks (X)</strong>: Allow a transaction to both read and modify a resource, preventing other transactions from accessing it.</li>
+<li><strong>Update Locks (U)</strong>: Used when a transaction intends to update a resource. It prevents deadlocks by ensuring that only one transaction can update a resource at a time.</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's consider a scenario where two transactions are trying to update the same record in a table.</p>
+</div><h2>Example Table: `accounts`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGFjY291bnRzICgKICAgIGFjY291bnRfaWQgSU5UIFBSSU1BUlkgS0VZLAogICAgYmFsYW5jZSBERUNJTUFMKDEwLCAyKQopOwoKSU5TRVJUIElOVE8gYWNjb3VudHMgKGFjY291bnRfaWQsIGJhbGFuY2UpIFZBTFVFUyAoMSwgMTAwMC4wMCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE accounts (
+    account_id INT PRIMARY KEY,
+    balance DECIMAL(10, 2)
+);
+
+INSERT INTO accounts (account_id, balance) VALUES (1, 1000.00);</pre></div><div class='content'></div><h2>Transaction 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4gVFJBTlNBQ1RJT047CgotLSBSZWFkIHRoZSBiYWxhbmNlClNFTEVDVCBiYWxhbmNlIEZST00gYWNjb3VudHMgV0hFUkUgYWNjb3VudF9pZCA9IDE7CgotLSBVcGRhdGUgdGhlIGJhbGFuY2UKVVBEQVRFIGFjY291bnRzIFNFVCBiYWxhbmNlID0gYmFsYW5jZSAtIDEwMC4wMCBXSEVSRSBhY2NvdW50X2lkID0gMTsKCkNPTU1JVDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN TRANSACTION;
+
+-- Read the balance
+SELECT balance FROM accounts WHERE account_id = 1;
+
+-- Update the balance
+UPDATE accounts SET balance = balance - 100.00 WHERE account_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h2>Transaction 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4gVFJBTlNBQ1RJT047CgotLSBSZWFkIHRoZSBiYWxhbmNlClNFTEVDVCBiYWxhbmNlIEZST00gYWNjb3VudHMgV0hFUkUgYWNjb3VudF9pZCA9IDE7CgotLSBVcGRhdGUgdGhlIGJhbGFuY2UKVVBEQVRFIGFjY291bnRzIFNFVCBiYWxhbmNlID0gYmFsYW5jZSAtIDIwMC4wMCBXSEVSRSBhY2NvdW50X2lkID0gMTsKCkNPTU1JVDs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN TRANSACTION;
+
+-- Read the balance
+SELECT balance FROM accounts WHERE account_id = 1;
+
+-- Update the balance
+UPDATE accounts SET balance = balance - 200.00 WHERE account_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h2>Potential Issue: Lost Update</h2>
+<div class='content'><p>If both transactions read the balance at the same time, they might both see the balance as 1000.00 and then update it, leading to a lost update problem.</p>
+</div><h2>Solution: Using Locks</h2>
+<div class='content'><p>To prevent this, we can use locks to ensure that only one transaction can update the balance at a time.</p>
+</div><h2>Transaction 1 with Lock</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4gVFJBTlNBQ1RJT047CgotLSBBY3F1aXJlIGFuIGV4Y2x1c2l2ZSBsb2NrIG9uIHRoZSByb3cKU0VMRUNUIGJhbGFuY2UgRlJPTSBhY2NvdW50cyBXSEVSRSBhY2NvdW50X2lkID0gMSBGT1IgVVBEQVRFOwoKLS0gVXBkYXRlIHRoZSBiYWxhbmNlClVQREFURSBhY2NvdW50cyBTRVQgYmFsYW5jZSA9IGJhbGFuY2UgLSAxMDAuMDAgV0hFUkUgYWNjb3VudF9pZCA9IDE7CgpDT01NSVQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN TRANSACTION;
+
+-- Acquire an exclusive lock on the row
+SELECT balance FROM accounts WHERE account_id = 1 FOR UPDATE;
+
+-- Update the balance
+UPDATE accounts SET balance = balance - 100.00 WHERE account_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h2>Transaction 2 with Lock</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4gVFJBTlNBQ1RJT047CgotLSBUaGlzIHdpbGwgd2FpdCB1bnRpbCBUcmFuc2FjdGlvbiAxIHJlbGVhc2VzIHRoZSBsb2NrClNFTEVDVCBiYWxhbmNlIEZST00gYWNjb3VudHMgV0hFUkUgYWNjb3VudF9pZCA9IDEgRk9SIFVQREFURTsKCi0tIFVwZGF0ZSB0aGUgYmFsYW5jZQpVUERBVEUgYWNjb3VudHMgU0VUIGJhbGFuY2UgPSBiYWxhbmNlIC0gMjAwLjAwIFdIRVJFIGFjY291bnRfaWQgPSAxOwoKQ09NTUlUOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN TRANSACTION;
+
+-- This will wait until Transaction 1 releases the lock
+SELECT balance FROM accounts WHERE account_id = 1 FOR UPDATE;
+
+-- Update the balance
+UPDATE accounts SET balance = balance - 200.00 WHERE account_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implementing Isolation Levels</h2>
+<div class='content'><ol>
+<li>Create a table <code>inventory</code> with columns <code>item_id</code>, <code>item_name</code>, and <code>quantity</code>.</li>
+<li>Insert some sample data into the <code>inventory</code> table.</li>
+<li>Write two transactions that attempt to update the <code>quantity</code> of the same item simultaneously.</li>
+<li>Experiment with different isolation levels and observe the behavior.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU3RlcCAxOiBDcmVhdGUgdGhlIHRhYmxlCkNSRUFURSBUQUJMRSBpbnZlbnRvcnkgKAogICAgaXRlbV9pZCBJTlQgUFJJTUFSWSBLRVksCiAgICBpdGVtX25hbWUgVkFSQ0hBUig1MCksCiAgICBxdWFudGl0eSBJTlQKKTsKCi0tIFN0ZXAgMjogSW5zZXJ0IHNhbXBsZSBkYXRhCklOU0VSVCBJTlRPIGludmVudG9yeSAoaXRlbV9pZCwgaXRlbV9uYW1lLCBxdWFudGl0eSkgVkFMVUVTICgxLCAnV2lkZ2V0JywgMTAwKTsKCi0tIFN0ZXAgMzogVHJhbnNhY3Rpb24gMQpTRVQgVFJBTlNBQ1RJT04gSVNPTEFUSU9OIExFVkVMIFJFQUQgQ09NTUlUVEVEOwpCRUdJTiBUUkFOU0FDVElPTjsKCi0tIFJlYWQgdGhlIHF1YW50aXR5ClNFTEVDVCBxdWFudGl0eSBGUk9NIGludmVudG9yeSBXSEVSRSBpdGVtX2lkID0gMTsKCi0tIFVwZGF0ZSB0aGUgcXVhbnRpdHkKVVBEQVRFIGludmVudG9yeSBTRVQgcXVhbnRpdHkgPSBxdWFudGl0eSAtIDEwIFdIRVJFIGl0ZW1faWQgPSAxOwoKQ09NTUlUOwoKLS0gU3RlcCA0OiBUcmFuc2FjdGlvbiAyClNFVCBUUkFOU0FDVElPTiBJU09MQVRJT04gTEVWRUwgUkVBRCBDT01NSVRURUQ7CkJFR0lOIFRSQU5TQUNUSU9OOwoKLS0gUmVhZCB0aGUgcXVhbnRpdHkKU0VMRUNUIHF1YW50aXR5IEZST00gaW52ZW50b3J5IFdIRVJFIGl0ZW1faWQgPSAxOwoKLS0gVXBkYXRlIHRoZSBxdWFudGl0eQpVUERBVEUgaW52ZW50b3J5IFNFVCBxdWFudGl0eSA9IHF1YW50aXR5IC0gMjAgV0hFUkUgaXRlbV9pZCA9IDE7CgpDT01NSVQ7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Step 1: Create the table
+CREATE TABLE inventory (
+    item_id INT PRIMARY KEY,
+    item_name VARCHAR(50),
+    quantity INT
+);
+
+-- Step 2: Insert sample data
+INSERT INTO inventory (item_id, item_name, quantity) VALUES (1, 'Widget', 100);
+
+-- Step 3: Transaction 1
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+BEGIN TRANSACTION;
+
+-- Read the quantity
+SELECT quantity FROM inventory WHERE item_id = 1;
+
+-- Update the quantity
+UPDATE inventory SET quantity = quantity - 10 WHERE item_id = 1;
+
+COMMIT;
+
+-- Step 4: Transaction 2
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+BEGIN TRANSACTION;
+
+-- Read the quantity
+SELECT quantity FROM inventory WHERE item_id = 1;
+
+-- Update the quantity
+UPDATE inventory SET quantity = quantity - 20 WHERE item_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of handling concurrency in SQL databases. We discussed transactions, isolation levels, and locking mechanisms. We also provided practical examples and exercises to help you understand how to manage concurrent transactions effectively. Understanding these concepts is crucial for maintaining data integrity and ensuring the smooth operation of your database applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-transaction-control-statements' title="Transaction Control Statements">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-stored-procedures' title="Stored Procedures">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

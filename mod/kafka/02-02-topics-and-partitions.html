@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Topics and Partitions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/02-02-topics-and-partitions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/02-02-topics-and-partitions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/02-02-topics-and-partitions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/02-02-topics-and-partitions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/02-02-topics-and-partitions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-producers-and-consumers' title="Producers and Consumers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Topics and Partitions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-brokers-and-clusters' title="Brokers and Clusters">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the core concepts of Kafka: Topics and Partitions. Understanding these concepts is crucial for effectively using Kafka in your applications.</p>
+</div><h1>What is a Topic?</h1>
+<div class='content'><p>A <strong>Topic</strong> in Kafka is a category or feed name to which records are stored and published. Topics are fundamental to Kafka's publish-subscribe model.</p>
+</div><h2>Key Points:</h2>
+<div class='content'><ul>
+<li><strong>Topics</strong> are logical channels to which producers send records and from which consumers read records.</li>
+<li>Each topic is identified by its name.</li>
+<li>Topics are multi-subscriber; a topic can have zero, one, or many consumers that subscribe to the data written to it.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>Imagine a topic named <code>user-signups</code> where all user signup events are published. Multiple services can subscribe to this topic to process these events.</p>
+</div><h1>What is a Partition?</h1>
+<div class='content'><p>A <strong>Partition</strong> is a division of a topic. Each topic can have multiple partitions, which allows Kafka to scale horizontally.</p>
+</div><h2>Key Points:</h2>
+<div class='content'><ul>
+<li><strong>Partitions</strong> are the basic unit of parallelism in Kafka.</li>
+<li>Each partition is an ordered, immutable sequence of records.</li>
+<li>Partitions are distributed across multiple brokers in a Kafka cluster.</li>
+<li>Each record within a partition has a unique offset, which is an integer value that uniquely identifies each record within the partition.</li>
+</ul>
+</div><h2>Example:</h2>
+<div class='content'><p>If the <code>user-signups</code> topic has 3 partitions, the records will be distributed across these partitions. This distribution allows for parallel processing and better performance.</p>
+</div><h1>How Topics and Partitions Work Together</h1>
+<div class='content'></div><h2>Data Distribution:</h2>
+<div class='content'><ul>
+<li>When a producer sends a record to a topic, Kafka decides which partition to place the record in.</li>
+<li>The partitioning can be done based on a key (if provided) or in a round-robin fashion if no key is provided.</li>
+</ul>
+</div><h2>Parallelism and Scalability:</h2>
+<div class='content'><ul>
+<li>By having multiple partitions, Kafka can handle more data and more consumers.</li>
+<li>Each partition can be consumed by a different consumer in a consumer group, allowing for parallel processing.</li>
+</ul>
+</div><h2>Fault Tolerance:</h2>
+<div class='content'><ul>
+<li>Partitions are replicated across multiple brokers to ensure fault tolerance.</li>
+<li>If a broker fails, another broker with the replica can take over.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's look at a simple example of creating a topic with partitions using Kafka's command-line tools.</p>
+</div><h2>Step 1: Create a Topic with Partitions</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a2Fma2EtdG9waWNzLnNoIC0tY3JlYXRlIC0tdG9waWMgdXNlci1zaWdudXBzIC0tcGFydGl0aW9ucyAzIC0tcmVwbGljYXRpb24tZmFjdG9yIDEgLS1ib290c3RyYXAtc2VydmVyIGxvY2FsaG9zdDo5MDky"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kafka-topics.sh --create --topic user-signups --partitions 3 --replication-factor 1 --bootstrap-server localhost:9092</pre></div><div class='content'></div><h2>Explanation:</h2>
+<div class='content'><ul>
+<li><code>--create</code>: Command to create a new topic.</li>
+<li><code>--topic user-signups</code>: Name of the topic.</li>
+<li><code>--partitions 3</code>: Number of partitions for the topic.</li>
+<li><code>--replication-factor 1</code>: Number of replicas for each partition.</li>
+<li><code>--bootstrap-server localhost:9092</code>: Address of the Kafka broker.</li>
+</ul>
+</div><h2>Step 2: Producing Messages to the Topic</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a2Fma2EtY29uc29sZS1wcm9kdWNlci5zaCAtLXRvcGljIHVzZXItc2lnbnVwcyAtLWJvb3RzdHJhcC1zZXJ2ZXIgbG9jYWxob3N0OjkwOTI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kafka-console-producer.sh --topic user-signups --bootstrap-server localhost:9092</pre></div><div class='content'></div><h2>Step 3: Consuming Messages from the Topic</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a2Fma2EtY29uc29sZS1jb25zdW1lci5zaCAtLXRvcGljIHVzZXItc2lnbnVwcyAtLWZyb20tYmVnaW5uaW5nIC0tYm9vdHN0cmFwLXNlcnZlciBsb2NhbGhvc3Q6OTA5Mg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kafka-console-consumer.sh --topic user-signups --from-beginning --bootstrap-server localhost:9092</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Topic with Multiple Partitions</h2>
+<div class='content'><ol>
+<li>Create a topic named <code>order-events</code> with 4 partitions and a replication factor of 2.</li>
+<li>Produce some messages to the <code>order-events</code> topic.</li>
+<li>Consume the messages from the <code>order-events</code> topic.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p>Create the topic:</p>
+<pre><code class="language-sh">kafka-topics.sh --create --topic order-events --partitions 4 --replication-factor 2 --bootstrap-server localhost:9092
+</code></pre>
+</li>
+<li>
+<p>Produce messages:</p>
+<pre><code class="language-sh">kafka-console-producer.sh --topic order-events --bootstrap-server localhost:9092
+</code></pre>
+</li>
+<li>
+<p>Consume messages:</p>
+<pre><code class="language-sh">kafka-console-consumer.sh --topic order-events --from-beginning --bootstrap-server localhost:9092
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Understanding Partitioning</h2>
+<div class='content'><ol>
+<li>Create a topic named <code>product-updates</code> with 3 partitions.</li>
+<li>Produce messages with keys to the <code>product-updates</code> topic.</li>
+<li>Observe how messages with the same key go to the same partition.</li>
+</ol>
+</div><h2>Solution:</h2>
+<div class='content'><ol>
+<li>
+<p>Create the topic:</p>
+<pre><code class="language-sh">kafka-topics.sh --create --topic product-updates --partitions 3 --replication-factor 1 --bootstrap-server localhost:9092
+</code></pre>
+</li>
+<li>
+<p>Produce messages with keys:</p>
+<pre><code class="language-sh">kafka-console-producer.sh --topic product-updates --property &quot;parse.key=true&quot; --property &quot;key.separator=:&quot; --bootstrap-server localhost:9092
+</code></pre>
+<p>Example input:</p>
+<pre><code>key1:message1
+key2:message2
+key1:message3
+</code></pre>
+</li>
+<li>
+<p>Consume messages:</p>
+<pre><code class="language-sh">kafka-console-consumer.sh --topic product-updates --from-beginning --bootstrap-server localhost:9092 --property &quot;print.key=true&quot; --property &quot;key.separator=:&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the fundamental concepts of Kafka topics and partitions. We learned how topics serve as logical channels for data, and how partitions enable parallelism and scalability. We also explored practical examples and exercises to reinforce these concepts. Understanding topics and partitions is essential for designing efficient and scalable Kafka-based applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-producers-and-consumers' title="Producers and Consumers">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-brokers-and-clusters' title="Brokers and Clusters">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

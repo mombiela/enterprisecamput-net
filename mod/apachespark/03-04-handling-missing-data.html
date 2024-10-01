@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handling Missing Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/03-04-handling-missing-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/03-04-handling-missing-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/03-04-handling-missing-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/apachespark/03-04-handling-missing-data" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/03-04-handling-missing-data" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-working-with-datasets' title="Working with Datasets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Handling Missing Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-spark-streaming' title="Spark Streaming">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Handling missing data is a crucial aspect of data processing and analysis. In this section, we will explore various techniques to handle missing data using Apache Spark. We will cover:</p>
+<ol>
+<li><strong>Identifying Missing Data</strong></li>
+<li><strong>Dropping Missing Data</strong></li>
+<li><strong>Filling Missing Data</strong></li>
+<li><strong>Imputing Missing Data with Statistics</strong></li>
+<li><strong>Practical Exercises</strong></li>
+</ol>
+</div><h1>1. Identifying Missing Data</h1>
+<div class='content'><p>Before handling missing data, we need to identify it. In Spark, missing data is typically represented as <code>null</code> or <code>NaN</code> (Not a Number).</p>
+</div><h2>Example: Identifying Missing Data</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCmZyb20gcHlzcGFyay5zcWwuZnVuY3Rpb25zIGltcG9ydCBjb2wsIGlzbmFuLCB3aGVuLCBjb3VudAoKIyBJbml0aWFsaXplIFNwYXJrIHNlc3Npb24Kc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlci5hcHBOYW1lKCJIYW5kbGluZ01pc3NpbmdEYXRhIikuZ2V0T3JDcmVhdGUoKQoKIyBTYW1wbGUgRGF0YUZyYW1lIHdpdGggbWlzc2luZyB2YWx1ZXMKZGF0YSA9IFsKICAgICgxLCAiQWxpY2UiLCAyOSwgTm9uZSksCiAgICAoMiwgIkJvYiIsIE5vbmUsIDQ1LjApLAogICAgKDMsIE5vbmUsIDM1LCA3OC4wKSwKICAgICg0LCAiRGF2aWQiLCA0MCwgTm9uZSksCiAgICAoNSwgIkV2ZSIsIE5vbmUsIE5vbmUpCl0KCmNvbHVtbnMgPSBbIklEIiwgIk5hbWUiLCAiQWdlIiwgIlNjb3JlIl0KCmRmID0gc3BhcmsuY3JlYXRlRGF0YUZyYW1lKGRhdGEsIGNvbHVtbnMpCgojIFNob3cgdGhlIERhdGFGcmFtZQpkZi5zaG93KCkKCiMgQ291bnQgbWlzc2luZyB2YWx1ZXMgaW4gZWFjaCBjb2x1bW4KZGYuc2VsZWN0KFtjb3VudCh3aGVuKGNvbChjKS5pc051bGwoKSB8IGlzbmFuKGMpLCBjKSkuYWxpYXMoYykgZm9yIGMgaW4gZGYuY29sdW1uc10pLnNob3coKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, isnan, when, count
+
+# Initialize Spark session
+spark = SparkSession.builder.appName(&quot;HandlingMissingData&quot;).getOrCreate()
+
+# Sample DataFrame with missing values
+data = [
+    (1, &quot;Alice&quot;, 29, None),
+    (2, &quot;Bob&quot;, None, 45.0),
+    (3, None, 35, 78.0),
+    (4, &quot;David&quot;, 40, None),
+    (5, &quot;Eve&quot;, None, None)
+]
+
+columns = [&quot;ID&quot;, &quot;Name&quot;, &quot;Age&quot;, &quot;Score&quot;]
+
+df = spark.createDataFrame(data, columns)
+
+# Show the DataFrame
+df.show()
+
+# Count missing values in each column
+df.select([count(when(col(c).isNull() | isnan(c), c)).alias(c) for c in df.columns]).show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We create a Spark session and a sample DataFrame with missing values.</li>
+<li>We use the <code>isNull</code> and <code>isnan</code> functions to identify missing values.</li>
+<li>We count the missing values in each column using the <code>count</code> and <code>when</code> functions.</li>
+</ul>
+</div><h1>2. Dropping Missing Data</h1>
+<div class='content'><p>Dropping rows or columns with missing data is a straightforward approach but can lead to loss of valuable information.</p>
+</div><h2>Example: Dropping Missing Data</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEcm9wIHJvd3Mgd2l0aCBhbnkgbWlzc2luZyB2YWx1ZXMKZGZfZHJvcHBlZF9hbnkgPSBkZi5uYS5kcm9wKCJhbnkiKQpkZl9kcm9wcGVkX2FueS5zaG93KCkKCiMgRHJvcCByb3dzIHdpdGggYWxsIG1pc3NpbmcgdmFsdWVzCmRmX2Ryb3BwZWRfYWxsID0gZGYubmEuZHJvcCgiYWxsIikKZGZfZHJvcHBlZF9hbGwuc2hvdygpCgojIERyb3Agcm93cyB3aXRoIG1pc3NpbmcgdmFsdWVzIGluIHNwZWNpZmljIGNvbHVtbnMKZGZfZHJvcHBlZF9zdWJzZXQgPSBkZi5uYS5kcm9wKHN1YnNldD1bIkFnZSIsICJTY29yZSJdKQpkZl9kcm9wcGVkX3N1YnNldC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Drop rows with any missing values
+df_dropped_any = df.na.drop(&quot;any&quot;)
+df_dropped_any.show()
+
+# Drop rows with all missing values
+df_dropped_all = df.na.drop(&quot;all&quot;)
+df_dropped_all.show()
+
+# Drop rows with missing values in specific columns
+df_dropped_subset = df.na.drop(subset=[&quot;Age&quot;, &quot;Score&quot;])
+df_dropped_subset.show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>na.drop(&quot;any&quot;)</code>: Drops rows with any missing values.</li>
+<li><code>na.drop(&quot;all&quot;)</code>: Drops rows where all values are missing.</li>
+<li><code>na.drop(subset=[&quot;Age&quot;, &quot;Score&quot;])</code>: Drops rows with missing values in the specified columns.</li>
+</ul>
+</div><h1>3. Filling Missing Data</h1>
+<div class='content'><p>Filling missing data with a specific value is another common approach.</p>
+</div><h2>Example: Filling Missing Data</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGaWxsIG1pc3NpbmcgdmFsdWVzIHdpdGggYSBzcGVjaWZpYyB2YWx1ZQpkZl9maWxsZWQgPSBkZi5uYS5maWxsKHsiQWdlIjogMzAsICJTY29yZSI6IDUwLjB9KQpkZl9maWxsZWQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Fill missing values with a specific value
+df_filled = df.na.fill({&quot;Age&quot;: 30, &quot;Score&quot;: 50.0})
+df_filled.show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>na.fill({&quot;Age&quot;: 30, &quot;Score&quot;: 50.0})</code>: Fills missing values in the &quot;Age&quot; column with 30 and in the &quot;Score&quot; column with 50.0.</li>
+</ul>
+</div><h1>4. Imputing Missing Data with Statistics</h1>
+<div class='content'><p>Imputing missing data with statistical measures like mean, median, or mode can be more sophisticated.</p>
+</div><h2>Example: Imputing Missing Data with Mean</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbC5mdW5jdGlvbnMgaW1wb3J0IG1lYW4KCiMgQ2FsY3VsYXRlIG1lYW4gb2YgdGhlICJBZ2UiIGFuZCAiU2NvcmUiIGNvbHVtbnMKbWVhbl9hZ2UgPSBkZi5zZWxlY3QobWVhbihjb2woIkFnZSIpKSkuY29sbGVjdCgpWzBdWzBdCm1lYW5fc2NvcmUgPSBkZi5zZWxlY3QobWVhbihjb2woIlNjb3JlIikpKS5jb2xsZWN0KClbMF1bMF0KCiMgRmlsbCBtaXNzaW5nIHZhbHVlcyB3aXRoIHRoZSBjYWxjdWxhdGVkIG1lYW4KZGZfaW1wdXRlZCA9IGRmLm5hLmZpbGwoeyJBZ2UiOiBtZWFuX2FnZSwgIlNjb3JlIjogbWVhbl9zY29yZX0pCmRmX2ltcHV0ZWQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql.functions import mean
+
+# Calculate mean of the &quot;Age&quot; and &quot;Score&quot; columns
+mean_age = df.select(mean(col(&quot;Age&quot;))).collect()[0][0]
+mean_score = df.select(mean(col(&quot;Score&quot;))).collect()[0][0]
+
+# Fill missing values with the calculated mean
+df_imputed = df.na.fill({&quot;Age&quot;: mean_age, &quot;Score&quot;: mean_score})
+df_imputed.show()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We calculate the mean of the &quot;Age&quot; and &quot;Score&quot; columns.</li>
+<li>We fill missing values in the &quot;Age&quot; and &quot;Score&quot; columns with the calculated mean.</li>
+</ul>
+</div><h1>5. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Identify Missing Data</h2>
+<div class='content'><p>Create a DataFrame with missing values and identify the missing values in each column.</p>
+</div><h2>Exercise 2: Drop Missing Data</h2>
+<div class='content'><p>Drop rows with any missing values from the DataFrame created in Exercise 1.</p>
+</div><h2>Exercise 3: Fill Missing Data</h2>
+<div class='content'><p>Fill missing values in the DataFrame created in Exercise 1 with specific values.</p>
+</div><h2>Exercise 4: Impute Missing Data</h2>
+<div class='content'><p>Impute missing values in the DataFrame created in Exercise 1 with the mean of the respective columns.</p>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Solution 1: Identify Missing Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb3VudCBtaXNzaW5nIHZhbHVlcyBpbiBlYWNoIGNvbHVtbgpkZi5zZWxlY3QoW2NvdW50KHdoZW4oY29sKGMpLmlzTnVsbCgpIHwgaXNuYW4oYyksIGMpKS5hbGlhcyhjKSBmb3IgYyBpbiBkZi5jb2x1bW5zXSkuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Count missing values in each column
+df.select([count(when(col(c).isNull() | isnan(c), c)).alias(c) for c in df.columns]).show()</pre></div><div class='content'><h4>Solution 2: Drop Missing Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEcm9wIHJvd3Mgd2l0aCBhbnkgbWlzc2luZyB2YWx1ZXMKZGZfZHJvcHBlZF9hbnkgPSBkZi5uYS5kcm9wKCJhbnkiKQpkZl9kcm9wcGVkX2FueS5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Drop rows with any missing values
+df_dropped_any = df.na.drop(&quot;any&quot;)
+df_dropped_any.show()</pre></div><div class='content'><h4>Solution 3: Fill Missing Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGaWxsIG1pc3NpbmcgdmFsdWVzIHdpdGggYSBzcGVjaWZpYyB2YWx1ZQpkZl9maWxsZWQgPSBkZi5uYS5maWxsKHsiQWdlIjogMzAsICJTY29yZSI6IDUwLjB9KQpkZl9maWxsZWQuc2hvdygp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Fill missing values with a specific value
+df_filled = df.na.fill({&quot;Age&quot;: 30, &quot;Score&quot;: 50.0})
+df_filled.show()</pre></div><div class='content'><h4>Solution 4: Impute Missing Data</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYWxjdWxhdGUgbWVhbiBvZiB0aGUgIkFnZSIgYW5kICJTY29yZSIgY29sdW1ucwptZWFuX2FnZSA9IGRmLnNlbGVjdChtZWFuKGNvbCgiQWdlIikpKS5jb2xsZWN0KClbMF1bMF0KbWVhbl9zY29yZSA9IGRmLnNlbGVjdChtZWFuKGNvbCgiU2NvcmUiKSkpLmNvbGxlY3QoKVswXVswXQoKIyBGaWxsIG1pc3NpbmcgdmFsdWVzIHdpdGggdGhlIGNhbGN1bGF0ZWQgbWVhbgpkZl9pbXB1dGVkID0gZGYubmEuZmlsbCh7IkFnZSI6IG1lYW5fYWdlLCAiU2NvcmUiOiBtZWFuX3Njb3JlfSkKZGZfaW1wdXRlZC5zaG93KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Calculate mean of the &quot;Age&quot; and &quot;Score&quot; columns
+mean_age = df.select(mean(col(&quot;Age&quot;))).collect()[0][0]
+mean_score = df.select(mean(col(&quot;Score&quot;))).collect()[0][0]
+
+# Fill missing values with the calculated mean
+df_imputed = df.na.fill({&quot;Age&quot;: mean_age, &quot;Score&quot;: mean_score})
+df_imputed.show()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered various techniques to handle missing data in Apache Spark, including identifying, dropping, filling, and imputing missing data. These techniques are essential for ensuring data quality and integrity in your data processing workflows. In the next module, we will delve into advanced Spark programming concepts.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-working-with-datasets' title="Working with Datasets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-spark-streaming' title="Spark Streaming">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

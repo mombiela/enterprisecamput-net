@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Functions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/03-04-window-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/03-04-window-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/03-04-window-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/03-04-window-functions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/03-04-window-functions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-aggregate-functions' title="Aggregate Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Window Functions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-common-table-expressions' title="Common Table Expressions (CTEs)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Window functions are a powerful feature in SQL that allow you to perform calculations across a set of table rows that are somehow related to the current row. Unlike aggregate functions, which return a single value for a group of rows, window functions return a value for each row in the result set.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Window Function Syntax</strong>:</p>
+<pre><code class="language-sql">function_name (expression) OVER (
+    [PARTITION BY partition_expression]
+    [ORDER BY sort_expression]
+    [frame_clause]
+)
+</code></pre>
+</li>
+<li>
+<p><strong>Components</strong>:</p>
+<ul>
+<li><strong>function_name</strong>: The name of the window function (e.g., <code>ROW_NUMBER()</code>, <code>RANK()</code>, <code>SUM()</code>, etc.).</li>
+<li><strong>expression</strong>: The column or expression to be used in the function.</li>
+<li><strong>PARTITION BY</strong>: Divides the result set into partitions to which the window function is applied.</li>
+<li><strong>ORDER BY</strong>: Defines the order of rows within each partition.</li>
+<li><strong>frame_clause</strong>: Specifies the subset of rows within the partition to be considered by the window function.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Window Functions</h1>
+<div class='content'><ol>
+<li>
+<p><strong>ROW_NUMBER()</strong>: Assigns a unique sequential integer to rows within a partition.</p>
+<pre><code class="language-sql">SELECT 
+    column1,
+    ROW_NUMBER() OVER (PARTITION BY column2 ORDER BY column3) AS row_num
+FROM 
+    table_name;
+</code></pre>
+</li>
+<li>
+<p><strong>RANK()</strong>: Assigns a rank to each row within a partition, with gaps in the ranking for ties.</p>
+<pre><code class="language-sql">SELECT 
+    column1,
+    RANK() OVER (PARTITION BY column2 ORDER BY column3) AS rank
+FROM 
+    table_name;
+</code></pre>
+</li>
+<li>
+<p><strong>DENSE_RANK()</strong>: Similar to <code>RANK()</code>, but without gaps in the ranking for ties.</p>
+<pre><code class="language-sql">SELECT 
+    column1,
+    DENSE_RANK() OVER (PARTITION BY column2 ORDER BY column3) AS dense_rank
+FROM 
+    table_name;
+</code></pre>
+</li>
+<li>
+<p><strong>SUM()</strong>: Calculates the cumulative sum of a column's values within a partition.</p>
+<pre><code class="language-sql">SELECT 
+    column1,
+    SUM(column4) OVER (PARTITION BY column2 ORDER BY column3) AS cumulative_sum
+FROM 
+    table_name;
+</code></pre>
+</li>
+<li>
+<p><strong>AVG()</strong>: Calculates the cumulative average of a column's values within a partition.</p>
+<pre><code class="language-sql">SELECT 
+    column1,
+    AVG(column4) OVER (PARTITION BY column2 ORDER BY column3) AS cumulative_avg
+FROM 
+    table_name;
+</code></pre>
+</li>
+</ol>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Using ROW_NUMBER()</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsCiAgICBkZXBhcnRtZW50X2lkLAogICAgc2FsYXJ5LAogICAgUk9XX05VTUJFUigpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50X2lkIE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyByb3dfbnVtCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id,
+    department_id,
+    salary,
+    ROW_NUMBER() OVER (PARTITION BY department_id ORDER BY salary DESC) AS row_num
+FROM 
+    employees;</pre></div><div class='content'><p><strong>Explanation</strong>: This query assigns a unique row number to each employee within their department, ordered by salary in descending order.</p>
+</div><h2>Example 2: Using RANK()</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsCiAgICBkZXBhcnRtZW50X2lkLAogICAgc2FsYXJ5LAogICAgUkFOSygpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50X2lkIE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyByYW5rCkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id,
+    department_id,
+    salary,
+    RANK() OVER (PARTITION BY department_id ORDER BY salary DESC) AS rank
+FROM 
+    employees;</pre></div><div class='content'><p><strong>Explanation</strong>: This query ranks employees within their department based on their salary. Employees with the same salary receive the same rank, and the next rank is skipped.</p>
+</div><h2>Example 3: Using SUM()</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsCiAgICBkZXBhcnRtZW50X2lkLAogICAgc2FsYXJ5LAogICAgU1VNKHNhbGFyeSkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnRfaWQgT1JERVIgQlkgZW1wbG95ZWVfaWQpIEFTIGN1bXVsYXRpdmVfc2FsYXJ5CkZST00gCiAgICBlbXBsb3llZXM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id,
+    department_id,
+    salary,
+    SUM(salary) OVER (PARTITION BY department_id ORDER BY employee_id) AS cumulative_salary
+FROM 
+    employees;</pre></div><div class='content'><p><strong>Explanation</strong>: This query calculates the cumulative salary for each employee within their department, ordered by employee ID.</p>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Calculate Row Numbers</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to assign row numbers to each product within its category, ordered by price in ascending order.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgcHJvZHVjdF9pZCwKICAgIGNhdGVnb3J5X2lkLAogICAgcHJpY2UsCiAgICBST1dfTlVNQkVSKCkgT1ZFUiAoUEFSVElUSU9OIEJZIGNhdGVnb3J5X2lkIE9SREVSIEJZIHByaWNlIEFTQykgQVMgcm93X251bQpGUk9NIAogICAgcHJvZHVjdHM7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    product_id,
+    category_id,
+    price,
+    ROW_NUMBER() OVER (PARTITION BY category_id ORDER BY price ASC) AS row_num
+FROM 
+    products;</pre></div><div class='content'></div><h2>Exercise 2: Rank Employees by Performance</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to rank employees within their department based on their performance score. Handle ties by assigning the same rank to employees with the same score.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsCiAgICBkZXBhcnRtZW50X2lkLAogICAgcGVyZm9ybWFuY2Vfc2NvcmUsCiAgICBSQU5LKCkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnRfaWQgT1JERVIgQlkgcGVyZm9ybWFuY2Vfc2NvcmUgREVTQykgQVMgcmFuawpGUk9NIAogICAgZW1wbG95ZWVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id,
+    department_id,
+    performance_score,
+    RANK() OVER (PARTITION BY department_id ORDER BY performance_score DESC) AS rank
+FROM 
+    employees;</pre></div><div class='content'></div><h2>Exercise 3: Calculate Cumulative Sales</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to calculate the cumulative sales for each salesperson within their region, ordered by the date of sale.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgc2FsZXNwZXJzb25faWQsCiAgICByZWdpb25faWQsCiAgICBzYWxlX2RhdGUsCiAgICBzYWxlX2Ftb3VudCwKICAgIFNVTShzYWxlX2Ftb3VudCkgT1ZFUiAoUEFSVElUSU9OIEJZIHJlZ2lvbl9pZCBPUkRFUiBCWSBzYWxlX2RhdGUpIEFTIGN1bXVsYXRpdmVfc2FsZXMKRlJPTSAKICAgIHNhbGVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    salesperson_id,
+    region_id,
+    sale_date,
+    sale_amount,
+    SUM(sale_amount) OVER (PARTITION BY region_id ORDER BY sale_date) AS cumulative_sales
+FROM 
+    sales;</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect Partitioning</strong>: Ensure that the <code>PARTITION BY</code> clause correctly defines the logical groups for your calculation.</li>
+<li><strong>Ordering Issues</strong>: The <code>ORDER BY</code> clause within the <code>OVER</code> clause is crucial for functions like <code>ROW_NUMBER()</code> and <code>RANK()</code>. Ensure it reflects the desired order.</li>
+<li><strong>Frame Clause Misuse</strong>: Be cautious with the frame clause. The default is <code>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code>, which might not always be what you need.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Window functions are a versatile tool in SQL that allow for complex calculations over partitions of data. By understanding and utilizing window functions, you can perform advanced data analysis and reporting tasks with ease. In the next module, we will delve into database design principles, which will help you structure your databases efficiently and effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-aggregate-functions' title="Aggregate Functions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-common-table-expressions' title="Common Table Expressions (CTEs)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

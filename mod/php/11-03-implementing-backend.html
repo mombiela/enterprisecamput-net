@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementing Backend Logic</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/11-03-implementing-backend" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/11-03-implementing-backend" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/11-03-implementing-backend" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/php/11-03-implementing-backend" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/php/11-03-implementing-backend" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-creating-ui' title="Creating the User Interface">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Implementing Backend Logic</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-integrating-database' title="Integrating with a Database">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will focus on implementing the backend logic for our web application. This involves writing the PHP code that will handle the core functionality of our application, such as processing user input, interacting with the database, and managing sessions.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Backend Logic</strong>: The server-side code that processes requests, performs operations, and returns responses.</li>
+<li><strong>MVC Architecture</strong>: A design pattern that separates the application into three main components: Model, View, and Controller.</li>
+<li><strong>Routing</strong>: The mechanism that maps URLs to specific functions or methods in your application.</li>
+<li><strong>Controllers</strong>: Classes that handle incoming requests and return responses.</li>
+<li><strong>Models</strong>: Classes that represent the data and business logic of the application.</li>
+<li><strong>Views</strong>: Templates that generate the HTML output sent to the user's browser.</li>
+</ol>
+</div><h1>Step-by-Step Guide</h1>
+<div class='content'></div><h2>1. Setting Up the MVC Structure</h2>
+<div class='content'><p>First, let's set up the basic structure of our application following the MVC pattern.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvamVjdC8K4pSCCuKUnOKUgOKUgCBhcHAvCuKUgiAgIOKUnOKUgOKUgCBDb250cm9sbGVycy8K4pSCICAg4pSc4pSA4pSAIE1vZGVscy8K4pSCICAg4pSU4pSA4pSAIFZpZXdzLwrilIIK4pSc4pSA4pSAIHB1YmxpYy8K4pSCICAg4pSU4pSA4pSAIGluZGV4LnBocArilIIK4pSU4pSA4pSAIGNvbmZpZy8KICAgIOKUlOKUgOKUgCByb3V0ZXMucGhw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>project/
+│
+├── app/
+│   ├── Controllers/
+│   ├── Models/
+│   └── Views/
+│
+├── public/
+│   └── index.php
+│
+└── config/
+    └── routes.php</pre></div><div class='content'></div><h2>2. Configuring Routes</h2>
+<div class='content'><p>In the <code>config/routes.php</code> file, define the routes for your application. Each route maps a URL to a specific controller and method.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gY29uZmlnL3JvdXRlcy5waHAKCiRyb3V0ZXMgPSBbCiAgICAnLycgPT4gJ0hvbWVDb250cm9sbGVyQGluZGV4JywKICAgICcvbG9naW4nID0+ICdBdXRoQ29udHJvbGxlckBsb2dpbicsCiAgICAnL3JlZ2lzdGVyJyA9PiAnQXV0aENvbnRyb2xsZXJAcmVnaXN0ZXInLAogICAgJy9kYXNoYm9hcmQnID0+ICdEYXNoYm9hcmRDb250cm9sbGVyQGluZGV4JywKXTsKCnJldHVybiAkcm91dGVzOwo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// config/routes.php
+
+$routes = [
+    '/' =&gt; 'HomeController@index',
+    '/login' =&gt; 'AuthController@login',
+    '/register' =&gt; 'AuthController@register',
+    '/dashboard' =&gt; 'DashboardController@index',
+];
+
+return $routes;
+?&gt;</pre></div><div class='content'></div><h2>3. Creating Controllers</h2>
+<div class='content'><p>Controllers handle the logic for each route. Let's create a simple <code>HomeController</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL0NvbnRyb2xsZXJzL0hvbWVDb250cm9sbGVyLnBocAoKY2xhc3MgSG9tZUNvbnRyb2xsZXIgewogICAgcHVibGljIGZ1bmN0aW9uIGluZGV4KCkgewogICAgICAgIC8vIExvYWQgdGhlIHZpZXcKICAgICAgICBpbmNsdWRlICcuLi9hcHAvVmlld3MvaG9tZS5waHAnOwogICAgfQp9Cj8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Controllers/HomeController.php
+
+class HomeController {
+    public function index() {
+        // Load the view
+        include '../app/Views/home.php';
+    }
+}
+?&gt;</pre></div><div class='content'></div><h2>4. Creating Models</h2>
+<div class='content'><p>Models represent the data and business logic. Here’s an example of a <code>User</code> model.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL01vZGVscy9Vc2VyLnBocAoKY2xhc3MgVXNlciB7CiAgICBwcml2YXRlICRkYjsKCiAgICBwdWJsaWMgZnVuY3Rpb24gX19jb25zdHJ1Y3QoJGRiKSB7CiAgICAgICAgJHRoaXMtPmRiID0gJGRiOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBnZXRVc2VyQnlJZCgkaWQpIHsKICAgICAgICAkc3RtdCA9ICR0aGlzLT5kYi0+cHJlcGFyZSgiU0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSBpZCA9ID8iKTsKICAgICAgICAkc3RtdC0+ZXhlY3V0ZShbJGlkXSk7CiAgICAgICAgcmV0dXJuICRzdG10LT5mZXRjaCgpOwogICAgfQp9Cj8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Models/User.php
+
+class User {
+    private $db;
+
+    public function __construct($db) {
+        $this-&gt;db = $db;
+    }
+
+    public function getUserById($id) {
+        $stmt = $this-&gt;db-&gt;prepare(&quot;SELECT * FROM users WHERE id = ?&quot;);
+        $stmt-&gt;execute([$id]);
+        return $stmt-&gt;fetch();
+    }
+}
+?&gt;</pre></div><div class='content'></div><h2>5. Creating Views</h2>
+<div class='content'><p>Views generate the HTML output. Here’s a simple view for the home page.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBhcHAvVmlld3MvaG9tZS5waHAgLS0+Cgo8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPgo8aGVhZD4KICAgIDxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KICAgIDx0aXRsZT5Ib21lPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5XZWxjb21lIHRvIHRoZSBIb21lIFBhZ2U8L2gxPgo8L2JvZHk+CjwvaHRtbD4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- app/Views/home.php --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Home&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to the Home Page&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>6. Handling Requests</h2>
+<div class='content'><p>In the <code>public/index.php</code> file, handle incoming requests and route them to the appropriate controller.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gcHVibGljL2luZGV4LnBocAoKLy8gTG9hZCByb3V0ZXMKJHJvdXRlcyA9IGluY2x1ZGUgJy4uL2NvbmZpZy9yb3V0ZXMucGhwJzsKCi8vIEdldCB0aGUgcmVxdWVzdGVkIFVSTAokdXJsID0gcGFyc2VfdXJsKCRfU0VSVkVSWydSRVFVRVNUX1VSSSddLCBQSFBfVVJMX1BBVEgpOwoKLy8gRmluZCB0aGUgY29ycmVzcG9uZGluZyBjb250cm9sbGVyIGFuZCBtZXRob2QKaWYgKGFycmF5X2tleV9leGlzdHMoJHVybCwgJHJvdXRlcykpIHsKICAgIGxpc3QoJGNvbnRyb2xsZXIsICRtZXRob2QpID0gZXhwbG9kZSgnQCcsICRyb3V0ZXNbJHVybF0pOwogICAgJGNvbnRyb2xsZXIgPSBuZXcgJGNvbnRyb2xsZXIoKTsKICAgICRjb250cm9sbGVyLT4kbWV0aG9kKCk7Cn0gZWxzZSB7CiAgICAvLyBIYW5kbGUgNDA0CiAgICBlY2hvICI0MDQgTm90IEZvdW5kIjsKfQo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// public/index.php
+
+// Load routes
+$routes = include '../config/routes.php';
+
+// Get the requested URL
+$url = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+// Find the corresponding controller and method
+if (array_key_exists($url, $routes)) {
+    list($controller, $method) = explode('@', $routes[$url]);
+    $controller = new $controller();
+    $controller-&gt;$method();
+} else {
+    // Handle 404
+    echo &quot;404 Not Found&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h2>7. Connecting to the Database</h2>
+<div class='content'><p>Ensure your application can connect to the database. Here’s a simple database connection setup.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gY29uZmlnL2RhdGFiYXNlLnBocAoKdHJ5IHsKICAgICRkYiA9IG5ldyBQRE8oJ215c3FsOmhvc3Q9bG9jYWxob3N0O2RibmFtZT15b3VyX2RhdGFiYXNlJywgJ3VzZXJuYW1lJywgJ3Bhc3N3b3JkJyk7CiAgICAkZGItPnNldEF0dHJpYnV0ZShQRE86OkFUVFJfRVJSTU9ERSwgUERPOjpFUlJNT0RFX0VYQ0VQVElPTik7Cn0gY2F0Y2ggKFBET0V4Y2VwdGlvbiAkZSkgewogICAgZWNobyAnQ29ubmVjdGlvbiBmYWlsZWQ6ICcgLiAkZS0+Z2V0TWVzc2FnZSgpOwp9Cj8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// config/database.php
+
+try {
+    $db = new PDO('mysql:host=localhost;dbname=your_database', 'username', 'password');
+    $db-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo 'Connection failed: ' . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>8. Example: User Registration</h2>
+<div class='content'><p>Let's implement a user registration feature.</p>
+<h4>Controller</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL0NvbnRyb2xsZXJzL0F1dGhDb250cm9sbGVyLnBocAoKY2xhc3MgQXV0aENvbnRyb2xsZXIgewogICAgcHJpdmF0ZSAkdXNlck1vZGVsOwoKICAgIHB1YmxpYyBmdW5jdGlvbiBfX2NvbnN0cnVjdCgpIHsKICAgICAgICBpbmNsdWRlICcuLi9jb25maWcvZGF0YWJhc2UucGhwJzsKICAgICAgICAkdGhpcy0+dXNlck1vZGVsID0gbmV3IFVzZXIoJGRiKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gcmVnaXN0ZXIoKSB7CiAgICAgICAgaWYgKCRfU0VSVkVSWydSRVFVRVNUX01FVEhPRCddID09ICdQT1NUJykgewogICAgICAgICAgICAkdXNlcm5hbWUgPSAkX1BPU1RbJ3VzZXJuYW1lJ107CiAgICAgICAgICAgICRwYXNzd29yZCA9IHBhc3N3b3JkX2hhc2goJF9QT1NUWydwYXNzd29yZCddLCBQQVNTV09SRF9CQ1JZUFQpOwoKICAgICAgICAgICAgJHRoaXMtPnVzZXJNb2RlbC0+Y3JlYXRlVXNlcigkdXNlcm5hbWUsICRwYXNzd29yZCk7CiAgICAgICAgICAgIGhlYWRlcignTG9jYXRpb246IC9sb2dpbicpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIGluY2x1ZGUgJy4uL2FwcC9WaWV3cy9yZWdpc3Rlci5waHAnOwogICAgICAgIH0KICAgIH0KfQo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Controllers/AuthController.php
+
+class AuthController {
+    private $userModel;
+
+    public function __construct() {
+        include '../config/database.php';
+        $this-&gt;userModel = new User($db);
+    }
+
+    public function register() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $username = $_POST['username'];
+            $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+
+            $this-&gt;userModel-&gt;createUser($username, $password);
+            header('Location: /login');
+        } else {
+            include '../app/Views/register.php';
+        }
+    }
+}
+?&gt;</pre></div><div class='content'><h4>Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL01vZGVscy9Vc2VyLnBocAoKY2xhc3MgVXNlciB7CiAgICBwcml2YXRlICRkYjsKCiAgICBwdWJsaWMgZnVuY3Rpb24gX19jb25zdHJ1Y3QoJGRiKSB7CiAgICAgICAgJHRoaXMtPmRiID0gJGRiOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBjcmVhdGVVc2VyKCR1c2VybmFtZSwgJHBhc3N3b3JkKSB7CiAgICAgICAgJHN0bXQgPSAkdGhpcy0+ZGItPnByZXBhcmUoIklOU0VSVCBJTlRPIHVzZXJzICh1c2VybmFtZSwgcGFzc3dvcmQpIFZBTFVFUyAoPywgPykiKTsKICAgICAgICAkc3RtdC0+ZXhlY3V0ZShbJHVzZXJuYW1lLCAkcGFzc3dvcmRdKTsKICAgIH0KfQo/Pg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Models/User.php
+
+class User {
+    private $db;
+
+    public function __construct($db) {
+        $this-&gt;db = $db;
+    }
+
+    public function createUser($username, $password) {
+        $stmt = $this-&gt;db-&gt;prepare(&quot;INSERT INTO users (username, password) VALUES (?, ?)&quot;);
+        $stmt-&gt;execute([$username, $password]);
+    }
+}
+?&gt;</pre></div><div class='content'><h4>View</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBhcHAvVmlld3MvcmVnaXN0ZXIucGhwIC0tPgoKPCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+UmVnaXN0ZXI8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPlJlZ2lzdGVyPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIvcmVnaXN0ZXIiPgogICAgICAgIDxsYWJlbCBmb3I9InVzZXJuYW1lIj5Vc2VybmFtZTo8L2xhYmVsPgogICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0idXNlcm5hbWUiIG5hbWU9InVzZXJuYW1lIiByZXF1aXJlZD4KICAgICAgICA8YnI+CiAgICAgICAgPGxhYmVsIGZvcj0icGFzc3dvcmQiPlBhc3N3b3JkOjwvbGFiZWw+CiAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBpZD0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiByZXF1aXJlZD4KICAgICAgICA8YnI+CiAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlJlZ2lzdGVyPC9idXR0b24+CiAgICA8L2Zvcm0+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- app/Views/register.php --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Register&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Register&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;/register&quot;&gt;
+        &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;
+        &lt;br&gt;
+        &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+        &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;
+        &lt;br&gt;
+        &lt;button type=&quot;submit&quot;&gt;Register&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><ol>
+<li>Implement a login feature following the same structure as the registration feature.</li>
+<li>Ensure that the user is redirected to the dashboard upon successful login.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Controller</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL0NvbnRyb2xsZXJzL0F1dGhDb250cm9sbGVyLnBocAoKY2xhc3MgQXV0aENvbnRyb2xsZXIgewogICAgcHJpdmF0ZSAkdXNlck1vZGVsOwoKICAgIHB1YmxpYyBmdW5jdGlvbiBfX2NvbnN0cnVjdCgpIHsKICAgICAgICBpbmNsdWRlICcuLi9jb25maWcvZGF0YWJhc2UucGhwJzsKICAgICAgICAkdGhpcy0+dXNlck1vZGVsID0gbmV3IFVzZXIoJGRiKTsKICAgIH0KCiAgICBwdWJsaWMgZnVuY3Rpb24gbG9naW4oKSB7CiAgICAgICAgaWYgKCRfU0VSVkVSWydSRVFVRVNUX01FVEhPRCddID09ICdQT1NUJykgewogICAgICAgICAgICAkdXNlcm5hbWUgPSAkX1BPU1RbJ3VzZXJuYW1lJ107CiAgICAgICAgICAgICRwYXNzd29yZCA9ICRfUE9TVFsncGFzc3dvcmQnXTsKCiAgICAgICAgICAgICR1c2VyID0gJHRoaXMtPnVzZXJNb2RlbC0+Z2V0VXNlckJ5VXNlcm5hbWUoJHVzZXJuYW1lKTsKICAgICAgICAgICAgaWYgKCR1c2VyICYmIHBhc3N3b3JkX3ZlcmlmeSgkcGFzc3dvcmQsICR1c2VyWydwYXNzd29yZCddKSkgewogICAgICAgICAgICAgICAgc2Vzc2lvbl9zdGFydCgpOwogICAgICAgICAgICAgICAgJF9TRVNTSU9OWyd1c2VyX2lkJ10gPSAkdXNlclsnaWQnXTsKICAgICAgICAgICAgICAgIGhlYWRlcignTG9jYXRpb246IC9kYXNoYm9hcmQnKTsKICAgICAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgICAgIGVjaG8gIkludmFsaWQgY3JlZGVudGlhbHMiOwogICAgICAgICAgICB9CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgaW5jbHVkZSAnLi4vYXBwL1ZpZXdzL2xvZ2luLnBocCc7CiAgICAgICAgfQogICAgfQp9Cj8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Controllers/AuthController.php
+
+class AuthController {
+    private $userModel;
+
+    public function __construct() {
+        include '../config/database.php';
+        $this-&gt;userModel = new User($db);
+    }
+
+    public function login() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $username = $_POST['username'];
+            $password = $_POST['password'];
+
+            $user = $this-&gt;userModel-&gt;getUserByUsername($username);
+            if ($user &amp;&amp; password_verify($password, $user['password'])) {
+                session_start();
+                $_SESSION['user_id'] = $user['id'];
+                header('Location: /dashboard');
+            } else {
+                echo &quot;Invalid credentials&quot;;
+            }
+        } else {
+            include '../app/Views/login.php';
+        }
+    }
+}
+?&gt;</pre></div><div class='content'><h4>Model</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gYXBwL01vZGVscy9Vc2VyLnBocAoKY2xhc3MgVXNlciB7CiAgICBwcml2YXRlICRkYjsKCiAgICBwdWJsaWMgZnVuY3Rpb24gX19jb25zdHJ1Y3QoJGRiKSB7CiAgICAgICAgJHRoaXMtPmRiID0gJGRiOwogICAgfQoKICAgIHB1YmxpYyBmdW5jdGlvbiBnZXRVc2VyQnlVc2VybmFtZSgkdXNlcm5hbWUpIHsKICAgICAgICAkc3RtdCA9ICR0aGlzLT5kYi0+cHJlcGFyZSgiU0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VybmFtZSA9ID8iKTsKICAgICAgICAkc3RtdC0+ZXhlY3V0ZShbJHVzZXJuYW1lXSk7CiAgICAgICAgcmV0dXJuICRzdG10LT5mZXRjaCgpOwogICAgfQp9Cj8+"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// app/Models/User.php
+
+class User {
+    private $db;
+
+    public function __construct($db) {
+        $this-&gt;db = $db;
+    }
+
+    public function getUserByUsername($username) {
+        $stmt = $this-&gt;db-&gt;prepare(&quot;SELECT * FROM users WHERE username = ?&quot;);
+        $stmt-&gt;execute([$username]);
+        return $stmt-&gt;fetch();
+    }
+}
+?&gt;</pre></div><div class='content'><h4>View</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBhcHAvVmlld3MvbG9naW4ucGhwIC0tPgoKPCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+TG9naW48L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkxvZ2luPC9oMT4KICAgIDxmb3JtIG1ldGhvZD0iUE9TVCIgYWN0aW9uPSIvbG9naW4iPgogICAgICAgIDxsYWJlbCBmb3I9InVzZXJuYW1lIj5Vc2VybmFtZTo8L2xhYmVsPgogICAgICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0idXNlcm5hbWUiIG5hbWU9InVzZXJuYW1lIiByZXF1aXJlZD4KICAgICAgICA8YnI+CiAgICAgICAgPGxhYmVsIGZvcj0icGFzc3dvcmQiPlBhc3N3b3JkOjwvbGFiZWw+CiAgICAgICAgPGlucHV0IHR5cGU9InBhc3N3b3JkIiBpZD0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIiByZXF1aXJlZD4KICAgICAgICA8YnI+CiAgICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkxvZ2luPC9idXR0b24+CiAgICA8L2Zvcm0+CjwvYm9keT4KPC9odG1sPg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- app/Views/login.php --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Login&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Login&lt;/h1&gt;
+    &lt;form method=&quot;POST&quot; action=&quot;/login&quot;&gt;
+        &lt;label for=&quot;username&quot;&gt;Username:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;username&quot; name=&quot;username&quot; required&gt;
+        &lt;br&gt;
+        &lt;label for=&quot;password&quot;&gt;Password:&lt;/label&gt;
+        &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;
+        &lt;br&gt;
+        &lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have covered the basics of implementing backend logic in a PHP application using the MVC pattern. We set up the project structure, configured routes, created controllers, models, and views, and implemented a user registration feature. By following these steps, you can build robust and maintainable PHP applications.</p>
+<p>Next, we will integrate our backend logic with a database to store and retrieve data efficiently.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-creating-ui' title="Creating the User Interface">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-integrating-database' title="Integrating with a Database">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

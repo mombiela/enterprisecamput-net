@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Queues</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/09-03-message-queues" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/09-03-message-queues" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/09-03-message-queues" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/09-03-message-queues" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/09-03-message-queues" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-session-storage' title="Session Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Message Queues</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-real-time-analytics' title="Real-Time Analytics">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Message queues are a fundamental component in many distributed systems, enabling asynchronous communication between different parts of an application. Redis, with its high performance and simplicity, is an excellent choice for implementing message queues. In this section, we will explore how to use Redis for message queuing, covering key concepts, practical examples, and exercises to solidify your understanding.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Message Queue</strong>: A data structure used to store messages that need to be processed by consumers.</li>
+<li><strong>Producer</strong>: An entity that sends messages to the queue.</li>
+<li><strong>Consumer</strong>: An entity that retrieves and processes messages from the queue.</li>
+<li><strong>FIFO (First In, First Out)</strong>: The order in which messages are processed, ensuring that the first message added to the queue is the first one to be processed.</li>
+</ol>
+</div><h1>Redis Data Structures for Message Queues</h1>
+<div class='content'><p>Redis provides several data structures that can be used to implement message queues:</p>
+<ol>
+<li><strong>Lists</strong>: The most straightforward way to implement a queue using Redis. Lists support operations like <code>LPUSH</code> (add to the left) and <code>RPOP</code> (remove from the right), which can be used to implement a FIFO queue.</li>
+<li><strong>Streams</strong>: A more advanced data structure introduced in Redis 5.0, designed specifically for handling message queues and event sourcing.</li>
+</ol>
+</div><h1>Implementing a Simple Message Queue with Redis Lists</h1>
+<div class='content'></div><h2>Example: Basic Queue Operations</h2>
+<div class='content'><p>Let's start with a simple example using Redis lists to implement a message queue.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcm9kdWNlcjogQWRkaW5nIG1lc3NhZ2VzIHRvIHRoZSBxdWV1ZQpMUFVTSCBteXF1ZXVlICJNZXNzYWdlIDEiCkxQVVNIIG15cXVldWUgIk1lc3NhZ2UgMiIKTFBVU0ggbXlxdWV1ZSAiTWVzc2FnZSAzIgoKIyBDb25zdW1lcjogUmV0cmlldmluZyBtZXNzYWdlcyBmcm9tIHRoZSBxdWV1ZQpSUE9QIG15cXVldWUKIyBPdXRwdXQ6ICJNZXNzYWdlIDEiClJQT1AgbXlxdWV1ZQojIE91dHB1dDogIk1lc3NhZ2UgMiIKUlBPUCBteXF1ZXVlCiMgT3V0cHV0OiAiTWVzc2FnZSAzIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Producer: Adding messages to the queue
+LPUSH myqueue &quot;Message 1&quot;
+LPUSH myqueue &quot;Message 2&quot;
+LPUSH myqueue &quot;Message 3&quot;
+
+# Consumer: Retrieving messages from the queue
+RPOP myqueue
+# Output: &quot;Message 1&quot;
+RPOP myqueue
+# Output: &quot;Message 2&quot;
+RPOP myqueue
+# Output: &quot;Message 3&quot;</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>LPUSH</strong>: Adds an element to the left end of the list.</li>
+<li><strong>RPOP</strong>: Removes and returns the element from the right end of the list.</li>
+</ul>
+<p>This ensures that the first message added to the queue is the first one to be processed, maintaining FIFO order.</p>
+</div><h2>Exercise: Implementing a Message Queue</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a message queue using Redis lists. Write a script that simulates a producer adding messages to the queue and a consumer retrieving and processing them.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCgojIENvbm5lY3QgdG8gUmVkaXMKciA9IHJlZGlzLlJlZGlzKGhvc3Q9J2xvY2FsaG9zdCcsIHBvcnQ9NjM3OSwgZGI9MCkKCiMgUHJvZHVjZXI6IEFkZGluZyBtZXNzYWdlcyB0byB0aGUgcXVldWUKZGVmIHByb2R1Y2VyKHF1ZXVlX25hbWUsIG1lc3NhZ2VzKToKICAgIGZvciBtZXNzYWdlIGluIG1lc3NhZ2VzOgogICAgICAgIHIubHB1c2gocXVldWVfbmFtZSwgbWVzc2FnZSkKICAgICAgICBwcmludChmIlByb2R1Y2VkOiB7bWVzc2FnZX0iKQoKIyBDb25zdW1lcjogUmV0cmlldmluZyBtZXNzYWdlcyBmcm9tIHRoZSBxdWV1ZQpkZWYgY29uc3VtZXIocXVldWVfbmFtZSk6CiAgICB3aGlsZSBUcnVlOgogICAgICAgIG1lc3NhZ2UgPSByLnJwb3AocXVldWVfbmFtZSkKICAgICAgICBpZiBtZXNzYWdlOgogICAgICAgICAgICBwcmludChmIkNvbnN1bWVkOiB7bWVzc2FnZS5kZWNvZGUoJ3V0Zi04Jyl9IikKICAgICAgICBlbHNlOgogICAgICAgICAgICBicmVhawoKIyBFeGFtcGxlIHVzYWdlCnF1ZXVlX25hbWUgPSAnbXlxdWV1ZScKbWVzc2FnZXMgPSBbIk1lc3NhZ2UgMSIsICJNZXNzYWdlIDIiLCAiTWVzc2FnZSAzIl0KCnByb2R1Y2VyKHF1ZXVlX25hbWUsIG1lc3NhZ2VzKQpjb25zdW1lcihxdWV1ZV9uYW1lKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+
+# Connect to Redis
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Producer: Adding messages to the queue
+def producer(queue_name, messages):
+    for message in messages:
+        r.lpush(queue_name, message)
+        print(f&quot;Produced: {message}&quot;)
+
+# Consumer: Retrieving messages from the queue
+def consumer(queue_name):
+    while True:
+        message = r.rpop(queue_name)
+        if message:
+            print(f&quot;Consumed: {message.decode('utf-8')}&quot;)
+        else:
+            break
+
+# Example usage
+queue_name = 'myqueue'
+messages = [&quot;Message 1&quot;, &quot;Message 2&quot;, &quot;Message 3&quot;]
+
+producer(queue_name, messages)
+consumer(queue_name)</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ul>
+<li><strong>Producer Function</strong>: Adds messages to the queue using <code>LPUSH</code>.</li>
+<li><strong>Consumer Function</strong>: Retrieves and processes messages from the queue using <code>RPOP</code>.</li>
+</ul>
+</div><h1>Advanced Message Queuing with Redis Streams</h1>
+<div class='content'><p>Redis Streams provide a more robust and feature-rich way to handle message queues. They support features like message acknowledgment, consumer groups, and more.</p>
+</div><h2>Example: Basic Stream Operations</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcm9kdWNlcjogQWRkaW5nIG1lc3NhZ2VzIHRvIHRoZSBzdHJlYW0KWEFERCBteXN0cmVhbSAqIG1lc3NhZ2UgIk1lc3NhZ2UgMSIKWEFERCBteXN0cmVhbSAqIG1lc3NhZ2UgIk1lc3NhZ2UgMiIKWEFERCBteXN0cmVhbSAqIG1lc3NhZ2UgIk1lc3NhZ2UgMyIKCiMgQ29uc3VtZXI6IFJlYWRpbmcgbWVzc2FnZXMgZnJvbSB0aGUgc3RyZWFtClhSQU5HRSBteXN0cmVhbSAtICs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Producer: Adding messages to the stream
+XADD mystream * message &quot;Message 1&quot;
+XADD mystream * message &quot;Message 2&quot;
+XADD mystream * message &quot;Message 3&quot;
+
+# Consumer: Reading messages from the stream
+XRANGE mystream - +</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>XADD</strong>: Adds a message to the stream. The <code>*</code> argument lets Redis generate a unique ID for the message.</li>
+<li><strong>XRANGE</strong>: Reads messages from the stream within a specified range. <code>-</code> and <code>+</code> denote the start and end of the range, respectively.</li>
+</ul>
+</div><h2>Exercise: Implementing a Message Queue with Streams</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a message queue using Redis Streams. Write a script that simulates a producer adding messages to the stream and a consumer reading and processing them.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlZGlzCgojIENvbm5lY3QgdG8gUmVkaXMKciA9IHJlZGlzLlJlZGlzKGhvc3Q9J2xvY2FsaG9zdCcsIHBvcnQ9NjM3OSwgZGI9MCkKCiMgUHJvZHVjZXI6IEFkZGluZyBtZXNzYWdlcyB0byB0aGUgc3RyZWFtCmRlZiBwcm9kdWNlcihzdHJlYW1fbmFtZSwgbWVzc2FnZXMpOgogICAgZm9yIG1lc3NhZ2UgaW4gbWVzc2FnZXM6CiAgICAgICAgci54YWRkKHN0cmVhbV9uYW1lLCB7J21lc3NhZ2UnOiBtZXNzYWdlfSkKICAgICAgICBwcmludChmIlByb2R1Y2VkOiB7bWVzc2FnZX0iKQoKIyBDb25zdW1lcjogUmVhZGluZyBtZXNzYWdlcyBmcm9tIHRoZSBzdHJlYW0KZGVmIGNvbnN1bWVyKHN0cmVhbV9uYW1lKToKICAgIGxhc3RfaWQgPSAnMCcKICAgIHdoaWxlIFRydWU6CiAgICAgICAgbWVzc2FnZXMgPSByLnhyYW5nZShzdHJlYW1fbmFtZSwgbWluPWxhc3RfaWQsIG1heD0nKycsIGNvdW50PTEpCiAgICAgICAgaWYgbWVzc2FnZXM6CiAgICAgICAgICAgIGZvciBtZXNzYWdlX2lkLCBtZXNzYWdlIGluIG1lc3NhZ2VzOgogICAgICAgICAgICAgICAgcHJpbnQoZiJDb25zdW1lZDoge21lc3NhZ2VbYidtZXNzYWdlJ10uZGVjb2RlKCd1dGYtOCcpfSIpCiAgICAgICAgICAgICAgICBsYXN0X2lkID0gbWVzc2FnZV9pZAogICAgICAgIGVsc2U6CiAgICAgICAgICAgIGJyZWFrCgojIEV4YW1wbGUgdXNhZ2UKc3RyZWFtX25hbWUgPSAnbXlzdHJlYW0nCm1lc3NhZ2VzID0gWyJNZXNzYWdlIDEiLCAiTWVzc2FnZSAyIiwgIk1lc3NhZ2UgMyJdCgpwcm9kdWNlcihzdHJlYW1fbmFtZSwgbWVzc2FnZXMpCmNvbnN1bWVyKHN0cmVhbV9uYW1lKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import redis
+
+# Connect to Redis
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+# Producer: Adding messages to the stream
+def producer(stream_name, messages):
+    for message in messages:
+        r.xadd(stream_name, {'message': message})
+        print(f&quot;Produced: {message}&quot;)
+
+# Consumer: Reading messages from the stream
+def consumer(stream_name):
+    last_id = '0'
+    while True:
+        messages = r.xrange(stream_name, min=last_id, max='+', count=1)
+        if messages:
+            for message_id, message in messages:
+                print(f&quot;Consumed: {message[b'message'].decode('utf-8')}&quot;)
+                last_id = message_id
+        else:
+            break
+
+# Example usage
+stream_name = 'mystream'
+messages = [&quot;Message 1&quot;, &quot;Message 2&quot;, &quot;Message 3&quot;]
+
+producer(stream_name, messages)
+consumer(stream_name)</pre></div><div class='content'></div><h2>Solution Explanation</h2>
+<div class='content'><ul>
+<li><strong>Producer Function</strong>: Adds messages to the stream using <code>XADD</code>.</li>
+<li><strong>Consumer Function</strong>: Reads and processes messages from the stream using <code>XRANGE</code>.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ol>
+<li><strong>Blocking Operations</strong>: Be cautious with blocking operations like <code>BLPOP</code> and <code>BRPOP</code> in lists, as they can cause your application to hang if not handled properly.</li>
+<li><strong>Message Acknowledgment</strong>: When using streams, ensure that messages are acknowledged to avoid reprocessing.</li>
+<li><strong>Consumer Groups</strong>: Utilize consumer groups in streams for better scalability and fault tolerance.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored how to implement message queues using Redis lists and streams. We covered basic operations, provided practical examples, and included exercises to reinforce your understanding. Redis offers powerful and flexible tools for message queuing, making it an excellent choice for building robust and scalable distributed systems.</p>
+<p>Next, we will delve into another advanced use case of Redis: Real-Time Analytics.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-session-storage' title="Session Storage">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-real-time-analytics' title="Real-Time Analytics">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

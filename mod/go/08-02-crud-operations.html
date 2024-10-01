@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Operations</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/08-02-crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/08-02-crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/08-02-crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/go/08-02-crud-operations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/go/08-02-crud-operations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-connecting-to-a-database' title="Connecting to a Database">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">CRUD Operations</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-orm' title="Using ORM">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the fundamental CRUD (Create, Read, Update, Delete) operations in Go, focusing on how to interact with a database to perform these operations. CRUD operations are essential for any application that deals with persistent data storage.</p>
+</div><h1>Objectives</h1>
+<div class='content'><ul>
+<li>Understand the basic CRUD operations.</li>
+<li>Learn how to implement CRUD operations in Go.</li>
+<li>Practice with practical examples and exercises.</li>
+</ul>
+</div><h1>Prerequisites</h1>
+<div class='content'><ul>
+<li>Basic understanding of Go programming.</li>
+<li>Familiarity with SQL and relational databases.</li>
+<li>Completion of the previous module on connecting to a database.</li>
+</ul>
+</div><h1>Table of Contents</h1>
+<div class='content'><ol>
+<li><a href="#introduction-to-crud-operations">Introduction to CRUD Operations</a></li>
+<li><a href="#setting-up-the-database">Setting Up the Database</a></li>
+<li><a href="#create-operation">Create Operation</a></li>
+<li><a href="#read-operation">Read Operation</a></li>
+<li><a href="#update-operation">Update Operation</a></li>
+<li><a href="#delete-operation">Delete Operation</a></li>
+<li><a href="#practical-exercises">Practical Exercises</a></li>
+<li><a href="#summary">Summary</a></li>
+</ol>
+</div><h1>Introduction to CRUD Operations</h1>
+<div class='content'><p>CRUD operations are the four basic functions of persistent storage. They are:</p>
+<ul>
+<li><strong>Create</strong>: Insert new data into the database.</li>
+<li><strong>Read</strong>: Retrieve data from the database.</li>
+<li><strong>Update</strong>: Modify existing data in the database.</li>
+<li><strong>Delete</strong>: Remove data from the database.</li>
+</ul>
+</div><h1>Setting Up the Database</h1>
+<div class='content'><p>Before we dive into CRUD operations, let's set up a simple database. We'll use SQLite for simplicity, but the concepts apply to other relational databases like MySQL or PostgreSQL.</p>
+</div><h2>Example Database Schema</h2>
+<div class='content'><p>We'll create a simple <code>users</code> table with the following schema:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHVzZXJzICgKICAgIGlkIElOVEVHRVIgUFJJTUFSWSBLRVkgQVVUT0lOQ1JFTUVOVCwKICAgIG5hbWUgVEVYVCBOT1QgTlVMTCwKICAgIGVtYWlsIFRFWFQgTk9UIE5VTEwgVU5JUVVFLAogICAgYWdlIElOVEVHRVIKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    age INTEGER
+);</pre></div><div class='content'></div><h1>Create Operation</h1>
+<div class='content'><p>The Create operation involves inserting new records into the database.</p>
+</div><h2>Example: Inserting a New User</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJmbXQiCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi9leGFtcGxlLmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIGRiLkNsb3NlKCkKCiAgICAvLyBJbnNlcnQgYSBuZXcgdXNlcgogICAgc3RtdCwgZXJyIDo9IGRiLlByZXBhcmUoIklOU0VSVCBJTlRPIHVzZXJzKG5hbWUsIGVtYWlsLCBhZ2UpIFZBTFVFUyg/LCA/LCA/KSIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBwYW5pYyhlcnIpCiAgICB9CiAgICBkZWZlciBzdG10LkNsb3NlKCkKCiAgICByZXMsIGVyciA6PSBzdG10LkV4ZWMoIkpvaG4gRG9lIiwgImpvaG5AZXhhbXBsZS5jb20iLCAzMCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KCiAgICBpZCwgZXJyIDo9IHJlcy5MYXN0SW5zZXJ0SWQoKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgcGFuaWMoZXJyKQogICAgfQoKICAgIGZtdC5QcmludGYoIkluc2VydGVkIHVzZXIgd2l0aCBJRDogJWRcbiIsIGlkKQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./example.db&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    // Insert a new user
+    stmt, err := db.Prepare(&quot;INSERT INTO users(name, email, age) VALUES(?, ?, ?)&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer stmt.Close()
+
+    res, err := stmt.Exec(&quot;John Doe&quot;, &quot;john@example.com&quot;, 30)
+    if err != nil {
+        panic(err)
+    }
+
+    id, err := res.LastInsertId()
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf(&quot;Inserted user with ID: %d\n&quot;, id)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We open a connection to the SQLite database.</li>
+<li>We prepare an SQL statement for inserting a new user.</li>
+<li>We execute the statement with the user's details.</li>
+<li>We retrieve and print the ID of the newly inserted user.</li>
+</ul>
+</div><h1>Read Operation</h1>
+<div class='content'><p>The Read operation involves retrieving data from the database.</p>
+</div><h2>Example: Retrieving All Users</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJmbXQiCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi9leGFtcGxlLmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIGRiLkNsb3NlKCkKCiAgICByb3dzLCBlcnIgOj0gZGIuUXVlcnkoIlNFTEVDVCBpZCwgbmFtZSwgZW1haWwsIGFnZSBGUk9NIHVzZXJzIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIHJvd3MuQ2xvc2UoKQoKICAgIGZvciByb3dzLk5leHQoKSB7CiAgICAgICAgdmFyIGlkIGludAogICAgICAgIHZhciBuYW1lLCBlbWFpbCBzdHJpbmcKICAgICAgICB2YXIgYWdlIGludAoKICAgICAgICBlcnIgPSByb3dzLlNjYW4oJmlkLCAmbmFtZSwgJmVtYWlsLCAmYWdlKQogICAgICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgICAgICBwYW5pYyhlcnIpCiAgICAgICAgfQoKICAgICAgICBmbXQuUHJpbnRmKCJJRDogJWQsIE5hbWU6ICVzLCBFbWFpbDogJXMsIEFnZTogJWRcbiIsIGlkLCBuYW1lLCBlbWFpbCwgYWdlKQogICAgfQoKICAgIGVyciA9IHJvd3MuRXJyKCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./example.db&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    rows, err := db.Query(&quot;SELECT id, name, email, age FROM users&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var id int
+        var name, email string
+        var age int
+
+        err = rows.Scan(&amp;id, &amp;name, &amp;email, &amp;age)
+        if err != nil {
+            panic(err)
+        }
+
+        fmt.Printf(&quot;ID: %d, Name: %s, Email: %s, Age: %d\n&quot;, id, name, email, age)
+    }
+
+    err = rows.Err()
+    if err != nil {
+        panic(err)
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We open a connection to the SQLite database.</li>
+<li>We execute a query to retrieve all users.</li>
+<li>We iterate over the result set and print each user's details.</li>
+</ul>
+</div><h1>Update Operation</h1>
+<div class='content'><p>The Update operation involves modifying existing records in the database.</p>
+</div><h2>Example: Updating a User's Age</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJmbXQiCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi9leGFtcGxlLmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIGRiLkNsb3NlKCkKCiAgICAvLyBVcGRhdGUgYSB1c2VyJ3MgYWdlCiAgICBzdG10LCBlcnIgOj0gZGIuUHJlcGFyZSgiVVBEQVRFIHVzZXJzIFNFVCBhZ2UgPSA/IFdIRVJFIGVtYWlsID0gPyIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBwYW5pYyhlcnIpCiAgICB9CiAgICBkZWZlciBzdG10LkNsb3NlKCkKCiAgICByZXMsIGVyciA6PSBzdG10LkV4ZWMoMzUsICJqb2huQGV4YW1wbGUuY29tIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KCiAgICByb3dzQWZmZWN0ZWQsIGVyciA6PSByZXMuUm93c0FmZmVjdGVkKCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KCiAgICBmbXQuUHJpbnRmKCJVcGRhdGVkICVkIHJvd3NcbiIsIHJvd3NBZmZlY3RlZCkKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./example.db&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    // Update a user's age
+    stmt, err := db.Prepare(&quot;UPDATE users SET age = ? WHERE email = ?&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer stmt.Close()
+
+    res, err := stmt.Exec(35, &quot;john@example.com&quot;)
+    if err != nil {
+        panic(err)
+    }
+
+    rowsAffected, err := res.RowsAffected()
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf(&quot;Updated %d rows\n&quot;, rowsAffected)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We open a connection to the SQLite database.</li>
+<li>We prepare an SQL statement for updating a user's age.</li>
+<li>We execute the statement with the new age and the user's email.</li>
+<li>We retrieve and print the number of rows affected by the update.</li>
+</ul>
+</div><h1>Delete Operation</h1>
+<div class='content'><p>The Delete operation involves removing records from the database.</p>
+</div><h2>Example: Deleting a User</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJmbXQiCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi9leGFtcGxlLmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIGRiLkNsb3NlKCkKCiAgICAvLyBEZWxldGUgYSB1c2VyCiAgICBzdG10LCBlcnIgOj0gZGIuUHJlcGFyZSgiREVMRVRFIEZST00gdXNlcnMgV0hFUkUgZW1haWwgPSA/IikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIHBhbmljKGVycikKICAgIH0KICAgIGRlZmVyIHN0bXQuQ2xvc2UoKQoKICAgIHJlcywgZXJyIDo9IHN0bXQuRXhlYygiam9obkBleGFtcGxlLmNvbSIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBwYW5pYyhlcnIpCiAgICB9CgogICAgcm93c0FmZmVjdGVkLCBlcnIgOj0gcmVzLlJvd3NBZmZlY3RlZCgpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBwYW5pYyhlcnIpCiAgICB9CgogICAgZm10LlByaW50ZigiRGVsZXRlZCAlZCByb3dzXG4iLCByb3dzQWZmZWN0ZWQpCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;fmt&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./example.db&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer db.Close()
+
+    // Delete a user
+    stmt, err := db.Prepare(&quot;DELETE FROM users WHERE email = ?&quot;)
+    if err != nil {
+        panic(err)
+    }
+    defer stmt.Close()
+
+    res, err := stmt.Exec(&quot;john@example.com&quot;)
+    if err != nil {
+        panic(err)
+    }
+
+    rowsAffected, err := res.RowsAffected()
+    if err != nil {
+        panic(err)
+    }
+
+    fmt.Printf(&quot;Deleted %d rows\n&quot;, rowsAffected)
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li>We open a connection to the SQLite database.</li>
+<li>We prepare an SQL statement for deleting a user.</li>
+<li>We execute the statement with the user's email.</li>
+<li>We retrieve and print the number of rows affected by the deletion.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Insert Multiple Users</h2>
+<div class='content'><p>Write a program to insert multiple users into the <code>users</code> table. Use a loop to insert at least three users.</p>
+</div><h2>Exercise 2: Retrieve Users by Age</h2>
+<div class='content'><p>Write a program to retrieve and print all users who are older than a specified age.</p>
+</div><h2>Exercise 3: Update User's Email</h2>
+<div class='content'><p>Write a program to update a user's email based on their name.</p>
+</div><h2>Exercise 4: Delete Users by Age</h2>
+<div class='content'><p>Write a program to delete all users who are younger than a specified age.</p>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basic CRUD operations in Go:</p>
+<ul>
+<li><strong>Create</strong>: Inserting new records into the database.</li>
+<li><strong>Read</strong>: Retrieving data from the database.</li>
+<li><strong>Update</strong>: Modifying existing records in the database.</li>
+<li><strong>Delete</strong>: Removing records from the database.</li>
+</ul>
+<p>These operations are fundamental for any application that interacts with a database. By practicing these operations, you will gain a solid understanding of how to manage data in a Go application.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-connecting-to-a-database' title="Connecting to a Database">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-orm' title="Using ORM">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

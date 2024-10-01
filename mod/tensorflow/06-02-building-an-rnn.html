@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building an RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/06-02-building-an-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/06-02-building-an-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/tensorflow/06-02-building-an-rnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-rnns' title="Introduction to RNNs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Building an RNN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-long-short-term-memory' title="Long Short-Term Memory (LSTM)">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into the process of building a Recurrent Neural Network (RNN) using TensorFlow. RNNs are a class of neural networks that are particularly effective for sequential data, such as time series, text, and speech. They have the ability to maintain a memory of previous inputs, which makes them suitable for tasks where context is important.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Recurrent Neural Networks (RNNs):</strong> A type of neural network designed for sequential data.</li>
+<li><strong>Sequential Data:</strong> Data where the order of the elements is significant.</li>
+<li><strong>Statefulness:</strong> The ability of RNNs to maintain information about previous inputs.</li>
+<li><strong>RNN Cell:</strong> The basic building block of an RNN, which processes one element of the sequence at a time and maintains a state.</li>
+</ol>
+</div><h1>Steps to Build an RNN</h1>
+<div class='content'><ol>
+<li><strong>Import Required Libraries</strong></li>
+<li><strong>Prepare the Data</strong></li>
+<li><strong>Define the RNN Model</strong></li>
+<li><strong>Compile the Model</strong></li>
+<li><strong>Train the Model</strong></li>
+<li><strong>Evaluate the Model</strong></li>
+</ol>
+</div><h1>1. Import Required Libraries</h1>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBTaW1wbGVSTk4sIERlbnNlCmltcG9ydCBudW1weSBhcyBucA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+import numpy as np</pre></div><div class='content'></div><h1>2. Prepare the Data</h1>
+<div class='content'><p>For this example, we will use a simple sine wave as our sequential data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmF0ZSBhIHNpbXBsZSBzaW5lIHdhdmUgZGF0YXNldApkZWYgZ2VuZXJhdGVfc2luZV93YXZlX2RhdGEoc2VxX2xlbmd0aCwgbnVtX3NhbXBsZXMpOgogICAgWCA9IFtdCiAgICB5ID0gW10KICAgIGZvciBfIGluIHJhbmdlKG51bV9zYW1wbGVzKToKICAgICAgICBzdGFydCA9IG5wLnJhbmRvbS5yYW5kKCkKICAgICAgICB4ID0gbnAubGluc3BhY2Uoc3RhcnQsIHN0YXJ0ICsgMiAqIG5wLnBpLCBzZXFfbGVuZ3RoKQogICAgICAgIHkuYXBwZW5kKG5wLnNpbih4KSkKICAgICAgICBYLmFwcGVuZChucC5zaW4oeFs6LTFdKSkKICAgIHJldHVybiBucC5hcnJheShYKSwgbnAuYXJyYXkoeSkKCnNlcV9sZW5ndGggPSA1MApudW1fc2FtcGxlcyA9IDEwMDAKWCwgeSA9IGdlbmVyYXRlX3NpbmVfd2F2ZV9kYXRhKHNlcV9sZW5ndGgsIG51bV9zYW1wbGVzKQoKIyBSZXNoYXBlIGRhdGEgdG8gZml0IFJOTiBpbnB1dCByZXF1aXJlbWVudHMKWCA9IFgucmVzaGFwZSgobnVtX3NhbXBsZXMsIHNlcV9sZW5ndGggLSAxLCAxKSkKeSA9IHkucmVzaGFwZSgobnVtX3NhbXBsZXMsIHNlcV9sZW5ndGggLSAxLCAxKSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generate a simple sine wave dataset
+def generate_sine_wave_data(seq_length, num_samples):
+    X = []
+    y = []
+    for _ in range(num_samples):
+        start = np.random.rand()
+        x = np.linspace(start, start + 2 * np.pi, seq_length)
+        y.append(np.sin(x))
+        X.append(np.sin(x[:-1]))
+    return np.array(X), np.array(y)
+
+seq_length = 50
+num_samples = 1000
+X, y = generate_sine_wave_data(seq_length, num_samples)
+
+# Reshape data to fit RNN input requirements
+X = X.reshape((num_samples, seq_length - 1, 1))
+y = y.reshape((num_samples, seq_length - 1, 1))</pre></div><div class='content'></div><h1>3. Define the RNN Model</h1>
+<div class='content'><p>We will use a simple RNN layer followed by a Dense layer to predict the next value in the sequence.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBTZXF1ZW50aWFsKFsKICAgIFNpbXBsZVJOTig1MCwgYWN0aXZhdGlvbj0ndGFuaCcsIGlucHV0X3NoYXBlPShzZXFfbGVuZ3RoIC0gMSwgMSkpLAogICAgRGVuc2UoMSkKXSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = Sequential([
+    SimpleRNN(50, activation='tanh', input_shape=(seq_length - 1, 1)),
+    Dense(1)
+])</pre></div><div class='content'></div><h1>4. Compile the Model</h1>
+<div class='content'><p>We need to specify the loss function and the optimizer.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9J2FkYW0nLCBsb3NzPSdtZWFuX3NxdWFyZWRfZXJyb3InKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.compile(optimizer='adam', loss='mean_squared_error')</pre></div><div class='content'></div><h1>5. Train the Model</h1>
+<div class='content'><p>We will train the model using the generated sine wave data.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZml0KFgsIHksIGVwb2Nocz0yMCwgYmF0Y2hfc2l6ZT0zMik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.fit(X, y, epochs=20, batch_size=32)</pre></div><div class='content'></div><h1>6. Evaluate the Model</h1>
+<div class='content'><p>After training, we can evaluate the model's performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9zcyA9IG1vZGVsLmV2YWx1YXRlKFgsIHkpCnByaW50KGYnTW9kZWwgTG9zczoge2xvc3N9Jyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>loss = model.evaluate(X, y)
+print(f'Model Loss: {loss}')</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Build and Train an RNN for a Different Sequential Dataset</h2>
+<div class='content'><p><strong>Task:</strong></p>
+<ol>
+<li>Generate a cosine wave dataset similar to the sine wave dataset.</li>
+<li>Build and train an RNN model to predict the next value in the cosine wave sequence.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmF0ZSBhIHNpbXBsZSBjb3NpbmUgd2F2ZSBkYXRhc2V0CmRlZiBnZW5lcmF0ZV9jb3NpbmVfd2F2ZV9kYXRhKHNlcV9sZW5ndGgsIG51bV9zYW1wbGVzKToKICAgIFggPSBbXQogICAgeSA9IFtdCiAgICBmb3IgXyBpbiByYW5nZShudW1fc2FtcGxlcyk6CiAgICAgICAgc3RhcnQgPSBucC5yYW5kb20ucmFuZCgpCiAgICAgICAgeCA9IG5wLmxpbnNwYWNlKHN0YXJ0LCBzdGFydCArIDIgKiBucC5waSwgc2VxX2xlbmd0aCkKICAgICAgICB5LmFwcGVuZChucC5jb3MoeCkpCiAgICAgICAgWC5hcHBlbmQobnAuY29zKHhbOi0xXSkpCiAgICByZXR1cm4gbnAuYXJyYXkoWCksIG5wLmFycmF5KHkpCgpzZXFfbGVuZ3RoID0gNTAKbnVtX3NhbXBsZXMgPSAxMDAwClhfY29zLCB5X2NvcyA9IGdlbmVyYXRlX2Nvc2luZV93YXZlX2RhdGEoc2VxX2xlbmd0aCwgbnVtX3NhbXBsZXMpCgojIFJlc2hhcGUgZGF0YSB0byBmaXQgUk5OIGlucHV0IHJlcXVpcmVtZW50cwpYX2NvcyA9IFhfY29zLnJlc2hhcGUoKG51bV9zYW1wbGVzLCBzZXFfbGVuZ3RoIC0gMSwgMSkpCnlfY29zID0geV9jb3MucmVzaGFwZSgobnVtX3NhbXBsZXMsIHNlcV9sZW5ndGggLSAxLCAxKSkKCiMgRGVmaW5lIHRoZSBSTk4gbW9kZWwKbW9kZWxfY29zID0gU2VxdWVudGlhbChbCiAgICBTaW1wbGVSTk4oNTAsIGFjdGl2YXRpb249J3RhbmgnLCBpbnB1dF9zaGFwZT0oc2VxX2xlbmd0aCAtIDEsIDEpKSwKICAgIERlbnNlKDEpCl0pCgojIENvbXBpbGUgdGhlIG1vZGVsCm1vZGVsX2Nvcy5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J21lYW5fc3F1YXJlZF9lcnJvcicpCgojIFRyYWluIHRoZSBtb2RlbAptb2RlbF9jb3MuZml0KFhfY29zLCB5X2NvcywgZXBvY2hzPTIwLCBiYXRjaF9zaXplPTMyKQoKIyBFdmFsdWF0ZSB0aGUgbW9kZWwKbG9zc19jb3MgPSBtb2RlbF9jb3MuZXZhbHVhdGUoWF9jb3MsIHlfY29zKQpwcmludChmJ01vZGVsIExvc3M6IHtsb3NzX2Nvc30nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generate a simple cosine wave dataset
+def generate_cosine_wave_data(seq_length, num_samples):
+    X = []
+    y = []
+    for _ in range(num_samples):
+        start = np.random.rand()
+        x = np.linspace(start, start + 2 * np.pi, seq_length)
+        y.append(np.cos(x))
+        X.append(np.cos(x[:-1]))
+    return np.array(X), np.array(y)
+
+seq_length = 50
+num_samples = 1000
+X_cos, y_cos = generate_cosine_wave_data(seq_length, num_samples)
+
+# Reshape data to fit RNN input requirements
+X_cos = X_cos.reshape((num_samples, seq_length - 1, 1))
+y_cos = y_cos.reshape((num_samples, seq_length - 1, 1))
+
+# Define the RNN model
+model_cos = Sequential([
+    SimpleRNN(50, activation='tanh', input_shape=(seq_length - 1, 1)),
+    Dense(1)
+])
+
+# Compile the model
+model_cos.compile(optimizer='adam', loss='mean_squared_error')
+
+# Train the model
+model_cos.fit(X_cos, y_cos, epochs=20, batch_size=32)
+
+# Evaluate the model
+loss_cos = model_cos.evaluate(X_cos, y_cos)
+print(f'Model Loss: {loss_cos}')</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Data Shape:</strong> Ensure that the input data is correctly reshaped to fit the RNN input requirements.</li>
+<li><strong>Overfitting:</strong> Monitor the training process to avoid overfitting, especially with small datasets.</li>
+<li><strong>Learning Rate:</strong> Adjust the learning rate if the model is not converging.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have learned how to build a simple RNN using TensorFlow. We covered the key concepts, prepared the data, defined the model, compiled it, trained it, and evaluated its performance. In the next section, we will explore more advanced RNN architectures, such as Long Short-Term Memory (LSTM) networks.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-rnns' title="Introduction to RNNs">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-long-short-term-memory' title="Long Short-Term Memory (LSTM)">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

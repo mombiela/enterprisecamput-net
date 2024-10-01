@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security in RESTful APIs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/04-02-seguridad-apis-restful" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/04-02-seguridad-apis-restful" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/04-02-security-restful-apis" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rest_api/04-02-security-restful-apis" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/04-02-security-restful-apis" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-best-practices-api-design' title="Best Practices in API Design">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Security in RESTful APIs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-rate-limiting-throttling' title="Rate Limiting and Throttling">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Security is a critical aspect of designing and developing RESTful APIs. Ensuring that your API is secure helps protect sensitive data, maintain user privacy, and prevent unauthorized access. In this section, we will cover the fundamental principles and practices for securing RESTful APIs.</p>
+</div><h1>Key Concepts in API Security</h1>
+<div class='content'><ol>
+<li><strong>Authentication</strong>: Verifying the identity of the user or system interacting with the API.</li>
+<li><strong>Authorization</strong>: Determining what actions an authenticated user or system is allowed to perform.</li>
+<li><strong>Encryption</strong>: Protecting data in transit and at rest to prevent unauthorized access.</li>
+<li><strong>Rate Limiting</strong>: Controlling the number of requests a client can make to prevent abuse.</li>
+<li><strong>Input Validation</strong>: Ensuring that the data sent to the API is valid and safe.</li>
+<li><strong>Logging and Monitoring</strong>: Keeping track of API usage and detecting suspicious activities.</li>
+</ol>
+</div><h1>Authentication</h1>
+<div class='content'><p>Authentication is the process of verifying the identity of a user or system. Common methods include:</p>
+<ul>
+<li><strong>Basic Authentication</strong>: Uses a username and password encoded in Base64. This method is simple but not very secure unless used over HTTPS.</li>
+<li><strong>Token-Based Authentication</strong>: Uses tokens (e.g., JWT) to authenticate users. Tokens are usually short-lived and can be refreshed.</li>
+<li><strong>OAuth</strong>: An open standard for access delegation, commonly used for token-based authentication.</li>
+</ul>
+</div><h2>Example: Token-Based Authentication with JWT</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGp3dAppbXBvcnQgZGF0ZXRpbWUKCiMgU2VjcmV0IGtleSBmb3IgZW5jb2RpbmcgYW5kIGRlY29kaW5nIEpXVApTRUNSRVRfS0VZID0gJ3lvdXJfc2VjcmV0X2tleScKCiMgRnVuY3Rpb24gdG8gZ2VuZXJhdGUgYSBKV1QgdG9rZW4KZGVmIGdlbmVyYXRlX3Rva2VuKHVzZXJfaWQpOgogICAgcGF5bG9hZCA9IHsKICAgICAgICAndXNlcl9pZCc6IHVzZXJfaWQsCiAgICAgICAgJ2V4cCc6IGRhdGV0aW1lLmRhdGV0aW1lLnV0Y25vdygpICsgZGF0ZXRpbWUudGltZWRlbHRhKGhvdXJzPTEpCiAgICB9CiAgICB0b2tlbiA9IGp3dC5lbmNvZGUocGF5bG9hZCwgU0VDUkVUX0tFWSwgYWxnb3JpdGhtPSdIUzI1NicpCiAgICByZXR1cm4gdG9rZW4KCiMgRnVuY3Rpb24gdG8gZGVjb2RlIGEgSldUIHRva2VuCmRlZiBkZWNvZGVfdG9rZW4odG9rZW4pOgogICAgdHJ5OgogICAgICAgIHBheWxvYWQgPSBqd3QuZGVjb2RlKHRva2VuLCBTRUNSRVRfS0VZLCBhbGdvcml0aG1zPVsnSFMyNTYnXSkKICAgICAgICByZXR1cm4gcGF5bG9hZFsndXNlcl9pZCddCiAgICBleGNlcHQgand0LkV4cGlyZWRTaWduYXR1cmVFcnJvcjoKICAgICAgICByZXR1cm4gJ1Rva2VuIGhhcyBleHBpcmVkJwogICAgZXhjZXB0IGp3dC5JbnZhbGlkVG9rZW5FcnJvcjoKICAgICAgICByZXR1cm4gJ0ludmFsaWQgdG9rZW4n"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import jwt
+import datetime
+
+# Secret key for encoding and decoding JWT
+SECRET_KEY = 'your_secret_key'
+
+# Function to generate a JWT token
+def generate_token(user_id):
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    return token
+
+# Function to decode a JWT token
+def decode_token(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        return payload['user_id']
+    except jwt.ExpiredSignatureError:
+        return 'Token has expired'
+    except jwt.InvalidTokenError:
+        return 'Invalid token'</pre></div><div class='content'></div><h1>Authorization</h1>
+<div class='content'><p>Authorization determines what actions an authenticated user can perform. This can be managed using roles and permissions.</p>
+</div><h2>Example: Role-Based Access Control (RBAC)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWZpbmUgcm9sZXMgYW5kIHRoZWlyIHBlcm1pc3Npb25zCnJvbGVzX3Blcm1pc3Npb25zID0gewogICAgJ2FkbWluJzogWydyZWFkJywgJ3dyaXRlJywgJ2RlbGV0ZSddLAogICAgJ3VzZXInOiBbJ3JlYWQnLCAnd3JpdGUnXSwKICAgICdndWVzdCc6IFsncmVhZCddCn0KCiMgRnVuY3Rpb24gdG8gY2hlY2sgaWYgYSB1c2VyIGhhcyBwZXJtaXNzaW9uIHRvIHBlcmZvcm0gYW4gYWN0aW9uCmRlZiBoYXNfcGVybWlzc2lvbihyb2xlLCBhY3Rpb24pOgogICAgcmV0dXJuIGFjdGlvbiBpbiByb2xlc19wZXJtaXNzaW9ucy5nZXQocm9sZSwgW10pCgojIEV4YW1wbGUgdXNhZ2UKcm9sZSA9ICd1c2VyJwphY3Rpb24gPSAnZGVsZXRlJwppZiBoYXNfcGVybWlzc2lvbihyb2xlLCBhY3Rpb24pOgogICAgcHJpbnQoJ1Blcm1pc3Npb24gZ3JhbnRlZCcpCmVsc2U6CiAgICBwcmludCgnUGVybWlzc2lvbiBkZW5pZWQnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Define roles and their permissions
+roles_permissions = {
+    'admin': ['read', 'write', 'delete'],
+    'user': ['read', 'write'],
+    'guest': ['read']
+}
+
+# Function to check if a user has permission to perform an action
+def has_permission(role, action):
+    return action in roles_permissions.get(role, [])
+
+# Example usage
+role = 'user'
+action = 'delete'
+if has_permission(role, action):
+    print('Permission granted')
+else:
+    print('Permission denied')</pre></div><div class='content'></div><h1>Encryption</h1>
+<div class='content'><p>Encryption ensures that data is protected both in transit and at rest.</p>
+<ul>
+<li><strong>HTTPS</strong>: Use HTTPS to encrypt data in transit between the client and the server.</li>
+<li><strong>Data Encryption</strong>: Encrypt sensitive data stored in databases.</li>
+</ul>
+</div><h1>Rate Limiting</h1>
+<div class='content'><p>Rate limiting controls the number of requests a client can make to the API to prevent abuse.</p>
+</div><h2>Example: Implementing Rate Limiting</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19saW1pdGVyIGltcG9ydCBMaW1pdGVyCmZyb20gZmxhc2sgaW1wb3J0IEZsYXNrCgphcHAgPSBGbGFzayhfX25hbWVfXykKbGltaXRlciA9IExpbWl0ZXIoYXBwLCBrZXlfZnVuYz1sYW1iZGE6ICdnbG9iYWwnKQoKQGFwcC5yb3V0ZSgnL2FwaS9yZXNvdXJjZScpCkBsaW1pdGVyLmxpbWl0KCI1IHBlciBtaW51dGUiKQpkZWYgcmVzb3VyY2UoKToKICAgIHJldHVybiAiVGhpcyBpcyBhIHJhdGUtbGltaXRlZCByZXNvdXJjZSIKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_limiter import Limiter
+from flask import Flask
+
+app = Flask(__name__)
+limiter = Limiter(app, key_func=lambda: 'global')
+
+@app.route('/api/resource')
+@limiter.limit(&quot;5 per minute&quot;)
+def resource():
+    return &quot;This is a rate-limited resource&quot;
+
+if __name__ == '__main__':
+    app.run()</pre></div><div class='content'></div><h1>Input Validation</h1>
+<div class='content'><p>Input validation ensures that the data sent to the API is valid and safe.</p>
+</div><h2>Example: Input Validation with Flask</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKZnJvbSBjZXJiZXJ1cyBpbXBvcnQgVmFsaWRhdG9yCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgRGVmaW5lIGEgc2NoZW1hIGZvciBpbnB1dCB2YWxpZGF0aW9uCnNjaGVtYSA9IHsKICAgICduYW1lJzogeyd0eXBlJzogJ3N0cmluZycsICdtaW5sZW5ndGgnOiAxLCAnbWF4bGVuZ3RoJzogMTAwfSwKICAgICdhZ2UnOiB7J3R5cGUnOiAnaW50ZWdlcicsICdtaW4nOiAwLCAnbWF4JzogMTIwfQp9CnZhbGlkYXRvciA9IFZhbGlkYXRvcihzY2hlbWEpCgpAYXBwLnJvdXRlKCcvYXBpL3VzZXInLCBtZXRob2RzPVsnUE9TVCddKQpkZWYgY3JlYXRlX3VzZXIoKToKICAgIGRhdGEgPSByZXF1ZXN0LmdldF9qc29uKCkKICAgIGlmIHZhbGlkYXRvci52YWxpZGF0ZShkYXRhKToKICAgICAgICByZXR1cm4ganNvbmlmeShkYXRhKSwgMjAxCiAgICBlbHNlOgogICAgICAgIHJldHVybiBqc29uaWZ5KHZhbGlkYXRvci5lcnJvcnMpLCA0MDAKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+from cerberus import Validator
+
+app = Flask(__name__)
+
+# Define a schema for input validation
+schema = {
+    'name': {'type': 'string', 'minlength': 1, 'maxlength': 100},
+    'age': {'type': 'integer', 'min': 0, 'max': 120}
+}
+validator = Validator(schema)
+
+@app.route('/api/user', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    if validator.validate(data):
+        return jsonify(data), 201
+    else:
+        return jsonify(validator.errors), 400
+
+if __name__ == '__main__':
+    app.run()</pre></div><div class='content'></div><h1>Logging and Monitoring</h1>
+<div class='content'><p>Logging and monitoring help track API usage and detect suspicious activities.</p>
+<ul>
+<li><strong>Logging</strong>: Record API requests and responses for auditing and debugging.</li>
+<li><strong>Monitoring</strong>: Use tools to monitor API performance and detect anomalies.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Secure Endpoints</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Create a secure RESTful API with token-based authentication and role-based authorization.</li>
+<li><strong>Requirements</strong>:
+<ul>
+<li>Implement JWT authentication.</li>
+<li>Create endpoints with role-based access control.</li>
+<li>Validate input data.</li>
+<li>Apply rate limiting.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKZnJvbSBmbGFza19saW1pdGVyIGltcG9ydCBMaW1pdGVyCmZyb20gZnVuY3Rvb2xzIGltcG9ydCB3cmFwcwppbXBvcnQgand0CmltcG9ydCBkYXRldGltZQoKYXBwID0gRmxhc2soX19uYW1lX18pCmFwcC5jb25maWdbJ1NFQ1JFVF9LRVknXSA9ICd5b3VyX3NlY3JldF9rZXknCmxpbWl0ZXIgPSBMaW1pdGVyKGFwcCwga2V5X2Z1bmM9bGFtYmRhOiByZXF1ZXN0LnJlbW90ZV9hZGRyKQoKcm9sZXNfcGVybWlzc2lvbnMgPSB7CiAgICAnYWRtaW4nOiBbJ3JlYWQnLCAnd3JpdGUnLCAnZGVsZXRlJ10sCiAgICAndXNlcic6IFsncmVhZCcsICd3cml0ZSddLAogICAgJ2d1ZXN0JzogWydyZWFkJ10KfQoKZGVmIGdlbmVyYXRlX3Rva2VuKHVzZXJfaWQsIHJvbGUpOgogICAgcGF5bG9hZCA9IHsKICAgICAgICAndXNlcl9pZCc6IHVzZXJfaWQsCiAgICAgICAgJ3JvbGUnOiByb2xlLAogICAgICAgICdleHAnOiBkYXRldGltZS5kYXRldGltZS51dGNub3coKSArIGRhdGV0aW1lLnRpbWVkZWx0YShob3Vycz0xKQogICAgfQogICAgdG9rZW4gPSBqd3QuZW5jb2RlKHBheWxvYWQsIGFwcC5jb25maWdbJ1NFQ1JFVF9LRVknXSwgYWxnb3JpdGhtPSdIUzI1NicpCiAgICByZXR1cm4gdG9rZW4KCmRlZiBkZWNvZGVfdG9rZW4odG9rZW4pOgogICAgdHJ5OgogICAgICAgIHBheWxvYWQgPSBqd3QuZGVjb2RlKHRva2VuLCBhcHAuY29uZmlnWydTRUNSRVRfS0VZJ10sIGFsZ29yaXRobXM9WydIUzI1NiddKQogICAgICAgIHJldHVybiBwYXlsb2FkCiAgICBleGNlcHQgand0LkV4cGlyZWRTaWduYXR1cmVFcnJvcjoKICAgICAgICByZXR1cm4gJ1Rva2VuIGhhcyBleHBpcmVkJwogICAgZXhjZXB0IGp3dC5JbnZhbGlkVG9rZW5FcnJvcjoKICAgICAgICByZXR1cm4gJ0ludmFsaWQgdG9rZW4nCgpkZWYgdG9rZW5fcmVxdWlyZWQoZik6CiAgICBAd3JhcHMoZikKICAgIGRlZiBkZWNvcmF0ZWQoKmFyZ3MsICoqa3dhcmdzKToKICAgICAgICB0b2tlbiA9IHJlcXVlc3QuaGVhZGVycy5nZXQoJ0F1dGhvcml6YXRpb24nKQogICAgICAgIGlmIG5vdCB0b2tlbjoKICAgICAgICAgICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1Rva2VuIGlzIG1pc3NpbmchJ30pLCA0MDMKICAgICAgICB0cnk6CiAgICAgICAgICAgIGRhdGEgPSBkZWNvZGVfdG9rZW4odG9rZW4pCiAgICAgICAgZXhjZXB0OgogICAgICAgICAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnVG9rZW4gaXMgaW52YWxpZCEnfSksIDQwMwogICAgICAgIHJldHVybiBmKGRhdGEsICphcmdzLCAqKmt3YXJncykKICAgIHJldHVybiBkZWNvcmF0ZWQKCmRlZiBoYXNfcGVybWlzc2lvbihyb2xlLCBhY3Rpb24pOgogICAgcmV0dXJuIGFjdGlvbiBpbiByb2xlc19wZXJtaXNzaW9ucy5nZXQocm9sZSwgW10pCgpAYXBwLnJvdXRlKCcvYXBpL2xvZ2luJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGxvZ2luKCk6CiAgICBhdXRoID0gcmVxdWVzdC5hdXRob3JpemF0aW9uCiAgICBpZiBhdXRoIGFuZCBhdXRoLnVzZXJuYW1lID09ICdhZG1pbicgYW5kIGF1dGgucGFzc3dvcmQgPT0gJ3Bhc3N3b3JkJzoKICAgICAgICB0b2tlbiA9IGdlbmVyYXRlX3Rva2VuKHVzZXJfaWQ9MSwgcm9sZT0nYWRtaW4nKQogICAgICAgIHJldHVybiBqc29uaWZ5KHsndG9rZW4nOiB0b2tlbn0pCiAgICByZXR1cm4ganNvbmlmeSh7J21lc3NhZ2UnOiAnQ291bGQgbm90IHZlcmlmeSEnfSksIDQwMQoKQGFwcC5yb3V0ZSgnL2FwaS9yZXNvdXJjZScsIG1ldGhvZHM9WydHRVQnXSkKQHRva2VuX3JlcXVpcmVkCkBsaW1pdGVyLmxpbWl0KCI1IHBlciBtaW51dGUiKQpkZWYgcmVzb3VyY2UoZGF0YSk6CiAgICBpZiBoYXNfcGVybWlzc2lvbihkYXRhWydyb2xlJ10sICdyZWFkJyk6CiAgICAgICAgcmV0dXJuIGpzb25pZnkoeydtZXNzYWdlJzogJ1RoaXMgaXMgYSBzZWN1cmUgcmVzb3VyY2UnfSkKICAgIHJldHVybiBqc29uaWZ5KHsnbWVzc2FnZSc6ICdQZXJtaXNzaW9uIGRlbmllZCd9KSwgNDAzCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bigp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+from flask_limiter import Limiter
+from functools import wraps
+import jwt
+import datetime
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_secret_key'
+limiter = Limiter(app, key_func=lambda: request.remote_addr)
+
+roles_permissions = {
+    'admin': ['read', 'write', 'delete'],
+    'user': ['read', 'write'],
+    'guest': ['read']
+}
+
+def generate_token(user_id, role):
+    payload = {
+        'user_id': user_id,
+        'role': role,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    return token
+
+def decode_token(token):
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return 'Token has expired'
+    except jwt.InvalidTokenError:
+        return 'Invalid token'
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.headers.get('Authorization')
+        if not token:
+            return jsonify({'message': 'Token is missing!'}), 403
+        try:
+            data = decode_token(token)
+        except:
+            return jsonify({'message': 'Token is invalid!'}), 403
+        return f(data, *args, **kwargs)
+    return decorated
+
+def has_permission(role, action):
+    return action in roles_permissions.get(role, [])
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    auth = request.authorization
+    if auth and auth.username == 'admin' and auth.password == 'password':
+        token = generate_token(user_id=1, role='admin')
+        return jsonify({'token': token})
+    return jsonify({'message': 'Could not verify!'}), 401
+
+@app.route('/api/resource', methods=['GET'])
+@token_required
+@limiter.limit(&quot;5 per minute&quot;)
+def resource(data):
+    if has_permission(data['role'], 'read'):
+        return jsonify({'message': 'This is a secure resource'})
+    return jsonify({'message': 'Permission denied'}), 403
+
+if __name__ == '__main__':
+    app.run()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the essential aspects of securing RESTful APIs, including authentication, authorization, encryption, rate limiting, input validation, and logging and monitoring. By implementing these practices, you can ensure that your API is secure and resilient against common security threats.</p>
+<p>Next, we will explore rate limiting and throttling in more detail to further enhance the security and performance of your APIs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-best-practices-api-design' title="Best Practices in API Design">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-rate-limiting-throttling' title="Rate Limiting and Throttling">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

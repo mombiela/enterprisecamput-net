@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automating Deployments</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/07-04-automating-deployments" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/07-04-automating-deployments" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/07-04-automating-deployments" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/jenkins/07-04-automating-deployments" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/07-04-automating-deployments" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-setting-up-a-cd-pipeline' title="Setting Up a CD Pipeline">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Automating Deployments</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-using-jenkins-with-docker' title="Using Jenkins with Docker">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to automate deployments using Jenkins. Automating deployments is a crucial aspect of Continuous Delivery (CD) and ensures that your software can be reliably and repeatedly deployed to production or other environments.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Deployment Automation</strong>: The process of using scripts and tools to deploy applications automatically.</li>
+<li><strong>Continuous Delivery (CD)</strong>: A software development practice where code changes are automatically prepared for a release to production.</li>
+<li><strong>Deployment Pipeline</strong>: A series of automated steps that deploy an application to an environment.</li>
+</ol>
+</div><h1>Steps to Automate Deployments with Jenkins</h1>
+<div class='content'></div><h2>1. Setting Up the Environment</h2>
+<div class='content'><p>Before automating deployments, ensure that your Jenkins environment is properly set up:</p>
+<ul>
+<li>Jenkins is installed and running.</li>
+<li>Necessary plugins are installed (e.g., Git, Pipeline, SSH, etc.).</li>
+<li>Access to the deployment environment (e.g., servers, cloud services).</li>
+</ul>
+</div><h2>2. Creating a Deployment Pipeline</h2>
+<div class='content'><p>A deployment pipeline in Jenkins can be created using a Jenkinsfile. This file defines the stages and steps of the deployment process.</p>
+<h4>Example Jenkinsfile</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgZW52aXJvbm1lbnQgewogICAgICAgIERFUExPWU1FTlRfU0VSVkVSID0gJ3lvdXItZGVwbG95bWVudC1zZXJ2ZXInCiAgICAgICAgREVQTE9ZTUVOVF9VU0VSID0gJ3lvdXItdXNlcm5hbWUnCiAgICAgICAgREVQTE9ZTUVOVF9QQVRIID0gJy9wYXRoL3RvL2RlcGxveW1lbnQnCiAgICB9CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nIHRoZSBhcHBsaWNhdGlvbi4uLicKICAgICAgICAgICAgICAgIC8vIEFkZCB5b3VyIGJ1aWxkIHN0ZXBzIGhlcmUKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgc3RhZ2UoJ1Rlc3QnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ1J1bm5pbmcgdGVzdHMuLi4nCiAgICAgICAgICAgICAgICAvLyBBZGQgeW91ciB0ZXN0IHN0ZXBzIGhlcmUKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nIHRoZSBhcHBsaWNhdGlvbi4uLicKICAgICAgICAgICAgICAgIHNzaGFnZW50KFsneW91ci1zc2gtY3JlZGVudGlhbHMtaWQnXSkgewogICAgICAgICAgICAgICAgICAgIHNoICIiIgogICAgICAgICAgICAgICAgICAgIHNzaCAkREVQTE9ZTUVOVF9VU0VSQCRERVBMT1lNRU5UX1NFUlZFUiAnbWtkaXIgLXAgJERFUExPWU1FTlRfUEFUSCcKICAgICAgICAgICAgICAgICAgICBzY3AgLXIgKiAkREVQTE9ZTUVOVF9VU0VSQCRERVBMT1lNRU5UX1NFUlZFUjokREVQTE9ZTUVOVF9QQVRICiAgICAgICAgICAgICAgICAgICAgc3NoICRERVBMT1lNRU5UX1VTRVJAJERFUExPWU1FTlRfU0VSVkVSICdjZCAkREVQTE9ZTUVOVF9QQVRIICYmIC4vZGVwbG95LnNoJwogICAgICAgICAgICAgICAgICAgICIiIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIHBvc3QgewogICAgICAgIHN1Y2Nlc3MgewogICAgICAgICAgICBlY2hvICdEZXBsb3ltZW50IHN1Y2Nlc3NmdWwhJwogICAgICAgIH0KICAgICAgICBmYWlsdXJlIHsKICAgICAgICAgICAgZWNobyAnRGVwbG95bWVudCBmYWlsZWQhJwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    environment {
+        DEPLOYMENT_SERVER = 'your-deployment-server'
+        DEPLOYMENT_USER = 'your-username'
+        DEPLOYMENT_PATH = '/path/to/deployment'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                // Add your build steps here
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Add your test steps here
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the application...'
+                sshagent(['your-ssh-credentials-id']) {
+                    sh &quot;&quot;&quot;
+                    ssh $DEPLOYMENT_USER@$DEPLOYMENT_SERVER 'mkdir -p $DEPLOYMENT_PATH'
+                    scp -r * $DEPLOYMENT_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_PATH
+                    ssh $DEPLOYMENT_USER@$DEPLOYMENT_SERVER 'cd $DEPLOYMENT_PATH &amp;&amp; ./deploy.sh'
+                    &quot;&quot;&quot;
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}</pre></div><div class='content'></div><h2>3. Configuring Jenkins Job</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a New Pipeline Job</strong>:</p>
+<ul>
+<li>Go to Jenkins Dashboard.</li>
+<li>Click on &quot;New Item&quot;.</li>
+<li>Enter a name for your job and select &quot;Pipeline&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configure the Pipeline</strong>:</p>
+<ul>
+<li>In the &quot;Pipeline&quot; section, select &quot;Pipeline script from SCM&quot;.</li>
+<li>Choose your SCM (e.g., Git) and provide the repository URL.</li>
+<li>Specify the path to your Jenkinsfile.</li>
+</ul>
+</li>
+</ol>
+</div><h2>4. Running the Deployment Pipeline</h2>
+<div class='content'><ul>
+<li>Trigger the pipeline manually or set up a trigger (e.g., Git commit, schedule).</li>
+<li>Monitor the pipeline execution through the Jenkins Dashboard.</li>
+<li>Check the console output for logs and any errors.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Automate Deployment of a Simple Web Application</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Prerequisites</strong>:</p>
+<ul>
+<li>A simple web application (e.g., a static website or a small web service).</li>
+<li>Access to a deployment server (e.g., a Linux server).</li>
+</ul>
+</li>
+<li>
+<p><strong>Steps</strong>:</p>
+<ul>
+<li>Create a Jenkinsfile similar to the example above.</li>
+<li>Ensure the deployment server has SSH access configured.</li>
+<li>Create a deployment script (<code>deploy.sh</code>) on the deployment server to handle the deployment steps.</li>
+</ul>
+</li>
+<li>
+<p><strong>Jenkinsfile Example</strong>:</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgZW52aXJvbm1lbnQgewogICAgICAgIERFUExPWU1FTlRfU0VSVkVSID0gJ3lvdXItZGVwbG95bWVudC1zZXJ2ZXInCiAgICAgICAgREVQTE9ZTUVOVF9VU0VSID0gJ3lvdXItdXNlcm5hbWUnCiAgICAgICAgREVQTE9ZTUVOVF9QQVRIID0gJy92YXIvd3d3L2h0bWwnCiAgICB9CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nIHRoZSB3ZWIgYXBwbGljYXRpb24uLi4nCiAgICAgICAgICAgICAgICAvLyBBZGQgeW91ciBidWlsZCBzdGVwcyBoZXJlIChlLmcuLCBucG0gYnVpbGQpCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHN0YWdlKCdUZXN0JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdSdW5uaW5nIHRlc3RzLi4uJwogICAgICAgICAgICAgICAgLy8gQWRkIHlvdXIgdGVzdCBzdGVwcyBoZXJlIChlLmcuLCBucG0gdGVzdCkKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nIHRoZSB3ZWIgYXBwbGljYXRpb24uLi4nCiAgICAgICAgICAgICAgICBzc2hhZ2VudChbJ3lvdXItc3NoLWNyZWRlbnRpYWxzLWlkJ10pIHsKICAgICAgICAgICAgICAgICAgICBzaCAiIiIKICAgICAgICAgICAgICAgICAgICBzc2ggJERFUExPWU1FTlRfVVNFUkAkREVQTE9ZTUVOVF9TRVJWRVIgJ21rZGlyIC1wICRERVBMT1lNRU5UX1BBVEgnCiAgICAgICAgICAgICAgICAgICAgc2NwIC1yICogJERFUExPWU1FTlRfVVNFUkAkREVQTE9ZTUVOVF9TRVJWRVI6JERFUExPWU1FTlRfUEFUSAogICAgICAgICAgICAgICAgICAgIHNzaCAkREVQTE9ZTUVOVF9VU0VSQCRERVBMT1lNRU5UX1NFUlZFUiAnY2QgJERFUExPWU1FTlRfUEFUSCAmJiAuL2RlcGxveS5zaCcKICAgICAgICAgICAgICAgICAgICAiIiIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBwb3N0IHsKICAgICAgICBzdWNjZXNzIHsKICAgICAgICAgICAgZWNobyAnRGVwbG95bWVudCBzdWNjZXNzZnVsIScKICAgICAgICB9CiAgICAgICAgZmFpbHVyZSB7CiAgICAgICAgICAgIGVjaG8gJ0RlcGxveW1lbnQgZmFpbGVkIScKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    environment {
+        DEPLOYMENT_SERVER = 'your-deployment-server'
+        DEPLOYMENT_USER = 'your-username'
+        DEPLOYMENT_PATH = '/var/www/html'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the web application...'
+                // Add your build steps here (e.g., npm build)
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                // Add your test steps here (e.g., npm test)
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying the web application...'
+                sshagent(['your-ssh-credentials-id']) {
+                    sh &quot;&quot;&quot;
+                    ssh $DEPLOYMENT_USER@$DEPLOYMENT_SERVER 'mkdir -p $DEPLOYMENT_PATH'
+                    scp -r * $DEPLOYMENT_USER@$DEPLOYMENT_SERVER:$DEPLOYMENT_PATH
+                    ssh $DEPLOYMENT_USER@$DEPLOYMENT_SERVER 'cd $DEPLOYMENT_PATH &amp;&amp; ./deploy.sh'
+                    &quot;&quot;&quot;
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment successful!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
+    }
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Deployment Script (<code>deploy.sh</code>) Example</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgTmF2aWdhdGUgdG8gdGhlIGRlcGxveW1lbnQgZGlyZWN0b3J5CmNkIC92YXIvd3d3L2h0bWwKCiMgUmVzdGFydCB0aGUgd2ViIHNlcnZlciAoZS5nLiwgQXBhY2hlLCBOZ2lueCkKc3VkbyBzeXN0ZW1jdGwgcmVzdGFydCBhcGFjaGUyCgplY2hvICJEZXBsb3ltZW50IGNvbXBsZXRlZCBzdWNjZXNzZnVsbHkhIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Navigate to the deployment directory
+cd /var/www/html
+
+# Restart the web server (e.g., Apache, Nginx)
+sudo systemctl restart apache2
+
+echo &quot;Deployment completed successfully!&quot;</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ul>
+<li>Ensure the Jenkinsfile and deployment script are correctly configured.</li>
+<li>Run the Jenkins pipeline and verify the deployment on the server.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>SSH Configuration</strong>: Ensure SSH keys are correctly set up and the Jenkins server can access the deployment server.</li>
+<li><strong>Permissions</strong>: Verify that the deployment user has the necessary permissions to write to the deployment directory and restart services.</li>
+<li><strong>Error Handling</strong>: Add error handling in your deployment script to manage failures gracefully.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Automating deployments with Jenkins streamlines the release process, reduces manual errors, and ensures consistency across environments. By following the steps outlined in this section, you can set up a robust deployment pipeline that integrates seamlessly with your CI/CD workflow. In the next module, we will explore advanced Jenkins topics, including using Jenkins with Docker and Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-setting-up-a-cd-pipeline' title="Setting Up a CD Pipeline">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-using-jenkins-with-docker' title="Using Jenkins with Docker">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

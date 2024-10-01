@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Access Control (RBAC)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/08-01-rbac" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/08-01-rbac" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/08-01-rbac" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/08-01-rbac" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/08-01-rbac" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-metrics-server' title="Metrics Server">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Role-Based Access Control (RBAC)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-pod-security-policies' title="Pod Security Policies">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Role-Based Access Control (RBAC) is a method of regulating access to computer or network resources based on the roles of individual users within an organization. In Kubernetes, RBAC is used to control access to the Kubernetes API and resources.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Role</strong>: Defines a set of permissions. Roles can be namespaced or cluster-wide.</li>
+<li><strong>ClusterRole</strong>: Similar to a Role but applies to the entire cluster.</li>
+<li><strong>RoleBinding</strong>: Grants the permissions defined in a Role to a user or a group within a specific namespace.</li>
+<li><strong>ClusterRoleBinding</strong>: Grants the permissions defined in a ClusterRole to a user or a group across the entire cluster.</li>
+</ol>
+</div><h1>Understanding Roles and RoleBindings</h1>
+<div class='content'></div><h2>Roles</h2>
+<div class='content'><p>A Role in Kubernetes is a collection of permissions. These permissions are defined in terms of verbs (actions like get, list, create, delete) and resources (like pods, services, deployments).</p>
+<p>Example of a Role:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWVzcGFjZTogZGVmYXVsdAogIG5hbWU6IHBvZC1yZWFkZXIKcnVsZXM6Ci0gYXBpR3JvdXBzOiBbIiJdCiAgcmVzb3VyY2VzOiBbInBvZHMiXQogIHZlcmJzOiBbImdldCIsICJ3YXRjaCIsICJsaXN0Il0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;pods&quot;]
+  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</pre></div><div class='content'></div><h2>RoleBindings</h2>
+<div class='content'><p>A RoleBinding grants the permissions defined in a Role to a user or a group within a specific namespace.</p>
+<p>Example of a RoleBinding:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiByZWFkLXBvZHMKICBuYW1lc3BhY2U6IGRlZmF1bHQKc3ViamVjdHM6Ci0ga2luZDogVXNlcgogIG5hbWU6IGphbmUKICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbwpyb2xlUmVmOgogIGtpbmQ6IFJvbGUKICBuYW1lOiBwb2QtcmVhZGVyCiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h2>ClusterRoles and ClusterRoleBindings</h2>
+<div class='content'><p>ClusterRoles are similar to Roles but apply to the entire cluster. ClusterRoleBindings grant the permissions defined in a ClusterRole to a user or a group across the entire cluster.</p>
+<p>Example of a ClusterRole:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBDbHVzdGVyUm9sZQptZXRhZGF0YToKICBuYW1lOiBjbHVzdGVyLWFkbWluCnJ1bGVzOgotIGFwaUdyb3VwczogWyIiXQogIHJlc291cmNlczogWyIqIl0KICB2ZXJiczogWyIqIl0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-admin
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;*&quot;]
+  verbs: [&quot;*&quot;]</pre></div><div class='content'><p>Example of a ClusterRoleBinding:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBDbHVzdGVyUm9sZUJpbmRpbmcKbWV0YWRhdGE6CiAgbmFtZTogYWRtaW4tYmluZGluZwpzdWJqZWN0czoKLSBraW5kOiBVc2VyCiAgbmFtZTogYWRtaW4KICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbwpyb2xlUmVmOgogIGtpbmQ6IENsdXN0ZXJSb2xlCiAgbmFtZTogY2x1c3Rlci1hZG1pbgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlv"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-binding
+subjects:
+- kind: User
+  name: admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a Role and RoleBinding to allow a user to read pods in the <code>default</code> namespace.</p>
+<ol>
+<li><strong>Create a Role</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWVzcGFjZTogZGVmYXVsdAogIG5hbWU6IHBvZC1yZWFkZXIKcnVsZXM6Ci0gYXBpR3JvdXBzOiBbIiJdCiAgcmVzb3VyY2VzOiBbInBvZHMiXQogIHZlcmJzOiBbImdldCIsICJ3YXRjaCIsICJsaXN0Il0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;pods&quot;]
+  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</pre></div><div class='content'><ol start="2">
+<li><strong>Create a RoleBinding</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiByZWFkLXBvZHMKICBuYW1lc3BhY2U6IGRlZmF1bHQKc3ViamVjdHM6Ci0ga2luZDogVXNlcgogIG5hbWU6IGphbmUKICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbwpyb2xlUmVmOgogIGtpbmQ6IFJvbGUKICBuYW1lOiBwb2QtcmVhZGVyCiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'><p>Apply these configurations using <code>kubectl</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiByb2xlLnlhbWwKa3ViZWN0bCBhcHBseSAtZiByb2xlYmluZGluZy55YW1s"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f role.yaml
+kubectl apply -f rolebinding.yaml</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Create a Role and RoleBinding</strong>:</p>
+<ul>
+<li>Create a Role named <code>service-reader</code> in the <code>default</code> namespace that allows reading services.</li>
+<li>Create a RoleBinding named <code>read-services</code> that grants the <code>service-reader</code> role to a user named <code>john</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Create a ClusterRole and ClusterRoleBinding</strong>:</p>
+<ul>
+<li>Create a ClusterRole named <code>namespace-admin</code> that allows managing namespaces.</li>
+<li>Create a ClusterRoleBinding named <code>admin-namespaces</code> that grants the <code>namespace-admin</code> role to a user named <code>admin</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><ol>
+<li><strong>Role and RoleBinding</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByb2xlLnlhbWwKYXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWVzcGFjZTogZGVmYXVsdAogIG5hbWU6IHNlcnZpY2UtcmVhZGVyCnJ1bGVzOgotIGFwaUdyb3VwczogWyIiXQogIHJlc291cmNlczogWyJzZXJ2aWNlcyJdCiAgdmVyYnM6IFsiZ2V0IiwgIndhdGNoIiwgImxpc3QiXQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: service-reader
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;services&quot;]
+  verbs: [&quot;get&quot;, &quot;watch&quot;, &quot;list&quot;]</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByb2xlYmluZGluZy55YW1sCmFwaVZlcnNpb246IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8vdjEKa2luZDogUm9sZUJpbmRpbmcKbWV0YWRhdGE6CiAgbmFtZTogcmVhZC1zZXJ2aWNlcwogIG5hbWVzcGFjZTogZGVmYXVsdApzdWJqZWN0czoKLSBraW5kOiBVc2VyCiAgbmFtZTogam9obgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlvCnJvbGVSZWY6CiAga2luZDogUm9sZQogIG5hbWU6IHNlcnZpY2UtcmVhZGVyCiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># rolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-services
+  namespace: default
+subjects:
+- kind: User
+  name: john
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: service-reader
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'><ol start="2">
+<li><strong>ClusterRole and ClusterRoleBinding</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBjbHVzdGVycm9sZS55YW1sCmFwaVZlcnNpb246IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8vdjEKa2luZDogQ2x1c3RlclJvbGUKbWV0YWRhdGE6CiAgbmFtZTogbmFtZXNwYWNlLWFkbWluCnJ1bGVzOgotIGFwaUdyb3VwczogWyIiXQogIHJlc291cmNlczogWyJuYW1lc3BhY2VzIl0KICB2ZXJiczogWyJjcmVhdGUiLCAiZGVsZXRlIiwgImdldCIsICJsaXN0IiwgIndhdGNoIl0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: namespace-admin
+rules:
+- apiGroups: [&quot;&quot;]
+  resources: [&quot;namespaces&quot;]
+  verbs: [&quot;create&quot;, &quot;delete&quot;, &quot;get&quot;, &quot;list&quot;, &quot;watch&quot;]</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBjbHVzdGVycm9sZWJpbmRpbmcueWFtbAphcGlWZXJzaW9uOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlvL3YxCmtpbmQ6IENsdXN0ZXJSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiBhZG1pbi1uYW1lc3BhY2VzCnN1YmplY3RzOgotIGtpbmQ6IFVzZXIKICBuYW1lOiBhZG1pbgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlvCnJvbGVSZWY6CiAga2luZDogQ2x1c3RlclJvbGUKICBuYW1lOiBuYW1lc3BhY2UtYWRtaW4KICBhcGlHcm91cDogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pbw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-namespaces
+subjects:
+- kind: User
+  name: admin
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: namespace-admin
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Incorrect API Group</strong>: Ensure the <code>apiGroup</code> in <code>roleRef</code> and <code>subjects</code> is correctly set to <code>rbac.authorization.k8s.io</code>.</li>
+<li><strong>Namespace Scope</strong>: Remember that Roles and RoleBindings are namespaced, while ClusterRoles and ClusterRoleBindings are cluster-wide.</li>
+<li><strong>Verbs and Resources</strong>: Double-check the verbs and resources in your Role or ClusterRole to ensure they match the intended permissions.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of Role-Based Access Control (RBAC) in Kubernetes, including the key concepts of Roles, RoleBindings, ClusterRoles, and ClusterRoleBindings. We also provided practical examples and exercises to help you understand how to implement RBAC in your Kubernetes cluster. Understanding RBAC is crucial for managing access and ensuring the security of your Kubernetes resources. In the next section, we will delve into Pod Security Policies to further enhance the security of your Kubernetes environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-metrics-server' title="Metrics Server">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-pod-security-policies' title="Pod Security Policies">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study 3: Data Visualization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/r/09-04-case-study-data-visualization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/r/09-04-case-study-data-visualization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/r/09-04-case-study-data-visualization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/r/09-04-case-study-data-visualization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/r/09-04-case-study-data-visualization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-case-study-machine-learning' title="Case Study 2: Machine Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Case Study 3: Data Visualization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-05-case-study-statistical-analysis' title="Case Study 4: Statistical Analysis">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this case study, we will apply the concepts learned in the Data Visualization module to a real-world dataset. The goal is to create meaningful visualizations that can help us understand the data better and communicate our findings effectively. We will use both base R graphics and the <code>ggplot2</code> package to create various types of plots.</p>
+</div><h1>Dataset</h1>
+<div class='content'><p>For this case study, we will use the <code>mtcars</code> dataset, which is a built-in dataset in R. It contains data about various car models, including their miles per gallon (mpg), number of cylinders, horsepower, and more.</p>
+</div><h2>Dataset Overview</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIHRoZSBkYXRhc2V0CmRhdGEobXRjYXJzKQoKIyBEaXNwbGF5IHRoZSBmaXJzdCBmZXcgcm93cyBvZiB0aGUgZGF0YXNldApoZWFkKG10Y2Fycyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load the dataset
+data(mtcars)
+
+# Display the first few rows of the dataset
+head(mtcars)</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ICAgICAgICAgICAgICAgICAgIG1wZyBjeWwgZGlzcCAgaHAgZHJhdCAgICB3dCAgcXNlYyB2cyBhbSBnZWFyIGNhcmIKTWF6ZGEgUlg0ICAgICAgICAgMjEuMCAgIDYgIDE2MCAxMTAgMy45MCAyLjYyMCAxNi40NiAgMCAgMSAgICA0ICAgIDQKTWF6ZGEgUlg0IFdhZyAgICAgMjEuMCAgIDYgIDE2MCAxMTAgMy45MCAyLjg3NSAxNy4wMiAgMCAgMSAgICA0ICAgIDQKRGF0c3VuIDcxMCAgICAgICAgMjIuOCAgIDQgIDEwOCAgOTMgMy44NSAyLjMyMCAxOC42MSAgMSAgMSAgICA0ICAgIDEKSG9ybmV0IDQgRHJpdmUgICAgMjEuNCAgIDYgIDI1OCAxMTAgMy4wOCAzLjIxNSAxOS40NCAgMSAgMCAgICAzICAgIDEKSG9ybmV0IFNwb3J0YWJvdXQgMTguNyAgIDggIDM2MCAxNzUgMy4xNSAzLjQ0MCAxNy4wMiAgMCAgMCAgICAzICAgIDIKVmFsaWFudCAgICAgICAgICAgMTguMSAgIDYgIDIyNSAxMDUgMi43NiAzLjQ2MCAyMC4yMiAgMSAgMCAgICAzICAgIDE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>                   mpg cyl disp  hp drat    wt  qsec vs am gear carb
+Mazda RX4         21.0   6  160 110 3.90 2.620 16.46  0  1    4    4
+Mazda RX4 Wag     21.0   6  160 110 3.90 2.875 17.02  0  1    4    4
+Datsun 710        22.8   4  108  93 3.85 2.320 18.61  1  1    4    1
+Hornet 4 Drive    21.4   6  258 110 3.08 3.215 19.44  1  0    3    1
+Hornet Sportabout 18.7   8  360 175 3.15 3.440 17.02  0  0    3    2
+Valiant           18.1   6  225 105 2.76 3.460 20.22  1  0    3    1</pre></div><div class='content'></div><h1>Step-by-Step Visualization</h1>
+<div class='content'></div><h2>1. Scatter Plot: MPG vs Horsepower</h2>
+<div class='content'><h4>Base R Graphics</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTY2F0dGVyIHBsb3QgdXNpbmcgYmFzZSBSCnBsb3QobXRjYXJzJGhwLCBtdGNhcnMkbXBnLAogICAgIG1haW4gPSAiTVBHIHZzIEhvcnNlcG93ZXIiLAogICAgIHhsYWIgPSAiSG9yc2Vwb3dlciIsCiAgICAgeWxhYiA9ICJNaWxlcyBQZXIgR2FsbG9uIiwKICAgICBwY2ggPSAxOSwgY29sID0gImJsdWUiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Scatter plot using base R
+plot(mtcars$hp, mtcars$mpg,
+     main = &quot;MPG vs Horsepower&quot;,
+     xlab = &quot;Horsepower&quot;,
+     ylab = &quot;Miles Per Gallon&quot;,
+     pch = 19, col = &quot;blue&quot;)</pre></div><div class='content'><h4>ggplot2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMb2FkIGdncGxvdDIgcGFja2FnZQpsaWJyYXJ5KGdncGxvdDIpCgojIFNjYXR0ZXIgcGxvdCB1c2luZyBnZ3Bsb3QyCmdncGxvdChtdGNhcnMsIGFlcyh4ID0gaHAsIHkgPSBtcGcpKSArCiAgZ2VvbV9wb2ludChjb2xvciA9ICJibHVlIikgKwogIGxhYnModGl0bGUgPSAiTVBHIHZzIEhvcnNlcG93ZXIiLAogICAgICAgeCA9ICJIb3JzZXBvd2VyIiwKICAgICAgIHkgPSAiTWlsZXMgUGVyIEdhbGxvbiIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Load ggplot2 package
+library(ggplot2)
+
+# Scatter plot using ggplot2
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point(color = &quot;blue&quot;) +
+  labs(title = &quot;MPG vs Horsepower&quot;,
+       x = &quot;Horsepower&quot;,
+       y = &quot;Miles Per Gallon&quot;)</pre></div><div class='content'></div><h2>2. Box Plot: MPG by Number of Cylinders</h2>
+<div class='content'><h4>Base R Graphics</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCb3ggcGxvdCB1c2luZyBiYXNlIFIKYm94cGxvdChtcGcgfiBjeWwsIGRhdGEgPSBtdGNhcnMsCiAgICAgICAgbWFpbiA9ICJNUEcgYnkgTnVtYmVyIG9mIEN5bGluZGVycyIsCiAgICAgICAgeGxhYiA9ICJOdW1iZXIgb2YgQ3lsaW5kZXJzIiwKICAgICAgICB5bGFiID0gIk1pbGVzIFBlciBHYWxsb24iLAogICAgICAgIGNvbCA9IGMoInJlZCIsICJncmVlbiIsICJibHVlIikp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Box plot using base R
+boxplot(mpg ~ cyl, data = mtcars,
+        main = &quot;MPG by Number of Cylinders&quot;,
+        xlab = &quot;Number of Cylinders&quot;,
+        ylab = &quot;Miles Per Gallon&quot;,
+        col = c(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;))</pre></div><div class='content'><h4>ggplot2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCb3ggcGxvdCB1c2luZyBnZ3Bsb3QyCmdncGxvdChtdGNhcnMsIGFlcyh4ID0gZmFjdG9yKGN5bCksIHkgPSBtcGcpKSArCiAgZ2VvbV9ib3hwbG90KGFlcyhmaWxsID0gZmFjdG9yKGN5bCkpKSArCiAgbGFicyh0aXRsZSA9ICJNUEcgYnkgTnVtYmVyIG9mIEN5bGluZGVycyIsCiAgICAgICB4ID0gIk51bWJlciBvZiBDeWxpbmRlcnMiLAogICAgICAgeSA9ICJNaWxlcyBQZXIgR2FsbG9uIikgKwogIHNjYWxlX2ZpbGxfbWFudWFsKHZhbHVlcyA9IGMoInJlZCIsICJncmVlbiIsICJibHVlIikp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Box plot using ggplot2
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot(aes(fill = factor(cyl))) +
+  labs(title = &quot;MPG by Number of Cylinders&quot;,
+       x = &quot;Number of Cylinders&quot;,
+       y = &quot;Miles Per Gallon&quot;) +
+  scale_fill_manual(values = c(&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;))</pre></div><div class='content'></div><h2>3. Histogram: Distribution of MPG</h2>
+<div class='content'><h4>Base R Graphics</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBIaXN0b2dyYW0gdXNpbmcgYmFzZSBSCmhpc3QobXRjYXJzJG1wZywKICAgICBtYWluID0gIkRpc3RyaWJ1dGlvbiBvZiBNUEciLAogICAgIHhsYWIgPSAiTWlsZXMgUGVyIEdhbGxvbiIsCiAgICAgY29sID0gInB1cnBsZSIsCiAgICAgYnJlYWtzID0gMTAp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Histogram using base R
+hist(mtcars$mpg,
+     main = &quot;Distribution of MPG&quot;,
+     xlab = &quot;Miles Per Gallon&quot;,
+     col = &quot;purple&quot;,
+     breaks = 10)</pre></div><div class='content'><h4>ggplot2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBIaXN0b2dyYW0gdXNpbmcgZ2dwbG90MgpnZ3Bsb3QobXRjYXJzLCBhZXMoeCA9IG1wZykpICsKICBnZW9tX2hpc3RvZ3JhbShiaW53aWR0aCA9IDIsIGZpbGwgPSAicHVycGxlIiwgY29sb3IgPSAiYmxhY2siKSArCiAgbGFicyh0aXRsZSA9ICJEaXN0cmlidXRpb24gb2YgTVBHIiwKICAgICAgIHggPSAiTWlsZXMgUGVyIEdhbGxvbiIsCiAgICAgICB5ID0gIkZyZXF1ZW5jeSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Histogram using ggplot2
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(binwidth = 2, fill = &quot;purple&quot;, color = &quot;black&quot;) +
+  labs(title = &quot;Distribution of MPG&quot;,
+       x = &quot;Miles Per Gallon&quot;,
+       y = &quot;Frequency&quot;)</pre></div><div class='content'></div><h2>4. Bar Plot: Count of Cars by Gear</h2>
+<div class='content'><h4>Base R Graphics</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCYXIgcGxvdCB1c2luZyBiYXNlIFIKYmFycGxvdCh0YWJsZShtdGNhcnMkZ2VhciksCiAgICAgICAgbWFpbiA9ICJDb3VudCBvZiBDYXJzIGJ5IEdlYXIiLAogICAgICAgIHhsYWIgPSAiTnVtYmVyIG9mIEdlYXJzIiwKICAgICAgICB5bGFiID0gIkNvdW50IiwKICAgICAgICBjb2wgPSAib3JhbmdlIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Bar plot using base R
+barplot(table(mtcars$gear),
+        main = &quot;Count of Cars by Gear&quot;,
+        xlab = &quot;Number of Gears&quot;,
+        ylab = &quot;Count&quot;,
+        col = &quot;orange&quot;)</pre></div><div class='content'><h4>ggplot2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCYXIgcGxvdCB1c2luZyBnZ3Bsb3QyCmdncGxvdChtdGNhcnMsIGFlcyh4ID0gZmFjdG9yKGdlYXIpKSkgKwogIGdlb21fYmFyKGZpbGwgPSAib3JhbmdlIikgKwogIGxhYnModGl0bGUgPSAiQ291bnQgb2YgQ2FycyBieSBHZWFyIiwKICAgICAgIHggPSAiTnVtYmVyIG9mIEdlYXJzIiwKICAgICAgIHkgPSAiQ291bnQiKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Bar plot using ggplot2
+ggplot(mtcars, aes(x = factor(gear))) +
+  geom_bar(fill = &quot;orange&quot;) +
+  labs(title = &quot;Count of Cars by Gear&quot;,
+       x = &quot;Number of Gears&quot;,
+       y = &quot;Count&quot;)</pre></div><div class='content'></div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Scatter Plot with Regression Line</h2>
+<div class='content'><p>Create a scatter plot of <code>wt</code> (weight) vs <code>mpg</code> and add a regression line to it using <code>ggplot2</code>.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTY2F0dGVyIHBsb3Qgd2l0aCByZWdyZXNzaW9uIGxpbmUgdXNpbmcgZ2dwbG90MgpnZ3Bsb3QobXRjYXJzLCBhZXMoeCA9IHd0LCB5ID0gbXBnKSkgKwogIGdlb21fcG9pbnQoY29sb3IgPSAiYmx1ZSIpICsKICBnZW9tX3Ntb290aChtZXRob2QgPSAibG0iLCBjb2xvciA9ICJyZWQiKSArCiAgbGFicyh0aXRsZSA9ICJNUEcgdnMgV2VpZ2h0IHdpdGggUmVncmVzc2lvbiBMaW5lIiwKICAgICAgIHggPSAiV2VpZ2h0ICgxMDAwIGxicykiLAogICAgICAgeSA9ICJNaWxlcyBQZXIgR2FsbG9uIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Scatter plot with regression line using ggplot2
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(color = &quot;blue&quot;) +
+  geom_smooth(method = &quot;lm&quot;, color = &quot;red&quot;) +
+  labs(title = &quot;MPG vs Weight with Regression Line&quot;,
+       x = &quot;Weight (1000 lbs)&quot;,
+       y = &quot;Miles Per Gallon&quot;)</pre></div><div class='content'></div><h2>Exercise 2: Faceted Plot</h2>
+<div class='content'><p>Create a faceted plot of <code>mpg</code> vs <code>hp</code> for each number of cylinders using <code>ggplot2</code>.</p>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGYWNldGVkIHBsb3QgdXNpbmcgZ2dwbG90MgpnZ3Bsb3QobXRjYXJzLCBhZXMoeCA9IGhwLCB5ID0gbXBnKSkgKwogIGdlb21fcG9pbnQoKSArCiAgZmFjZXRfd3JhcCh+IGN5bCkgKwogIGxhYnModGl0bGUgPSAiTVBHIHZzIEhvcnNlcG93ZXIgYnkgTnVtYmVyIG9mIEN5bGluZGVycyIsCiAgICAgICB4ID0gIkhvcnNlcG93ZXIiLAogICAgICAgeSA9ICJNaWxlcyBQZXIgR2FsbG9uIik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Faceted plot using ggplot2
+ggplot(mtcars, aes(x = hp, y = mpg)) +
+  geom_point() +
+  facet_wrap(~ cyl) +
+  labs(title = &quot;MPG vs Horsepower by Number of Cylinders&quot;,
+       x = &quot;Horsepower&quot;,
+       y = &quot;Miles Per Gallon&quot;)</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this case study, we explored various types of visualizations using both base R graphics and the <code>ggplot2</code> package. We created scatter plots, box plots, histograms, and bar plots to analyze the <code>mtcars</code> dataset. Additionally, we practiced creating more complex visualizations such as scatter plots with regression lines and faceted plots. These skills are essential for effectively communicating data insights and making data-driven decisions.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-case-study-machine-learning' title="Case Study 2: Machine Learning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-05-case-study-statistical-analysis' title="Case Study 4: Statistical Analysis">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NgRx Effects</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/09-04-ngrx-effects" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/09-04-ngrx-effects" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/09-04-ngrx-effects" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular2/09-04-ngrx-effects" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/09-04-ngrx-effects" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-ngrx-store' title="NgRx Store">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">NgRx Effects</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-unit-testing' title="Unit Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>NgRx Effects is a powerful library that allows you to handle side effects in your Angular application. Side effects are operations that interact with the outside world, such as HTTP requests, logging, or other asynchronous operations. NgRx Effects helps you isolate these side effects from your components and state management logic, making your application more predictable and easier to test.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Effects</strong>: Functions that listen for specific actions dispatched to the store and perform side effects in response.</li>
+<li><strong>Actions</strong>: Objects that represent an event or intention to change the state.</li>
+<li><strong>Reducers</strong>: Functions that handle state transitions based on actions.</li>
+<li><strong>Selectors</strong>: Functions that select a piece of state from the store.</li>
+</ol>
+</div><h1>Setting Up NgRx Effects</h1>
+<div class='content'></div><h2>Step 1: Install NgRx Effects</h2>
+<div class='content'><p>First, you need to install the NgRx Effects library:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgQG5ncngvZWZmZWN0cw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install @ngrx/effects</pre></div><div class='content'></div><h2>Step 2: Create an Effect</h2>
+<div class='content'><p>Create a new file for your effects, for example, <code>auth.effects.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBBY3Rpb25zLCBjcmVhdGVFZmZlY3QsIG9mVHlwZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBBdXRoU2VydmljZSB9IGZyb20gJy4uL3NlcnZpY2VzL2F1dGguc2VydmljZSc7CmltcG9ydCB7IGxvZ2luLCBsb2dpblN1Y2Nlc3MsIGxvZ2luRmFpbHVyZSB9IGZyb20gJy4uL2FjdGlvbnMvYXV0aC5hY3Rpb25zJzsKaW1wb3J0IHsgY2F0Y2hFcnJvciwgbWFwLCBtZXJnZU1hcCB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJzsKaW1wb3J0IHsgb2YgfSBmcm9tICdyeGpzJzsKCkBJbmplY3RhYmxlKCkKZXhwb3J0IGNsYXNzIEF1dGhFZmZlY3RzIHsKICBjb25zdHJ1Y3RvcigKICAgIHByaXZhdGUgYWN0aW9ucyQ6IEFjdGlvbnMsCiAgICBwcml2YXRlIGF1dGhTZXJ2aWNlOiBBdXRoU2VydmljZQogICkge30KCiAgbG9naW4kID0gY3JlYXRlRWZmZWN0KCgpID0+CiAgICB0aGlzLmFjdGlvbnMkLnBpcGUoCiAgICAgIG9mVHlwZShsb2dpbiksCiAgICAgIG1lcmdlTWFwKGFjdGlvbiA9PgogICAgICAgIHRoaXMuYXV0aFNlcnZpY2UubG9naW4oYWN0aW9uLmNyZWRlbnRpYWxzKS5waXBlKAogICAgICAgICAgbWFwKHVzZXIgPT4gbG9naW5TdWNjZXNzKHsgdXNlciB9KSksCiAgICAgICAgICBjYXRjaEVycm9yKGVycm9yID0+IG9mKGxvZ2luRmFpbHVyZSh7IGVycm9yIH0pKSkKICAgICAgICApCiAgICAgICkKICAgICkKICApOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { AuthService } from '../services/auth.service';
+import { login, loginSuccess, loginFailure } from '../actions/auth.actions';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+@Injectable()
+export class AuthEffects {
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService
+  ) {}
+
+  login$ = createEffect(() =&gt;
+    this.actions$.pipe(
+      ofType(login),
+      mergeMap(action =&gt;
+        this.authService.login(action.credentials).pipe(
+          map(user =&gt; loginSuccess({ user })),
+          catchError(error =&gt; of(loginFailure({ error })))
+        )
+      )
+    )
+  );
+}</pre></div><div class='content'></div><h2>Step 3: Register the Effect</h2>
+<div class='content'><p>Register the effect in your <code>AppModule</code> or a feature module:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgRWZmZWN0c01vZHVsZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBBdXRoRWZmZWN0cyB9IGZyb20gJy4vZWZmZWN0cy9hdXRoLmVmZmVjdHMnOwoKQE5nTW9kdWxlKHsKICBpbXBvcnRzOiBbCiAgICBFZmZlY3RzTW9kdWxlLmZvclJvb3QoW0F1dGhFZmZlY3RzXSkKICBdCn0pCmV4cG9ydCBjbGFzcyBBcHBNb2R1bGUge30="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './effects/auth.effects';
+
+@NgModule({
+  imports: [
+    EffectsModule.forRoot([AuthEffects])
+  ]
+})
+export class AppModule {}</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's create a simple example where we handle user login using NgRx Effects.</p>
+</div><h2>Step 1: Define Actions</h2>
+<div class='content'><p>Create a file <code>auth.actions.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY3JlYXRlQWN0aW9uLCBwcm9wcyB9IGZyb20gJ0BuZ3J4L3N0b3JlJzsKCmV4cG9ydCBjb25zdCBsb2dpbiA9IGNyZWF0ZUFjdGlvbigKICAnW0F1dGhdIExvZ2luJywKICBwcm9wczx7IGNyZWRlbnRpYWxzOiB7IHVzZXJuYW1lOiBzdHJpbmc7IHBhc3N3b3JkOiBzdHJpbmcgfSB9PigpCik7CgpleHBvcnQgY29uc3QgbG9naW5TdWNjZXNzID0gY3JlYXRlQWN0aW9uKAogICdbQXV0aF0gTG9naW4gU3VjY2VzcycsCiAgcHJvcHM8eyB1c2VyOiBhbnkgfT4oKQopOwoKZXhwb3J0IGNvbnN0IGxvZ2luRmFpbHVyZSA9IGNyZWF0ZUFjdGlvbigKICAnW0F1dGhdIExvZ2luIEZhaWx1cmUnLAogIHByb3BzPHsgZXJyb3I6IGFueSB9PigpCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { createAction, props } from '@ngrx/store';
+
+export const login = createAction(
+  '[Auth] Login',
+  props&lt;{ credentials: { username: string; password: string } }&gt;()
+);
+
+export const loginSuccess = createAction(
+  '[Auth] Login Success',
+  props&lt;{ user: any }&gt;()
+);
+
+export const loginFailure = createAction(
+  '[Auth] Login Failure',
+  props&lt;{ error: any }&gt;()
+);</pre></div><div class='content'></div><h2>Step 2: Create a Service</h2>
+<div class='content'><p>Create a file <code>auth.service.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBIdHRwQ2xpZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnOwppbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7CgpASW5qZWN0YWJsZSh7CiAgcHJvdmlkZWRJbjogJ3Jvb3QnCn0pCmV4cG9ydCBjbGFzcyBBdXRoU2VydmljZSB7CiAgY29uc3RydWN0b3IocHJpdmF0ZSBodHRwOiBIdHRwQ2xpZW50KSB7fQoKICBsb2dpbihjcmVkZW50aWFsczogeyB1c2VybmFtZTogc3RyaW5nOyBwYXNzd29yZDogc3RyaW5nIH0pOiBPYnNlcnZhYmxlPGFueT4gewogICAgcmV0dXJuIHRoaXMuaHR0cC5wb3N0KCcvYXBpL2xvZ2luJywgY3JlZGVudGlhbHMpOwogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  constructor(private http: HttpClient) {}
+
+  login(credentials: { username: string; password: string }): Observable&lt;any&gt; {
+    return this.http.post('/api/login', credentials);
+  }
+}</pre></div><div class='content'></div><h2>Step 3: Create the Effect</h2>
+<div class='content'><p>Create a file <code>auth.effects.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBBY3Rpb25zLCBjcmVhdGVFZmZlY3QsIG9mVHlwZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBBdXRoU2VydmljZSB9IGZyb20gJy4uL3NlcnZpY2VzL2F1dGguc2VydmljZSc7CmltcG9ydCB7IGxvZ2luLCBsb2dpblN1Y2Nlc3MsIGxvZ2luRmFpbHVyZSB9IGZyb20gJy4uL2FjdGlvbnMvYXV0aC5hY3Rpb25zJzsKaW1wb3J0IHsgY2F0Y2hFcnJvciwgbWFwLCBtZXJnZU1hcCB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJzsKaW1wb3J0IHsgb2YgfSBmcm9tICdyeGpzJzsKCkBJbmplY3RhYmxlKCkKZXhwb3J0IGNsYXNzIEF1dGhFZmZlY3RzIHsKICBjb25zdHJ1Y3RvcigKICAgIHByaXZhdGUgYWN0aW9ucyQ6IEFjdGlvbnMsCiAgICBwcml2YXRlIGF1dGhTZXJ2aWNlOiBBdXRoU2VydmljZQogICkge30KCiAgbG9naW4kID0gY3JlYXRlRWZmZWN0KCgpID0+CiAgICB0aGlzLmFjdGlvbnMkLnBpcGUoCiAgICAgIG9mVHlwZShsb2dpbiksCiAgICAgIG1lcmdlTWFwKGFjdGlvbiA9PgogICAgICAgIHRoaXMuYXV0aFNlcnZpY2UubG9naW4oYWN0aW9uLmNyZWRlbnRpYWxzKS5waXBlKAogICAgICAgICAgbWFwKHVzZXIgPT4gbG9naW5TdWNjZXNzKHsgdXNlciB9KSksCiAgICAgICAgICBjYXRjaEVycm9yKGVycm9yID0+IG9mKGxvZ2luRmFpbHVyZSh7IGVycm9yIH0pKSkKICAgICAgICApCiAgICAgICkKICAgICkKICApOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { AuthService } from '../services/auth.service';
+import { login, loginSuccess, loginFailure } from '../actions/auth.actions';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+@Injectable()
+export class AuthEffects {
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService
+  ) {}
+
+  login$ = createEffect(() =&gt;
+    this.actions$.pipe(
+      ofType(login),
+      mergeMap(action =&gt;
+        this.authService.login(action.credentials).pipe(
+          map(user =&gt; loginSuccess({ user })),
+          catchError(error =&gt; of(loginFailure({ error })))
+        )
+      )
+    )
+  );
+}</pre></div><div class='content'></div><h2>Step 4: Register the Effect</h2>
+<div class='content'><p>Register the effect in your <code>AppModule</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgRWZmZWN0c01vZHVsZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBBdXRoRWZmZWN0cyB9IGZyb20gJy4vZWZmZWN0cy9hdXRoLmVmZmVjdHMnOwoKQE5nTW9kdWxlKHsKICBpbXBvcnRzOiBbCiAgICBFZmZlY3RzTW9kdWxlLmZvclJvb3QoW0F1dGhFZmZlY3RzXSkKICBdCn0pCmV4cG9ydCBjbGFzcyBBcHBNb2R1bGUge30="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './effects/auth.effects';
+
+@NgModule({
+  imports: [
+    EffectsModule.forRoot([AuthEffects])
+  ]
+})
+export class AppModule {}</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Create a new Angular service called <code>ProductService</code> that fetches a list of products from an API.</li>
+<li>Define actions for loading products: <code>loadProducts</code>, <code>loadProductsSuccess</code>, and <code>loadProductsFailure</code>.</li>
+<li>Create an effect that listens for the <code>loadProducts</code> action, calls the <code>ProductService</code> to fetch products, and dispatches either <code>loadProductsSuccess</code> or <code>loadProductsFailure</code> based on the result.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><h4>Step 1: Define Actions</h4>
+<p>Create a file <code>product.actions.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY3JlYXRlQWN0aW9uLCBwcm9wcyB9IGZyb20gJ0BuZ3J4L3N0b3JlJzsKCmV4cG9ydCBjb25zdCBsb2FkUHJvZHVjdHMgPSBjcmVhdGVBY3Rpb24oJ1tQcm9kdWN0XSBMb2FkIFByb2R1Y3RzJyk7CgpleHBvcnQgY29uc3QgbG9hZFByb2R1Y3RzU3VjY2VzcyA9IGNyZWF0ZUFjdGlvbigKICAnW1Byb2R1Y3RdIExvYWQgUHJvZHVjdHMgU3VjY2VzcycsCiAgcHJvcHM8eyBwcm9kdWN0czogYW55W10gfT4oKQopOwoKZXhwb3J0IGNvbnN0IGxvYWRQcm9kdWN0c0ZhaWx1cmUgPSBjcmVhdGVBY3Rpb24oCiAgJ1tQcm9kdWN0XSBMb2FkIFByb2R1Y3RzIEZhaWx1cmUnLAogIHByb3BzPHsgZXJyb3I6IGFueSB9PigpCik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { createAction, props } from '@ngrx/store';
+
+export const loadProducts = createAction('[Product] Load Products');
+
+export const loadProductsSuccess = createAction(
+  '[Product] Load Products Success',
+  props&lt;{ products: any[] }&gt;()
+);
+
+export const loadProductsFailure = createAction(
+  '[Product] Load Products Failure',
+  props&lt;{ error: any }&gt;()
+);</pre></div><div class='content'><h4>Step 2: Create a Service</h4>
+<p>Create a file <code>product.service.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBIdHRwQ2xpZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnOwppbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7CgpASW5qZWN0YWJsZSh7CiAgcHJvdmlkZWRJbjogJ3Jvb3QnCn0pCmV4cG9ydCBjbGFzcyBQcm9kdWN0U2VydmljZSB7CiAgY29uc3RydWN0b3IocHJpdmF0ZSBodHRwOiBIdHRwQ2xpZW50KSB7fQoKICBnZXRQcm9kdWN0cygpOiBPYnNlcnZhYmxlPGFueVtdPiB7CiAgICByZXR1cm4gdGhpcy5odHRwLmdldDxhbnlbXT4oJy9hcGkvcHJvZHVjdHMnKTsKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ProductService {
+  constructor(private http: HttpClient) {}
+
+  getProducts(): Observable&lt;any[]&gt; {
+    return this.http.get&lt;any[]&gt;('/api/products');
+  }
+}</pre></div><div class='content'><h4>Step 3: Create the Effect</h4>
+<p>Create a file <code>product.effects.ts</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBBY3Rpb25zLCBjcmVhdGVFZmZlY3QsIG9mVHlwZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBQcm9kdWN0U2VydmljZSB9IGZyb20gJy4uL3NlcnZpY2VzL3Byb2R1Y3Quc2VydmljZSc7CmltcG9ydCB7IGxvYWRQcm9kdWN0cywgbG9hZFByb2R1Y3RzU3VjY2VzcywgbG9hZFByb2R1Y3RzRmFpbHVyZSB9IGZyb20gJy4uL2FjdGlvbnMvcHJvZHVjdC5hY3Rpb25zJzsKaW1wb3J0IHsgY2F0Y2hFcnJvciwgbWFwLCBtZXJnZU1hcCB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJzsKaW1wb3J0IHsgb2YgfSBmcm9tICdyeGpzJzsKCkBJbmplY3RhYmxlKCkKZXhwb3J0IGNsYXNzIFByb2R1Y3RFZmZlY3RzIHsKICBjb25zdHJ1Y3RvcigKICAgIHByaXZhdGUgYWN0aW9ucyQ6IEFjdGlvbnMsCiAgICBwcml2YXRlIHByb2R1Y3RTZXJ2aWNlOiBQcm9kdWN0U2VydmljZQogICkge30KCiAgbG9hZFByb2R1Y3RzJCA9IGNyZWF0ZUVmZmVjdCgoKSA9PgogICAgdGhpcy5hY3Rpb25zJC5waXBlKAogICAgICBvZlR5cGUobG9hZFByb2R1Y3RzKSwKICAgICAgbWVyZ2VNYXAoKCkgPT4KICAgICAgICB0aGlzLnByb2R1Y3RTZXJ2aWNlLmdldFByb2R1Y3RzKCkucGlwZSgKICAgICAgICAgIG1hcChwcm9kdWN0cyA9PiBsb2FkUHJvZHVjdHNTdWNjZXNzKHsgcHJvZHVjdHMgfSkpLAogICAgICAgICAgY2F0Y2hFcnJvcihlcnJvciA9PiBvZihsb2FkUHJvZHVjdHNGYWlsdXJlKHsgZXJyb3IgfSkpKQogICAgICAgICkKICAgICAgKQogICAgKQogICk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { Actions, createEffect, ofType } from '@ngrx/effects';
+import { ProductService } from '../services/product.service';
+import { loadProducts, loadProductsSuccess, loadProductsFailure } from '../actions/product.actions';
+import { catchError, map, mergeMap } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+@Injectable()
+export class ProductEffects {
+  constructor(
+    private actions$: Actions,
+    private productService: ProductService
+  ) {}
+
+  loadProducts$ = createEffect(() =&gt;
+    this.actions$.pipe(
+      ofType(loadProducts),
+      mergeMap(() =&gt;
+        this.productService.getProducts().pipe(
+          map(products =&gt; loadProductsSuccess({ products })),
+          catchError(error =&gt; of(loadProductsFailure({ error })))
+        )
+      )
+    )
+  );
+}</pre></div><div class='content'><h4>Step 4: Register the Effect</h4>
+<p>Register the effect in your <code>AppModule</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgRWZmZWN0c01vZHVsZSB9IGZyb20gJ0BuZ3J4L2VmZmVjdHMnOwppbXBvcnQgeyBQcm9kdWN0RWZmZWN0cyB9IGZyb20gJy4vZWZmZWN0cy9wcm9kdWN0LmVmZmVjdHMnOwoKQE5nTW9kdWxlKHsKICBpbXBvcnRzOiBbCiAgICBFZmZlY3RzTW9kdWxlLmZvclJvb3QoW1Byb2R1Y3RFZmZlY3RzXSkKICBdCn0pCmV4cG9ydCBjbGFzcyBBcHBNb2R1bGUge30="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NgModule } from '@angular/core';
+import { EffectsModule } from '@ngrx/effects';
+import { ProductEffects } from './effects/product.effects';
+
+@NgModule({
+  imports: [
+    EffectsModule.forRoot([ProductEffects])
+  ]
+})
+export class AppModule {}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>NgRx Effects is a powerful tool for handling side effects in your Angular application. By isolating side effects from your components and state management logic, you can create more predictable and testable applications. In this section, you learned how to set up NgRx Effects, create effects, and handle side effects in a practical example. You also completed an exercise to reinforce your understanding of NgRx Effects. In the next module, we will explore state management in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-ngrx-store' title="NgRx Store">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-unit-testing' title="Unit Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

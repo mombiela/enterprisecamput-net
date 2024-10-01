@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Systems</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/06-01-particle-systems" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/06-01-particle-systems" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/06-01-particle-systems" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/open_gl/06-01-particle-systems" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/06-01-particle-systems" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-debugging' title="Profiling and Debugging">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Particle Systems</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-post-processing' title="Post-Processing Effects">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Particle systems are a technique used in computer graphics to simulate fuzzy phenomena, which are otherwise very hard to reproduce with conventional rendering techniques. Examples include fire, smoke, rain, snow, and explosions. In this section, we will cover the basics of particle systems, how to implement them in OpenGL, and provide practical examples and exercises.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Particles</strong>: The basic unit of a particle system, representing a small portion of the effect (e.g., a single raindrop or spark).</li>
+<li><strong>Emitters</strong>: Objects that generate particles at a certain rate and with specific properties.</li>
+<li><strong>Particle Properties</strong>: Attributes such as position, velocity, color, lifespan, and size that define the behavior and appearance of each particle.</li>
+<li><strong>Update and Render Loop</strong>: The process of updating particle properties over time and rendering them to the screen.</li>
+</ol>
+</div><h1>Implementing a Basic Particle System</h1>
+<div class='content'></div><h2>Step 1: Define Particle Structure</h2>
+<div class='content'><p>First, we need to define a structure to hold the properties of each particle.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFBhcnRpY2xlIHsKICAgIGdsbTo6dmVjMyBwb3NpdGlvbjsKICAgIGdsbTo6dmVjMyB2ZWxvY2l0eTsKICAgIGdsbTo6dmVjNCBjb2xvcjsKICAgIGZsb2F0IGxpZmVzcGFuOwogICAgZmxvYXQgc2l6ZTsKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Particle {
+    glm::vec3 position;
+    glm::vec3 velocity;
+    glm::vec4 color;
+    float lifespan;
+    float size;
+};</pre></div><div class='content'></div><h2>Step 2: Create an Emitter</h2>
+<div class='content'><p>An emitter will generate particles with initial properties.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGFydGljbGVFbWl0dGVyIHsKcHVibGljOgogICAgc3RkOjp2ZWN0b3I8UGFydGljbGU+IHBhcnRpY2xlczsKICAgIGdsbTo6dmVjMyBwb3NpdGlvbjsKICAgIGZsb2F0IGVtaXNzaW9uUmF0ZTsKCiAgICBQYXJ0aWNsZUVtaXR0ZXIoZ2xtOjp2ZWMzIHBvcywgZmxvYXQgcmF0ZSkgOiBwb3NpdGlvbihwb3MpLCBlbWlzc2lvblJhdGUocmF0ZSkge30KCiAgICB2b2lkIGVtaXQoKSB7CiAgICAgICAgZm9yIChpbnQgaSA9IDA7IGkgPCBlbWlzc2lvblJhdGU7ICsraSkgewogICAgICAgICAgICBQYXJ0aWNsZSBwOwogICAgICAgICAgICBwLnBvc2l0aW9uID0gcG9zaXRpb247CiAgICAgICAgICAgIHAudmVsb2NpdHkgPSBnbG06OnZlYzMocmFuZCgpICUgMTAgLSA1LCByYW5kKCkgJSAxMCAtIDUsIHJhbmQoKSAlIDEwIC0gNSk7CiAgICAgICAgICAgIHAuY29sb3IgPSBnbG06OnZlYzQoMS4wLCAxLjAsIDEuMCwgMS4wKTsKICAgICAgICAgICAgcC5saWZlc3BhbiA9IDUuMGY7CiAgICAgICAgICAgIHAuc2l6ZSA9IDEuMGY7CiAgICAgICAgICAgIHBhcnRpY2xlcy5wdXNoX2JhY2socCk7CiAgICAgICAgfQogICAgfQoKICAgIHZvaWQgdXBkYXRlKGZsb2F0IGRlbHRhVGltZSkgewogICAgICAgIGZvciAoYXV0byYgcCA6IHBhcnRpY2xlcykgewogICAgICAgICAgICBwLnBvc2l0aW9uICs9IHAudmVsb2NpdHkgKiBkZWx0YVRpbWU7CiAgICAgICAgICAgIHAubGlmZXNwYW4gLT0gZGVsdGFUaW1lOwogICAgICAgIH0KICAgICAgICBwYXJ0aWNsZXMuZXJhc2Uoc3RkOjpyZW1vdmVfaWYocGFydGljbGVzLmJlZ2luKCksIHBhcnRpY2xlcy5lbmQoKSwgW10oUGFydGljbGUmIHApIHsgcmV0dXJuIHAubGlmZXNwYW4gPD0gMDsgfSksIHBhcnRpY2xlcy5lbmQoKSk7CiAgICB9Cn07"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ParticleEmitter {
+public:
+    std::vector&lt;Particle&gt; particles;
+    glm::vec3 position;
+    float emissionRate;
+
+    ParticleEmitter(glm::vec3 pos, float rate) : position(pos), emissionRate(rate) {}
+
+    void emit() {
+        for (int i = 0; i &lt; emissionRate; ++i) {
+            Particle p;
+            p.position = position;
+            p.velocity = glm::vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5);
+            p.color = glm::vec4(1.0, 1.0, 1.0, 1.0);
+            p.lifespan = 5.0f;
+            p.size = 1.0f;
+            particles.push_back(p);
+        }
+    }
+
+    void update(float deltaTime) {
+        for (auto&amp; p : particles) {
+            p.position += p.velocity * deltaTime;
+            p.lifespan -= deltaTime;
+        }
+        particles.erase(std::remove_if(particles.begin(), particles.end(), [](Particle&amp; p) { return p.lifespan &lt;= 0; }), particles.end());
+    }
+};</pre></div><div class='content'></div><h2>Step 3: Update and Render Particles</h2>
+<div class='content'><p>In the main loop, we need to update and render the particles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UGFydGljbGVFbWl0dGVyIGVtaXR0ZXIoZ2xtOjp2ZWMzKDAuMGYsIDAuMGYsIDAuMGYpLCAxMCk7Cgp2b2lkIHVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpIHsKICAgIGVtaXR0ZXIuZW1pdCgpOwogICAgZW1pdHRlci51cGRhdGUoZGVsdGFUaW1lKTsKfQoKdm9pZCByZW5kZXIoKSB7CiAgICBmb3IgKGNvbnN0IGF1dG8mIHAgOiBlbWl0dGVyLnBhcnRpY2xlcykgewogICAgICAgIC8vIFJlbmRlciBwYXJ0aWNsZSBwCiAgICAgICAgLy8gVGhpcyBjb3VsZCBpbnZvbHZlIHNldHRpbmcgdXAgYSBzaGFkZXIsIGJpbmRpbmcgYSB0ZXh0dXJlLCBhbmQgZHJhd2luZyBhIHF1YWQgYXQgcC5wb3NpdGlvbgogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ParticleEmitter emitter(glm::vec3(0.0f, 0.0f, 0.0f), 10);
+
+void update(float deltaTime) {
+    emitter.emit();
+    emitter.update(deltaTime);
+}
+
+void render() {
+    for (const auto&amp; p : emitter.particles) {
+        // Render particle p
+        // This could involve setting up a shader, binding a texture, and drawing a quad at p.position
+    }
+}</pre></div><div class='content'></div><h2>Practical Example</h2>
+<div class='content'><p>Here is a complete example of a simple particle system in OpenGL:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHZlY3Rvcj4KI2luY2x1ZGUgPGFsZ29yaXRobT4KI2luY2x1ZGUgPGdsbS9nbG0uaHBwPgojaW5jbHVkZSA8R0wvZ2xldy5oPgojaW5jbHVkZSA8R0xGVy9nbGZ3My5oPgoKc3RydWN0IFBhcnRpY2xlIHsKICAgIGdsbTo6dmVjMyBwb3NpdGlvbjsKICAgIGdsbTo6dmVjMyB2ZWxvY2l0eTsKICAgIGdsbTo6dmVjNCBjb2xvcjsKICAgIGZsb2F0IGxpZmVzcGFuOwogICAgZmxvYXQgc2l6ZTsKfTsKCmNsYXNzIFBhcnRpY2xlRW1pdHRlciB7CnB1YmxpYzoKICAgIHN0ZDo6dmVjdG9yPFBhcnRpY2xlPiBwYXJ0aWNsZXM7CiAgICBnbG06OnZlYzMgcG9zaXRpb247CiAgICBmbG9hdCBlbWlzc2lvblJhdGU7CgogICAgUGFydGljbGVFbWl0dGVyKGdsbTo6dmVjMyBwb3MsIGZsb2F0IHJhdGUpIDogcG9zaXRpb24ocG9zKSwgZW1pc3Npb25SYXRlKHJhdGUpIHt9CgogICAgdm9pZCBlbWl0KCkgewogICAgICAgIGZvciAoaW50IGkgPSAwOyBpIDwgZW1pc3Npb25SYXRlOyArK2kpIHsKICAgICAgICAgICAgUGFydGljbGUgcDsKICAgICAgICAgICAgcC5wb3NpdGlvbiA9IHBvc2l0aW9uOwogICAgICAgICAgICBwLnZlbG9jaXR5ID0gZ2xtOjp2ZWMzKHJhbmQoKSAlIDEwIC0gNSwgcmFuZCgpICUgMTAgLSA1LCByYW5kKCkgJSAxMCAtIDUpOwogICAgICAgICAgICBwLmNvbG9yID0gZ2xtOjp2ZWM0KDEuMCwgMS4wLCAxLjAsIDEuMCk7CiAgICAgICAgICAgIHAubGlmZXNwYW4gPSA1LjBmOwogICAgICAgICAgICBwLnNpemUgPSAxLjBmOwogICAgICAgICAgICBwYXJ0aWNsZXMucHVzaF9iYWNrKHApOwogICAgICAgIH0KICAgIH0KCiAgICB2b2lkIHVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpIHsKICAgICAgICBmb3IgKGF1dG8mIHAgOiBwYXJ0aWNsZXMpIHsKICAgICAgICAgICAgcC5wb3NpdGlvbiArPSBwLnZlbG9jaXR5ICogZGVsdGFUaW1lOwogICAgICAgICAgICBwLmxpZmVzcGFuIC09IGRlbHRhVGltZTsKICAgICAgICB9CiAgICAgICAgcGFydGljbGVzLmVyYXNlKHN0ZDo6cmVtb3ZlX2lmKHBhcnRpY2xlcy5iZWdpbigpLCBwYXJ0aWNsZXMuZW5kKCksIFtdKFBhcnRpY2xlJiBwKSB7IHJldHVybiBwLmxpZmVzcGFuIDw9IDA7IH0pLCBwYXJ0aWNsZXMuZW5kKCkpOwogICAgfQp9OwoKUGFydGljbGVFbWl0dGVyIGVtaXR0ZXIoZ2xtOjp2ZWMzKDAuMGYsIDAuMGYsIDAuMGYpLCAxMCk7Cgp2b2lkIHVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpIHsKICAgIGVtaXR0ZXIuZW1pdCgpOwogICAgZW1pdHRlci51cGRhdGUoZGVsdGFUaW1lKTsKfQoKdm9pZCByZW5kZXIoKSB7CiAgICBmb3IgKGNvbnN0IGF1dG8mIHAgOiBlbWl0dGVyLnBhcnRpY2xlcykgewogICAgICAgIC8vIFJlbmRlciBwYXJ0aWNsZSBwCiAgICAgICAgLy8gVGhpcyBjb3VsZCBpbnZvbHZlIHNldHRpbmcgdXAgYSBzaGFkZXIsIGJpbmRpbmcgYSB0ZXh0dXJlLCBhbmQgZHJhd2luZyBhIHF1YWQgYXQgcC5wb3NpdGlvbgogICAgfQp9CgppbnQgbWFpbigpIHsKICAgIC8vIEluaXRpYWxpemUgR0xGVyBhbmQgR0xFVywgY3JlYXRlIGEgd2luZG93LCBldGMuCgogICAgd2hpbGUgKCFnbGZ3V2luZG93U2hvdWxkQ2xvc2Uod2luZG93KSkgewogICAgICAgIGZsb2F0IGRlbHRhVGltZSA9IC4uLjsgLy8gQ2FsY3VsYXRlIGRlbHRhIHRpbWUKCiAgICAgICAgdXBkYXRlKGRlbHRhVGltZSk7CgogICAgICAgIGdsQ2xlYXIoR0xfQ09MT1JfQlVGRkVSX0JJVCB8IEdMX0RFUFRIX0JVRkZFUl9CSVQpOwogICAgICAgIHJlbmRlcigpOwoKICAgICAgICBnbGZ3U3dhcEJ1ZmZlcnMod2luZG93KTsKICAgICAgICBnbGZ3UG9sbEV2ZW50cygpOwogICAgfQoKICAgIC8vIENsZWFudXAgYW5kIGV4aXQKICAgIGdsZndUZXJtaW5hdGUoKTsKICAgIHJldHVybiAwOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+#include &lt;glm/glm.hpp&gt;
+#include &lt;GL/glew.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+struct Particle {
+    glm::vec3 position;
+    glm::vec3 velocity;
+    glm::vec4 color;
+    float lifespan;
+    float size;
+};
+
+class ParticleEmitter {
+public:
+    std::vector&lt;Particle&gt; particles;
+    glm::vec3 position;
+    float emissionRate;
+
+    ParticleEmitter(glm::vec3 pos, float rate) : position(pos), emissionRate(rate) {}
+
+    void emit() {
+        for (int i = 0; i &lt; emissionRate; ++i) {
+            Particle p;
+            p.position = position;
+            p.velocity = glm::vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5);
+            p.color = glm::vec4(1.0, 1.0, 1.0, 1.0);
+            p.lifespan = 5.0f;
+            p.size = 1.0f;
+            particles.push_back(p);
+        }
+    }
+
+    void update(float deltaTime) {
+        for (auto&amp; p : particles) {
+            p.position += p.velocity * deltaTime;
+            p.lifespan -= deltaTime;
+        }
+        particles.erase(std::remove_if(particles.begin(), particles.end(), [](Particle&amp; p) { return p.lifespan &lt;= 0; }), particles.end());
+    }
+};
+
+ParticleEmitter emitter(glm::vec3(0.0f, 0.0f, 0.0f), 10);
+
+void update(float deltaTime) {
+    emitter.emit();
+    emitter.update(deltaTime);
+}
+
+void render() {
+    for (const auto&amp; p : emitter.particles) {
+        // Render particle p
+        // This could involve setting up a shader, binding a texture, and drawing a quad at p.position
+    }
+}
+
+int main() {
+    // Initialize GLFW and GLEW, create a window, etc.
+
+    while (!glfwWindowShouldClose(window)) {
+        float deltaTime = ...; // Calculate delta time
+
+        update(deltaTime);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        render();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // Cleanup and exit
+    glfwTerminate();
+    return 0;
+}</pre></div><div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li><strong>Modify the Particle Emitter</strong>: Change the particle emitter to generate particles with different colors and sizes.</li>
+<li><strong>Add Gravity</strong>: Implement gravity to affect the particles' velocity over time.</li>
+<li><strong>Texture Mapping</strong>: Apply a texture to the particles to make them look more realistic.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Modify the Particle Emitter</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBlbWl0KCkgewogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBlbWlzc2lvblJhdGU7ICsraSkgewogICAgICAgIFBhcnRpY2xlIHA7CiAgICAgICAgcC5wb3NpdGlvbiA9IHBvc2l0aW9uOwogICAgICAgIHAudmVsb2NpdHkgPSBnbG06OnZlYzMocmFuZCgpICUgMTAgLSA1LCByYW5kKCkgJSAxMCAtIDUsIHJhbmQoKSAlIDEwIC0gNSk7CiAgICAgICAgcC5jb2xvciA9IGdsbTo6dmVjNChyYW5kKCkgLyAoZmxvYXQpUkFORF9NQVgsIHJhbmQoKSAvIChmbG9hdClSQU5EX01BWCwgcmFuZCgpIC8gKGZsb2F0KVJBTkRfTUFYLCAxLjApOwogICAgICAgIHAubGlmZXNwYW4gPSA1LjBmOwogICAgICAgIHAuc2l6ZSA9IHJhbmQoKSAlIDIgKyAxLjBmOwogICAgICAgIHBhcnRpY2xlcy5wdXNoX2JhY2socCk7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void emit() {
+    for (int i = 0; i &lt; emissionRate; ++i) {
+        Particle p;
+        p.position = position;
+        p.velocity = glm::vec3(rand() % 10 - 5, rand() % 10 - 5, rand() % 10 - 5);
+        p.color = glm::vec4(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, rand() / (float)RAND_MAX, 1.0);
+        p.lifespan = 5.0f;
+        p.size = rand() % 2 + 1.0f;
+        particles.push_back(p);
+    }
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Add Gravity</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCB1cGRhdGUoZmxvYXQgZGVsdGFUaW1lKSB7CiAgICBnbG06OnZlYzMgZ3Jhdml0eSgwLjBmLCAtOS44MWYsIDAuMGYpOwogICAgZm9yIChhdXRvJiBwIDogcGFydGljbGVzKSB7CiAgICAgICAgcC52ZWxvY2l0eSArPSBncmF2aXR5ICogZGVsdGFUaW1lOwogICAgICAgIHAucG9zaXRpb24gKz0gcC52ZWxvY2l0eSAqIGRlbHRhVGltZTsKICAgICAgICBwLmxpZmVzcGFuIC09IGRlbHRhVGltZTsKICAgIH0KICAgIHBhcnRpY2xlcy5lcmFzZShzdGQ6OnJlbW92ZV9pZihwYXJ0aWNsZXMuYmVnaW4oKSwgcGFydGljbGVzLmVuZCgpLCBbXShQYXJ0aWNsZSYgcCkgeyByZXR1cm4gcC5saWZlc3BhbiA8PSAwOyB9KSwgcGFydGljbGVzLmVuZCgpKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void update(float deltaTime) {
+    glm::vec3 gravity(0.0f, -9.81f, 0.0f);
+    for (auto&amp; p : particles) {
+        p.velocity += gravity * deltaTime;
+        p.position += p.velocity * deltaTime;
+        p.lifespan -= deltaTime;
+    }
+    particles.erase(std::remove_if(particles.begin(), particles.end(), [](Particle&amp; p) { return p.lifespan &lt;= 0; }), particles.end());
+}</pre></div><div class='content'><ol start="3">
+<li><strong>Texture Mapping</strong>: This involves setting up a shader and binding a texture for the particles. This is a more advanced topic and will be covered in detail in the &quot;Texturing&quot; section of the course.</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we have covered the basics of particle systems, including defining particles, creating an emitter, and updating and rendering particles. We also provided practical examples and exercises to reinforce the concepts. Particle systems are a powerful tool in computer graphics, allowing for the simulation of complex and dynamic effects. In the next section, we will explore post-processing effects to further enhance the visual quality of our OpenGL applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-debugging' title="Profiling and Debugging">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-post-processing' title="Post-Processing Effects">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

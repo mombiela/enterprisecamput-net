@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Tuning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/06-03-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/06-03-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/06-03-performance-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/06-03-performance-tuning" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/06-03-performance-tuning" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-common-issues-solutions' title="Common Issues and Solutions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Performance Tuning</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-debugging-nginx' title="Debugging NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Performance tuning is a critical aspect of managing an NGINX server, ensuring that it can handle high traffic loads efficiently and maintain optimal performance. This section will cover various techniques and configurations to enhance the performance of your NGINX server.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Worker Processes and Connections</strong></li>
+<li><strong>Buffering and Caching</strong></li>
+<li><strong>Compression</strong></li>
+<li><strong>Optimizing SSL/TLS</strong></li>
+<li><strong>File Descriptors</strong></li>
+<li><strong>Keep-Alive Connections</strong></li>
+<li><strong>Gzip Compression</strong></li>
+<li><strong>Client Body Size</strong></li>
+</ol>
+</div><h1>1. Worker Processes and Connections</h1>
+<div class='content'><p>NGINX uses an event-driven architecture, which allows it to handle many connections with a small number of worker processes. The number of worker processes and connections can be configured to optimize performance.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d29ya2VyX3Byb2Nlc3NlcyBhdXRvOwpldmVudHMgewogICAgd29ya2VyX2Nvbm5lY3Rpb25zIDEwMjQ7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>worker_processes auto;
+events {
+    worker_connections 1024;
+}</pre></div><div class='content'><ul>
+<li><code>worker_processes auto;</code> - Automatically sets the number of worker processes to the number of available CPU cores.</li>
+<li><code>worker_connections 1024;</code> - Sets the maximum number of simultaneous connections that can be opened by a worker process.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Worker Processes</strong>: The number of worker processes should generally match the number of CPU cores to maximize CPU utilization.</li>
+<li><strong>Worker Connections</strong>: This setting determines how many clients each worker process can handle simultaneously. Increasing this value can help handle more concurrent connections.</li>
+</ul>
+</div><h1>2. Buffering and Caching</h1>
+<div class='content'><p>Buffering and caching can significantly improve performance by reducing the load on backend servers and speeding up response times.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9idWZmZXJpbmcgb247CiAgICBwcm94eV9idWZmZXJzIDggMTZrOwogICAgcHJveHlfYnVmZmVyX3NpemUgMzJrOwogICAgcHJveHlfY2FjaGVfcGF0aCAvdmFyL2NhY2hlL25naW54IGxldmVscz0xOjIga2V5c196b25lPW15X2NhY2hlOjEwbSBtYXhfc2l6ZT0xMGcgaW5hY3RpdmU9NjBtIHVzZV90ZW1wX3BhdGg9b2ZmOwogICAgcHJveHlfY2FjaGUgbXlfY2FjaGU7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_buffering on;
+    proxy_buffers 8 16k;
+    proxy_buffer_size 32k;
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+    proxy_cache my_cache;
+}</pre></div><div class='content'><ul>
+<li><code>proxy_buffering on;</code> - Enables buffering of responses from the proxied server.</li>
+<li><code>proxy_buffers 8 16k;</code> - Sets the number and size of buffers used for reading a response from the proxied server.</li>
+<li><code>proxy_buffer_size 32k;</code> - Sets the size of the buffer used for the first part of the response.</li>
+<li><code>proxy_cache_path</code> - Defines the path and parameters for the cache.</li>
+<li><code>proxy_cache</code> - Enables caching for proxied responses.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Buffering</strong>: Helps in handling slow client connections by buffering responses from the backend server.</li>
+<li><strong>Caching</strong>: Reduces the load on backend servers by storing frequently requested content.</li>
+</ul>
+</div><h1>3. Compression</h1>
+<div class='content'><p>Compressing responses can reduce the amount of data sent over the network, improving load times and reducing bandwidth usage.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBnemlwIG9uOwogICAgZ3ppcF90eXBlcyB0ZXh0L3BsYWluIHRleHQvY3NzIGFwcGxpY2F0aW9uL2pzb24gYXBwbGljYXRpb24vamF2YXNjcmlwdCB0ZXh0L3htbCBhcHBsaWNhdGlvbi94bWwgYXBwbGljYXRpb24veG1sK3JzcyB0ZXh0L2phdmFzY3JpcHQ7CiAgICBnemlwX21pbl9sZW5ndGggMjU2OwogICAgZ3ppcF9jb21wX2xldmVsIDU7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 256;
+    gzip_comp_level 5;
+}</pre></div><div class='content'><ul>
+<li><code>gzip on;</code> - Enables gzip compression.</li>
+<li><code>gzip_types</code> - Specifies the MIME types that should be compressed.</li>
+<li><code>gzip_min_length 256;</code> - Sets the minimum length of responses to be compressed.</li>
+<li><code>gzip_comp_level 5;</code> - Sets the compression level (1-9).</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Gzip Compression</strong>: Reduces the size of the response body, which can significantly improve load times for clients with slower connections.</li>
+</ul>
+</div><h1>4. Optimizing SSL/TLS</h1>
+<div class='content'><p>Optimizing SSL/TLS settings can improve the performance of secure connections.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzc2xfc2Vzc2lvbl9jYWNoZSBzaGFyZWQ6U1NMOjEwbTsKICAgIHNzbF9zZXNzaW9uX3RpbWVvdXQgMTBtOwogICAgc3NsX3ByZWZlcl9zZXJ2ZXJfY2lwaGVycyBvbjsKICAgIHNzbF9jaXBoZXJzICdFQ0RIRS1SU0EtQUVTMjU2LUdDTS1TSEEzODQ6RUNESEUtUlNBLUFFUzEyOC1HQ00tU0hBMjU2JzsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256';
+}</pre></div><div class='content'><ul>
+<li><code>ssl_session_cache shared:SSL:10m;</code> - Enables session caching.</li>
+<li><code>ssl_session_timeout 10m;</code> - Sets the timeout for cached sessions.</li>
+<li><code>ssl_prefer_server_ciphers on;</code> - Prefer server ciphers over client ciphers.</li>
+<li><code>ssl_ciphers</code> - Specifies the ciphers to be used.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Session Caching</strong>: Reduces the overhead of establishing new SSL/TLS connections.</li>
+<li><strong>Cipher Optimization</strong>: Ensures the use of secure and performant ciphers.</li>
+</ul>
+</div><h1>5. File Descriptors</h1>
+<div class='content'><p>Increasing the number of file descriptors can help NGINX handle more simultaneous connections.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d29ya2VyX3JsaW1pdF9ub2ZpbGUgNjU1MzY7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>worker_rlimit_nofile 65536;</pre></div><div class='content'><ul>
+<li><code>worker_rlimit_nofile 65536;</code> - Sets the limit on the number of open file descriptors.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>File Descriptors</strong>: Each connection requires a file descriptor. Increasing this limit allows NGINX to handle more connections.</li>
+</ul>
+</div><h1>6. Keep-Alive Connections</h1>
+<div class='content'><p>Keep-alive connections can reduce the overhead of establishing new connections.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBrZWVwYWxpdmVfdGltZW91dCA2NTsKICAgIGtlZXBhbGl2ZV9yZXF1ZXN0cyAxMDA7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    keepalive_timeout 65;
+    keepalive_requests 100;
+}</pre></div><div class='content'><ul>
+<li><code>keepalive_timeout 65;</code> - Sets the timeout for keep-alive connections.</li>
+<li><code>keepalive_requests 100;</code> - Sets the maximum number of requests that can be sent over a keep-alive connection.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Keep-Alive</strong>: Reduces the overhead of establishing new connections by reusing existing ones.</li>
+</ul>
+</div><h1>7. Gzip Compression</h1>
+<div class='content'><p>Enabling gzip compression can reduce the size of the data sent to clients, improving load times and reducing bandwidth usage.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBnemlwIG9uOwogICAgZ3ppcF90eXBlcyB0ZXh0L3BsYWluIHRleHQvY3NzIGFwcGxpY2F0aW9uL2pzb24gYXBwbGljYXRpb24vamF2YXNjcmlwdCB0ZXh0L3htbCBhcHBsaWNhdGlvbi94bWwgYXBwbGljYXRpb24veG1sK3JzcyB0ZXh0L2phdmFzY3JpcHQ7CiAgICBnemlwX21pbl9sZW5ndGggMjU2OwogICAgZ3ppcF9jb21wX2xldmVsIDU7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 256;
+    gzip_comp_level 5;
+}</pre></div><div class='content'><ul>
+<li><code>gzip on;</code> - Enables gzip compression.</li>
+<li><code>gzip_types</code> - Specifies the MIME types that should be compressed.</li>
+<li><code>gzip_min_length 256;</code> - Sets the minimum length of responses to be compressed.</li>
+<li><code>gzip_comp_level 5;</code> - Sets the compression level (1-9).</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Gzip Compression</strong>: Reduces the size of the response body, which can significantly improve load times for clients with slower connections.</li>
+</ul>
+</div><h1>8. Client Body Size</h1>
+<div class='content'><p>Limiting the size of client request bodies can prevent large uploads from overwhelming the server.</p>
+</div><h2>Configuration</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBjbGllbnRfbWF4X2JvZHlfc2l6ZSAxbTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    client_max_body_size 1m;
+}</pre></div><div class='content'><ul>
+<li><code>client_max_body_size 1m;</code> - Sets the maximum allowed size of the client request body.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Client Body Size</strong>: Prevents large uploads from consuming too many resources and potentially causing performance issues.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>Configure NGINX to handle a high number of concurrent connections.</li>
+<li>Enable gzip compression for text and JSON responses.</li>
+<li>Optimize SSL/TLS settings for better performance.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d29ya2VyX3Byb2Nlc3NlcyBhdXRvOwpldmVudHMgewogICAgd29ya2VyX2Nvbm5lY3Rpb25zIDIwNDg7Cn0KCmh0dHAgewogICAgZ3ppcCBvbjsKICAgIGd6aXBfdHlwZXMgdGV4dC9wbGFpbiB0ZXh0L2NzcyBhcHBsaWNhdGlvbi9qc29uIGFwcGxpY2F0aW9uL2phdmFzY3JpcHQgdGV4dC94bWwgYXBwbGljYXRpb24veG1sIGFwcGxpY2F0aW9uL3htbCtyc3MgdGV4dC9qYXZhc2NyaXB0OwogICAgZ3ppcF9taW5fbGVuZ3RoIDI1NjsKICAgIGd6aXBfY29tcF9sZXZlbCA1OwoKICAgIHNzbF9zZXNzaW9uX2NhY2hlIHNoYXJlZDpTU0w6MTBtOwogICAgc3NsX3Nlc3Npb25fdGltZW91dCAxMG07CiAgICBzc2xfcHJlZmVyX3NlcnZlcl9jaXBoZXJzIG9uOwogICAgc3NsX2NpcGhlcnMgJ0VDREhFLVJTQS1BRVMyNTYtR0NNLVNIQTM4NDpFQ0RIRS1SU0EtQUVTMTI4LUdDTS1TSEEyNTYnOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>worker_processes auto;
+events {
+    worker_connections 2048;
+}
+
+http {
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 256;
+    gzip_comp_level 5;
+
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256';
+}</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered various techniques to optimize the performance of your NGINX server, including configuring worker processes and connections, enabling buffering and caching, compressing responses, optimizing SSL/TLS settings, increasing file descriptors, and managing keep-alive connections. By applying these configurations, you can ensure that your NGINX server performs efficiently under high traffic loads.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-common-issues-solutions' title="Common Issues and Solutions">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-debugging-nginx' title="Debugging NGINX">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

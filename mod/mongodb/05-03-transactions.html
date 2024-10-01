@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/05-03-transactions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/05-03-transactions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/05-03-transactions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/mongodb/05-03-transactions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/05-03-transactions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-sharding' title="Sharding">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Transactions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-mongodb-atlas' title="MongoDB Atlas">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction to Transactions</h1>
+<div class='content'><p>Transactions in MongoDB allow you to execute multiple operations in isolation and ensure that they either all succeed or all fail. This is crucial for maintaining data integrity, especially in applications that require complex data manipulations.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ul>
+<li><strong>Atomicity</strong>: Ensures that a series of operations within a transaction are treated as a single unit. If one operation fails, the entire transaction fails.</li>
+<li><strong>Consistency</strong>: Ensures that a transaction brings the database from one valid state to another.</li>
+<li><strong>Isolation</strong>: Ensures that transactions are isolated from each other until they are completed.</li>
+<li><strong>Durability</strong>: Ensures that once a transaction is committed, it will remain so, even in the event of a system failure.</li>
+</ul>
+</div><h1>Using Transactions in MongoDB</h1>
+<div class='content'></div><h2>Starting a Transaction</h2>
+<div class='content'><p>To start a transaction, you need to use a session. Here’s how you can do it in MongoDB:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBNb25nb0NsaWVudCB9ID0gcmVxdWlyZSgnbW9uZ29kYicpOwoKYXN5bmMgZnVuY3Rpb24gcnVuVHJhbnNhY3Rpb24oKSB7CiAgICBjb25zdCB1cmkgPSAieW91cl9tb25nb2RiX2Nvbm5lY3Rpb25fc3RyaW5nIjsKICAgIGNvbnN0IGNsaWVudCA9IG5ldyBNb25nb0NsaWVudCh1cmkpOwoKICAgIHRyeSB7CiAgICAgICAgYXdhaXQgY2xpZW50LmNvbm5lY3QoKTsKICAgICAgICBjb25zdCBzZXNzaW9uID0gY2xpZW50LnN0YXJ0U2Vzc2lvbigpOwoKICAgICAgICBzZXNzaW9uLnN0YXJ0VHJhbnNhY3Rpb24oKTsKCiAgICAgICAgLy8gWW91ciB0cmFuc2FjdGlvbmFsIG9wZXJhdGlvbnMgZ28gaGVyZQoKICAgICAgICBhd2FpdCBzZXNzaW9uLmNvbW1pdFRyYW5zYWN0aW9uKCk7CiAgICAgICAgY29uc29sZS5sb2coIlRyYW5zYWN0aW9uIGNvbW1pdHRlZC4iKTsKICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgY29uc29sZS5lcnJvcigiVHJhbnNhY3Rpb24gYWJvcnRlZCBkdWUgdG8gYW4gZXJyb3I6ICIsIGVycm9yKTsKICAgICAgICBhd2FpdCBzZXNzaW9uLmFib3J0VHJhbnNhY3Rpb24oKTsKICAgIH0gZmluYWxseSB7CiAgICAgICAgYXdhaXQgc2Vzc2lvbi5lbmRTZXNzaW9uKCk7CiAgICAgICAgYXdhaXQgY2xpZW50LmNsb3NlKCk7CiAgICB9Cn0KCnJ1blRyYW5zYWN0aW9uKCkuY2F0Y2goY29uc29sZS5lcnJvcik7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { MongoClient } = require('mongodb');
+
+async function runTransaction() {
+    const uri = &quot;your_mongodb_connection_string&quot;;
+    const client = new MongoClient(uri);
+
+    try {
+        await client.connect();
+        const session = client.startSession();
+
+        session.startTransaction();
+
+        // Your transactional operations go here
+
+        await session.commitTransaction();
+        console.log(&quot;Transaction committed.&quot;);
+    } catch (error) {
+        console.error(&quot;Transaction aborted due to an error: &quot;, error);
+        await session.abortTransaction();
+    } finally {
+        await session.endSession();
+        await client.close();
+    }
+}
+
+runTransaction().catch(console.error);</pre></div><div class='content'></div><h2>Example: Transferring Funds Between Accounts</h2>
+<div class='content'><p>Let's consider a practical example where we need to transfer funds between two bank accounts. This operation involves two steps:</p>
+<ol>
+<li>Deducting the amount from the sender's account.</li>
+<li>Adding the amount to the receiver's account.</li>
+</ol>
+<p>Here’s how you can implement this in MongoDB:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBNb25nb0NsaWVudCB9ID0gcmVxdWlyZSgnbW9uZ29kYicpOwoKYXN5bmMgZnVuY3Rpb24gdHJhbnNmZXJGdW5kcyhzZW5kZXJBY2NvdW50SWQsIHJlY2VpdmVyQWNjb3VudElkLCBhbW91bnQpIHsKICAgIGNvbnN0IHVyaSA9ICJ5b3VyX21vbmdvZGJfY29ubmVjdGlvbl9zdHJpbmciOwogICAgY29uc3QgY2xpZW50ID0gbmV3IE1vbmdvQ2xpZW50KHVyaSk7CgogICAgdHJ5IHsKICAgICAgICBhd2FpdCBjbGllbnQuY29ubmVjdCgpOwogICAgICAgIGNvbnN0IHNlc3Npb24gPSBjbGllbnQuc3RhcnRTZXNzaW9uKCk7CgogICAgICAgIHNlc3Npb24uc3RhcnRUcmFuc2FjdGlvbigpOwoKICAgICAgICBjb25zdCBhY2NvdW50c0NvbGxlY3Rpb24gPSBjbGllbnQuZGIoImJhbmsiKS5jb2xsZWN0aW9uKCJhY2NvdW50cyIpOwoKICAgICAgICAvLyBEZWR1Y3QgYW1vdW50IGZyb20gc2VuZGVyJ3MgYWNjb3VudAogICAgICAgIGF3YWl0IGFjY291bnRzQ29sbGVjdGlvbi51cGRhdGVPbmUoCiAgICAgICAgICAgIHsgX2lkOiBzZW5kZXJBY2NvdW50SWQgfSwKICAgICAgICAgICAgeyAkaW5jOiB7IGJhbGFuY2U6IC1hbW91bnQgfSB9LAogICAgICAgICAgICB7IHNlc3Npb24gfQogICAgICAgICk7CgogICAgICAgIC8vIEFkZCBhbW91bnQgdG8gcmVjZWl2ZXIncyBhY2NvdW50CiAgICAgICAgYXdhaXQgYWNjb3VudHNDb2xsZWN0aW9uLnVwZGF0ZU9uZSgKICAgICAgICAgICAgeyBfaWQ6IHJlY2VpdmVyQWNjb3VudElkIH0sCiAgICAgICAgICAgIHsgJGluYzogeyBiYWxhbmNlOiBhbW91bnQgfSB9LAogICAgICAgICAgICB7IHNlc3Npb24gfQogICAgICAgICk7CgogICAgICAgIGF3YWl0IHNlc3Npb24uY29tbWl0VHJhbnNhY3Rpb24oKTsKICAgICAgICBjb25zb2xlLmxvZygiVHJhbnNhY3Rpb24gY29tbWl0dGVkLiIpOwogICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgICBjb25zb2xlLmVycm9yKCJUcmFuc2FjdGlvbiBhYm9ydGVkIGR1ZSB0byBhbiBlcnJvcjogIiwgZXJyb3IpOwogICAgICAgIGF3YWl0IHNlc3Npb24uYWJvcnRUcmFuc2FjdGlvbigpOwogICAgfSBmaW5hbGx5IHsKICAgICAgICBhd2FpdCBzZXNzaW9uLmVuZFNlc3Npb24oKTsKICAgICAgICBhd2FpdCBjbGllbnQuY2xvc2UoKTsKICAgIH0KfQoKdHJhbnNmZXJGdW5kcygic2VuZGVyX2lkIiwgInJlY2VpdmVyX2lkIiwgMTAwKS5jYXRjaChjb25zb2xlLmVycm9yKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { MongoClient } = require('mongodb');
+
+async function transferFunds(senderAccountId, receiverAccountId, amount) {
+    const uri = &quot;your_mongodb_connection_string&quot;;
+    const client = new MongoClient(uri);
+
+    try {
+        await client.connect();
+        const session = client.startSession();
+
+        session.startTransaction();
+
+        const accountsCollection = client.db(&quot;bank&quot;).collection(&quot;accounts&quot;);
+
+        // Deduct amount from sender's account
+        await accountsCollection.updateOne(
+            { _id: senderAccountId },
+            { $inc: { balance: -amount } },
+            { session }
+        );
+
+        // Add amount to receiver's account
+        await accountsCollection.updateOne(
+            { _id: receiverAccountId },
+            { $inc: { balance: amount } },
+            { session }
+        );
+
+        await session.commitTransaction();
+        console.log(&quot;Transaction committed.&quot;);
+    } catch (error) {
+        console.error(&quot;Transaction aborted due to an error: &quot;, error);
+        await session.abortTransaction();
+    } finally {
+        await session.endSession();
+        await client.close();
+    }
+}
+
+transferFunds(&quot;sender_id&quot;, &quot;receiver_id&quot;, 100).catch(console.error);</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Session Management</strong>: Always ensure that you start and end sessions properly to avoid resource leaks.</li>
+<li><strong>Error Handling</strong>: Implement robust error handling to manage transaction failures gracefully.</li>
+<li><strong>Concurrency</strong>: Be aware of potential concurrency issues. Use appropriate isolation levels if necessary.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement a Transaction</h2>
+<div class='content'><p><strong>Task</strong>: Write a function that performs a transaction to update the stock of two products in an inventory system. The function should decrease the stock of one product and increase the stock of another.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBNb25nb0NsaWVudCB9ID0gcmVxdWlyZSgnbW9uZ29kYicpOwoKYXN5bmMgZnVuY3Rpb24gdXBkYXRlU3RvY2socHJvZHVjdElkMSwgcHJvZHVjdElkMiwgcXVhbnRpdHkpIHsKICAgIGNvbnN0IHVyaSA9ICJ5b3VyX21vbmdvZGJfY29ubmVjdGlvbl9zdHJpbmciOwogICAgY29uc3QgY2xpZW50ID0gbmV3IE1vbmdvQ2xpZW50KHVyaSk7CgogICAgdHJ5IHsKICAgICAgICBhd2FpdCBjbGllbnQuY29ubmVjdCgpOwogICAgICAgIGNvbnN0IHNlc3Npb24gPSBjbGllbnQuc3RhcnRTZXNzaW9uKCk7CgogICAgICAgIHNlc3Npb24uc3RhcnRUcmFuc2FjdGlvbigpOwoKICAgICAgICBjb25zdCBpbnZlbnRvcnlDb2xsZWN0aW9uID0gY2xpZW50LmRiKCJzdG9yZSIpLmNvbGxlY3Rpb24oImludmVudG9yeSIpOwoKICAgICAgICAvLyBEZWNyZWFzZSBzdG9jayBvZiBwcm9kdWN0IDEKICAgICAgICBhd2FpdCBpbnZlbnRvcnlDb2xsZWN0aW9uLnVwZGF0ZU9uZSgKICAgICAgICAgICAgeyBfaWQ6IHByb2R1Y3RJZDEgfSwKICAgICAgICAgICAgeyAkaW5jOiB7IHN0b2NrOiAtcXVhbnRpdHkgfSB9LAogICAgICAgICAgICB7IHNlc3Npb24gfQogICAgICAgICk7CgogICAgICAgIC8vIEluY3JlYXNlIHN0b2NrIG9mIHByb2R1Y3QgMgogICAgICAgIGF3YWl0IGludmVudG9yeUNvbGxlY3Rpb24udXBkYXRlT25lKAogICAgICAgICAgICB7IF9pZDogcHJvZHVjdElkMiB9LAogICAgICAgICAgICB7ICRpbmM6IHsgc3RvY2s6IHF1YW50aXR5IH0gfSwKICAgICAgICAgICAgeyBzZXNzaW9uIH0KICAgICAgICApOwoKICAgICAgICBhd2FpdCBzZXNzaW9uLmNvbW1pdFRyYW5zYWN0aW9uKCk7CiAgICAgICAgY29uc29sZS5sb2coIlRyYW5zYWN0aW9uIGNvbW1pdHRlZC4iKTsKICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgY29uc29sZS5lcnJvcigiVHJhbnNhY3Rpb24gYWJvcnRlZCBkdWUgdG8gYW4gZXJyb3I6ICIsIGVycm9yKTsKICAgICAgICBhd2FpdCBzZXNzaW9uLmFib3J0VHJhbnNhY3Rpb24oKTsKICAgIH0gZmluYWxseSB7CiAgICAgICAgYXdhaXQgc2Vzc2lvbi5lbmRTZXNzaW9uKCk7CiAgICAgICAgYXdhaXQgY2xpZW50LmNsb3NlKCk7CiAgICB9Cn0KCnVwZGF0ZVN0b2NrKCJwcm9kdWN0MV9pZCIsICJwcm9kdWN0Ml9pZCIsIDEwKS5jYXRjaChjb25zb2xlLmVycm9yKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { MongoClient } = require('mongodb');
+
+async function updateStock(productId1, productId2, quantity) {
+    const uri = &quot;your_mongodb_connection_string&quot;;
+    const client = new MongoClient(uri);
+
+    try {
+        await client.connect();
+        const session = client.startSession();
+
+        session.startTransaction();
+
+        const inventoryCollection = client.db(&quot;store&quot;).collection(&quot;inventory&quot;);
+
+        // Decrease stock of product 1
+        await inventoryCollection.updateOne(
+            { _id: productId1 },
+            { $inc: { stock: -quantity } },
+            { session }
+        );
+
+        // Increase stock of product 2
+        await inventoryCollection.updateOne(
+            { _id: productId2 },
+            { $inc: { stock: quantity } },
+            { session }
+        );
+
+        await session.commitTransaction();
+        console.log(&quot;Transaction committed.&quot;);
+    } catch (error) {
+        console.error(&quot;Transaction aborted due to an error: &quot;, error);
+        await session.abortTransaction();
+    } finally {
+        await session.endSession();
+        await client.close();
+    }
+}
+
+updateStock(&quot;product1_id&quot;, &quot;product2_id&quot;, 10).catch(console.error);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of transactions in MongoDB, including how to start a transaction, perform multiple operations atomically, and handle errors. Transactions are a powerful feature that can help ensure data integrity in your applications. In the next module, we will explore MongoDB Atlas and how to leverage its features for managing your MongoDB deployments.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-sharding' title="Sharding">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-mongodb-atlas' title="MongoDB Atlas">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

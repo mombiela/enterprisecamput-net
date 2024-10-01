@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updating and Deleting Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/02-03-updating-deleting-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/02-03-updating-deleting-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/02-03-updating-deleting-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/02-03-updating-deleting-data" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/02-03-updating-deleting-data" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-searching-data' title="Searching Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Updating and Deleting Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-elasticsearch-query-dsl' title="Elasticsearch Query DSL">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover how to update and delete data in Elasticsearch. These operations are crucial for maintaining the accuracy and relevance of your data. We will explore the following topics:</p>
+<ol>
+<li><strong>Updating Documents</strong></li>
+<li><strong>Deleting Documents</strong></li>
+<li><strong>Bulk Operations</strong></li>
+<li><strong>Practical Exercises</strong></li>
+</ol>
+</div><h1>1. Updating Documents</h1>
+<div class='content'><p>Updating documents in Elasticsearch can be done in several ways. The most common methods are:</p>
+<ul>
+<li><strong>Partial Update</strong>: Update specific fields of a document.</li>
+<li><strong>Scripted Update</strong>: Use a script to update a document.</li>
+</ul>
+</div><h2>Partial Update</h2>
+<div class='content'><p>A partial update allows you to update specific fields of a document without sending the entire document. This is done using the <code>_update</code> endpoint.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvbXlfaW5kZXgvX3VwZGF0ZS8xCnsKICAiZG9jIjogewogICAgImZpZWxkMSI6ICJuZXdfdmFsdWUiCiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /my_index/_update/1
+{
+  &quot;doc&quot;: {
+    &quot;field1&quot;: &quot;new_value&quot;
+  }
+}</pre></div><div class='content'><p>In this example, the document with ID <code>1</code> in the index <code>my_index</code> will have its <code>field1</code> updated to <code>new_value</code>.</p>
+</div><h2>Scripted Update</h2>
+<div class='content'><p>A scripted update allows you to use a script to update a document. This is useful for more complex updates.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvbXlfaW5kZXgvX3VwZGF0ZS8xCnsKICAic2NyaXB0IjogewogICAgInNvdXJjZSI6ICJjdHguX3NvdXJjZS5maWVsZDEgKz0gcGFyYW1zLmluY3JlbWVudCIsCiAgICAicGFyYW1zIjogewogICAgICAiaW5jcmVtZW50IjogNQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /my_index/_update/1
+{
+  &quot;script&quot;: {
+    &quot;source&quot;: &quot;ctx._source.field1 += params.increment&quot;,
+    &quot;params&quot;: {
+      &quot;increment&quot;: 5
+    }
+  }
+}</pre></div><div class='content'><p>In this example, the script increments the value of <code>field1</code> by 5 for the document with ID <code>1</code> in the index <code>my_index</code>.</p>
+</div><h1>2. Deleting Documents</h1>
+<div class='content'><p>Deleting documents in Elasticsearch can be done using the <code>_delete</code> endpoint. You can delete a single document or multiple documents using a query.</p>
+</div><h2>Deleting a Single Document</h2>
+<div class='content'><p>To delete a single document, you need to specify the index and the document ID.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVMRVRFIC9teV9pbmRleC9fZG9jLzE="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DELETE /my_index/_doc/1</pre></div><div class='content'><p>In this example, the document with ID <code>1</code> in the index <code>my_index</code> will be deleted.</p>
+</div><h2>Deleting Documents by Query</h2>
+<div class='content'><p>You can delete multiple documents that match a specific query using the <code>_delete_by_query</code> endpoint.</p>
+<p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvbXlfaW5kZXgvX2RlbGV0ZV9ieV9xdWVyeQp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiZmllbGQxIjogInZhbHVlX3RvX2RlbGV0ZSIKICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /my_index/_delete_by_query
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;field1&quot;: &quot;value_to_delete&quot;
+    }
+  }
+}</pre></div><div class='content'><p>In this example, all documents in the index <code>my_index</code> where <code>field1</code> matches <code>value_to_delete</code> will be deleted.</p>
+</div><h1>3. Bulk Operations</h1>
+<div class='content'><p>Elasticsearch provides a bulk API to perform multiple update and delete operations in a single request. This is useful for improving performance when dealing with large datasets.</p>
+</div><h2>Bulk Update</h2>
+<div class='content'><p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX2J1bGsKeyAidXBkYXRlIjogeyAiX2lkIjogIjEiLCAiX2luZGV4IjogIm15X2luZGV4IiB9IH0KeyAiZG9jIjogeyAiZmllbGQxIjogIm5ld192YWx1ZSIgfSB9CnsgInVwZGF0ZSI6IHsgIl9pZCI6ICIyIiwgIl9pbmRleCI6ICJteV9pbmRleCIgfSB9CnsgImRvYyI6IHsgImZpZWxkMSI6ICJhbm90aGVyX3ZhbHVlIiB9IH0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_bulk
+{ &quot;update&quot;: { &quot;_id&quot;: &quot;1&quot;, &quot;_index&quot;: &quot;my_index&quot; } }
+{ &quot;doc&quot;: { &quot;field1&quot;: &quot;new_value&quot; } }
+{ &quot;update&quot;: { &quot;_id&quot;: &quot;2&quot;, &quot;_index&quot;: &quot;my_index&quot; } }
+{ &quot;doc&quot;: { &quot;field1&quot;: &quot;another_value&quot; } }</pre></div><div class='content'><p>In this example, two documents in the index <code>my_index</code> are updated in a single bulk request.</p>
+</div><h2>Bulk Delete</h2>
+<div class='content'><p><strong>Example:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX2J1bGsKeyAiZGVsZXRlIjogeyAiX2lkIjogIjEiLCAiX2luZGV4IjogIm15X2luZGV4IiB9IH0KeyAiZGVsZXRlIjogeyAiX2lkIjogIjIiLCAiX2luZGV4IjogIm15X2luZGV4IiB9IH0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_bulk
+{ &quot;delete&quot;: { &quot;_id&quot;: &quot;1&quot;, &quot;_index&quot;: &quot;my_index&quot; } }
+{ &quot;delete&quot;: { &quot;_id&quot;: &quot;2&quot;, &quot;_index&quot;: &quot;my_index&quot; } }</pre></div><div class='content'><p>In this example, two documents in the index <code>my_index</code> are deleted in a single bulk request.</p>
+</div><h1>4. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Partial Update</h2>
+<div class='content'><ol>
+<li>Create an index <code>test_index</code> and add a document with ID <code>1</code> and the following content:
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;John Doe&quot;,
+  &quot;age&quot;: 30,
+  &quot;city&quot;: &quot;New York&quot;
+}
+</code></pre>
+</li>
+<li>Update the <code>age</code> field to <code>31</code> using a partial update.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvdGVzdF9pbmRleC9fdXBkYXRlLzEKewogICJkb2MiOiB7CiAgICAiYWdlIjogMzEKICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /test_index/_update/1
+{
+  &quot;doc&quot;: {
+    &quot;age&quot;: 31
+  }
+}</pre></div><div class='content'></div><h2>Exercise 2: Scripted Update</h2>
+<div class='content'><ol>
+<li>Create an index <code>test_index</code> and add a document with ID <code>2</code> and the following content:
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;Jane Doe&quot;,
+  &quot;age&quot;: 25,
+  &quot;city&quot;: &quot;Los Angeles&quot;
+}
+</code></pre>
+</li>
+<li>Increment the <code>age</code> field by <code>1</code> using a scripted update.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvdGVzdF9pbmRleC9fdXBkYXRlLzIKewogICJzY3JpcHQiOiB7CiAgICAic291cmNlIjogImN0eC5fc291cmNlLmFnZSArPSBwYXJhbXMuaW5jcmVtZW50IiwKICAgICJwYXJhbXMiOiB7CiAgICAgICJpbmNyZW1lbnQiOiAxCiAgICB9CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /test_index/_update/2
+{
+  &quot;script&quot;: {
+    &quot;source&quot;: &quot;ctx._source.age += params.increment&quot;,
+    &quot;params&quot;: {
+      &quot;increment&quot;: 1
+    }
+  }
+}</pre></div><div class='content'></div><h2>Exercise 3: Delete by Query</h2>
+<div class='content'><ol>
+<li>Create an index <code>test_index</code> and add multiple documents with the <code>city</code> field set to <code>New York</code>.</li>
+<li>Delete all documents where the <code>city</code> field is <code>New York</code>.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvdGVzdF9pbmRleC9fZGVsZXRlX2J5X3F1ZXJ5CnsKICAicXVlcnkiOiB7CiAgICAibWF0Y2giOiB7CiAgICAgICJjaXR5IjogIk5ldyBZb3JrIgogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /test_index/_delete_by_query
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;city&quot;: &quot;New York&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered how to update and delete data in Elasticsearch. We explored partial updates, scripted updates, and bulk operations. We also provided practical exercises to reinforce the learned concepts. Understanding these operations is essential for maintaining and managing your Elasticsearch indices effectively. In the next section, we will dive into the Elasticsearch Query DSL to perform more advanced searches.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-searching-data' title="Searching Data">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-elasticsearch-query-dsl' title="Elasticsearch Query DSL">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

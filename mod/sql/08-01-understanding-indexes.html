@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding Indexes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/08-01-understanding-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/08-01-understanding-indexes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/sql/08-01-understanding-indexes" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-subqueries-select-from-where' title="Using Subqueries in SELECT, FROM, and WHERE Clauses">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Understanding Indexes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-creating-managing-indexes' title="Creating and Managing Indexes">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='index'><p>Indexes are a crucial component in database management systems (DBMS) that significantly enhance the performance of SQL queries. They allow the database to find and retrieve specific rows much faster than it could do without an index. In this section, we will explore what indexes are, how they work, and their benefits and drawbacks.</p>
+</div><h2>What is an Index?</h2>
+<div class='index'><p>An index is a database object that improves the speed of data retrieval operations on a table at the cost of additional storage space and maintenance overhead. Think of an index as a book's index, which allows you to quickly locate the information you need without having to read through the entire book.</p>
+</div><h2>Key Concepts</h2>
+<div class='index'><ul>
+<li><strong>Index Structure</strong>: Typically, indexes are implemented using data structures like B-trees or hash tables.</li>
+<li><strong>Primary Key Index</strong>: Automatically created when a primary key is defined.</li>
+<li><strong>Unique Index</strong>: Ensures that all values in the indexed column are unique.</li>
+<li><strong>Composite Index</strong>: An index on multiple columns of a table.</li>
+</ul>
+</div><h2>How Indexes Work</h2>
+<div class='index'><p>Indexes work by creating a separate data structure that holds the indexed column's values and pointers to the corresponding rows in the table. When a query is executed, the DBMS can use the index to quickly locate the rows that match the query criteria.</p>
+</div><h2>Example</h2>
+<div class='index'><p>Consider a table <code>employees</code> with the following structure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxveWVlcyAoCiAgICBlbXBsb3llZV9pZCBJTlQgUFJJTUFSWSBLRVksCiAgICBmaXJzdF9uYW1lIFZBUkNIQVIoNTApLAogICAgbGFzdF9uYW1lIFZBUkNIQVIoNTApLAogICAgZGVwYXJ0bWVudCBWQVJDSEFSKDUwKQopOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE employees (
+    employee_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    department VARCHAR(50)
+);</pre></div><div class='index'><p>If we frequently query the <code>last_name</code> column, we can create an index on it:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9sYXN0X25hbWUgT04gZW1wbG95ZWVzKGxhc3RfbmFtZSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_last_name ON employees(last_name);</pre></div><div class='index'><p>Now, when we run a query like:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsb3llZXMgV0hFUkUgbGFzdF9uYW1lID0gJ1NtaXRoJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM employees WHERE last_name = 'Smith';</pre></div><div class='index'><p>The DBMS will use the <code>idx_last_name</code> index to quickly find all rows where <code>last_name</code> is 'Smith'.</p>
+</div><h2>Benefits of Indexes</h2>
+<div class='index'><ul>
+<li><strong>Faster Query Performance</strong>: Significantly speeds up data retrieval operations.</li>
+<li><strong>Efficient Sorting</strong>: Helps in quickly sorting data using the indexed columns.</li>
+<li><strong>Uniqueness Enforcement</strong>: Unique indexes ensure that no duplicate values exist in the indexed columns.</li>
+</ul>
+</div><h2>Drawbacks of Indexes</h2>
+<div class='index'><ul>
+<li><strong>Storage Overhead</strong>: Indexes consume additional disk space.</li>
+<li><strong>Maintenance Overhead</strong>: Indexes need to be updated whenever the data in the indexed columns is modified, which can slow down write operations (INSERT, UPDATE, DELETE).</li>
+</ul>
+</div><h2>Types of Indexes</h2>
+<div class='index'></div><h2>1. **Single-Column Index**</h2>
+<div class='index'><p>An index on a single column of a table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9maXJzdF9uYW1lIE9OIGVtcGxveWVlcyhmaXJzdF9uYW1lKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_first_name ON employees(first_name);</pre></div><div class='index'></div><h2>2. **Composite Index**</h2>
+<div class='index'><p>An index on multiple columns of a table.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9uYW1lX2RlcHQgT04gZW1wbG95ZWVzKGxhc3RfbmFtZSwgZGVwYXJ0bWVudCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_name_dept ON employees(last_name, department);</pre></div><div class='index'></div><h2>3. **Unique Index**</h2>
+<div class='index'><p>Ensures that all values in the indexed column(s) are unique.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFVOSVFVRSBJTkRFWCBpZHhfdW5pcXVlX2VtcGxveWVlX2lkIE9OIGVtcGxveWVlcyhlbXBsb3llZV9pZCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE UNIQUE INDEX idx_unique_employee_id ON employees(employee_id);</pre></div><div class='index'></div><h2>4. **Full-Text Index**</h2>
+<div class='index'><p>Used for full-text searches.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIEZVTExURVhUIElOREVYIGlkeF9mdWxsdGV4dF9uYW1lIE9OIGVtcGxveWVlcyhmaXJzdF9uYW1lLCBsYXN0X25hbWUpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE FULLTEXT INDEX idx_fulltext_name ON employees(first_name, last_name);</pre></div><div class='index'></div><h2>Practical Exercise</h2>
+<div class='index'></div><h2>Exercise 1: Creating and Using Indexes</h2>
+<div class='index'><ol>
+<li><strong>Create a table <code>products</code> with the following structure:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHByb2R1Y3RzICgKICAgIHByb2R1Y3RfaWQgSU5UIFBSSU1BUlkgS0VZLAogICAgcHJvZHVjdF9uYW1lIFZBUkNIQVIoMTAwKSwKICAgIGNhdGVnb3J5IFZBUkNIQVIoNTApLAogICAgcHJpY2UgREVDSU1BTCgxMCwgMikKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    price DECIMAL(10, 2)
+);</pre></div><div class='index'><ol start="2">
+<li><strong>Insert some sample data into the <code>products</code> table:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gcHJvZHVjdHMgKHByb2R1Y3RfaWQsIHByb2R1Y3RfbmFtZSwgY2F0ZWdvcnksIHByaWNlKSBWQUxVRVMKKDEsICdMYXB0b3AnLCAnRWxlY3Ryb25pY3MnLCA5OTkuOTkpLAooMiwgJ1NtYXJ0cGhvbmUnLCAnRWxlY3Ryb25pY3MnLCA0OTkuOTkpLAooMywgJ0Rlc2sgQ2hhaXInLCAnRnVybml0dXJlJywgODkuOTkpLAooNCwgJ0NvZmZlZSBUYWJsZScsICdGdXJuaXR1cmUnLCAxMjkuOTkpLAooNSwgJ0hlYWRwaG9uZXMnLCAnRWxlY3Ryb25pY3MnLCA3OS45OSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO products (product_id, product_name, category, price) VALUES
+(1, 'Laptop', 'Electronics', 999.99),
+(2, 'Smartphone', 'Electronics', 499.99),
+(3, 'Desk Chair', 'Furniture', 89.99),
+(4, 'Coffee Table', 'Furniture', 129.99),
+(5, 'Headphones', 'Electronics', 79.99);</pre></div><div class='index'><ol start="3">
+<li><strong>Create an index on the <code>category</code> column:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9jYXRlZ29yeSBPTiBwcm9kdWN0cyhjYXRlZ29yeSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_category ON products(category);</pre></div><div class='index'><ol start="4">
+<li><strong>Run a query to find all products in the 'Electronics' category:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBwcm9kdWN0cyBXSEVSRSBjYXRlZ29yeSA9ICdFbGVjdHJvbmljcyc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM products WHERE category = 'Electronics';</pre></div><div class='index'></div><h2>Solution</h2>
+<div class='index'><ol>
+<li><strong>Table Creation:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHByb2R1Y3RzICgKICAgIHByb2R1Y3RfaWQgSU5UIFBSSU1BUlkgS0VZLAogICAgcHJvZHVjdF9uYW1lIFZBUkNIQVIoMTAwKSwKICAgIGNhdGVnb3J5IFZBUkNIQVIoNTApLAogICAgcHJpY2UgREVDSU1BTCgxMCwgMikKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category VARCHAR(50),
+    price DECIMAL(10, 2)
+);</pre></div><div class='index'><ol start="2">
+<li><strong>Inserting Data:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gcHJvZHVjdHMgKHByb2R1Y3RfaWQsIHByb2R1Y3RfbmFtZSwgY2F0ZWdvcnksIHByaWNlKSBWQUxVRVMKKDEsICdMYXB0b3AnLCAnRWxlY3Ryb25pY3MnLCA5OTkuOTkpLAooMiwgJ1NtYXJ0cGhvbmUnLCAnRWxlY3Ryb25pY3MnLCA0OTkuOTkpLAooMywgJ0Rlc2sgQ2hhaXInLCAnRnVybml0dXJlJywgODkuOTkpLAooNCwgJ0NvZmZlZSBUYWJsZScsICdGdXJuaXR1cmUnLCAxMjkuOTkpLAooNSwgJ0hlYWRwaG9uZXMnLCAnRWxlY3Ryb25pY3MnLCA3OS45OSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO products (product_id, product_name, category, price) VALUES
+(1, 'Laptop', 'Electronics', 999.99),
+(2, 'Smartphone', 'Electronics', 499.99),
+(3, 'Desk Chair', 'Furniture', 89.99),
+(4, 'Coffee Table', 'Furniture', 129.99),
+(5, 'Headphones', 'Electronics', 79.99);</pre></div><div class='index'><ol start="3">
+<li><strong>Creating Index:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9jYXRlZ29yeSBPTiBwcm9kdWN0cyhjYXRlZ29yeSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_category ON products(category);</pre></div><div class='index'><ol start="4">
+<li><strong>Querying Data:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBwcm9kdWN0cyBXSEVSRSBjYXRlZ29yeSA9ICdFbGVjdHJvbmljcyc7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM products WHERE category = 'Electronics';</pre></div><div class='index'></div><h2>Common Mistakes and Tips</h2>
+<div class='index'><ul>
+<li><strong>Over-Indexing</strong>: Creating too many indexes can degrade performance. Only index columns that are frequently used in queries.</li>
+<li><strong>Ignoring Maintenance</strong>: Regularly update and maintain indexes to ensure optimal performance.</li>
+<li><strong>Not Using Composite Indexes</strong>: For queries that filter on multiple columns, composite indexes can be more efficient.</li>
+</ul>
+</div><h2>Conclusion</h2>
+<div class='index'><p>Indexes are powerful tools for optimizing SQL queries, but they come with trade-offs in terms of storage and maintenance. Understanding when and how to use indexes effectively can greatly enhance the performance of your database applications. In the next section, we will explore how to create and manage indexes in more detail.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-subqueries-select-from-where' title="Using Subqueries in SELECT, FROM, and WHERE Clauses">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-creating-managing-indexes' title="Creating and Managing Indexes">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

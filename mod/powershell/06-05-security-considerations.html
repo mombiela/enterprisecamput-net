@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Considerations</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/powershell/06-05-security-considerations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/powershell/06-05-security-considerations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/powershell/06-05-security-considerations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/powershell/06-05-security-considerations" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/powershell/06-05-security-considerations" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-session-management' title="Session Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Security Considerations</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-powershell-profiles' title="PowerShell Profiles">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the security aspects of using PowerShell, especially in the context of remoting. PowerShell is a powerful tool, and with great power comes great responsibility. Ensuring that your scripts and commands are secure is crucial to maintaining the integrity and security of your systems.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Execution Policies</strong></li>
+<li><strong>Credential Management</strong></li>
+<li><strong>Secure Strings</strong></li>
+<li><strong>Just Enough Administration (JEA)</strong></li>
+<li><strong>Logging and Auditing</strong></li>
+<li><strong>Remoting Security</strong></li>
+</ol>
+</div><h1>1. Execution Policies</h1>
+<div class='content'><p>Execution policies are a safety feature in PowerShell that determine the conditions under which PowerShell loads configuration files and runs scripts. They help prevent the execution of malicious scripts.</p>
+</div><h2>Types of Execution Policies</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Policy</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Restricted</td>
+<td>No scripts can be run. PowerShell can be used only in interactive mode.</td>
+</tr>
+<tr>
+<td>AllSigned</td>
+<td>Only scripts signed by a trusted publisher can be run.</td>
+</tr>
+<tr>
+<td>RemoteSigned</td>
+<td>Downloaded scripts must be signed by a trusted publisher.</td>
+</tr>
+<tr>
+<td>Unrestricted</td>
+<td>No restrictions; all scripts can be run.</td>
+</tr>
+<tr>
+<td>Bypass</td>
+<td>Nothing is blocked and there are no warnings or prompts.</td>
+</tr>
+<tr>
+<td>Undefined</td>
+<td>Removes the currently assigned execution policy from the current scope.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Setting Execution Policy</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXQgdGhlIGV4ZWN1dGlvbiBwb2xpY3kgdG8gUmVtb3RlU2lnbmVkClNldC1FeGVjdXRpb25Qb2xpY3kgUmVtb3RlU2lnbmVkIC1TY29wZSBDdXJyZW50VXNlcg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Set the execution policy to RemoteSigned
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>Set-ExecutionPolicy</code>: Cmdlet to set the execution policy.</li>
+<li><code>RemoteSigned</code>: The policy type.</li>
+<li><code>-Scope CurrentUser</code>: Applies the policy to the current user.</li>
+</ul>
+</div><h1>2. Credential Management</h1>
+<div class='content'><p>Handling credentials securely is vital. PowerShell provides several ways to manage credentials securely.</p>
+</div><h2>Storing Credentials</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcm9tcHQgZm9yIGNyZWRlbnRpYWxzIGFuZCBzdG9yZSB0aGVtIGluIGEgdmFyaWFibGUKJGNyZWRlbnRpYWwgPSBHZXQtQ3JlZGVudGlhbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Prompt for credentials and store them in a variable
+$credential = Get-Credential</pre></div><div class='content'></div><h2>Using Secure Strings</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb252ZXJ0IGEgcGxhaW4gdGV4dCBwYXNzd29yZCB0byBhIHNlY3VyZSBzdHJpbmcKJHNlY3VyZVBhc3N3b3JkID0gQ29udmVydFRvLVNlY3VyZVN0cmluZyAiUEBzc3cwcmQiIC1Bc1BsYWluVGV4dCAtRm9yY2UKCiMgQ3JlYXRlIGEgUFNDcmVkZW50aWFsIG9iamVjdAokY3JlZGVudGlhbCA9IE5ldy1PYmplY3QgU3lzdGVtLk1hbmFnZW1lbnQuQXV0b21hdGlvbi5QU0NyZWRlbnRpYWwgKCJ1c2VybmFtZSIsICRzZWN1cmVQYXNzd29yZCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Convert a plain text password to a secure string
+$securePassword = ConvertTo-SecureString &quot;P@ssw0rd&quot; -AsPlainText -Force
+
+# Create a PSCredential object
+$credential = New-Object System.Management.Automation.PSCredential (&quot;username&quot;, $securePassword)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li><code>ConvertTo-SecureString</code>: Converts a plain text string to a secure string.</li>
+<li><code>New-Object System.Management.Automation.PSCredential</code>: Creates a credential object.</li>
+</ul>
+</div><h1>3. Just Enough Administration (JEA)</h1>
+<div class='content'><p>JEA is a security technology that enables delegated administration for anything managed by PowerShell. It allows you to create constrained endpoints that limit what users can do.</p>
+</div><h2>Setting Up JEA</h2>
+<div class='content'><ol>
+<li><strong>Create a Role Capability File</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmV3LVBTUm9sZUNhcGFiaWxpdHlGaWxlIC1QYXRoICJDOlxQcm9ncmFtIEZpbGVzXFdpbmRvd3NQb3dlclNoZWxsXE1vZHVsZXNcTXlNb2R1bGVcUm9sZUNhcGFiaWxpdGllc1xNeVJvbGUucHNyYyI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>New-PSRoleCapabilityFile -Path &quot;C:\Program Files\WindowsPowerShell\Modules\MyModule\RoleCapabilities\MyRole.psrc&quot;</pre></div><div class='content'><ol start="2">
+<li><strong>Define Role Capabilities</strong></li>
+</ol>
+<p>Edit the <code>.psrc</code> file to define the commands and scripts that the role can execute.</p>
+<ol start="3">
+<li><strong>Create a Session Configuration File</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmV3LVBTU2Vzc2lvbkNvbmZpZ3VyYXRpb25GaWxlIC1QYXRoICJDOlxQcm9ncmFtIEZpbGVzXFdpbmRvd3NQb3dlclNoZWxsXE1vZHVsZXNcTXlNb2R1bGVcTXlTZXNzaW9uLnBzc2Mi"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>New-PSSessionConfigurationFile -Path &quot;C:\Program Files\WindowsPowerShell\Modules\MyModule\MySession.pssc&quot;</pre></div><div class='content'><ol start="4">
+<li><strong>Register the JEA Endpoint</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UmVnaXN0ZXItUFNTZXNzaW9uQ29uZmlndXJhdGlvbiAtTmFtZSAiTXlKRUFFbmRwb2ludCIgLVBhdGggIkM6XFByb2dyYW0gRmlsZXNcV2luZG93c1Bvd2VyU2hlbGxcTW9kdWxlc1xNeU1vZHVsZVxNeVNlc3Npb24ucHNzYyI="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Register-PSSessionConfiguration -Name &quot;MyJEAEndpoint&quot; -Path &quot;C:\Program Files\WindowsPowerShell\Modules\MyModule\MySession.pssc&quot;</pre></div><div class='content'></div><h1>4. Logging and Auditing</h1>
+<div class='content'><p>PowerShell provides extensive logging capabilities to help you monitor and audit script execution.</p>
+</div><h2>Enabling Script Block Logging</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2V0LUl0ZW1Qcm9wZXJ0eSAtUGF0aCAiSEtMTTpcU29mdHdhcmVcUG9saWNpZXNcTWljcm9zb2Z0XFdpbmRvd3NcUG93ZXJTaGVsbFxTY3JpcHRCbG9ja0xvZ2dpbmciIC1OYW1lICJFbmFibGVTY3JpcHRCbG9ja0xvZ2dpbmciIC1WYWx1ZSAx"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Set-ItemProperty -Path &quot;HKLM:\Software\Policies\Microsoft\Windows\PowerShell\ScriptBlockLogging&quot; -Name &quot;EnableScriptBlockLogging&quot; -Value 1</pre></div><div class='content'></div><h2>Viewing Logs</h2>
+<div class='content'><p>Logs can be viewed in the Event Viewer under <code>Applications and Services Logs &gt; Microsoft &gt; Windows &gt; PowerShell</code>.</p>
+</div><h1>5. Remoting Security</h1>
+<div class='content'><p>PowerShell remoting allows you to run commands on remote systems, but it also introduces security risks. Here are some best practices:</p>
+</div><h2>Enabling Remoting Securely</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RW5hYmxlLVBTUmVtb3RpbmcgLUZvcmNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Enable-PSRemoting -Force</pre></div><div class='content'></div><h2>Using HTTPS for Remoting</h2>
+<div class='content'><ol>
+<li><strong>Create a Self-Signed Certificate</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmV3LVNlbGZTaWduZWRDZXJ0aWZpY2F0ZSAtRG5zTmFtZSAibXlzZXJ2ZXIuZG9tYWluLmNvbSIgLUNlcnRTdG9yZUxvY2F0aW9uICJjZXJ0OlxMb2NhbE1hY2hpbmVcTXki"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>New-SelfSignedCertificate -DnsName &quot;myserver.domain.com&quot; -CertStoreLocation &quot;cert:\LocalMachine\My&quot;</pre></div><div class='content'><ol start="2">
+<li><strong>Configure the Listener</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2lucm0gY3JlYXRlIHdpbnJtL2NvbmZpZy9MaXN0ZW5lcj9BZGRyZXNzPSorVHJhbnNwb3J0PUhUVFBTIEB7SG9zdG5hbWU9Im15c2VydmVyLmRvbWFpbi5jb20iOyBDZXJ0aWZpY2F0ZVRodW1icHJpbnQ9IlRIVU1CUFJJTlQifQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>winrm create winrm/config/Listener?Address=*+Transport=HTTPS @{Hostname=&quot;myserver.domain.com&quot;; CertificateThumbprint=&quot;THUMBPRINT&quot;}</pre></div><div class='content'></div><h2>Restricting Access</h2>
+<div class='content'><p>Use the <code>Set-PSSessionConfiguration</code> cmdlet to restrict access to specific users or groups.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2V0LVBTU2Vzc2lvbkNvbmZpZ3VyYXRpb24gLU5hbWUgTWljcm9zb2Z0LlBvd2VyU2hlbGwgLVNob3dTZWN1cml0eURlc2NyaXB0b3JVSQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Set-PSSessionConfiguration -Name Microsoft.PowerShell -ShowSecurityDescriptorUI</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the essential security considerations when using PowerShell, especially in the context of remoting. We discussed execution policies, credential management, secure strings, Just Enough Administration (JEA), logging and auditing, and remoting security. By following these best practices, you can ensure that your use of PowerShell is secure and compliant with your organization's security policies.</p>
+<p>Next, we will delve into <strong>PowerShell Profiles</strong> and how to customize your PowerShell environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-session-management' title="Session Management">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-powershell-profiles' title="PowerShell Profiles">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

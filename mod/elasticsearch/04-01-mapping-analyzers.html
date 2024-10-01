@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapping and Analyzers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/04-01-mapping-analyzers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/04-01-mapping-analyzers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/04-01-mapping-analyzers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/elasticsearch/04-01-mapping-analyzers" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/04-01-mapping-analyzers" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-scripting' title="Scripting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mapping and Analyzers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-index-templates' title="Index Templates">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In Elasticsearch, mapping defines how documents and their fields are stored and indexed. Analyzers, on the other hand, are used to process text data during indexing and searching. Understanding these concepts is crucial for effective data modeling and search optimization.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>Mapping</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Mapping is the process of defining how a document and its fields are stored and indexed.</li>
+<li><strong>Types of Fields</strong>:
+<ul>
+<li><strong>Text</strong>: Used for full-text search.</li>
+<li><strong>Keyword</strong>: Used for structured data like IDs, email addresses, etc.</li>
+<li><strong>Numeric</strong>: Used for numbers (integer, float, etc.).</li>
+<li><strong>Date</strong>: Used for date values.</li>
+<li><strong>Boolean</strong>: Used for true/false values.</li>
+<li><strong>Object</strong>: Used for JSON objects.</li>
+<li><strong>Nested</strong>: Used for arrays of objects.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Analyzers</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Analyzers are used to process text data during indexing and searching.</li>
+<li><strong>Components</strong>:
+<ul>
+<li><strong>Character Filters</strong>: Preprocess the text (e.g., remove HTML tags).</li>
+<li><strong>Tokenizer</strong>: Splits text into terms or tokens.</li>
+<li><strong>Token Filters</strong>: Modify tokens (e.g., lowercase, remove stop words).</li>
+</ul>
+</li>
+</ul>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Basic Mapping</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJ0aXRsZSI6IHsKICAgICAgICAidHlwZSI6ICJ0ZXh0IgogICAgICB9LAogICAgICAiYXV0aG9yIjogewogICAgICAgICJ0eXBlIjogImtleXdvcmQiCiAgICAgIH0sCiAgICAgICJwcmljZSI6IHsKICAgICAgICAidHlwZSI6ICJmbG9hdCIKICAgICAgfSwKICAgICAgInB1Ymxpc2hfZGF0ZSI6IHsKICAgICAgICAidHlwZSI6ICJkYXRlIgogICAgICB9LAogICAgICAiYXZhaWxhYmxlIjogewogICAgICAgICJ0eXBlIjogImJvb2xlYW4iCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;title&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      },
+      &quot;author&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;price&quot;: {
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;publish_date&quot;: {
+        &quot;type&quot;: &quot;date&quot;
+      },
+      &quot;available&quot;: {
+        &quot;type&quot;: &quot;boolean&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li><code>title</code> is a text field suitable for full-text search.</li>
+<li><code>author</code> is a keyword field for exact matches.</li>
+<li><code>price</code> is a float field for numerical values.</li>
+<li><code>publish_date</code> is a date field.</li>
+<li><code>available</code> is a boolean field.</li>
+</ul>
+</div><h2>Example 2: Custom Analyzer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgInNldHRpbmdzIjogewogICAgImFuYWx5c2lzIjogewogICAgICAiY2hhcl9maWx0ZXIiOiB7CiAgICAgICAgImh0bWxfc3RyaXAiOiB7CiAgICAgICAgICAidHlwZSI6ICJodG1sX3N0cmlwIgogICAgICAgIH0KICAgICAgfSwKICAgICAgInRva2VuaXplciI6IHsKICAgICAgICAibXlfdG9rZW5pemVyIjogewogICAgICAgICAgInR5cGUiOiAic3RhbmRhcmQiCiAgICAgICAgfQogICAgICB9LAogICAgICAiZmlsdGVyIjogewogICAgICAgICJteV9zdG9wIjogewogICAgICAgICAgInR5cGUiOiAic3RvcCIsCiAgICAgICAgICAic3RvcHdvcmRzIjogWyJ0aGUiLCAiaXMiLCAiYW5kIl0KICAgICAgICB9CiAgICAgIH0sCiAgICAgICJhbmFseXplciI6IHsKICAgICAgICAibXlfY3VzdG9tX2FuYWx5emVyIjogewogICAgICAgICAgInR5cGUiOiAiY3VzdG9tIiwKICAgICAgICAgICJjaGFyX2ZpbHRlciI6IFsiaHRtbF9zdHJpcCJdLAogICAgICAgICAgInRva2VuaXplciI6ICJteV90b2tlbml6ZXIiLAogICAgICAgICAgImZpbHRlciI6IFsibG93ZXJjYXNlIiwgIm15X3N0b3AiXQogICAgICAgIH0KICAgICAgfQogICAgfQogIH0sCiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJjb250ZW50IjogewogICAgICAgICJ0eXBlIjogInRleHQiLAogICAgICAgICJhbmFseXplciI6ICJteV9jdXN0b21fYW5hbHl6ZXIiCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;settings&quot;: {
+    &quot;analysis&quot;: {
+      &quot;char_filter&quot;: {
+        &quot;html_strip&quot;: {
+          &quot;type&quot;: &quot;html_strip&quot;
+        }
+      },
+      &quot;tokenizer&quot;: {
+        &quot;my_tokenizer&quot;: {
+          &quot;type&quot;: &quot;standard&quot;
+        }
+      },
+      &quot;filter&quot;: {
+        &quot;my_stop&quot;: {
+          &quot;type&quot;: &quot;stop&quot;,
+          &quot;stopwords&quot;: [&quot;the&quot;, &quot;is&quot;, &quot;and&quot;]
+        }
+      },
+      &quot;analyzer&quot;: {
+        &quot;my_custom_analyzer&quot;: {
+          &quot;type&quot;: &quot;custom&quot;,
+          &quot;char_filter&quot;: [&quot;html_strip&quot;],
+          &quot;tokenizer&quot;: &quot;my_tokenizer&quot;,
+          &quot;filter&quot;: [&quot;lowercase&quot;, &quot;my_stop&quot;]
+        }
+      }
+    }
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;content&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;analyzer&quot;: &quot;my_custom_analyzer&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li><strong>Character Filter</strong>: <code>html_strip</code> removes HTML tags.</li>
+<li><strong>Tokenizer</strong>: <code>my_tokenizer</code> uses the standard tokenizer.</li>
+<li><strong>Token Filter</strong>: <code>my_stop</code> removes common stop words.</li>
+<li><strong>Analyzer</strong>: <code>my_custom_analyzer</code> combines the character filter, tokenizer, and token filters.</li>
+</ul>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create a Custom Mapping</h2>
+<div class='content'><p><strong>Task</strong>: Create an index with the following fields:</p>
+<ul>
+<li><code>name</code> (text)</li>
+<li><code>age</code> (integer)</li>
+<li><code>email</code> (keyword)</li>
+<li><code>signup_date</code> (date)</li>
+</ul>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC91c2VyX2luZGV4CnsKICAibWFwcGluZ3MiOiB7CiAgICAicHJvcGVydGllcyI6IHsKICAgICAgIm5hbWUiOiB7CiAgICAgICAgInR5cGUiOiAidGV4dCIKICAgICAgfSwKICAgICAgImFnZSI6IHsKICAgICAgICAidHlwZSI6ICJpbnRlZ2VyIgogICAgICB9LAogICAgICAiZW1haWwiOiB7CiAgICAgICAgInR5cGUiOiAia2V5d29yZCIKICAgICAgfSwKICAgICAgInNpZ251cF9kYXRlIjogewogICAgICAgICJ0eXBlIjogImRhdGUiCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /user_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;name&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      },
+      &quot;age&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;email&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      },
+      &quot;signup_date&quot;: {
+        &quot;type&quot;: &quot;date&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Exercise 2: Define a Custom Analyzer</h2>
+<div class='content'><p><strong>Task</strong>: Create an index with a custom analyzer that:</p>
+<ul>
+<li>Removes HTML tags.</li>
+<li>Uses the standard tokenizer.</li>
+<li>Converts text to lowercase.</li>
+<li>Removes the stop words &quot;a&quot;, &quot;an&quot;, and &quot;the&quot;.</li>
+</ul>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC90ZXh0X2luZGV4CnsKICAic2V0dGluZ3MiOiB7CiAgICAiYW5hbHlzaXMiOiB7CiAgICAgICJjaGFyX2ZpbHRlciI6IHsKICAgICAgICAiaHRtbF9zdHJpcCI6IHsKICAgICAgICAgICJ0eXBlIjogImh0bWxfc3RyaXAiCiAgICAgICAgfQogICAgICB9LAogICAgICAidG9rZW5pemVyIjogewogICAgICAgICJzdGFuZGFyZF90b2tlbml6ZXIiOiB7CiAgICAgICAgICAidHlwZSI6ICJzdGFuZGFyZCIKICAgICAgICB9CiAgICAgIH0sCiAgICAgICJmaWx0ZXIiOiB7CiAgICAgICAgInN0b3BfZmlsdGVyIjogewogICAgICAgICAgInR5cGUiOiAic3RvcCIsCiAgICAgICAgICAic3RvcHdvcmRzIjogWyJhIiwgImFuIiwgInRoZSJdCiAgICAgICAgfQogICAgICB9LAogICAgICAiYW5hbHl6ZXIiOiB7CiAgICAgICAgImN1c3RvbV9hbmFseXplciI6IHsKICAgICAgICAgICJ0eXBlIjogImN1c3RvbSIsCiAgICAgICAgICAiY2hhcl9maWx0ZXIiOiBbImh0bWxfc3RyaXAiXSwKICAgICAgICAgICJ0b2tlbml6ZXIiOiAic3RhbmRhcmRfdG9rZW5pemVyIiwKICAgICAgICAgICJmaWx0ZXIiOiBbImxvd2VyY2FzZSIsICJzdG9wX2ZpbHRlciJdCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfSwKICAibWFwcGluZ3MiOiB7CiAgICAicHJvcGVydGllcyI6IHsKICAgICAgImNvbnRlbnQiOiB7CiAgICAgICAgInR5cGUiOiAidGV4dCIsCiAgICAgICAgImFuYWx5emVyIjogImN1c3RvbV9hbmFseXplciIKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /text_index
+{
+  &quot;settings&quot;: {
+    &quot;analysis&quot;: {
+      &quot;char_filter&quot;: {
+        &quot;html_strip&quot;: {
+          &quot;type&quot;: &quot;html_strip&quot;
+        }
+      },
+      &quot;tokenizer&quot;: {
+        &quot;standard_tokenizer&quot;: {
+          &quot;type&quot;: &quot;standard&quot;
+        }
+      },
+      &quot;filter&quot;: {
+        &quot;stop_filter&quot;: {
+          &quot;type&quot;: &quot;stop&quot;,
+          &quot;stopwords&quot;: [&quot;a&quot;, &quot;an&quot;, &quot;the&quot;]
+        }
+      },
+      &quot;analyzer&quot;: {
+        &quot;custom_analyzer&quot;: {
+          &quot;type&quot;: &quot;custom&quot;,
+          &quot;char_filter&quot;: [&quot;html_strip&quot;],
+          &quot;tokenizer&quot;: &quot;standard_tokenizer&quot;,
+          &quot;filter&quot;: [&quot;lowercase&quot;, &quot;stop_filter&quot;]
+        }
+      }
+    }
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;content&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;analyzer&quot;: &quot;custom_analyzer&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Mistake</strong>: Not defining the correct field type.
+<ul>
+<li><strong>Tip</strong>: Always ensure the field type matches the data you intend to store.</li>
+</ul>
+</li>
+<li><strong>Mistake</strong>: Overlooking the importance of analyzers for text fields.
+<ul>
+<li><strong>Tip</strong>: Customize analyzers to improve search relevance and performance.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the basics of mapping and analyzers in Elasticsearch. We learned how to define mappings for different field types and create custom analyzers to process text data. Understanding these concepts is essential for effective data modeling and search optimization in Elasticsearch. In the next section, we will explore index templates and how they can be used to manage mappings and settings for multiple indices.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-scripting' title="Scripting">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-index-templates' title="Index Templates">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

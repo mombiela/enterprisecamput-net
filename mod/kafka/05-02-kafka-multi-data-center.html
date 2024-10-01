@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka in a Multi-Data Center Setup</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/05-02-kafka-multi-data-center" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/05-02-kafka-multi-data-center" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/05-02-kafka-multi-data-center" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/05-02-kafka-multi-data-center" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/05-02-kafka-multi-data-center" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-kafka-performance-tuning' title="Kafka Performance Tuning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka in a Multi-Data Center Setup</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-kafka-schema-registry' title="Kafka with Schema Registry">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to set up and manage Kafka in a multi-data center environment. This setup is crucial for achieving high availability, disaster recovery, and data locality. We will cover the following key concepts:</p>
+<ol>
+<li><strong>Why Multi-Data Center Setup?</strong></li>
+<li><strong>Kafka Replication Across Data Centers</strong></li>
+<li><strong>MirrorMaker 2.0</strong></li>
+<li><strong>Configuration and Best Practices</strong></li>
+<li><strong>Practical Example</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>Why Multi-Data Center Setup?</h1>
+<div class='content'><p>A multi-data center setup is essential for:</p>
+<ul>
+<li><strong>High Availability:</strong> Ensuring that Kafka remains operational even if one data center goes down.</li>
+<li><strong>Disaster Recovery:</strong> Providing a backup in case of catastrophic failures.</li>
+<li><strong>Data Locality:</strong> Reducing latency by keeping data close to where it is consumed.</li>
+</ul>
+</div><h1>Kafka Replication Across Data Centers</h1>
+<div class='content'><p>Kafka supports replication of data across multiple data centers. This is achieved through:</p>
+<ul>
+<li><strong>Cross-Data Center Replication:</strong> Using tools like MirrorMaker 2.0 to replicate data between clusters in different data centers.</li>
+<li><strong>Geo-Replication:</strong> Ensuring that data is available in multiple geographic locations.</li>
+</ul>
+</div><h2>Key Concepts:</h2>
+<div class='content'><ul>
+<li><strong>Leader and Follower Replicas:</strong> Each partition has a leader and multiple followers. In a multi-data center setup, followers can be located in different data centers.</li>
+<li><strong>Replication Factor:</strong> The number of copies of data. For multi-data center setups, this should be configured to ensure data is replicated across data centers.</li>
+</ul>
+</div><h1>MirrorMaker 2.0</h1>
+<div class='content'><p>MirrorMaker 2.0 is a tool provided by Kafka for replicating data between clusters. It is an improvement over the original MirrorMaker with better performance and more features.</p>
+</div><h2>Features:</h2>
+<div class='content'><ul>
+<li><strong>Automatic Topic Creation:</strong> Automatically creates topics in the target cluster.</li>
+<li><strong>Offset Translation:</strong> Ensures that consumer offsets are correctly translated between clusters.</li>
+<li><strong>Monitoring and Metrics:</strong> Provides better monitoring and metrics for replication.</li>
+</ul>
+</div><h2>Configuration:</h2>
+<div class='content'><p>To set up MirrorMaker 2.0, you need to configure the following:</p>
+<ul>
+<li><strong>Source and Target Clusters:</strong> Define the clusters between which data will be replicated.</li>
+<li><strong>Replication Policies:</strong> Define which topics and partitions to replicate.</li>
+<li><strong>Security Configurations:</strong> Ensure secure communication between clusters.</li>
+</ul>
+</div><h1>Configuration and Best Practices</h1>
+<div class='content'></div><h2>Configuration Steps:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install MirrorMaker 2.0:</strong></p>
+<pre><code class="language-bash">bin/mirror-maker.sh --consumer.config consumer.properties --producer.config producer.properties --whitelist '.*'
+</code></pre>
+</li>
+<li>
+<p><strong>Configure Consumer and Producer Properties:</strong></p>
+<pre><code class="language-properties"># consumer.properties
+bootstrap.servers=source-cluster:9092
+group.id=mirror-maker-consumer
+</code></pre>
+<pre><code class="language-properties"># producer.properties
+bootstrap.servers=target-cluster:9092
+</code></pre>
+</li>
+<li>
+<p><strong>Run MirrorMaker 2.0:</strong></p>
+<pre><code class="language-bash">bin/mirror-maker.sh --consumer.config consumer.properties --producer.config producer.properties --whitelist '.*'
+</code></pre>
+</li>
+</ol>
+</div><h2>Best Practices:</h2>
+<div class='content'><ul>
+<li><strong>Network Latency:</strong> Minimize network latency between data centers.</li>
+<li><strong>Security:</strong> Use SSL/TLS for secure communication.</li>
+<li><strong>Monitoring:</strong> Continuously monitor replication lag and performance.</li>
+<li><strong>Disaster Recovery:</strong> Regularly test disaster recovery procedures.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'><p>Let's set up a simple multi-data center replication using MirrorMaker 2.0.</p>
+</div><h2>Step-by-Step Guide:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install Kafka and MirrorMaker 2.0 on both data centers.</strong></p>
+</li>
+<li>
+<p><strong>Configure the source cluster (Data Center 1):</strong></p>
+<pre><code class="language-properties"># consumer.properties
+bootstrap.servers=dc1-kafka-broker:9092
+group.id=mirror-maker-consumer
+</code></pre>
+</li>
+<li>
+<p><strong>Configure the target cluster (Data Center 2):</strong></p>
+<pre><code class="language-properties"># producer.properties
+bootstrap.servers=dc2-kafka-broker:9092
+</code></pre>
+</li>
+<li>
+<p><strong>Run MirrorMaker 2.0:</strong></p>
+<pre><code class="language-bash">bin/mirror-maker.sh --consumer.config consumer.properties --producer.config producer.properties --whitelist '.*'
+</code></pre>
+</li>
+<li>
+<p><strong>Verify replication:</strong></p>
+<ul>
+<li>Produce messages to the source cluster.</li>
+<li>Consume messages from the target cluster to ensure they are replicated.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Multi-Data Center Setup</h2>
+<div class='content'><ol>
+<li>Set up two Kafka clusters in different data centers.</li>
+<li>Configure MirrorMaker 2.0 to replicate data between the clusters.</li>
+<li>Produce messages to the source cluster and verify they are replicated to the target cluster.</li>
+</ol>
+</div><h2>Exercise 2: Advanced Configuration</h2>
+<div class='content'><ol>
+<li>Configure MirrorMaker 2.0 with SSL/TLS for secure communication.</li>
+<li>Set up monitoring for replication lag and performance metrics.</li>
+<li>Test disaster recovery by simulating a failure in one data center and ensuring data is available in the other.</li>
+</ol>
+</div><h2>Solutions</h2>
+<div class='content'><h4>Solution to Exercise 1:</h4>
+<ol>
+<li>
+<p>Follow the practical example steps to set up the clusters and MirrorMaker 2.0.</p>
+</li>
+<li>
+<p>Produce messages using a Kafka producer:</p>
+<pre><code class="language-java">Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;dc1-kafka-broker:9092&quot;);
+props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+
+Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+producer.send(new ProducerRecord&lt;&gt;(&quot;test-topic&quot;, &quot;key&quot;, &quot;value&quot;));
+producer.close();
+</code></pre>
+</li>
+<li>
+<p>Consume messages from the target cluster:</p>
+<pre><code class="language-java">Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;dc2-kafka-broker:9092&quot;);
+props.put(&quot;group.id&quot;, &quot;test-group&quot;);
+props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+KafkaConsumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+consumer.subscribe(Collections.singletonList(&quot;test-topic&quot;));
+
+while (true) {
+    ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(100));
+    for (ConsumerRecord&lt;String, String&gt; record : records) {
+        System.out.printf(&quot;offset = %d, key = %s, value = %s%n&quot;, record.offset(), record.key(), record.value());
+    }
+}
+</code></pre>
+</li>
+</ol>
+<h4>Solution to Exercise 2:</h4>
+<ol>
+<li>
+<p>Configure SSL/TLS in the consumer and producer properties:</p>
+<pre><code class="language-properties"># consumer.properties
+security.protocol=SSL
+ssl.truststore.location=/path/to/truststore.jks
+ssl.truststore.password=truststore-password
+ssl.keystore.location=/path/to/keystore.jks
+ssl.keystore.password=keystore-password
+</code></pre>
+<pre><code class="language-properties"># producer.properties
+security.protocol=SSL
+ssl.truststore.location=/path/to/truststore.jks
+ssl.truststore.password=truststore-password
+ssl.keystore.location=/path/to/keystore.jks
+ssl.keystore.password=keystore-password
+</code></pre>
+</li>
+<li>
+<p>Set up monitoring using tools like Prometheus and Grafana to track replication lag and performance metrics.</p>
+</li>
+<li>
+<p>Simulate a failure by stopping the Kafka brokers in one data center and verify that the data is still available in the other data center.</p>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of a multi-data center setup for Kafka, how to use MirrorMaker 2.0 for cross-data center replication, and best practices for configuration and management. We also provided practical examples and exercises to help you set up and manage Kafka in a multi-data center environment. This knowledge is crucial for ensuring high availability, disaster recovery, and data locality in your Kafka deployments.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-kafka-performance-tuning' title="Kafka Performance Tuning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-kafka-schema-registry' title="Kafka with Schema Registry">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

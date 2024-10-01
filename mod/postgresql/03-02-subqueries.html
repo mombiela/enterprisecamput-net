@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subqueries</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/03-02-subqueries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/03-02-subqueries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/03-02-subqueries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/03-02-subqueries" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/03-02-subqueries" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-joins' title="Joins">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Subqueries</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-aggregate-functions' title="Aggregate Functions">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Subqueries, also known as inner queries or nested queries, are queries embedded within another SQL query. They are used to perform operations that require multiple steps, such as filtering data based on the results of another query. Subqueries can be used in various parts of a SQL statement, including the <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, and <code>HAVING</code> clauses.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Definition</strong>: A subquery is a query nested inside another query.</li>
+<li><strong>Types of Subqueries</strong>:
+<ul>
+<li><strong>Single-row subqueries</strong>: Return a single row.</li>
+<li><strong>Multiple-row subqueries</strong>: Return multiple rows.</li>
+<li><strong>Multiple-column subqueries</strong>: Return multiple columns.</li>
+</ul>
+</li>
+<li><strong>Placement</strong>: Subqueries can be placed in different parts of a SQL statement:
+<ul>
+<li>In the <code>SELECT</code> clause.</li>
+<li>In the <code>FROM</code> clause (also known as derived tables).</li>
+<li>In the <code>WHERE</code> clause.</li>
+<li>In the <code>HAVING</code> clause.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Example 1: Subquery in the `SELECT` Clause</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVfaWQsIAogICAgZmlyc3RfbmFtZSwgCiAgICBsYXN0X25hbWUsIAogICAgKFNFTEVDVCBkZXBhcnRtZW50X25hbWUgCiAgICAgRlJPTSBkZXBhcnRtZW50cyAKICAgICBXSEVSRSBkZXBhcnRtZW50cy5kZXBhcnRtZW50X2lkID0gZW1wbG95ZWVzLmRlcGFydG1lbnRfaWQpIEFTIGRlcGFydG1lbnRfbmFtZQpGUk9NIAogICAgZW1wbG95ZWVzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employee_id, 
+    first_name, 
+    last_name, 
+    (SELECT department_name 
+     FROM departments 
+     WHERE departments.department_id = employees.department_id) AS department_name
+FROM 
+    employees;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query retrieves the <code>employee_id</code>, <code>first_name</code>, and <code>last_name</code> from the <code>employees</code> table.</li>
+<li>It also includes a subquery in the <code>SELECT</code> clause to fetch the <code>department_name</code> from the <code>departments</code> table based on the <code>department_id</code> of each employee.</li>
+</ul>
+</div><h2>Example 2: Subquery in the `FROM` Clause</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBBVkcoc2FsYXJ5KSBBUyBhdmVyYWdlX3NhbGFyeQpGUk9NIAogICAgKFNFTEVDVCAKICAgICAgICAgZGVwYXJ0bWVudF9pZCwgCiAgICAgICAgIHNhbGFyeSAKICAgICBGUk9NIAogICAgICAgICBlbXBsb3llZXMgCiAgICAgV0hFUkUgCiAgICAgICAgIHNhbGFyeSA+IDUwMDAwKSBBUyBoaWdoX2Vhcm5lcnMKR1JPVVAgQlkgCiAgICBkZXBhcnRtZW50X2lkOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    department_id, 
+    AVG(salary) AS average_salary
+FROM 
+    (SELECT 
+         department_id, 
+         salary 
+     FROM 
+         employees 
+     WHERE 
+         salary &gt; 50000) AS high_earners
+GROUP BY 
+    department_id;</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query calculates the average salary of employees earning more than $50,000.</li>
+<li>The subquery in the <code>FROM</code> clause selects <code>department_id</code> and <code>salary</code> from the <code>employees</code> table where the salary is greater than $50,000.</li>
+<li>The outer query then calculates the average salary for each department.</li>
+</ul>
+</div><h2>Example 3: Subquery in the `WHERE` Clause</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZmlyc3RfbmFtZSwgCiAgICBsYXN0X25hbWUgCkZST00gCiAgICBlbXBsb3llZXMgCldIRVJFIAogICAgZGVwYXJ0bWVudF9pZCA9IChTRUxFQ1QgCiAgICAgICAgICAgICAgICAgICAgICAgICBkZXBhcnRtZW50X2lkIAogICAgICAgICAgICAgICAgICAgICBGUk9NIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudHMgCiAgICAgICAgICAgICAgICAgICAgIFdIRVJFIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudF9uYW1lID0gJ1NhbGVzJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    first_name, 
+    last_name 
+FROM 
+    employees 
+WHERE 
+    department_id = (SELECT 
+                         department_id 
+                     FROM 
+                         departments 
+                     WHERE 
+                         department_name = 'Sales');</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query retrieves the <code>first_name</code> and <code>last_name</code> of employees who work in the 'Sales' department.</li>
+<li>The subquery in the <code>WHERE</code> clause fetches the <code>department_id</code> of the 'Sales' department from the <code>departments</code> table.</li>
+<li>The outer query then selects employees with that <code>department_id</code>.</li>
+</ul>
+</div><h2>Example 4: Subquery in the `HAVING` Clause</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBDT1VOVCgqKSBBUyBlbXBsb3llZV9jb3VudApGUk9NIAogICAgZW1wbG95ZWVzCkdST1VQIEJZIAogICAgZGVwYXJ0bWVudF9pZApIQVZJTkcgCiAgICBDT1VOVCgqKSA+IChTRUxFQ1QgCiAgICAgICAgICAgICAgICAgICAgQVZHKGVtcGxveWVlX2NvdW50KSAKICAgICAgICAgICAgICAgIEZST00gCiAgICAgICAgICAgICAgICAgICAgKFNFTEVDVCAKICAgICAgICAgICAgICAgICAgICAgICAgIGRlcGFydG1lbnRfaWQsIAogICAgICAgICAgICAgICAgICAgICAgICAgQ09VTlQoKikgQVMgZW1wbG95ZWVfY291bnQgCiAgICAgICAgICAgICAgICAgICAgIEZST00gCiAgICAgICAgICAgICAgICAgICAgICAgICBlbXBsb3llZXMgCiAgICAgICAgICAgICAgICAgICAgIEdST1VQIEJZIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudF9pZCkgQVMgZGVwdF9jb3VudHMpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    department_id, 
+    COUNT(*) AS employee_count
+FROM 
+    employees
+GROUP BY 
+    department_id
+HAVING 
+    COUNT(*) &gt; (SELECT 
+                    AVG(employee_count) 
+                FROM 
+                    (SELECT 
+                         department_id, 
+                         COUNT(*) AS employee_count 
+                     FROM 
+                         employees 
+                     GROUP BY 
+                         department_id) AS dept_counts);</pre></div><div class='content'><p><strong>Explanation</strong>:</p>
+<ul>
+<li>This query retrieves departments with an employee count greater than the average employee count across all departments.</li>
+<li>The subquery in the <code>HAVING</code> clause calculates the average employee count.</li>
+<li>The outer query groups employees by <code>department_id</code> and filters groups with a count greater than this average.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Subquery in the `SELECT` Clause</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to list all employees along with their manager's name.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZS5lbXBsb3llZV9pZCwgCiAgICBlLmZpcnN0X25hbWUgQVMgZW1wbG95ZWVfZmlyc3RfbmFtZSwgCiAgICBlLmxhc3RfbmFtZSBBUyBlbXBsb3llZV9sYXN0X25hbWUsIAogICAgKFNFTEVDVCAKICAgICAgICAgbS5maXJzdF9uYW1lIHx8ICcgJyB8fCBtLmxhc3RfbmFtZSAKICAgICBGUk9NIAogICAgICAgICBlbXBsb3llZXMgbSAKICAgICBXSEVSRSAKICAgICAgICAgbS5lbXBsb3llZV9pZCA9IGUubWFuYWdlcl9pZCkgQVMgbWFuYWdlcl9uYW1lCkZST00gCiAgICBlbXBsb3llZXMgZTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    e.employee_id, 
+    e.first_name AS employee_first_name, 
+    e.last_name AS employee_last_name, 
+    (SELECT 
+         m.first_name || ' ' || m.last_name 
+     FROM 
+         employees m 
+     WHERE 
+         m.employee_id = e.manager_id) AS manager_name
+FROM 
+    employees e;</pre></div><div class='content'></div><h2>Exercise 2: Subquery in the `WHERE` Clause</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to find all employees who work in the 'IT' department.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZmlyc3RfbmFtZSwgCiAgICBsYXN0X25hbWUgCkZST00gCiAgICBlbXBsb3llZXMgCldIRVJFIAogICAgZGVwYXJ0bWVudF9pZCA9IChTRUxFQ1QgCiAgICAgICAgICAgICAgICAgICAgICAgICBkZXBhcnRtZW50X2lkIAogICAgICAgICAgICAgICAgICAgICBGUk9NIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudHMgCiAgICAgICAgICAgICAgICAgICAgIFdIRVJFIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudF9uYW1lID0gJ0lUJyk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    first_name, 
+    last_name 
+FROM 
+    employees 
+WHERE 
+    department_id = (SELECT 
+                         department_id 
+                     FROM 
+                         departments 
+                     WHERE 
+                         department_name = 'IT');</pre></div><div class='content'></div><h2>Exercise 3: Subquery in the `FROM` Clause</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to find the average salary of employees in each department where the average salary is greater than $60,000.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBBVkcoc2FsYXJ5KSBBUyBhdmVyYWdlX3NhbGFyeQpGUk9NIAogICAgKFNFTEVDVCAKICAgICAgICAgZGVwYXJ0bWVudF9pZCwgCiAgICAgICAgIHNhbGFyeSAKICAgICBGUk9NIAogICAgICAgICBlbXBsb3llZXMpIEFTIGRlcHRfc2FsYXJpZXMKR1JPVVAgQlkgCiAgICBkZXBhcnRtZW50X2lkCkhBVklORyAKICAgIEFWRyhzYWxhcnkpID4gNjAwMDA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    department_id, 
+    AVG(salary) AS average_salary
+FROM 
+    (SELECT 
+         department_id, 
+         salary 
+     FROM 
+         employees) AS dept_salaries
+GROUP BY 
+    department_id
+HAVING 
+    AVG(salary) &gt; 60000;</pre></div><div class='content'></div><h2>Exercise 4: Subquery in the `HAVING` Clause</h2>
+<div class='content'><p><strong>Task</strong>: Write a query to find departments with more employees than the average number of employees per department.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZGVwYXJ0bWVudF9pZCwgCiAgICBDT1VOVCgqKSBBUyBlbXBsb3llZV9jb3VudApGUk9NIAogICAgZW1wbG95ZWVzCkdST1VQIEJZIAogICAgZGVwYXJ0bWVudF9pZApIQVZJTkcgCiAgICBDT1VOVCgqKSA+IChTRUxFQ1QgCiAgICAgICAgICAgICAgICAgICAgQVZHKGVtcGxveWVlX2NvdW50KSAKICAgICAgICAgICAgICAgIEZST00gCiAgICAgICAgICAgICAgICAgICAgKFNFTEVDVCAKICAgICAgICAgICAgICAgICAgICAgICAgIGRlcGFydG1lbnRfaWQsIAogICAgICAgICAgICAgICAgICAgICAgICAgQ09VTlQoKikgQVMgZW1wbG95ZWVfY291bnQgCiAgICAgICAgICAgICAgICAgICAgIEZST00gCiAgICAgICAgICAgICAgICAgICAgICAgICBlbXBsb3llZXMgCiAgICAgICAgICAgICAgICAgICAgIEdST1VQIEJZIAogICAgICAgICAgICAgICAgICAgICAgICAgZGVwYXJ0bWVudF9pZCkgQVMgZGVwdF9jb3VudHMpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    department_id, 
+    COUNT(*) AS employee_count
+FROM 
+    employees
+GROUP BY 
+    department_id
+HAVING 
+    COUNT(*) &gt; (SELECT 
+                    AVG(employee_count) 
+                FROM 
+                    (SELECT 
+                         department_id, 
+                         COUNT(*) AS employee_count 
+                     FROM 
+                         employees 
+                     GROUP BY 
+                         department_id) AS dept_counts);</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Misplacing Subqueries</strong>: Ensure subqueries are placed in the correct part of the SQL statement.</li>
+<li><strong>Performance Considerations</strong>: Subqueries can be resource-intensive. Consider using joins or other optimization techniques if performance is an issue.</li>
+<li><strong>Single vs. Multiple Rows</strong>: Be aware of whether your subquery returns a single value or multiple values, and use appropriate operators (<code>=</code>, <code>IN</code>, etc.).</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Subqueries are a powerful tool in SQL that allow you to perform complex queries by nesting one query inside another. They can be used in various parts of a SQL statement to filter, aggregate, and transform data. Understanding how to effectively use subqueries will enhance your ability to write sophisticated SQL queries and solve complex data retrieval problems.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-joins' title="Joins">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-aggregate-functions' title="Aggregate Functions">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

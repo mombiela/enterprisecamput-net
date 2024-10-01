@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaemonSets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/06-02-daemonsets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/06-02-daemonsets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/06-02-daemonsets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kubernetes/06-02-daemonsets" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/06-02-daemonsets" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-statefulsets' title="StatefulSets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">DaemonSets</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-jobs-cronjobs' title="Jobs and CronJobs">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>DaemonSets are a powerful feature in Kubernetes that ensure a copy of a pod runs on all (or some) nodes in a cluster. They are particularly useful for running background tasks, such as log collection, monitoring, or other node-specific services.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ul>
+<li><strong>DaemonSet</strong>: A Kubernetes resource that ensures a pod is running on each node.</li>
+<li><strong>Pod</strong>: The smallest deployable unit in Kubernetes, which can contain one or more containers.</li>
+<li><strong>Node</strong>: A worker machine in Kubernetes, which can be a virtual or physical machine.</li>
+</ul>
+</div><h1>Use Cases</h1>
+<div class='content'><ul>
+<li><strong>Log Collection</strong>: Running a logging agent on every node to collect logs from all applications.</li>
+<li><strong>Monitoring</strong>: Deploying monitoring agents on each node to gather metrics and health data.</li>
+<li><strong>Networking</strong>: Running network proxies or other network-related services on every node.</li>
+</ul>
+</div><h1>Creating a DaemonSet</h1>
+<div class='content'><p>To create a DaemonSet, you need to define a YAML configuration file. Below is an example of a simple DaemonSet configuration:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogZXhhbXBsZS1kYWVtb25zZXQKICBsYWJlbHM6CiAgICBhcHA6IGV4YW1wbGUKc3BlYzoKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IGV4YW1wbGUKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBleGFtcGxlCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IGV4YW1wbGUtY29udGFpbmVyCiAgICAgICAgaW1hZ2U6IGJ1c3lib3gKICAgICAgICBjb21tYW5kOiBbInNoIiwgIi1jIiwgIndoaWxlIHRydWU7IGRvIGVjaG8gSGVsbG8gZnJvbSB0aGUgRGFlbW9uU2V0OyBzbGVlcCAzNjAwOyBkb25lIl0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: example-daemonset
+  labels:
+    app: example
+spec:
+  selector:
+    matchLabels:
+      app: example
+  template:
+    metadata:
+      labels:
+        app: example
+    spec:
+      containers:
+      - name: example-container
+        image: busybox
+        command: [&quot;sh&quot;, &quot;-c&quot;, &quot;while true; do echo Hello from the DaemonSet; sleep 3600; done&quot;]</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: Specifies the API version (apps/v1).</li>
+<li><strong>kind</strong>: Specifies the type of resource (DaemonSet).</li>
+<li><strong>metadata</strong>: Contains metadata about the DaemonSet, such as its name and labels.</li>
+<li><strong>spec</strong>: Defines the desired state of the DaemonSet.
+<ul>
+<li><strong>selector</strong>: Specifies how to identify the pods managed by the DaemonSet.</li>
+<li><strong>template</strong>: Defines the pod template used to create pods.
+<ul>
+<li><strong>metadata</strong>: Contains metadata for the pods, such as labels.</li>
+<li><strong>spec</strong>: Defines the pod specification, including containers and their configurations.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Managing DaemonSets</h1>
+<div class='content'></div><h2>Creating a DaemonSet</h2>
+<div class='content'><p>To create the DaemonSet defined above, save the YAML configuration to a file (e.g., <code>daemonset.yaml</code>) and apply it using <code>kubectl</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBkYWVtb25zZXQueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f daemonset.yaml</pre></div><div class='content'></div><h2>Viewing DaemonSets</h2>
+<div class='content'><p>To list all DaemonSets in the default namespace:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgZGFlbW9uc2V0cw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get daemonsets</pre></div><div class='content'><p>To get detailed information about a specific DaemonSet:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBkZXNjcmliZSBkYWVtb25zZXQgZXhhbXBsZS1kYWVtb25zZXQ="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl describe daemonset example-daemonset</pre></div><div class='content'></div><h2>Updating a DaemonSet</h2>
+<div class='content'><p>To update a DaemonSet, modify the YAML configuration file and apply the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBkYWVtb25zZXQueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f daemonset.yaml</pre></div><div class='content'></div><h2>Deleting a DaemonSet</h2>
+<div class='content'><p>To delete a DaemonSet:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBkZWxldGUgZGFlbW9uc2V0IGV4YW1wbGUtZGFlbW9uc2V0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl delete daemonset example-daemonset</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Create and Manage a DaemonSet</h2>
+<div class='content'><ol>
+<li><strong>Create a DaemonSet</strong>: Write a YAML configuration file for a DaemonSet that runs a simple Nginx container on every node.</li>
+<li><strong>Apply the Configuration</strong>: Use <code>kubectl</code> to create the DaemonSet.</li>
+<li><strong>Verify the DaemonSet</strong>: Ensure that the DaemonSet is running a pod on each node.</li>
+<li><strong>Update the DaemonSet</strong>: Modify the DaemonSet to use a different container image (e.g., <code>nginx:alpine</code>).</li>
+<li><strong>Delete the DaemonSet</strong>: Clean up by deleting the DaemonSet.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Create a DaemonSet</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogbmdpbngtZGFlbW9uc2V0CiAgbGFiZWxzOgogICAgYXBwOiBuZ2lueApzcGVjOgogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogbmdpbngKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBuZ2lueAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBuZ2lueAogICAgICAgIGltYWdlOiBuZ2lueA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-daemonset
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx</pre></div><div class='content'><ol start="2">
+<li><strong>Apply the Configuration</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBuZ2lueC1kYWVtb25zZXQueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f nginx-daemonset.yaml</pre></div><div class='content'><ol start="3">
+<li><strong>Verify the DaemonSet</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgZGFlbW9uc2V0cwprdWJlY3RsIGdldCBwb2RzIC1vIHdpZGU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get daemonsets
+kubectl get pods -o wide</pre></div><div class='content'><ol start="4">
+<li><strong>Update the DaemonSet</strong>:</li>
+</ol>
+<p>Modify the YAML file to use <code>nginx:alpine</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogbmdpbngtZGFlbW9uc2V0CiAgbGFiZWxzOgogICAgYXBwOiBuZ2lueApzcGVjOgogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogbmdpbngKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBuZ2lueAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBuZ2lueAogICAgICAgIGltYWdlOiBuZ2lueDphbHBpbmU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-daemonset
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine</pre></div><div class='content'><p>Apply the changes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBuZ2lueC1kYWVtb25zZXQueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f nginx-daemonset.yaml</pre></div><div class='content'><ol start="5">
+<li><strong>Delete the DaemonSet</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBkZWxldGUgZGFlbW9uc2V0IG5naW54LWRhZW1vbnNldA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl delete daemonset nginx-daemonset</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Selector Mismatch</strong>: Ensure that the <code>selector</code> in the DaemonSet spec matches the labels in the pod template.</li>
+<li><strong>Resource Limits</strong>: Define resource requests and limits for containers to avoid overloading nodes.</li>
+<li><strong>Rolling Updates</strong>: Use <code>updateStrategy</code> to control how updates are rolled out to DaemonSet pods.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>DaemonSets are essential for running node-specific tasks across a Kubernetes cluster. By understanding how to create, manage, and update DaemonSets, you can ensure that critical services are consistently deployed on all nodes. This knowledge prepares you for more advanced Kubernetes concepts and real-world applications.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-statefulsets' title="StatefulSets">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-jobs-cronjobs' title="Jobs and CronJobs">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

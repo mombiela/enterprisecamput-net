@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Strategies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ci_cd/03-03-estrategias-despliegue" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ci_cd/03-03-estrategies-desplegament" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ci_cd/03-03-deployment-strategies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/ci_cd/03-03-deployment-strategies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/ci_cd/03-03-deployment-strategies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-deployment-automation' title="Deployment Automation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deployment Strategies</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-monitoring-feedback' title="Monitoring and Feedback">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore various deployment strategies that can be used to release software updates to production environments. Each strategy has its own advantages and trade-offs, and the choice of strategy depends on the specific requirements and constraints of your project.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Deployment Strategy</strong>: A plan or method for deploying new software versions to production environments.</li>
+<li><strong>Downtime</strong>: The period during which the application is unavailable to users.</li>
+<li><strong>Rollback</strong>: The process of reverting to a previous stable version in case of deployment failure.</li>
+</ol>
+</div><h1>Common Deployment Strategies</h1>
+<div class='content'></div><h2>1. Recreate Deployment</h2>
+<div class='content'><p><strong>Description</strong>: This strategy involves shutting down the old version of the application and then starting the new version.</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Simple to implement.</li>
+<li>No need for complex infrastructure.</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Causes downtime during the deployment process.</li>
+<li>Not suitable for high-availability applications.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdG9wIHRoZSBvbGQgdmVyc2lvbgpkb2NrZXIgc3RvcCBteV9hcHBfY29udGFpbmVyCgojIFJlbW92ZSB0aGUgb2xkIGNvbnRhaW5lcgpkb2NrZXIgcm0gbXlfYXBwX2NvbnRhaW5lcgoKIyBTdGFydCB0aGUgbmV3IHZlcnNpb24KZG9ja2VyIHJ1biAtZCAtLW5hbWUgbXlfYXBwX2NvbnRhaW5lciBteV9hcHBfaW1hZ2U6bGF0ZXN0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Stop the old version
+docker stop my_app_container
+
+# Remove the old container
+docker rm my_app_container
+
+# Start the new version
+docker run -d --name my_app_container my_app_image:latest</pre></div><div class='content'></div><h2>2. Rolling Deployment</h2>
+<div class='content'><p><strong>Description</strong>: This strategy gradually replaces instances of the old version with instances of the new version.</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Minimizes downtime.</li>
+<li>Allows for monitoring and rollback during the deployment process.</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Requires careful management of stateful applications.</li>
+<li>Can be complex to implement.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBLdWJlcm5ldGVzIFJvbGxpbmcgVXBkYXRlCmFwaVZlcnNpb246IGFwcHMvdjEKa2luZDogRGVwbG95bWVudAptZXRhZGF0YToKICBuYW1lOiBteS1hcHAKc3BlYzoKICByZXBsaWNhczogMwogIHN0cmF0ZWd5OgogICAgdHlwZTogUm9sbGluZ1VwZGF0ZQogICAgcm9sbGluZ1VwZGF0ZToKICAgICAgbWF4VW5hdmFpbGFibGU6IDEKICAgICAgbWF4U3VyZ2U6IDEKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwLWNvbnRhaW5lcgogICAgICAgIGltYWdlOiBteV9hcHBfaW1hZ2U6bGF0ZXN0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Kubernetes Rolling Update
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:latest</pre></div><div class='content'></div><h2>3. Blue-Green Deployment</h2>
+<div class='content'><p><strong>Description</strong>: This strategy involves maintaining two identical environments, one for the current version (blue) and one for the new version (green). Traffic is switched from blue to green once the new version is verified.</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Zero downtime.</li>
+<li>Easy rollback by switching traffic back to the blue environment.</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Requires double the infrastructure.</li>
+<li>Complex to manage and maintain.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXBsb3kgbmV3IHZlcnNpb24gdG8gZ3JlZW4gZW52aXJvbm1lbnQKa3ViZWN0bCBhcHBseSAtZiBncmVlbi1kZXBsb3ltZW50LnlhbWwKCiMgVmVyaWZ5IHRoZSBuZXcgdmVyc2lvbgojIC4uLgoKIyBTd2l0Y2ggdHJhZmZpYyB0byBncmVlbiBlbnZpcm9ubWVudAprdWJlY3RsIGFwcGx5IC1mIGdyZWVuLXNlcnZpY2UueWFtbAoKIyBPcHRpb25hbGx5LCBjbGVhbiB1cCB0aGUgYmx1ZSBlbnZpcm9ubWVudAprdWJlY3RsIGRlbGV0ZSAtZiBibHVlLWRlcGxveW1lbnQueWFtbA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Deploy new version to green environment
+kubectl apply -f green-deployment.yaml
+
+# Verify the new version
+# ...
+
+# Switch traffic to green environment
+kubectl apply -f green-service.yaml
+
+# Optionally, clean up the blue environment
+kubectl delete -f blue-deployment.yaml</pre></div><div class='content'></div><h2>4. Canary Deployment</h2>
+<div class='content'><p><strong>Description</strong>: This strategy involves releasing the new version to a small subset of users before rolling it out to the entire user base.</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Allows for testing in production with minimal risk.</li>
+<li>Gradual rollout minimizes impact of potential issues.</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Requires careful monitoring and management.</li>
+<li>Can be complex to implement.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBLdWJlcm5ldGVzIENhbmFyeSBEZXBsb3ltZW50CmFwaVZlcnNpb246IGFwcHMvdjEKa2luZDogRGVwbG95bWVudAptZXRhZGF0YToKICBuYW1lOiBteS1hcHAKc3BlYzoKICByZXBsaWNhczogNQogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IG15LWFwcAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBteS1hcHAtY29udGFpbmVyCiAgICAgICAgaW1hZ2U6IG15X2FwcF9pbWFnZTpsYXRlc3QKCiMgU2VydmljZSB3aXRoIGNhbmFyeSB3ZWlnaHQKYXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAtc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiBteS1hcHAKICBwb3J0czoKICAtIHByb3RvY29sOiBUQ1AKICAgIHBvcnQ6IDgwCiAgICB0YXJnZXRQb3J0OiA4MDgwCiAgdHJhZmZpY1BvbGljeToKICAgIGNhbmFyeToKICAgICAgd2VpZ2h0OiAxMA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Kubernetes Canary Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:latest
+
+# Service with canary weight
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  trafficPolicy:
+    canary:
+      weight: 10</pre></div><div class='content'></div><h2>5. A/B Testing Deployment</h2>
+<div class='content'><p><strong>Description</strong>: This strategy involves running two versions of the application simultaneously to test different features or changes with different user groups.</p>
+<p><strong>Advantages</strong>:</p>
+<ul>
+<li>Allows for feature comparison and user feedback.</li>
+<li>Can lead to better decision-making based on real user data.</li>
+</ul>
+<p><strong>Disadvantages</strong>:</p>
+<ul>
+<li>Requires sophisticated routing and user segmentation.</li>
+<li>Can be complex to implement and analyze.</li>
+</ul>
+<p><strong>Example</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBLdWJlcm5ldGVzIEEvQiBUZXN0aW5nCmFwaVZlcnNpb246IGFwcHMvdjEKa2luZDogRGVwbG95bWVudAptZXRhZGF0YToKICBuYW1lOiBteS1hcHAtdjEKc3BlYzoKICByZXBsaWNhczogMwogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IG15LWFwcAogICAgICAgIHZlcnNpb246IHYxCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcC1jb250YWluZXIKICAgICAgICBpbWFnZTogbXlfYXBwX2ltYWdlOnYxCgphcGlWZXJzaW9uOiBhcHBzL3YxCmtpbmQ6IERlcGxveW1lbnQKbWV0YWRhdGE6CiAgbmFtZTogbXktYXBwLXYyCnNwZWM6CiAgcmVwbGljYXM6IDMKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgICAgICB2ZXJzaW9uOiB2MgogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBteS1hcHAtY29udGFpbmVyCiAgICAgICAgaW1hZ2U6IG15X2FwcF9pbWFnZTp2MgoKIyBTZXJ2aWNlIHdpdGggQS9CIHJvdXRpbmcKYXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1hcHAtc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiBteS1hcHAKICBwb3J0czoKICAtIHByb3RvY29sOiBUQ1AKICAgIHBvcnQ6IDgwCiAgICB0YXJnZXRQb3J0OiA4MDgwCiAgdHJhZmZpY1BvbGljeToKICAgIGFiVGVzdGluZzoKICAgICAgdjFXZWlnaHQ6IDUwCiAgICAgIHYyV2VpZ2h0OiA1MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Kubernetes A/B Testing
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v1
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: v1
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:v1
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-v2
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: my-app
+        version: v2
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:v2
+
+# Service with A/B routing
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+  trafficPolicy:
+    abTesting:
+      v1Weight: 50
+      v2Weight: 50</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implementing a Blue-Green Deployment</h2>
+<div class='content'><p><strong>Objective</strong>: Implement a blue-green deployment strategy using Docker and Kubernetes.</p>
+<p><strong>Steps</strong>:</p>
+<ol>
+<li>Create two Kubernetes deployment files, one for the blue environment and one for the green environment.</li>
+<li>Deploy the blue environment and verify it is running.</li>
+<li>Deploy the green environment with the new version.</li>
+<li>Switch traffic to the green environment.</li>
+<li>Verify the new version is running correctly.</li>
+<li>Clean up the blue environment if desired.</li>
+</ol>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBibHVlLWRlcGxveW1lbnQueWFtbAphcGlWZXJzaW9uOiBhcHBzL3YxCmtpbmQ6IERlcGxveW1lbnQKbWV0YWRhdGE6CiAgbmFtZTogbXktYXBwLWJsdWUKc3BlYzoKICByZXBsaWNhczogMwogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IG15LWFwcAogICAgICAgIGVudmlyb25tZW50OiBibHVlCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcC1jb250YWluZXIKICAgICAgICBpbWFnZTogbXlfYXBwX2ltYWdlOnN0YWJsZQoKIyBncmVlbi1kZXBsb3ltZW50LnlhbWwKYXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcC1ncmVlbgpzcGVjOgogIHJlcGxpY2FzOiAzCiAgdGVtcGxhdGU6CiAgICBtZXRhZGF0YToKICAgICAgbGFiZWxzOgogICAgICAgIGFwcDogbXktYXBwCiAgICAgICAgZW52aXJvbm1lbnQ6IGdyZWVuCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG15LWFwcC1jb250YWluZXIKICAgICAgICBpbWFnZTogbXlfYXBwX2ltYWdlOm5ldwoKIyBibHVlLXNlcnZpY2UueWFtbAphcGlWZXJzaW9uOiB2MQpraW5kOiBTZXJ2aWNlCm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcC1zZXJ2aWNlCnNwZWM6CiAgc2VsZWN0b3I6CiAgICBhcHA6IG15LWFwcAogICAgZW52aXJvbm1lbnQ6IGJsdWUKICBwb3J0czoKICAtIHByb3RvY29sOiBUQ1AKICAgIHBvcnQ6IDgwCiAgICB0YXJnZXRQb3J0OiA4MDgwCgojIGdyZWVuLXNlcnZpY2UueWFtbAphcGlWZXJzaW9uOiB2MQpraW5kOiBTZXJ2aWNlCm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcC1zZXJ2aWNlCnNwZWM6CiAgc2VsZWN0b3I6CiAgICBhcHA6IG15LWFwcAogICAgZW52aXJvbm1lbnQ6IGdyZWVuCiAgcG9ydHM6CiAgLSBwcm90b2NvbDogVENQCiAgICBwb3J0OiA4MAogICAgdGFyZ2V0UG9ydDogODA4MA=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># blue-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-blue
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: my-app
+        environment: blue
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:stable
+
+# green-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app-green
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: my-app
+        environment: green
+    spec:
+      containers:
+      - name: my-app-container
+        image: my_app_image:new
+
+# blue-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+    environment: blue
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+# green-service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+    environment: green
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we explored various deployment strategies including recreate, rolling, blue-green, canary, and A/B testing. Each strategy has its own set of advantages and trade-offs, and the choice of strategy depends on the specific needs of your project. We also provided a practical exercise to implement a blue-green deployment strategy using Docker and Kubernetes. Understanding these strategies will help you make informed decisions when deploying new software versions to production environments.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-deployment-automation' title="Deployment Automation">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-monitoring-feedback' title="Monitoring and Feedback">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

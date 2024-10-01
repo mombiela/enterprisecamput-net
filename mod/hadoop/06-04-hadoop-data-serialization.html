@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadoop Data Serialization</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/06-04-hadoop-data-serialization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/06-04-hadoop-data-serialization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/06-04-hadoop-data-serialization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/hadoop/06-04-hadoop-data-serialization" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/06-04-hadoop-data-serialization" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-hadoop-performance-tuning' title="Hadoop Performance Tuning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Hadoop Data Serialization</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-hadoop-in-data-warehousing' title="Hadoop in Data Warehousing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>Data serialization is a crucial aspect of Hadoop, enabling efficient storage and transmission of data across the Hadoop ecosystem. In this module, we will explore the concept of data serialization, its importance, and the various serialization frameworks used in Hadoop.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>What is Data Serialization?</strong></p>
+<ul>
+<li>The process of converting data structures or objects into a format that can be easily stored and transmitted.</li>
+<li>Deserialization is the reverse process, converting the serialized data back into its original format.</li>
+</ul>
+</li>
+<li>
+<p><strong>Importance of Data Serialization in Hadoop</strong></p>
+<ul>
+<li>Efficient storage: Serialized data takes up less space.</li>
+<li>Faster data transfer: Serialized data can be transmitted more quickly over the network.</li>
+<li>Interoperability: Serialized data can be easily shared between different systems and programming languages.</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Serialization Frameworks in Hadoop</strong></p>
+<ul>
+<li><strong>Writable</strong>: Hadoop's native serialization format.</li>
+<li><strong>Avro</strong>: A serialization framework developed within the Apache Hadoop project.</li>
+<li><strong>Protocol Buffers</strong>: A language-neutral, platform-neutral extensible mechanism for serializing structured data.</li>
+<li><strong>Thrift</strong>: A software framework for scalable cross-language services development.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Writable Serialization</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Writable is Hadoop's native serialization format, designed for high performance and efficiency. It is used extensively within Hadoop for data storage and transmission.</p>
+</div><h2>Example</h2>
+<div class='content'><p>Let's look at a simple example of how to use Writable in Hadoop.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLkludFdyaXRhYmxlOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuaW8uVGV4dDsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLldyaXRhYmxlOwoKaW1wb3J0IGphdmEuaW8uRGF0YUlucHV0OwppbXBvcnQgamF2YS5pby5EYXRhT3V0cHV0OwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBDdXN0b21Xcml0YWJsZSBpbXBsZW1lbnRzIFdyaXRhYmxlIHsKICAgIHByaXZhdGUgSW50V3JpdGFibGUgaWQ7CiAgICBwcml2YXRlIFRleHQgbmFtZTsKCiAgICBwdWJsaWMgQ3VzdG9tV3JpdGFibGUoKSB7CiAgICAgICAgdGhpcy5pZCA9IG5ldyBJbnRXcml0YWJsZSgpOwogICAgICAgIHRoaXMubmFtZSA9IG5ldyBUZXh0KCk7CiAgICB9CgogICAgcHVibGljIEN1c3RvbVdyaXRhYmxlKGludCBpZCwgU3RyaW5nIG5hbWUpIHsKICAgICAgICB0aGlzLmlkID0gbmV3IEludFdyaXRhYmxlKGlkKTsKICAgICAgICB0aGlzLm5hbWUgPSBuZXcgVGV4dChuYW1lKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIHdyaXRlKERhdGFPdXRwdXQgb3V0KSB0aHJvd3MgSU9FeGNlcHRpb24gewogICAgICAgIGlkLndyaXRlKG91dCk7CiAgICAgICAgbmFtZS53cml0ZShvdXQpOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgcmVhZEZpZWxkcyhEYXRhSW5wdXQgaW4pIHRocm93cyBJT0V4Y2VwdGlvbiB7CiAgICAgICAgaWQucmVhZEZpZWxkcyhpbik7CiAgICAgICAgbmFtZS5yZWFkRmllbGRzKGluKTsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBTdHJpbmcgdG9TdHJpbmcoKSB7CiAgICAgICAgcmV0dXJuIGlkICsgIlx0IiArIG5hbWU7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+public class CustomWritable implements Writable {
+    private IntWritable id;
+    private Text name;
+
+    public CustomWritable() {
+        this.id = new IntWritable();
+        this.name = new Text();
+    }
+
+    public CustomWritable(int id, String name) {
+        this.id = new IntWritable(id);
+        this.name = new Text(name);
+    }
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        id.write(out);
+        name.write(out);
+    }
+
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        id.readFields(in);
+        name.readFields(in);
+    }
+
+    @Override
+    public String toString() {
+        return id + &quot;\t&quot; + name;
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>IntWritable</strong> and <strong>Text</strong> are Hadoop's built-in Writable implementations for integers and strings, respectively.</li>
+<li>The <code>write</code> method serializes the data to a <code>DataOutput</code> stream.</li>
+<li>The <code>readFields</code> method deserializes the data from a <code>DataInput</code> stream.</li>
+<li>The <code>toString</code> method provides a human-readable representation of the data.</li>
+</ul>
+</div><h1>Avro Serialization</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Avro is a serialization framework developed within the Apache Hadoop project. It provides rich data structures, a compact and fast binary data format, and a container file to store persistent data.</p>
+</div><h2>Example</h2>
+<div class='content'><p>Let's look at a simple example of how to use Avro in Hadoop.</p>
+<ol>
+<li><strong>Define the Schema</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0eXBlIjogInJlY29yZCIsCiAgIm5hbWUiOiAiVXNlciIsCiAgImZpZWxkcyI6IFsKICAgIHsibmFtZSI6ICJpZCIsICJ0eXBlIjogImludCJ9LAogICAgeyJuYW1lIjogIm5hbWUiLCAidHlwZSI6ICJzdHJpbmcifQogIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;name&quot;: &quot;User&quot;,
+  &quot;fields&quot;: [
+    {&quot;name&quot;: &quot;id&quot;, &quot;type&quot;: &quot;int&quot;},
+    {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;}
+  ]
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Generate Java Classes</strong></li>
+</ol>
+<p>Use the Avro tools to generate Java classes from the schema.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("amF2YSAtamFyIGF2cm8tdG9vbHMtMS44LjIuamFyIGNvbXBpbGUgc2NoZW1hIHVzZXIuYXZzYyAu"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>java -jar avro-tools-1.8.2.jar compile schema user.avsc .</pre></div><div class='content'><ol start="3">
+<li><strong>Serialize and Deserialize Data</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuYXZyby5TY2hlbWE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZmlsZS5EYXRhRmlsZVJlYWRlcjsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5maWxlLkRhdGFGaWxlV3JpdGVyOwppbXBvcnQgb3JnLmFwYWNoZS5hdnJvLmdlbmVyaWMuR2VuZXJpY0RhdGE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0dW1SZWFkZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0dW1Xcml0ZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljUmVjb3JkOwoKaW1wb3J0IGphdmEuaW8uRmlsZTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgQXZyb0V4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgdGhyb3dzIElPRXhjZXB0aW9uIHsKICAgICAgICBTY2hlbWEgc2NoZW1hID0gbmV3IFNjaGVtYS5QYXJzZXIoKS5wYXJzZShuZXcgRmlsZSgidXNlci5hdnNjIikpOwoKICAgICAgICAvLyBDcmVhdGUgYSByZWNvcmQKICAgICAgICBHZW5lcmljUmVjb3JkIHVzZXIxID0gbmV3IEdlbmVyaWNEYXRhLlJlY29yZChzY2hlbWEpOwogICAgICAgIHVzZXIxLnB1dCgiaWQiLCAxKTsKICAgICAgICB1c2VyMS5wdXQoIm5hbWUiLCAiSm9obiBEb2UiKTsKCiAgICAgICAgLy8gU2VyaWFsaXplIHRoZSByZWNvcmQgdG8gYSBmaWxlCiAgICAgICAgRmlsZSBmaWxlID0gbmV3IEZpbGUoInVzZXJzLmF2cm8iKTsKICAgICAgICBEYXR1bVdyaXRlcjxHZW5lcmljUmVjb3JkPiBkYXR1bVdyaXRlciA9IG5ldyBHZW5lcmljRGF0dW1Xcml0ZXI8PihzY2hlbWEpOwogICAgICAgIERhdGFGaWxlV3JpdGVyPEdlbmVyaWNSZWNvcmQ+IGRhdGFGaWxlV3JpdGVyID0gbmV3IERhdGFGaWxlV3JpdGVyPD4oZGF0dW1Xcml0ZXIpOwogICAgICAgIGRhdGFGaWxlV3JpdGVyLmNyZWF0ZShzY2hlbWEsIGZpbGUpOwogICAgICAgIGRhdGFGaWxlV3JpdGVyLmFwcGVuZCh1c2VyMSk7CiAgICAgICAgZGF0YUZpbGVXcml0ZXIuY2xvc2UoKTsKCiAgICAgICAgLy8gRGVzZXJpYWxpemUgdGhlIHJlY29yZCBmcm9tIHRoZSBmaWxlCiAgICAgICAgRGF0dW1SZWFkZXI8R2VuZXJpY1JlY29yZD4gZGF0dW1SZWFkZXIgPSBuZXcgR2VuZXJpY0RhdHVtUmVhZGVyPD4oc2NoZW1hKTsKICAgICAgICBEYXRhRmlsZVJlYWRlcjxHZW5lcmljUmVjb3JkPiBkYXRhRmlsZVJlYWRlciA9IG5ldyBEYXRhRmlsZVJlYWRlcjw+KGZpbGUsIGRhdHVtUmVhZGVyKTsKICAgICAgICB3aGlsZSAoZGF0YUZpbGVSZWFkZXIuaGFzTmV4dCgpKSB7CiAgICAgICAgICAgIEdlbmVyaWNSZWNvcmQgdXNlciA9IGRhdGFGaWxlUmVhZGVyLm5leHQoKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKHVzZXIpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileReader;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+
+import java.io.File;
+import java.io.IOException;
+
+public class AvroExample {
+    public static void main(String[] args) throws IOException {
+        Schema schema = new Schema.Parser().parse(new File(&quot;user.avsc&quot;));
+
+        // Create a record
+        GenericRecord user1 = new GenericData.Record(schema);
+        user1.put(&quot;id&quot;, 1);
+        user1.put(&quot;name&quot;, &quot;John Doe&quot;);
+
+        // Serialize the record to a file
+        File file = new File(&quot;users.avro&quot;);
+        DatumWriter&lt;GenericRecord&gt; datumWriter = new GenericDatumWriter&lt;&gt;(schema);
+        DataFileWriter&lt;GenericRecord&gt; dataFileWriter = new DataFileWriter&lt;&gt;(datumWriter);
+        dataFileWriter.create(schema, file);
+        dataFileWriter.append(user1);
+        dataFileWriter.close();
+
+        // Deserialize the record from the file
+        DatumReader&lt;GenericRecord&gt; datumReader = new GenericDatumReader&lt;&gt;(schema);
+        DataFileReader&lt;GenericRecord&gt; dataFileReader = new DataFileReader&lt;&gt;(file, datumReader);
+        while (dataFileReader.hasNext()) {
+            GenericRecord user = dataFileReader.next();
+            System.out.println(user);
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Schema</strong>: Defines the structure of the data.</li>
+<li><strong>GenericRecord</strong>: Represents a record conforming to the schema.</li>
+<li><strong>DatumWriter</strong> and <strong>DataFileWriter</strong>: Used to serialize the data to a file.</li>
+<li><strong>DatumReader</strong> and <strong>DataFileReader</strong>: Used to deserialize the data from a file.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise</h2>
+<div class='content'><ol>
+<li>
+<p>Create a custom Writable class to serialize and deserialize a record with the following fields:</p>
+<ul>
+<li><code>int age</code></li>
+<li><code>String address</code></li>
+</ul>
+</li>
+<li>
+<p>Write a Java program to serialize and deserialize a record using Avro with the following schema:</p>
+<ul>
+<li><code>int productId</code></li>
+<li><code>String productName</code></li>
+<li><code>double price</code></li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Custom Writable Class</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLkludFdyaXRhYmxlOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuaW8uVGV4dDsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLldyaXRhYmxlOwoKaW1wb3J0IGphdmEuaW8uRGF0YUlucHV0OwppbXBvcnQgamF2YS5pby5EYXRhT3V0cHV0OwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBDdXN0b21Xcml0YWJsZSBpbXBsZW1lbnRzIFdyaXRhYmxlIHsKICAgIHByaXZhdGUgSW50V3JpdGFibGUgYWdlOwogICAgcHJpdmF0ZSBUZXh0IGFkZHJlc3M7CgogICAgcHVibGljIEN1c3RvbVdyaXRhYmxlKCkgewogICAgICAgIHRoaXMuYWdlID0gbmV3IEludFdyaXRhYmxlKCk7CiAgICAgICAgdGhpcy5hZGRyZXNzID0gbmV3IFRleHQoKTsKICAgIH0KCiAgICBwdWJsaWMgQ3VzdG9tV3JpdGFibGUoaW50IGFnZSwgU3RyaW5nIGFkZHJlc3MpIHsKICAgICAgICB0aGlzLmFnZSA9IG5ldyBJbnRXcml0YWJsZShhZ2UpOwogICAgICAgIHRoaXMuYWRkcmVzcyA9IG5ldyBUZXh0KGFkZHJlc3MpOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgd3JpdGUoRGF0YU91dHB1dCBvdXQpIHRocm93cyBJT0V4Y2VwdGlvbiB7CiAgICAgICAgYWdlLndyaXRlKG91dCk7CiAgICAgICAgYWRkcmVzcy53cml0ZShvdXQpOwogICAgfQoKICAgIEBPdmVycmlkZQogICAgcHVibGljIHZvaWQgcmVhZEZpZWxkcyhEYXRhSW5wdXQgaW4pIHRocm93cyBJT0V4Y2VwdGlvbiB7CiAgICAgICAgYWdlLnJlYWRGaWVsZHMoaW4pOwogICAgICAgIGFkZHJlc3MucmVhZEZpZWxkcyhpbik7CiAgICB9CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgU3RyaW5nIHRvU3RyaW5nKCkgewogICAgICAgIHJldHVybiBhZ2UgKyAiXHQiICsgYWRkcmVzczsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+public class CustomWritable implements Writable {
+    private IntWritable age;
+    private Text address;
+
+    public CustomWritable() {
+        this.age = new IntWritable();
+        this.address = new Text();
+    }
+
+    public CustomWritable(int age, String address) {
+        this.age = new IntWritable(age);
+        this.address = new Text(address);
+    }
+
+    @Override
+    public void write(DataOutput out) throws IOException {
+        age.write(out);
+        address.write(out);
+    }
+
+    @Override
+    public void readFields(DataInput in) throws IOException {
+        age.readFields(in);
+        address.readFields(in);
+    }
+
+    @Override
+    public String toString() {
+        return age + &quot;\t&quot; + address;
+    }
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Avro Serialization and Deserialization</strong></li>
+</ol>
+<p><strong>Schema (product.avsc)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0eXBlIjogInJlY29yZCIsCiAgIm5hbWUiOiAiUHJvZHVjdCIsCiAgImZpZWxkcyI6IFsKICAgIHsibmFtZSI6ICJwcm9kdWN0SWQiLCAidHlwZSI6ICJpbnQifSwKICAgIHsibmFtZSI6ICJwcm9kdWN0TmFtZSIsICJ0eXBlIjogInN0cmluZyJ9LAogICAgeyJuYW1lIjogInByaWNlIiwgInR5cGUiOiAiZG91YmxlIn0KICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;name&quot;: &quot;Product&quot;,
+  &quot;fields&quot;: [
+    {&quot;name&quot;: &quot;productId&quot;, &quot;type&quot;: &quot;int&quot;},
+    {&quot;name&quot;: &quot;productName&quot;, &quot;type&quot;: &quot;string&quot;},
+    {&quot;name&quot;: &quot;price&quot;, &quot;type&quot;: &quot;double&quot;}
+  ]
+}</pre></div><div class='content'><p><strong>Java Program</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuYXZyby5TY2hlbWE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZmlsZS5EYXRhRmlsZVJlYWRlcjsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5maWxlLkRhdGFGaWxlV3JpdGVyOwppbXBvcnQgb3JnLmFwYWNoZS5hdnJvLmdlbmVyaWMuR2VuZXJpY0RhdGE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0dW1SZWFkZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0dW1Xcml0ZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljUmVjb3JkOwoKaW1wb3J0IGphdmEuaW8uRmlsZTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgQXZyb1Byb2R1Y3RFeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHRocm93cyBJT0V4Y2VwdGlvbiB7CiAgICAgICAgU2NoZW1hIHNjaGVtYSA9IG5ldyBTY2hlbWEuUGFyc2VyKCkucGFyc2UobmV3IEZpbGUoInByb2R1Y3QuYXZzYyIpKTsKCiAgICAgICAgLy8gQ3JlYXRlIGEgcmVjb3JkCiAgICAgICAgR2VuZXJpY1JlY29yZCBwcm9kdWN0MSA9IG5ldyBHZW5lcmljRGF0YS5SZWNvcmQoc2NoZW1hKTsKICAgICAgICBwcm9kdWN0MS5wdXQoInByb2R1Y3RJZCIsIDEwMSk7CiAgICAgICAgcHJvZHVjdDEucHV0KCJwcm9kdWN0TmFtZSIsICJMYXB0b3AiKTsKICAgICAgICBwcm9kdWN0MS5wdXQoInByaWNlIiwgNzk5Ljk5KTsKCiAgICAgICAgLy8gU2VyaWFsaXplIHRoZSByZWNvcmQgdG8gYSBmaWxlCiAgICAgICAgRmlsZSBmaWxlID0gbmV3IEZpbGUoInByb2R1Y3RzLmF2cm8iKTsKICAgICAgICBEYXR1bVdyaXRlcjxHZW5lcmljUmVjb3JkPiBkYXR1bVdyaXRlciA9IG5ldyBHZW5lcmljRGF0dW1Xcml0ZXI8PihzY2hlbWEpOwogICAgICAgIERhdGFGaWxlV3JpdGVyPEdlbmVyaWNSZWNvcmQ+IGRhdGFGaWxlV3JpdGVyID0gbmV3IERhdGFGaWxlV3JpdGVyPD4oZGF0dW1Xcml0ZXIpOwogICAgICAgIGRhdGFGaWxlV3JpdGVyLmNyZWF0ZShzY2hlbWEsIGZpbGUpOwogICAgICAgIGRhdGFGaWxlV3JpdGVyLmFwcGVuZChwcm9kdWN0MSk7CiAgICAgICAgZGF0YUZpbGVXcml0ZXIuY2xvc2UoKTsKCiAgICAgICAgLy8gRGVzZXJpYWxpemUgdGhlIHJlY29yZCBmcm9tIHRoZSBmaWxlCiAgICAgICAgRGF0dW1SZWFkZXI8R2VuZXJpY1JlY29yZD4gZGF0dW1SZWFkZXIgPSBuZXcgR2VuZXJpY0RhdHVtUmVhZGVyPD4oc2NoZW1hKTsKICAgICAgICBEYXRhRmlsZVJlYWRlcjxHZW5lcmljUmVjb3JkPiBkYXRhRmlsZVJlYWRlciA9IG5ldyBEYXRhRmlsZVJlYWRlcjw+KGZpbGUsIGRhdHVtUmVhZGVyKTsKICAgICAgICB3aGlsZSAoZGF0YUZpbGVSZWFkZXIuaGFzTmV4dCgpKSB7CiAgICAgICAgICAgIEdlbmVyaWNSZWNvcmQgcHJvZHVjdCA9IGRhdGFGaWxlUmVhZGVyLm5leHQoKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKHByb2R1Y3QpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileReader;
+import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+
+import java.io.File;
+import java.io.IOException;
+
+public class AvroProductExample {
+    public static void main(String[] args) throws IOException {
+        Schema schema = new Schema.Parser().parse(new File(&quot;product.avsc&quot;));
+
+        // Create a record
+        GenericRecord product1 = new GenericData.Record(schema);
+        product1.put(&quot;productId&quot;, 101);
+        product1.put(&quot;productName&quot;, &quot;Laptop&quot;);
+        product1.put(&quot;price&quot;, 799.99);
+
+        // Serialize the record to a file
+        File file = new File(&quot;products.avro&quot;);
+        DatumWriter&lt;GenericRecord&gt; datumWriter = new GenericDatumWriter&lt;&gt;(schema);
+        DataFileWriter&lt;GenericRecord&gt; dataFileWriter = new DataFileWriter&lt;&gt;(datumWriter);
+        dataFileWriter.create(schema, file);
+        dataFileWriter.append(product1);
+        dataFileWriter.close();
+
+        // Deserialize the record from the file
+        DatumReader&lt;GenericRecord&gt; datumReader = new GenericDatumReader&lt;&gt;(schema);
+        DataFileReader&lt;GenericRecord&gt; dataFileReader = new DataFileReader&lt;&gt;(file, datumReader);
+        while (dataFileReader.hasNext()) {
+            GenericRecord product = dataFileReader.next();
+            System.out.println(product);
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this module, we explored the concept of data serialization in Hadoop, its importance, and the various serialization frameworks used in Hadoop. We delved into Hadoop's native Writable serialization and the Avro serialization framework, providing practical examples and exercises to reinforce the concepts. Understanding data serialization is crucial for efficient data storage and transmission in Hadoop, enabling seamless interoperability and performance optimization.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-hadoop-performance-tuning' title="Hadoop Performance Tuning">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-hadoop-in-data-warehousing' title="Hadoop in Data Warehousing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

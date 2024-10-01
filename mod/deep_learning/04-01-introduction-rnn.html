@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/04-01-introduccion-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/04-01-introduccion-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/04-01-introduction-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/deep_learning/04-01-introduction-rnn" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/04-01-introduction-rnn" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-cnn-applications-image-recognition' title="CNN Applications in Image Recognition">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introduction to RNN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lstm-gru' title="LSTM and GRU">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Recurrent Neural Networks (RNNs) are a class of neural networks that are particularly well-suited for sequential data. Unlike traditional feedforward neural networks, RNNs have connections that form directed cycles, allowing them to maintain a 'memory' of previous inputs. This makes them powerful for tasks where context or sequence is important, such as natural language processing, time series prediction, and more.</p>
+</div><h1>Key Concepts of RNN</h1>
+<div class='content'></div><h2>1. Sequential Data</h2>
+<div class='content'><p>Sequential data is any data where the order of the elements is important. Examples include:</p>
+<ul>
+<li>Time series data (e.g., stock prices, weather data)</li>
+<li>Text data (e.g., sentences, paragraphs)</li>
+<li>Audio data (e.g., speech signals)</li>
+</ul>
+</div><h2>2. Recurrent Connections</h2>
+<div class='content'><p>RNNs have recurrent connections that allow information to persist. This is achieved through loops in the network, which enable the network to use its internal state (memory) to process sequences of inputs.</p>
+</div><h2>3. Hidden State</h2>
+<div class='content'><p>The hidden state is a key component of RNNs. It captures information about the sequence seen so far. At each time step, the hidden state is updated based on the current input and the previous hidden state.</p>
+</div><h2>4. RNN Cell</h2>
+<div class='content'><p>An RNN cell is the basic building block of an RNN. It takes an input and the previous hidden state and produces an output and a new hidden state.</p>
+</div><h1>RNN Architecture</h1>
+<div class='content'></div><h2>Basic RNN Structure</h2>
+<div class='content'><p>The basic structure of an RNN can be visualized as follows:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5wdXQgU2VxdWVuY2U6IHgxLCB4MiwgeDMsIC4uLiwgeHQKSGlkZGVuIFN0YXRlczogIGgxLCBoMiwgaDMsIC4uLiwgaHQKT3V0cHV0IFNlcXVlbmNlOiB5MSwgeTIsIHkzLCAuLi4sIHl0"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Input Sequence: x1, x2, x3, ..., xt
+Hidden States:  h1, h2, h3, ..., ht
+Output Sequence: y1, y2, y3, ..., yt</pre></div><div class='content'><p>At each time step <code>t</code>, the RNN cell performs the following operations:</p>
+<ol>
+<li>
+<p><strong>Compute the new hidden state</strong>:
+\[
+h_t = \sigma(W_{hx} x_t + W_{hh} h_{t-1} + b_h)
+\]
+where:</p>
+<ul>
+<li>\( h_t \) is the hidden state at time step <code>t</code></li>
+<li>\( x_t \) is the input at time step <code>t</code></li>
+<li>\( W_{hx} \) and \( W_{hh} \) are weight matrices</li>
+<li>\( b_h \) is the bias term</li>
+<li>\( \sigma \) is an activation function (e.g., tanh or ReLU)</li>
+</ul>
+</li>
+<li>
+<p><strong>Compute the output</strong>:
+\[
+y_t = \sigma(W_{hy} h_t + b_y)
+\]
+where:</p>
+<ul>
+<li>\( y_t \) is the output at time step <code>t</code></li>
+<li>\( W_{hy} \) is a weight matrix</li>
+<li>\( b_y \) is the bias term</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example Code: Basic RNN in Python using NumPy</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIERlZmluZSB0aGUgUk5OIGNlbGwKY2xhc3MgUk5OQ2VsbDoKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBpbnB1dF9zaXplLCBoaWRkZW5fc2l6ZSwgb3V0cHV0X3NpemUpOgogICAgICAgIHNlbGYuaGlkZGVuX3NpemUgPSBoaWRkZW5fc2l6ZQogICAgICAgIHNlbGYuV19oeCA9IG5wLnJhbmRvbS5yYW5kbihoaWRkZW5fc2l6ZSwgaW5wdXRfc2l6ZSkKICAgICAgICBzZWxmLldfaGggPSBucC5yYW5kb20ucmFuZG4oaGlkZGVuX3NpemUsIGhpZGRlbl9zaXplKQogICAgICAgIHNlbGYuV19oeSA9IG5wLnJhbmRvbS5yYW5kbihvdXRwdXRfc2l6ZSwgaGlkZGVuX3NpemUpCiAgICAgICAgc2VsZi5iX2ggPSBucC56ZXJvcygoaGlkZGVuX3NpemUsIDEpKQogICAgICAgIHNlbGYuYl95ID0gbnAuemVyb3MoKG91dHB1dF9zaXplLCAxKSkKCiAgICBkZWYgZm9yd2FyZChzZWxmLCB4LCBoX3ByZXYpOgogICAgICAgIGggPSBucC50YW5oKG5wLmRvdChzZWxmLldfaHgsIHgpICsgbnAuZG90KHNlbGYuV19oaCwgaF9wcmV2KSArIHNlbGYuYl9oKQogICAgICAgIHkgPSBucC5kb3Qoc2VsZi5XX2h5LCBoKSArIHNlbGYuYl95CiAgICAgICAgcmV0dXJuIHksIGgKCiMgSW5pdGlhbGl6ZSB0aGUgUk5OIGNlbGwKaW5wdXRfc2l6ZSA9IDMKaGlkZGVuX3NpemUgPSA1Cm91dHB1dF9zaXplID0gMgpybm5fY2VsbCA9IFJOTkNlbGwoaW5wdXRfc2l6ZSwgaGlkZGVuX3NpemUsIG91dHB1dF9zaXplKQoKIyBFeGFtcGxlIGlucHV0IHNlcXVlbmNlICgzIHRpbWUgc3RlcHMsIGlucHV0IHNpemUgMykKaW5wdXRzID0gW25wLnJhbmRvbS5yYW5kbihpbnB1dF9zaXplLCAxKSBmb3IgXyBpbiByYW5nZSgzKV0KCiMgSW5pdGlhbCBoaWRkZW4gc3RhdGUKaF9wcmV2ID0gbnAuemVyb3MoKGhpZGRlbl9zaXplLCAxKSkKCiMgRm9yd2FyZCBwYXNzIHRocm91Z2ggdGhlIFJOTgpmb3IgeCBpbiBpbnB1dHM6CiAgICB5LCBoX3ByZXYgPSBybm5fY2VsbC5mb3J3YXJkKHgsIGhfcHJldikKICAgIHByaW50KGYiT3V0cHV0OiB7eS5yYXZlbCgpfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Define the RNN cell
+class RNNCell:
+    def __init__(self, input_size, hidden_size, output_size):
+        self.hidden_size = hidden_size
+        self.W_hx = np.random.randn(hidden_size, input_size)
+        self.W_hh = np.random.randn(hidden_size, hidden_size)
+        self.W_hy = np.random.randn(output_size, hidden_size)
+        self.b_h = np.zeros((hidden_size, 1))
+        self.b_y = np.zeros((output_size, 1))
+
+    def forward(self, x, h_prev):
+        h = np.tanh(np.dot(self.W_hx, x) + np.dot(self.W_hh, h_prev) + self.b_h)
+        y = np.dot(self.W_hy, h) + self.b_y
+        return y, h
+
+# Initialize the RNN cell
+input_size = 3
+hidden_size = 5
+output_size = 2
+rnn_cell = RNNCell(input_size, hidden_size, output_size)
+
+# Example input sequence (3 time steps, input size 3)
+inputs = [np.random.randn(input_size, 1) for _ in range(3)]
+
+# Initial hidden state
+h_prev = np.zeros((hidden_size, 1))
+
+# Forward pass through the RNN
+for x in inputs:
+    y, h_prev = rnn_cell.forward(x, h_prev)
+    print(f&quot;Output: {y.ravel()}&quot;)</pre></div><div class='content'></div><h2>Explanation of the Code</h2>
+<div class='content'><ul>
+<li><strong>RNNCell Class</strong>: Defines the RNN cell with weight matrices and bias terms.</li>
+<li><strong>forward Method</strong>: Computes the new hidden state and output for a given input and previous hidden state.</li>
+<li><strong>Initialization</strong>: Sets up the RNN cell with specified input, hidden, and output sizes.</li>
+<li><strong>Input Sequence</strong>: Generates a sequence of random inputs.</li>
+<li><strong>Forward Pass</strong>: Iterates through the input sequence, updating the hidden state and producing outputs.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement a Simple RNN</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a simple RNN that can process a sequence of numbers and predict the next number in the sequence.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Define the RNN cell.</li>
+<li>Initialize the RNN with appropriate sizes.</li>
+<li>Create a sequence of numbers as input.</li>
+<li>Pass the sequence through the RNN and observe the outputs.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIERlZmluZSB0aGUgUk5OIGNlbGwKY2xhc3MgU2ltcGxlUk5OOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIGlucHV0X3NpemUsIGhpZGRlbl9zaXplLCBvdXRwdXRfc2l6ZSk6CiAgICAgICAgc2VsZi5oaWRkZW5fc2l6ZSA9IGhpZGRlbl9zaXplCiAgICAgICAgc2VsZi5XX2h4ID0gbnAucmFuZG9tLnJhbmRuKGhpZGRlbl9zaXplLCBpbnB1dF9zaXplKQogICAgICAgIHNlbGYuV19oaCA9IG5wLnJhbmRvbS5yYW5kbihoaWRkZW5fc2l6ZSwgaGlkZGVuX3NpemUpCiAgICAgICAgc2VsZi5XX2h5ID0gbnAucmFuZG9tLnJhbmRuKG91dHB1dF9zaXplLCBoaWRkZW5fc2l6ZSkKICAgICAgICBzZWxmLmJfaCA9IG5wLnplcm9zKChoaWRkZW5fc2l6ZSwgMSkpCiAgICAgICAgc2VsZi5iX3kgPSBucC56ZXJvcygob3V0cHV0X3NpemUsIDEpKQoKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgsIGhfcHJldik6CiAgICAgICAgaCA9IG5wLnRhbmgobnAuZG90KHNlbGYuV19oeCwgeCkgKyBucC5kb3Qoc2VsZi5XX2hoLCBoX3ByZXYpICsgc2VsZi5iX2gpCiAgICAgICAgeSA9IG5wLmRvdChzZWxmLldfaHksIGgpICsgc2VsZi5iX3kKICAgICAgICByZXR1cm4geSwgaAoKIyBJbml0aWFsaXplIHRoZSBSTk4KaW5wdXRfc2l6ZSA9IDEKaGlkZGVuX3NpemUgPSAxMApvdXRwdXRfc2l6ZSA9IDEKcm5uID0gU2ltcGxlUk5OKGlucHV0X3NpemUsIGhpZGRlbl9zaXplLCBvdXRwdXRfc2l6ZSkKCiMgRXhhbXBsZSBpbnB1dCBzZXF1ZW5jZSAoNSB0aW1lIHN0ZXBzLCBpbnB1dCBzaXplIDEpCmlucHV0cyA9IFtucC5hcnJheShbW2ldXSkgZm9yIGkgaW4gcmFuZ2UoNSldCgojIEluaXRpYWwgaGlkZGVuIHN0YXRlCmhfcHJldiA9IG5wLnplcm9zKChoaWRkZW5fc2l6ZSwgMSkpCgojIEZvcndhcmQgcGFzcyB0aHJvdWdoIHRoZSBSTk4Kb3V0cHV0cyA9IFtdCmZvciB4IGluIGlucHV0czoKICAgIHksIGhfcHJldiA9IHJubi5mb3J3YXJkKHgsIGhfcHJldikKICAgIG91dHB1dHMuYXBwZW5kKHkpCgojIFByaW50IHRoZSBvdXRwdXRzCmZvciBpLCBvdXRwdXQgaW4gZW51bWVyYXRlKG91dHB1dHMpOgogICAgcHJpbnQoZiJUaW1lIHN0ZXAge2l9OiBPdXRwdXQ6IHtvdXRwdXQucmF2ZWwoKX0iKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Define the RNN cell
+class SimpleRNN:
+    def __init__(self, input_size, hidden_size, output_size):
+        self.hidden_size = hidden_size
+        self.W_hx = np.random.randn(hidden_size, input_size)
+        self.W_hh = np.random.randn(hidden_size, hidden_size)
+        self.W_hy = np.random.randn(output_size, hidden_size)
+        self.b_h = np.zeros((hidden_size, 1))
+        self.b_y = np.zeros((output_size, 1))
+
+    def forward(self, x, h_prev):
+        h = np.tanh(np.dot(self.W_hx, x) + np.dot(self.W_hh, h_prev) + self.b_h)
+        y = np.dot(self.W_hy, h) + self.b_y
+        return y, h
+
+# Initialize the RNN
+input_size = 1
+hidden_size = 10
+output_size = 1
+rnn = SimpleRNN(input_size, hidden_size, output_size)
+
+# Example input sequence (5 time steps, input size 1)
+inputs = [np.array([[i]]) for i in range(5)]
+
+# Initial hidden state
+h_prev = np.zeros((hidden_size, 1))
+
+# Forward pass through the RNN
+outputs = []
+for x in inputs:
+    y, h_prev = rnn.forward(x, h_prev)
+    outputs.append(y)
+
+# Print the outputs
+for i, output in enumerate(outputs):
+    print(f&quot;Time step {i}: Output: {output.ravel()}&quot;)</pre></div><div class='content'></div><h2>Common Mistakes and Tips</h2>
+<div class='content'><ul>
+<li><strong>Initialization</strong>: Ensure that weight matrices and biases are properly initialized.</li>
+<li><strong>Activation Function</strong>: Use appropriate activation functions (e.g., tanh, ReLU) to avoid issues like vanishing gradients.</li>
+<li><strong>Sequence Length</strong>: Be mindful of the sequence length and the capacity of the RNN to handle long sequences.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we introduced Recurrent Neural Networks (RNNs), explored their key concepts, and implemented a basic RNN in Python. RNNs are powerful tools for handling sequential data, making them essential for tasks like natural language processing and time series prediction. In the next section, we will delve deeper into advanced RNN architectures like LSTM and GRU, which address some of the limitations of basic RNNs.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-cnn-applications-image-recognition' title="CNN Applications in Image Recognition">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lstm-gru' title="LSTM and GRU">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

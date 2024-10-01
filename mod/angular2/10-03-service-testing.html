@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Testing</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/10-03-service-testing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/10-03-service-testing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/10-03-service-testing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/angular2/10-03-service-testing" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/10-03-service-testing" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-component-testing' title="Component Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Service Testing</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-end-to-end-testing' title="End-to-End Testing">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will delve into testing services in Angular. Services are a fundamental part of Angular applications, providing a way to share data and functionality across components. Testing services ensures that the business logic and data handling in your application work correctly.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Unit Testing</strong>: Testing individual units of code (e.g., functions, methods) in isolation.</li>
+<li><strong>Dependency Injection</strong>: Injecting dependencies into services to make them testable.</li>
+<li><strong>Mocking</strong>: Creating mock objects to simulate the behavior of real objects in tests.</li>
+<li><strong>TestBed</strong>: Angular's primary API for configuring and initializing the environment for unit tests.</li>
+</ol>
+</div><h1>Setting Up</h1>
+<div class='content'><p>Before we start writing tests, ensure you have the necessary testing tools set up in your Angular project. Angular CLI sets up Jasmine and Karma by default.</p>
+</div><h2>Example Service</h2>
+<div class='content'><p>Let's consider a simple service that fetches data from an API:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9zZXJ2aWNlcy9kYXRhLnNlcnZpY2UudHMKaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBIdHRwQ2xpZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnOwppbXBvcnQgeyBPYnNlcnZhYmxlIH0gZnJvbSAncnhqcyc7CgpASW5qZWN0YWJsZSh7CiAgcHJvdmlkZWRJbjogJ3Jvb3QnCn0pCmV4cG9ydCBjbGFzcyBEYXRhU2VydmljZSB7CiAgcHJpdmF0ZSBhcGlVcmwgPSAnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YSc7CgogIGNvbnN0cnVjdG9yKHByaXZhdGUgaHR0cDogSHR0cENsaWVudCkge30KCiAgZ2V0RGF0YSgpOiBPYnNlcnZhYmxlPGFueT4gewogICAgcmV0dXJuIHRoaXMuaHR0cC5nZXQ8YW55Pih0aGlzLmFwaVVybCk7CiAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/services/data.service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) {}
+
+  getData(): Observable&lt;any&gt; {
+    return this.http.get&lt;any&gt;(this.apiUrl);
+  }
+}</pre></div><div class='content'></div><h1>Writing Tests for the Service</h1>
+<div class='content'></div><h2>Step 1: Import Necessary Modules</h2>
+<div class='content'><p>First, import the necessary modules and dependencies in your test file:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9zZXJ2aWNlcy9kYXRhLnNlcnZpY2Uuc3BlYy50cwppbXBvcnQgeyBUZXN0QmVkIH0gZnJvbSAnQGFuZ3VsYXIvY29yZS90ZXN0aW5nJzsKaW1wb3J0IHsgSHR0cENsaWVudFRlc3RpbmdNb2R1bGUsIEh0dHBUZXN0aW5nQ29udHJvbGxlciB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbi9odHRwL3Rlc3RpbmcnOwppbXBvcnQgeyBEYXRhU2VydmljZSB9IGZyb20gJy4vZGF0YS5zZXJ2aWNlJzs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/services/data.service.spec.ts
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { DataService } from './data.service';</pre></div><div class='content'></div><h2>Step 2: Configure TestBed</h2>
+<div class='content'><p>Configure the TestBed to provide the service and its dependencies:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmVmb3JlRWFjaCgoKSA9PiB7CiAgVGVzdEJlZC5jb25maWd1cmVUZXN0aW5nTW9kdWxlKHsKICAgIGltcG9ydHM6IFtIdHRwQ2xpZW50VGVzdGluZ01vZHVsZV0sCiAgICBwcm92aWRlcnM6IFtEYXRhU2VydmljZV0KICB9KTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>beforeEach(() =&gt; {
+  TestBed.configureTestingModule({
+    imports: [HttpClientTestingModule],
+    providers: [DataService]
+  });
+});</pre></div><div class='content'></div><h2>Step 3: Inject the Service and HttpTestingController</h2>
+<div class='content'><p>Inject the service and the <code>HttpTestingController</code> to control HTTP requests:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHNlcnZpY2U6IERhdGFTZXJ2aWNlOwpsZXQgaHR0cE1vY2s6IEh0dHBUZXN0aW5nQ29udHJvbGxlcjsKCmJlZm9yZUVhY2goKCkgPT4gewogIHNlcnZpY2UgPSBUZXN0QmVkLmluamVjdChEYXRhU2VydmljZSk7CiAgaHR0cE1vY2sgPSBUZXN0QmVkLmluamVjdChIdHRwVGVzdGluZ0NvbnRyb2xsZXIpOwp9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let service: DataService;
+let httpMock: HttpTestingController;
+
+beforeEach(() =&gt; {
+  service = TestBed.inject(DataService);
+  httpMock = TestBed.inject(HttpTestingController);
+});</pre></div><div class='content'></div><h2>Step 4: Write Test Cases</h2>
+<div class='content'><p>Write test cases to verify the service's behavior:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ0RhdGFTZXJ2aWNlJywgKCkgPT4gewogIGJlZm9yZUVhY2goKCkgPT4gewogICAgVGVzdEJlZC5jb25maWd1cmVUZXN0aW5nTW9kdWxlKHsKICAgICAgaW1wb3J0czogW0h0dHBDbGllbnRUZXN0aW5nTW9kdWxlXSwKICAgICAgcHJvdmlkZXJzOiBbRGF0YVNlcnZpY2VdCiAgICB9KTsKICAgIHNlcnZpY2UgPSBUZXN0QmVkLmluamVjdChEYXRhU2VydmljZSk7CiAgICBodHRwTW9jayA9IFRlc3RCZWQuaW5qZWN0KEh0dHBUZXN0aW5nQ29udHJvbGxlcik7CiAgfSk7CgogIGl0KCdzaG91bGQgYmUgY3JlYXRlZCcsICgpID0+IHsKICAgIGV4cGVjdChzZXJ2aWNlKS50b0JlVHJ1dGh5KCk7CiAgfSk7CgogIGl0KCdzaG91bGQgZmV0Y2ggZGF0YSBmcm9tIEFQSScsICgpID0+IHsKICAgIGNvbnN0IG1vY2tEYXRhID0geyBpZDogMSwgbmFtZTogJ1Rlc3QgRGF0YScgfTsKCiAgICBzZXJ2aWNlLmdldERhdGEoKS5zdWJzY3JpYmUoZGF0YSA9PiB7CiAgICAgIGV4cGVjdChkYXRhKS50b0VxdWFsKG1vY2tEYXRhKTsKICAgIH0pOwoKICAgIGNvbnN0IHJlcSA9IGh0dHBNb2NrLmV4cGVjdE9uZSgnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YScpOwogICAgZXhwZWN0KHJlcS5yZXF1ZXN0Lm1ldGhvZCkudG9CZSgnR0VUJyk7CiAgICByZXEuZmx1c2gobW9ja0RhdGEpOwogIH0pOwoKICBhZnRlckVhY2goKCkgPT4gewogICAgaHR0cE1vY2sudmVyaWZ5KCk7CiAgfSk7Cn0pOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('DataService', () =&gt; {
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [DataService]
+    });
+    service = TestBed.inject(DataService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  it('should be created', () =&gt; {
+    expect(service).toBeTruthy();
+  });
+
+  it('should fetch data from API', () =&gt; {
+    const mockData = { id: 1, name: 'Test Data' };
+
+    service.getData().subscribe(data =&gt; {
+      expect(data).toEqual(mockData);
+    });
+
+    const req = httpMock.expectOne('https://api.example.com/data');
+    expect(req.request.method).toBe('GET');
+    req.flush(mockData);
+  });
+
+  afterEach(() =&gt; {
+    httpMock.verify();
+  });
+});</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>TestBed Configuration</strong>: Sets up the testing environment with <code>HttpClientTestingModule</code> and provides the <code>DataService</code>.</li>
+<li><strong>Service and HttpTestingController Injection</strong>: Injects the service and <code>HttpTestingController</code> for controlling HTTP requests.</li>
+<li><strong>Test Cases</strong>:
+<ul>
+<li><strong>Service Creation</strong>: Verifies that the service is created successfully.</li>
+<li><strong>API Data Fetching</strong>: Mocks an HTTP GET request and verifies that the service fetches data correctly.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Forgetting to Call <code>httpMock.verify()</code></strong>: Always call <code>httpMock.verify()</code> in the <code>afterEach</code> block to ensure no outstanding HTTP requests are left.</li>
+<li><strong>Incorrect URL in <code>expectOne</code></strong>: Ensure the URL in <code>expectOne</code> matches the URL used in the service method.</li>
+<li><strong>Not Handling Errors</strong>: Write additional tests to handle error scenarios using <code>req.flush(null, { status: 404, statusText: 'Not Found' })</code>.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Testing services in Angular is crucial for ensuring the reliability of your application's business logic and data handling. By using Angular's testing utilities like <code>TestBed</code> and <code>HttpTestingController</code>, you can write effective unit tests for your services. Practice writing tests for different scenarios, including success and error cases, to make your services robust and reliable.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-component-testing' title="Component Testing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-end-to-end-testing' title="End-to-End Testing">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

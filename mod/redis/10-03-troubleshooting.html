@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Troubleshooting</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/10-03-troubleshooting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/10-03-troubleshooting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/10-03-troubleshooting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/10-03-troubleshooting" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/10-03-troubleshooting" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-monitoring-and-maintenance' title="Monitoring and Maintenance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Troubleshooting</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-case-studies' title="Case Studies">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover common issues you might encounter when working with Redis in a production environment and how to troubleshoot them effectively. Understanding how to diagnose and resolve problems is crucial for maintaining a stable and performant Redis deployment.</p>
+</div><h1>Common Issues and Solutions</h1>
+<div class='content'></div><h2>1. Connection Issues</h2>
+<div class='content'><h4>Symptoms:</h4>
+<ul>
+<li>Clients cannot connect to the Redis server.</li>
+<li>Connection timeouts or refusals.</li>
+</ul>
+<h4>Possible Causes:</h4>
+<ul>
+<li>Redis server is not running.</li>
+<li>Network issues or firewall blocking the connection.</li>
+<li>Incorrect configuration settings.</li>
+</ul>
+<h4>Troubleshooting Steps:</h4>
+<ol>
+<li>
+<p><strong>Check if Redis is running:</strong></p>
+<pre><code class="language-sh">ps aux | grep redis
+</code></pre>
+<p>Ensure the Redis server process is active.</p>
+</li>
+<li>
+<p><strong>Verify network connectivity:</strong></p>
+<pre><code class="language-sh">ping &lt;redis-server-ip&gt;
+telnet &lt;redis-server-ip&gt; &lt;redis-port&gt;
+</code></pre>
+<p>Ensure the server is reachable and the port is open.</p>
+</li>
+<li>
+<p><strong>Review Redis configuration:</strong>
+Check <code>redis.conf</code> for <code>bind</code> and <code>port</code> settings. Ensure they are correctly configured to accept connections.</p>
+</li>
+<li>
+<p><strong>Check firewall settings:</strong>
+Ensure that the firewall allows traffic on the Redis port (default is 6379).</p>
+</li>
+</ol>
+</div><h2>2. High Memory Usage</h2>
+<div class='content'><h4>Symptoms:</h4>
+<ul>
+<li>Redis server consumes a large amount of memory.</li>
+<li>System performance degrades due to high memory usage.</li>
+</ul>
+<h4>Possible Causes:</h4>
+<ul>
+<li>Large datasets stored in Redis.</li>
+<li>Inefficient data structures or commands.</li>
+</ul>
+<h4>Troubleshooting Steps:</h4>
+<ol>
+<li>
+<p><strong>Monitor memory usage:</strong></p>
+<pre><code class="language-sh">redis-cli info memory
+</code></pre>
+<p>Check the <code>used_memory</code> and <code>used_memory_peak</code> metrics.</p>
+</li>
+<li>
+<p><strong>Analyze key sizes:</strong></p>
+<pre><code class="language-sh">redis-cli --bigkeys
+</code></pre>
+<p>Identify large keys that may be consuming excessive memory.</p>
+</li>
+<li>
+<p><strong>Optimize data structures:</strong>
+Use appropriate data types and structures to store data efficiently. For example, use hashes instead of strings for storing related data.</p>
+</li>
+<li>
+<p><strong>Enable memory eviction policies:</strong>
+Configure eviction policies in <code>redis.conf</code> to manage memory usage:</p>
+<pre><code class="language-sh">maxmemory &lt;bytes&gt;
+maxmemory-policy &lt;policy&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>3. Slow Performance</h2>
+<div class='content'><h4>Symptoms:</h4>
+<ul>
+<li>High latency in command execution.</li>
+<li>Slow response times from the Redis server.</li>
+</ul>
+<h4>Possible Causes:</h4>
+<ul>
+<li>High server load or insufficient resources.</li>
+<li>Inefficient commands or data structures.</li>
+<li>Network latency.</li>
+</ul>
+<h4>Troubleshooting Steps:</h4>
+<ol>
+<li>
+<p><strong>Monitor server performance:</strong></p>
+<pre><code class="language-sh">redis-cli info stats
+</code></pre>
+<p>Check metrics like <code>instantaneous_ops_per_sec</code> and <code>latency</code>.</p>
+</li>
+<li>
+<p><strong>Identify slow commands:</strong></p>
+<pre><code class="language-sh">redis-cli slowlog get
+</code></pre>
+<p>Review the slow log to identify commands that are taking a long time to execute.</p>
+</li>
+<li>
+<p><strong>Optimize commands and data structures:</strong>
+Use efficient commands and data structures. For example, avoid using <code>KEYS</code> command on large datasets.</p>
+</li>
+<li>
+<p><strong>Scale Redis deployment:</strong>
+Consider scaling your Redis deployment using replication, sharding, or clustering to distribute the load.</p>
+</li>
+</ol>
+</div><h2>4. Data Persistence Issues</h2>
+<div class='content'><h4>Symptoms:</h4>
+<ul>
+<li>Data loss after a server restart.</li>
+<li>Inconsistent data between snapshots.</li>
+</ul>
+<h4>Possible Causes:</h4>
+<ul>
+<li>Misconfigured persistence settings.</li>
+<li>Disk I/O issues.</li>
+</ul>
+<h4>Troubleshooting Steps:</h4>
+<ol>
+<li>
+<p><strong>Check persistence configuration:</strong>
+Review <code>redis.conf</code> for RDB and AOF settings. Ensure they are correctly configured:</p>
+<pre><code class="language-sh">save 900 1
+save 300 10
+save 60 10000
+appendonly yes
+</code></pre>
+</li>
+<li>
+<p><strong>Monitor disk I/O:</strong>
+Ensure the disk is not a bottleneck. Use tools like <code>iostat</code> to monitor disk performance.</p>
+</li>
+<li>
+<p><strong>Verify AOF and RDB files:</strong>
+Check the integrity of AOF and RDB files. Use <code>redis-check-aof</code> and <code>redis-check-rdb</code> tools to verify and repair files if necessary.</p>
+</li>
+</ol>
+</div><h2>5. Replication Issues</h2>
+<div class='content'><h4>Symptoms:</h4>
+<ul>
+<li>Replication lag or delay.</li>
+<li>Slaves not syncing with the master.</li>
+</ul>
+<h4>Possible Causes:</h4>
+<ul>
+<li>Network issues between master and slave.</li>
+<li>High load on the master server.</li>
+</ul>
+<h4>Troubleshooting Steps:</h4>
+<ol>
+<li>
+<p><strong>Check replication status:</strong></p>
+<pre><code class="language-sh">redis-cli info replication
+</code></pre>
+<p>Review the replication metrics and status.</p>
+</li>
+<li>
+<p><strong>Monitor network connectivity:</strong>
+Ensure stable network connectivity between master and slave servers.</p>
+</li>
+<li>
+<p><strong>Optimize master load:</strong>
+Reduce the load on the master server by offloading read operations to slaves or scaling the deployment.</p>
+</li>
+</ol>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Diagnosing Connection Issues</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Scenario:</strong>
+Your Redis clients are unable to connect to the Redis server.</p>
+</li>
+<li>
+<p><strong>Steps:</strong></p>
+<ul>
+<li>Check if the Redis server is running.</li>
+<li>Verify network connectivity.</li>
+<li>Review Redis configuration settings.</li>
+<li>Check firewall settings.</li>
+</ul>
+</li>
+<li>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-sh"># Check if Redis is running
+ps aux | grep redis
+
+# Verify network connectivity
+ping &lt;redis-server-ip&gt;
+telnet &lt;redis-server-ip&gt; &lt;redis-port&gt;
+
+# Review Redis configuration
+cat /etc/redis/redis.conf | grep -E 'bind|port'
+
+# Check firewall settings
+sudo ufw status
+sudo ufw allow 6379
+</code></pre>
+</li>
+</ol>
+</div><h2>Exercise 2: Analyzing Memory Usage</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Scenario:</strong>
+Your Redis server is consuming a large amount of memory.</p>
+</li>
+<li>
+<p><strong>Steps:</strong></p>
+<ul>
+<li>Monitor memory usage.</li>
+<li>Analyze key sizes.</li>
+<li>Optimize data structures.</li>
+<li>Enable memory eviction policies.</li>
+</ul>
+</li>
+<li>
+<p><strong>Solution:</strong></p>
+<pre><code class="language-sh"># Monitor memory usage
+redis-cli info memory
+
+# Analyze key sizes
+redis-cli --bigkeys
+
+# Enable memory eviction policies
+echo &quot;maxmemory 2gb&quot; &gt;&gt; /etc/redis/redis.conf
+echo &quot;maxmemory-policy allkeys-lru&quot; &gt;&gt; /etc/redis/redis.conf
+sudo systemctl restart redis
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Troubleshooting Redis involves identifying symptoms, understanding possible causes, and following systematic steps to resolve issues. By monitoring key metrics, optimizing configurations, and scaling deployments, you can maintain a stable and performant Redis environment. Practice the exercises provided to reinforce your troubleshooting skills and be prepared to handle common Redis issues in production.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-monitoring-and-maintenance' title="Monitoring and Maintenance">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-case-studies' title="Case Studies">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

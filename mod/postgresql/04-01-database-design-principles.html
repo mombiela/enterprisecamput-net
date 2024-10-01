@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Design Principles</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/04-01-database-design-principles" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/04-01-database-design-principles" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/04-01-database-design-principles" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/04-01-database-design-principles" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/04-01-database-design-principles" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-common-table-expressions' title="Common Table Expressions (CTEs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Database Design Principles</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-normalization' title="Normalization">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will cover the fundamental principles of database design. Understanding these principles is crucial for creating efficient, scalable, and maintainable databases. This module will provide you with the knowledge to design databases that meet the needs of your applications and ensure data integrity.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Data Modeling</strong></p>
+<ul>
+<li><strong>Entities and Attributes</strong>: Identify the main objects (entities) and their properties (attributes) that need to be stored in the database.</li>
+<li><strong>Relationships</strong>: Define how entities are related to each other (one-to-one, one-to-many, many-to-many).</li>
+</ul>
+</li>
+<li>
+<p><strong>Normalization</strong></p>
+<ul>
+<li><strong>First Normal Form (1NF)</strong>: Ensure that each column contains atomic (indivisible) values and each record is unique.</li>
+<li><strong>Second Normal Form (2NF)</strong>: Ensure that all non-key attributes are fully functional dependent on the primary key.</li>
+<li><strong>Third Normal Form (3NF)</strong>: Ensure that all attributes are only dependent on the primary key.</li>
+</ul>
+</li>
+<li>
+<p><strong>Primary and Foreign Keys</strong></p>
+<ul>
+<li><strong>Primary Key</strong>: A unique identifier for each record in a table.</li>
+<li><strong>Foreign Key</strong>: A field in one table that uniquely identifies a row of another table, creating a relationship between the two tables.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indexes</strong></p>
+<ul>
+<li><strong>Purpose</strong>: Improve the speed of data retrieval operations.</li>
+<li><strong>Types</strong>: B-tree, Hash, GiST, GIN, etc.</li>
+</ul>
+</li>
+<li>
+<p><strong>Data Integrity</strong></p>
+<ul>
+<li><strong>Entity Integrity</strong>: Ensures that each table has a primary key and that the key is unique and not null.</li>
+<li><strong>Referential Integrity</strong>: Ensures that foreign keys correctly and consistently reference primary keys in other tables.</li>
+<li><strong>Domain Integrity</strong>: Ensures that all columns in a database are in a defined domain (data type, format, range).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Step 1: Identify Entities and Attributes</h2>
+<div class='content'><p>Let's consider a simple e-commerce application. The main entities might be:</p>
+<ul>
+<li><strong>Customer</strong>: Attributes could include <code>CustomerID</code>, <code>Name</code>, <code>Email</code>, <code>Phone</code>.</li>
+<li><strong>Product</strong>: Attributes could include <code>ProductID</code>, <code>ProductName</code>, <code>Price</code>, <code>Stock</code>.</li>
+<li><strong>Order</strong>: Attributes could include <code>OrderID</code>, <code>OrderDate</code>, <code>CustomerID</code>.</li>
+<li><strong>OrderItem</strong>: Attributes could include <code>OrderItemID</code>, <code>OrderID</code>, <code>ProductID</code>, <code>Quantity</code>.</li>
+</ul>
+</div><h2>Step 2: Define Relationships</h2>
+<div class='content'><ul>
+<li>A <strong>Customer</strong> can place multiple <strong>Orders</strong> (one-to-many).</li>
+<li>An <strong>Order</strong> can contain multiple <strong>OrderItems</strong> (one-to-many).</li>
+<li>An <strong>OrderItem</strong> is associated with one <strong>Product</strong> (many-to-one).</li>
+</ul>
+</div><h2>Step 3: Create Tables with Primary and Foreign Keys</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIEN1c3RvbWVyICgKICAgIEN1c3RvbWVySUQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgTmFtZSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBFbWFpbCBWQVJDSEFSKDEwMCkgVU5JUVVFIE5PVCBOVUxMLAogICAgUGhvbmUgVkFSQ0hBUigxNSkKKTsKCkNSRUFURSBUQUJMRSBQcm9kdWN0ICgKICAgIFByb2R1Y3RJRCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBQcm9kdWN0TmFtZSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBQcmljZSBERUNJTUFMKDEwLCAyKSBOT1QgTlVMTCwKICAgIFN0b2NrIElOVCBOT1QgTlVMTAopOwoKQ1JFQVRFIFRBQkxFIE9yZGVyICgKICAgIE9yZGVySUQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgT3JkZXJEYXRlIFRJTUVTVEFNUCBOT1QgTlVMTCwKICAgIEN1c3RvbWVySUQgSU5UIE5PVCBOVUxMLAogICAgRk9SRUlHTiBLRVkgKEN1c3RvbWVySUQpIFJFRkVSRU5DRVMgQ3VzdG9tZXIoQ3VzdG9tZXJJRCkKKTsKCkNSRUFURSBUQUJMRSBPcmRlckl0ZW0gKAogICAgT3JkZXJJdGVtSUQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgT3JkZXJJRCBJTlQgTk9UIE5VTEwsCiAgICBQcm9kdWN0SUQgSU5UIE5PVCBOVUxMLAogICAgUXVhbnRpdHkgSU5UIE5PVCBOVUxMLAogICAgRk9SRUlHTiBLRVkgKE9yZGVySUQpIFJFRkVSRU5DRVMgT3JkZXIoT3JkZXJJRCksCiAgICBGT1JFSUdOIEtFWSAoUHJvZHVjdElEKSBSRUZFUkVOQ0VTIFByb2R1Y3QoUHJvZHVjdElEKQopOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Customer (
+    CustomerID SERIAL PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Phone VARCHAR(15)
+);
+
+CREATE TABLE Product (
+    ProductID SERIAL PRIMARY KEY,
+    ProductName VARCHAR(100) NOT NULL,
+    Price DECIMAL(10, 2) NOT NULL,
+    Stock INT NOT NULL
+);
+
+CREATE TABLE Order (
+    OrderID SERIAL PRIMARY KEY,
+    OrderDate TIMESTAMP NOT NULL,
+    CustomerID INT NOT NULL,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+CREATE TABLE OrderItem (
+    OrderItemID SERIAL PRIMARY KEY,
+    OrderID INT NOT NULL,
+    ProductID INT NOT NULL,
+    Quantity INT NOT NULL,
+    FOREIGN KEY (OrderID) REFERENCES Order(OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);</pre></div><div class='content'></div><h2>Step 4: Normalize the Database</h2>
+<div class='content'><p>Ensure that the database is normalized to at least 3NF:</p>
+<ul>
+<li><strong>1NF</strong>: Each table has atomic columns and unique records.</li>
+<li><strong>2NF</strong>: All non-key attributes are fully dependent on the primary key.</li>
+<li><strong>3NF</strong>: All attributes are only dependent on the primary key.</li>
+</ul>
+</div><h2>Step 5: Create Indexes</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9jdXN0b21lcl9lbWFpbCBPTiBDdXN0b21lcihFbWFpbCk7CkNSRUFURSBJTkRFWCBpZHhfcHJvZHVjdF9uYW1lIE9OIFByb2R1Y3QoUHJvZHVjdE5hbWUpOwpDUkVBVEUgSU5ERVggaWR4X29yZGVyX2N1c3RvbWVyIE9OIE9yZGVyKEN1c3RvbWVySUQpOwpDUkVBVEUgSU5ERVggaWR4X29yZGVyaXRlbV9vcmRlciBPTiBPcmRlckl0ZW0oT3JkZXJJRCk7CkNSRUFURSBJTkRFWCBpZHhfb3JkZXJpdGVtX3Byb2R1Y3QgT04gT3JkZXJJdGVtKFByb2R1Y3RJRCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_customer_email ON Customer(Email);
+CREATE INDEX idx_product_name ON Product(ProductName);
+CREATE INDEX idx_order_customer ON Order(CustomerID);
+CREATE INDEX idx_orderitem_order ON OrderItem(OrderID);
+CREATE INDEX idx_orderitem_product ON OrderItem(ProductID);</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise 1: Design a Library Database</h2>
+<div class='content'><p>Design a database for a library system with the following requirements:</p>
+<ul>
+<li><strong>Books</strong>: Each book has a unique identifier, title, author, and publication year.</li>
+<li><strong>Members</strong>: Each member has a unique identifier, name, and contact information.</li>
+<li><strong>Loans</strong>: Each loan records the book borrowed, the member who borrowed it, and the loan date.</li>
+</ul>
+<ol>
+<li>Identify the entities and their attributes.</li>
+<li>Define the relationships between the entities.</li>
+<li>Create the tables with primary and foreign keys.</li>
+<li>Normalize the database to 3NF.</li>
+<li>Create appropriate indexes.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Entities and Attributes</strong>:</p>
+<ul>
+<li><strong>Book</strong>: <code>BookID</code>, <code>Title</code>, <code>Author</code>, <code>PublicationYear</code></li>
+<li><strong>Member</strong>: <code>MemberID</code>, <code>Name</code>, <code>ContactInfo</code></li>
+<li><strong>Loan</strong>: <code>LoanID</code>, <code>BookID</code>, <code>MemberID</code>, <code>LoanDate</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Relationships</strong>:</p>
+<ul>
+<li>A <strong>Member</strong> can borrow multiple <strong>Books</strong> (one-to-many).</li>
+<li>A <strong>Book</strong> can be borrowed by multiple <strong>Members</strong> over time (many-to-many).</li>
+</ul>
+</li>
+<li>
+<p><strong>Tables</strong>:</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIEJvb2sgKAogICAgQm9va0lEIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIFRpdGxlIFZBUkNIQVIoMjU1KSBOT1QgTlVMTCwKICAgIEF1dGhvciBWQVJDSEFSKDI1NSkgTk9UIE5VTEwsCiAgICBQdWJsaWNhdGlvblllYXIgSU5UCik7CgpDUkVBVEUgVEFCTEUgTWVtYmVyICgKICAgIE1lbWJlcklEIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIE5hbWUgVkFSQ0hBUigyNTUpIE5PVCBOVUxMLAogICAgQ29udGFjdEluZm8gVkFSQ0hBUigyNTUpCik7CgpDUkVBVEUgVEFCTEUgTG9hbiAoCiAgICBMb2FuSUQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgQm9va0lEIElOVCBOT1QgTlVMTCwKICAgIE1lbWJlcklEIElOVCBOT1QgTlVMTCwKICAgIExvYW5EYXRlIFRJTUVTVEFNUCBOT1QgTlVMTCwKICAgIEZPUkVJR04gS0VZIChCb29rSUQpIFJFRkVSRU5DRVMgQm9vayhCb29rSUQpLAogICAgRk9SRUlHTiBLRVkgKE1lbWJlcklEKSBSRUZFUkVOQ0VTIE1lbWJlcihNZW1iZXJJRCkKKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Book (
+    BookID SERIAL PRIMARY KEY,
+    Title VARCHAR(255) NOT NULL,
+    Author VARCHAR(255) NOT NULL,
+    PublicationYear INT
+);
+
+CREATE TABLE Member (
+    MemberID SERIAL PRIMARY KEY,
+    Name VARCHAR(255) NOT NULL,
+    ContactInfo VARCHAR(255)
+);
+
+CREATE TABLE Loan (
+    LoanID SERIAL PRIMARY KEY,
+    BookID INT NOT NULL,
+    MemberID INT NOT NULL,
+    LoanDate TIMESTAMP NOT NULL,
+    FOREIGN KEY (BookID) REFERENCES Book(BookID),
+    FOREIGN KEY (MemberID) REFERENCES Member(MemberID)
+);</pre></div><div class='content'><ol start="4">
+<li>
+<p><strong>Normalization</strong>:</p>
+<ul>
+<li><strong>1NF</strong>: Each table has atomic columns and unique records.</li>
+<li><strong>2NF</strong>: All non-key attributes are fully dependent on the primary key.</li>
+<li><strong>3NF</strong>: All attributes are only dependent on the primary key.</li>
+</ul>
+</li>
+<li>
+<p><strong>Indexes</strong>:</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9ib29rX3RpdGxlIE9OIEJvb2soVGl0bGUpOwpDUkVBVEUgSU5ERVggaWR4X21lbWJlcl9uYW1lIE9OIE1lbWJlcihOYW1lKTsKQ1JFQVRFIElOREVYIGlkeF9sb2FuX2Jvb2sgT04gTG9hbihCb29rSUQpOwpDUkVBVEUgSU5ERVggaWR4X2xvYW5fbWVtYmVyIE9OIExvYW4oTWVtYmVySUQpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_book_title ON Book(Title);
+CREATE INDEX idx_member_name ON Member(Name);
+CREATE INDEX idx_loan_book ON Loan(BookID);
+CREATE INDEX idx_loan_member ON Loan(MemberID);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the fundamental principles of database design, including data modeling, normalization, primary and foreign keys, indexes, and data integrity. By following these principles, you can create efficient, scalable, and maintainable databases. In the next section, we will delve deeper into normalization and its importance in database design.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-common-table-expressions' title="Common Table Expressions (CTEs)">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-normalization' title="Normalization">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

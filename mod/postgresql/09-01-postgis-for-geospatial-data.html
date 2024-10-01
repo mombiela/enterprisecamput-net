@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostGIS for Geospatial Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/09-01-postgis-for-geospatial-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/09-01-postgis-for-geospatial-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/09-01-postgis-for-geospatial-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/postgresql/09-01-postgis-for-geospatial-data" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/09-01-postgis-for-geospatial-data" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-using-postgresql-as-nosql' title="Using PostgreSQL as a NoSQL Database">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">PostGIS for Geospatial Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-full-text-search' title="Full-Text Search">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>PostGIS is an extension for PostgreSQL that adds support for geographic objects, allowing the database to be used for geographic information systems (GIS). It provides spatial functions for querying and manipulating geographic data.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>What is PostGIS?</h2>
+<div class='content'><ul>
+<li><strong>PostGIS</strong>: An extension to PostgreSQL that adds support for geographic objects.</li>
+<li><strong>Geographic Information Systems (GIS)</strong>: Systems designed to capture, store, manipulate, analyze, manage, and present spatial or geographic data.</li>
+</ul>
+</div><h2>Installing PostGIS</h2>
+<div class='content'><p>To use PostGIS, you need to install the extension on your PostgreSQL database.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ29ubmVjdCB0byB5b3VyIGRhdGFiYXNlClxjIHlvdXJfZGF0YWJhc2VfbmFtZQoKLS0gSW5zdGFsbCB0aGUgUG9zdEdJUyBleHRlbnNpb24KQ1JFQVRFIEVYVEVOU0lPTiBwb3N0Z2lzOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Connect to your database
+\c your_database_name
+
+-- Install the PostGIS extension
+CREATE EXTENSION postgis;</pre></div><div class='content'></div><h2>Basic Spatial Data Types</h2>
+<div class='content'><ul>
+<li><strong>Geometry</strong>: Represents geometric shapes (points, lines, polygons) in a Cartesian coordinate system.</li>
+<li><strong>Geography</strong>: Represents geographic shapes (points, lines, polygons) on the Earth's surface, taking into account the curvature of the Earth.</li>
+</ul>
+</div><h2>Common Spatial Functions</h2>
+<div class='content'><ul>
+<li><strong>ST_AsText(geometry)</strong>: Returns the Well-Known Text (WKT) representation of the geometry.</li>
+<li><strong>ST_GeomFromText(wkt)</strong>: Creates a geometry from a WKT representation.</li>
+<li><strong>ST_Distance(geometry, geometry)</strong>: Returns the minimum distance between two geometries.</li>
+<li><strong>ST_Intersects(geometry, geometry)</strong>: Returns true if the geometries spatially intersect.</li>
+<li><strong>ST_Within(geometry, geometry)</strong>: Returns true if the first geometry is completely within the second geometry.</li>
+</ul>
+</div><h1>Practical Examples</h1>
+<div class='content'></div><h2>Creating a Table with Spatial Data</h2>
+<div class='content'><p>Let's create a table to store locations with geographic coordinates.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGxvY2F0aW9ucyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBuYW1lIFZBUkNIQVIoMTAwKSwKICAgIGdlb20gR0VPTUVUUlkoUG9pbnQsIDQzMjYpIC0tIDQzMjYgaXMgdGhlIFNSSUQgZm9yIFdHUyA4NAopOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE locations (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    geom GEOMETRY(Point, 4326) -- 4326 is the SRID for WGS 84
+);</pre></div><div class='content'></div><h2>Inserting Spatial Data</h2>
+<div class='content'><p>Insert a point representing a location.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gbG9jYXRpb25zIChuYW1lLCBnZW9tKQpWQUxVRVMgKCdDZW50cmFsIFBhcmsnLCBTVF9HZW9tRnJvbVRleHQoJ1BPSU5UKC03My45NjUzNTUgNDAuNzgyODY1KScsIDQzMjYpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO locations (name, geom)
+VALUES ('Central Park', ST_GeomFromText('POINT(-73.965355 40.782865)', 4326));</pre></div><div class='content'></div><h2>Querying Spatial Data</h2>
+<div class='content'><p>Find all locations within a certain distance from a given point.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUsIFNUX0FzVGV4dChnZW9tKQpGUk9NIGxvY2F0aW9ucwpXSEVSRSBTVF9EaXN0YW5jZShnZW9tLCBTVF9HZW9tRnJvbVRleHQoJ1BPSU5UKC03My45NjUzNTUgNDAuNzgyODY1KScsIDQzMjYpKSA8IDEwMDA7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name, ST_AsText(geom)
+FROM locations
+WHERE ST_Distance(geom, ST_GeomFromText('POINT(-73.965355 40.782865)', 4326)) &lt; 1000;</pre></div><div class='content'></div><h2>Using Spatial Functions</h2>
+<div class='content'><p>Check if a point is within a polygon.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXRlIGEgcG9seWdvbiByZXByZXNlbnRpbmcgYSBib3VuZGFyeQpXSVRIIGJvdW5kYXJ5IEFTICgKICAgIFNFTEVDVCBTVF9HZW9tRnJvbVRleHQoJ1BPTFlHT04oKC03My45NyA0MC43NywgLTczLjk3IDQwLjc5LCAtNzMuOTUgNDAuNzksIC03My45NSA0MC43NywgLTczLjk3IDQwLjc3KSknLCA0MzI2KSBBUyBnZW9tCikKU0VMRUNUIG5hbWUKRlJPTSBsb2NhdGlvbnMsIGJvdW5kYXJ5CldIRVJFIFNUX1dpdGhpbihsb2NhdGlvbnMuZ2VvbSwgYm91bmRhcnkuZ2VvbSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Create a polygon representing a boundary
+WITH boundary AS (
+    SELECT ST_GeomFromText('POLYGON((-73.97 40.77, -73.97 40.79, -73.95 40.79, -73.95 40.77, -73.97 40.77))', 4326) AS geom
+)
+SELECT name
+FROM locations, boundary
+WHERE ST_Within(locations.geom, boundary.geom);</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create and Query Spatial Data</h2>
+<div class='content'><ol>
+<li><strong>Create a table</strong> to store city locations with columns for city name and geographic coordinates.</li>
+<li><strong>Insert data</strong> for at least three cities.</li>
+<li><strong>Query the table</strong> to find cities within a 50 km radius of a given point.</li>
+</ol>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU3RlcCAxOiBDcmVhdGUgdGhlIHRhYmxlCkNSRUFURSBUQUJMRSBjaXRpZXMgKAogICAgaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgbmFtZSBWQVJDSEFSKDEwMCksCiAgICBnZW9tIEdFT0dSQVBIWShQb2ludCwgNDMyNikKKTsKCi0tIFN0ZXAgMjogSW5zZXJ0IGRhdGEKSU5TRVJUIElOVE8gY2l0aWVzIChuYW1lLCBnZW9tKQpWQUxVRVMgCignTmV3IFlvcmsnLCBTVF9HZW9nRnJvbVRleHQoJ1NSSUQ9NDMyNjtQT0lOVCgtNzQuMDA2IDQwLjcxMjgpJykpLAooJ0xvcyBBbmdlbGVzJywgU1RfR2VvZ0Zyb21UZXh0KCdTUklEPTQzMjY7UE9JTlQoLTExOC4yNDM3IDM0LjA1MjIpJykpLAooJ0NoaWNhZ28nLCBTVF9HZW9nRnJvbVRleHQoJ1NSSUQ9NDMyNjtQT0lOVCgtODcuNjI5OCA0MS44NzgxKScpKTsKCi0tIFN0ZXAgMzogUXVlcnkgdGhlIHRhYmxlClNFTEVDVCBuYW1lCkZST00gY2l0aWVzCldIRVJFIFNUX0RXaXRoaW4oZ2VvbSwgU1RfR2VvZ0Zyb21UZXh0KCdTUklEPTQzMjY7UE9JTlQoLTc0LjAwNiA0MC43MTI4KScpLCA1MDAwMCk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Step 1: Create the table
+CREATE TABLE cities (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    geom GEOGRAPHY(Point, 4326)
+);
+
+-- Step 2: Insert data
+INSERT INTO cities (name, geom)
+VALUES 
+('New York', ST_GeogFromText('SRID=4326;POINT(-74.006 40.7128)')),
+('Los Angeles', ST_GeogFromText('SRID=4326;POINT(-118.2437 34.0522)')),
+('Chicago', ST_GeogFromText('SRID=4326;POINT(-87.6298 41.8781)'));
+
+-- Step 3: Query the table
+SELECT name
+FROM cities
+WHERE ST_DWithin(geom, ST_GeogFromText('SRID=4326;POINT(-74.006 40.7128)'), 50000);</pre></div><div class='content'></div><h2>Exercise 2: Spatial Relationships</h2>
+<div class='content'><ol>
+<li><strong>Create a table</strong> to store park boundaries with columns for park name and polygon geometry.</li>
+<li><strong>Insert data</strong> for at least two parks.</li>
+<li><strong>Query the table</strong> to find parks that intersect with a given polygon.</li>
+</ol>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU3RlcCAxOiBDcmVhdGUgdGhlIHRhYmxlCkNSRUFURSBUQUJMRSBwYXJrcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBuYW1lIFZBUkNIQVIoMTAwKSwKICAgIGdlb20gR0VPTUVUUlkoUG9seWdvbiwgNDMyNikKKTsKCi0tIFN0ZXAgMjogSW5zZXJ0IGRhdGEKSU5TRVJUIElOVE8gcGFya3MgKG5hbWUsIGdlb20pClZBTFVFUyAKKCdDZW50cmFsIFBhcmsnLCBTVF9HZW9tRnJvbVRleHQoJ1BPTFlHT04oKC03My45ODE0IDQwLjc2ODEsIC03My45NTgwIDQwLjgwMDUsIC03My45NDk4IDQwLjc5NjgsIC03My45NzMyIDQwLjc2NDQsIC03My45ODE0IDQwLjc2ODEpKScsIDQzMjYpKSwKKCdQcm9zcGVjdCBQYXJrJywgU1RfR2VvbUZyb21UZXh0KCdQT0xZR09OKCgtNzMuOTczMCA0MC42NjAyLCAtNzMuOTY4MCA0MC42NzAwLCAtNzMuOTU4MCA0MC42NjUwLCAtNzMuOTYzMCA0MC42NTUwLCAtNzMuOTczMCA0MC42NjAyKSknLCA0MzI2KSk7CgotLSBTdGVwIDM6IFF1ZXJ5IHRoZSB0YWJsZQpXSVRIIGJvdW5kYXJ5IEFTICgKICAgIFNFTEVDVCBTVF9HZW9tRnJvbVRleHQoJ1BPTFlHT04oKC03My45OCA0MC43NiwgLTczLjk2IDQwLjgwLCAtNzMuOTQgNDAuNzksIC03My45NyA0MC43NSwgLTczLjk4IDQwLjc2KSknLCA0MzI2KSBBUyBnZW9tCikKU0VMRUNUIG5hbWUKRlJPTSBwYXJrcywgYm91bmRhcnkKV0hFUkUgU1RfSW50ZXJzZWN0cyhwYXJrcy5nZW9tLCBib3VuZGFyeS5nZW9tKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Step 1: Create the table
+CREATE TABLE parks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    geom GEOMETRY(Polygon, 4326)
+);
+
+-- Step 2: Insert data
+INSERT INTO parks (name, geom)
+VALUES 
+('Central Park', ST_GeomFromText('POLYGON((-73.9814 40.7681, -73.9580 40.8005, -73.9498 40.7968, -73.9732 40.7644, -73.9814 40.7681))', 4326)),
+('Prospect Park', ST_GeomFromText('POLYGON((-73.9730 40.6602, -73.9680 40.6700, -73.9580 40.6650, -73.9630 40.6550, -73.9730 40.6602))', 4326));
+
+-- Step 3: Query the table
+WITH boundary AS (
+    SELECT ST_GeomFromText('POLYGON((-73.98 40.76, -73.96 40.80, -73.94 40.79, -73.97 40.75, -73.98 40.76))', 4326) AS geom
+)
+SELECT name
+FROM parks, boundary
+WHERE ST_Intersects(parks.geom, boundary.geom);</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the basics of PostGIS, including its installation, key spatial data types, and common spatial functions. We also provided practical examples and exercises to help you get hands-on experience with spatial data in PostgreSQL. Understanding these concepts will enable you to leverage the powerful geospatial capabilities of PostGIS in your applications. In the next module, we will delve into more advanced features and tools available in PostgreSQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-using-postgresql-as-nosql' title="Using PostgreSQL as a NoSQL Database">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-full-text-search' title="Full-Text Search">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

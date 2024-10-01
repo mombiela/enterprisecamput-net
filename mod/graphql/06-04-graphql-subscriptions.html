@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Subscriptions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/06-04-graphql-subscriptions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/06-04-graphql-subscriptions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/06-04-graphql-subscriptions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/06-04-graphql-subscriptions" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/06-04-graphql-subscriptions" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-relay' title="Relay">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">GraphQL Subscriptions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-unit-testing-resolvers' title="Unit Testing Resolvers">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>GraphQL Subscriptions are a powerful feature that allows clients to receive real-time updates from the server. Unlike queries and mutations, which follow a request-response model, subscriptions enable a persistent connection between the client and the server, allowing the server to push updates to the client as they happen.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'></div><h2>1. What are Subscriptions?</h2>
+<div class='content'><ul>
+<li><strong>Definition</strong>: Subscriptions are a way to maintain a real-time connection between the client and the server.</li>
+<li><strong>Use Cases</strong>: Ideal for applications that require real-time updates, such as chat applications, live sports scores, or stock market updates.</li>
+</ul>
+</div><h2>2. How Subscriptions Work</h2>
+<div class='content'><ul>
+<li><strong>Persistent Connection</strong>: Subscriptions use WebSockets to maintain a persistent connection.</li>
+<li><strong>Event-Driven</strong>: The server pushes updates to the client when specific events occur.</li>
+</ul>
+</div><h2>3. Setting Up Subscriptions</h2>
+<div class='content'><ul>
+<li><strong>Server-Side</strong>: Define subscription types and resolvers.</li>
+<li><strong>Client-Side</strong>: Use a client library to handle the subscription connection.</li>
+</ul>
+</div><h1>Practical Example</h1>
+<div class='content'></div><h2>Step 1: Define Subscription Type in Schema</h2>
+<div class='content'><p>First, you need to define a subscription type in your GraphQL schema.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBTdWJzY3JpcHRpb24gewogIG1lc3NhZ2VBZGRlZDogTWVzc2FnZQp9Cgp0eXBlIE1lc3NhZ2UgewogIGlkOiBJRCEKICBjb250ZW50OiBTdHJpbmchCiAgYXV0aG9yOiBTdHJpbmchCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Subscription {
+  messageAdded: Message
+}
+
+type Message {
+  id: ID!
+  content: String!
+  author: String!
+}</pre></div><div class='content'></div><h2>Step 2: Implement Subscription Resolver</h2>
+<div class='content'><p>Next, implement the resolver for the subscription. This example uses Apollo Server.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCwgUHViU3ViIH0gPSByZXF1aXJlKCdhcG9sbG8tc2VydmVyJyk7CmNvbnN0IHB1YnN1YiA9IG5ldyBQdWJTdWIoKTsKCmNvbnN0IHR5cGVEZWZzID0gZ3FsYAogIHR5cGUgU3Vic2NyaXB0aW9uIHsKICAgIG1lc3NhZ2VBZGRlZDogTWVzc2FnZQogIH0KCiAgdHlwZSBNZXNzYWdlIHsKICAgIGlkOiBJRCEKICAgIGNvbnRlbnQ6IFN0cmluZyEKICAgIGF1dGhvcjogU3RyaW5nIQogIH0KCiAgdHlwZSBRdWVyeSB7CiAgICBtZXNzYWdlczogW01lc3NhZ2VdCiAgfQoKICB0eXBlIE11dGF0aW9uIHsKICAgIGFkZE1lc3NhZ2UoY29udGVudDogU3RyaW5nISwgYXV0aG9yOiBTdHJpbmchKTogTWVzc2FnZQogIH0KYDsKCmNvbnN0IG1lc3NhZ2VzID0gW107CmNvbnN0IE1FU1NBR0VfQURERUQgPSAnTUVTU0FHRV9BRERFRCc7Cgpjb25zdCByZXNvbHZlcnMgPSB7CiAgUXVlcnk6IHsKICAgIG1lc3NhZ2VzOiAoKSA9PiBtZXNzYWdlcywKICB9LAogIE11dGF0aW9uOiB7CiAgICBhZGRNZXNzYWdlOiAocGFyZW50LCB7IGNvbnRlbnQsIGF1dGhvciB9KSA9PiB7CiAgICAgIGNvbnN0IG1lc3NhZ2UgPSB7IGlkOiBtZXNzYWdlcy5sZW5ndGggKyAxLCBjb250ZW50LCBhdXRob3IgfTsKICAgICAgbWVzc2FnZXMucHVzaChtZXNzYWdlKTsKICAgICAgcHVic3ViLnB1Ymxpc2goTUVTU0FHRV9BRERFRCwgeyBtZXNzYWdlQWRkZWQ6IG1lc3NhZ2UgfSk7CiAgICAgIHJldHVybiBtZXNzYWdlOwogICAgfSwKICB9LAogIFN1YnNjcmlwdGlvbjogewogICAgbWVzc2FnZUFkZGVkOiB7CiAgICAgIHN1YnNjcmliZTogKCkgPT4gcHVic3ViLmFzeW5jSXRlcmF0b3IoW01FU1NBR0VfQURERURdKSwKICAgIH0sCiAgfSwKfTsKCmNvbnN0IHNlcnZlciA9IG5ldyBBcG9sbG9TZXJ2ZXIoewogIHR5cGVEZWZzLAogIHJlc29sdmVycywKICBzdWJzY3JpcHRpb25zOiB7CiAgICBwYXRoOiAnL3N1YnNjcmlwdGlvbnMnLAogIH0sCn0pOwoKc2VydmVyLmxpc3RlbigpLnRoZW4oKHsgdXJsLCBzdWJzY3JpcHRpb25zVXJsIH0pID0+IHsKICBjb25zb2xlLmxvZyhgU2VydmVyIHJlYWR5IGF0ICR7dXJsfWApOwogIGNvbnNvbGUubG9nKGBTdWJzY3JpcHRpb25zIHJlYWR5IGF0ICR7c3Vic2NyaXB0aW9uc1VybH1gKTsKfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql, PubSub } = require('apollo-server');
+const pubsub = new PubSub();
+
+const typeDefs = gql`
+  type Subscription {
+    messageAdded: Message
+  }
+
+  type Message {
+    id: ID!
+    content: String!
+    author: String!
+  }
+
+  type Query {
+    messages: [Message]
+  }
+
+  type Mutation {
+    addMessage(content: String!, author: String!): Message
+  }
+`;
+
+const messages = [];
+const MESSAGE_ADDED = 'MESSAGE_ADDED';
+
+const resolvers = {
+  Query: {
+    messages: () =&gt; messages,
+  },
+  Mutation: {
+    addMessage: (parent, { content, author }) =&gt; {
+      const message = { id: messages.length + 1, content, author };
+      messages.push(message);
+      pubsub.publish(MESSAGE_ADDED, { messageAdded: message });
+      return message;
+    },
+  },
+  Subscription: {
+    messageAdded: {
+      subscribe: () =&gt; pubsub.asyncIterator([MESSAGE_ADDED]),
+    },
+  },
+};
+
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  subscriptions: {
+    path: '/subscriptions',
+  },
+});
+
+server.listen().then(({ url, subscriptionsUrl }) =&gt; {
+  console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
+});</pre></div><div class='content'></div><h2>Step 3: Client-Side Subscription</h2>
+<div class='content'><p>On the client side, use Apollo Client to subscribe to the <code>messageAdded</code> event.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQXBvbGxvQ2xpZW50LCBJbk1lbW9yeUNhY2hlLCBncWwgfSBmcm9tICdAYXBvbGxvL2NsaWVudCc7CmltcG9ydCB7IFdlYlNvY2tldExpbmsgfSBmcm9tICdAYXBvbGxvL2NsaWVudC9saW5rL3dzJzsKaW1wb3J0IHsgc3BsaXQgfSBmcm9tICdAYXBvbGxvL2NsaWVudCc7CmltcG9ydCB7IGdldE1haW5EZWZpbml0aW9uIH0gZnJvbSAnQGFwb2xsby9jbGllbnQvdXRpbGl0aWVzJzsKaW1wb3J0IHsgSHR0cExpbmsgfSBmcm9tICdAYXBvbGxvL2NsaWVudCc7Cgpjb25zdCBodHRwTGluayA9IG5ldyBIdHRwTGluayh7CiAgdXJpOiAnaHR0cDovL2xvY2FsaG9zdDo0MDAwLycsCn0pOwoKY29uc3Qgd3NMaW5rID0gbmV3IFdlYlNvY2tldExpbmsoewogIHVyaTogYHdzOi8vbG9jYWxob3N0OjQwMDAvc3Vic2NyaXB0aW9uc2AsCiAgb3B0aW9uczogewogICAgcmVjb25uZWN0OiB0cnVlLAogIH0sCn0pOwoKY29uc3Qgc3BsaXRMaW5rID0gc3BsaXQoCiAgKHsgcXVlcnkgfSkgPT4gewogICAgY29uc3QgZGVmaW5pdGlvbiA9IGdldE1haW5EZWZpbml0aW9uKHF1ZXJ5KTsKICAgIHJldHVybiAoCiAgICAgIGRlZmluaXRpb24ua2luZCA9PT0gJ09wZXJhdGlvbkRlZmluaXRpb24nICYmCiAgICAgIGRlZmluaXRpb24ub3BlcmF0aW9uID09PSAnc3Vic2NyaXB0aW9uJwogICAgKTsKICB9LAogIHdzTGluaywKICBodHRwTGluawopOwoKY29uc3QgY2xpZW50ID0gbmV3IEFwb2xsb0NsaWVudCh7CiAgbGluazogc3BsaXRMaW5rLAogIGNhY2hlOiBuZXcgSW5NZW1vcnlDYWNoZSgpLAp9KTsKCmNsaWVudAogIC5zdWJzY3JpYmUoewogICAgcXVlcnk6IGdxbGAKICAgICAgc3Vic2NyaXB0aW9uIHsKICAgICAgICBtZXNzYWdlQWRkZWQgewogICAgICAgICAgaWQKICAgICAgICAgIGNvbnRlbnQKICAgICAgICAgIGF1dGhvcgogICAgICAgIH0KICAgICAgfQogICAgYCwKICB9KQogIC5zdWJzY3JpYmUoewogICAgbmV4dChkYXRhKSB7CiAgICAgIGNvbnNvbGUubG9nKGRhdGEpOwogICAgfSwKICB9KTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { split } from '@apollo/client';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { HttpLink } from '@apollo/client';
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:4000/',
+});
+
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000/subscriptions`,
+  options: {
+    reconnect: true,
+  },
+});
+
+const splitLink = split(
+  ({ query }) =&gt; {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &amp;&amp;
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink
+);
+
+const client = new ApolloClient({
+  link: splitLink,
+  cache: new InMemoryCache(),
+});
+
+client
+  .subscribe({
+    query: gql`
+      subscription {
+        messageAdded {
+          id
+          content
+          author
+        }
+      }
+    `,
+  })
+  .subscribe({
+    next(data) {
+      console.log(data);
+    },
+  });</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Basic Subscription</h2>
+<div class='content'><ol>
+<li><strong>Task</strong>: Implement a basic subscription for a <code>userJoined</code> event.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Define the <code>userJoined</code> subscription type in the schema.</li>
+<li>Implement the resolver for the <code>userJoined</code> subscription.</li>
+<li>Test the subscription using Apollo Client.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBTdWJzY3JpcHRpb24gewogIHVzZXJKb2luZWQ6IFVzZXIKfQoKdHlwZSBVc2VyIHsKICBpZDogSUQhCiAgbmFtZTogU3RyaW5nIQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Subscription {
+  userJoined: User
+}
+
+type User {
+  id: ID!
+  name: String!
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVVNFUl9KT0lORUQgPSAnVVNFUl9KT0lORUQnOwoKY29uc3QgcmVzb2x2ZXJzID0gewogIE11dGF0aW9uOiB7CiAgICBhZGRVc2VyOiAocGFyZW50LCB7IG5hbWUgfSkgPT4gewogICAgICBjb25zdCB1c2VyID0geyBpZDogdXNlcnMubGVuZ3RoICsgMSwgbmFtZSB9OwogICAgICB1c2Vycy5wdXNoKHVzZXIpOwogICAgICBwdWJzdWIucHVibGlzaChVU0VSX0pPSU5FRCwgeyB1c2VySm9pbmVkOiB1c2VyIH0pOwogICAgICByZXR1cm4gdXNlcjsKICAgIH0sCiAgfSwKICBTdWJzY3JpcHRpb246IHsKICAgIHVzZXJKb2luZWQ6IHsKICAgICAgc3Vic2NyaWJlOiAoKSA9PiBwdWJzdWIuYXN5bmNJdGVyYXRvcihbVVNFUl9KT0lORURdKSwKICAgIH0sCiAgfSwKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const USER_JOINED = 'USER_JOINED';
+
+const resolvers = {
+  Mutation: {
+    addUser: (parent, { name }) =&gt; {
+      const user = { id: users.length + 1, name };
+      users.push(user);
+      pubsub.publish(USER_JOINED, { userJoined: user });
+      return user;
+    },
+  },
+  Subscription: {
+    userJoined: {
+      subscribe: () =&gt; pubsub.asyncIterator([USER_JOINED]),
+    },
+  },
+};</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xpZW50CiAgLnN1YnNjcmliZSh7CiAgICBxdWVyeTogZ3FsYAogICAgICBzdWJzY3JpcHRpb24gewogICAgICAgIHVzZXJKb2luZWQgewogICAgICAgICAgaWQKICAgICAgICAgIG5hbWUKICAgICAgICB9CiAgICAgIH0KICAgIGAsCiAgfSkKICAuc3Vic2NyaWJlKHsKICAgIG5leHQoZGF0YSkgewogICAgICBjb25zb2xlLmxvZyhkYXRhKTsKICAgIH0sCiAgfSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>client
+  .subscribe({
+    query: gql`
+      subscription {
+        userJoined {
+          id
+          name
+        }
+      }
+    `,
+  })
+  .subscribe({
+    next(data) {
+      console.log(data);
+    },
+  });</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>WebSocket Connection Issues</strong>: Ensure the WebSocket server is correctly configured and running.</li>
+<li><strong>Subscription Path</strong>: Verify the subscription path matches between the server and client.</li>
+<li><strong>Event Naming</strong>: Use consistent and descriptive event names to avoid confusion.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>GraphQL Subscriptions provide a robust way to implement real-time features in your applications. By understanding how to define subscription types, implement resolvers, and set up client-side subscriptions, you can create dynamic and responsive applications that keep users updated in real-time.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-relay' title="Relay">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-unit-testing-resolvers' title="Unit Testing Resolvers">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Strategies</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/10-01-deployment-strategies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/10-01-deployment-strategies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/10-01-deployment-strategies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/redis/10-01-deployment-strategies" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/10-01-deployment-strategies" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-real-time-analytics' title="Real-Time Analytics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Deployment Strategies</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-monitoring-and-maintenance' title="Monitoring and Maintenance">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore various strategies for deploying Redis in a production environment. Proper deployment is crucial for ensuring high availability, reliability, and performance of your Redis instances. We will cover the following key topics:</p>
+<ol>
+<li><strong>Single Instance Deployment</strong></li>
+<li><strong>Master-Slave Replication</strong></li>
+<li><strong>Redis Sentinel</strong></li>
+<li><strong>Redis Cluster</strong></li>
+<li><strong>Containerization with Docker</strong></li>
+<li><strong>Cloud-Based Deployment</strong></li>
+</ol>
+</div><h1>1. Single Instance Deployment</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>A single instance deployment is the simplest form of deploying Redis. It involves running a single Redis server instance. This setup is suitable for development, testing, or small-scale applications.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Install Redis</strong>: Follow the installation steps from Module 1.</li>
+<li><strong>Start Redis Server</strong>:
+<pre><code class="language-sh">redis-server
+</code></pre>
+</li>
+<li><strong>Connect to Redis</strong>:
+<pre><code class="language-sh">redis-cli
+</code></pre>
+</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simple to set up and manage</td>
+<td>Single point of failure</td>
+</tr>
+<tr>
+<td>Low resource usage</td>
+<td>Limited scalability</td>
+</tr>
+<tr>
+<td>Suitable for small applications</td>
+<td>No high availability</td>
+</tr>
+</tbody>
+</table>
+</div><h1>2. Master-Slave Replication</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Master-Slave replication involves one master Redis instance and one or more slave instances. The master handles all write operations, while slaves replicate the data and can handle read operations.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Configure Master</strong>: Start the master Redis server.
+<pre><code class="language-sh">redis-server --port 6379
+</code></pre>
+</li>
+<li><strong>Configure Slave</strong>: Start the slave Redis server and configure it to replicate the master.
+<pre><code class="language-sh">redis-server --port 6380
+redis-cli -p 6380
+&gt; SLAVEOF 127.0.0.1 6379
+</code></pre>
+</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Improved read scalability</td>
+<td>Write operations are still a bottleneck</td>
+</tr>
+<tr>
+<td>Basic high availability</td>
+<td>Manual failover required</td>
+</tr>
+<tr>
+<td>Easy to set up</td>
+<td>Data consistency issues during failover</td>
+</tr>
+</tbody>
+</table>
+</div><h1>3. Redis Sentinel</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Redis Sentinel provides high availability and monitoring for Redis. It can automatically failover to a slave if the master goes down.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Configure Sentinel</strong>: Create a sentinel configuration file.
+<pre><code class="language-sh">sentinel.conf
+</code></pre>
+<pre><code class="language-conf">sentinel monitor mymaster 127.0.0.1 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+</code></pre>
+</li>
+<li><strong>Start Sentinel</strong>:
+<pre><code class="language-sh">redis-sentinel sentinel.conf
+</code></pre>
+</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Automatic failover</td>
+<td>More complex setup</td>
+</tr>
+<tr>
+<td>Monitoring and notifications</td>
+<td>Requires additional resources</td>
+</tr>
+<tr>
+<td>High availability</td>
+<td>Potential split-brain scenarios</td>
+</tr>
+</tbody>
+</table>
+</div><h1>4. Redis Cluster</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Redis Cluster provides a way to run a Redis installation where data is automatically sharded across multiple Redis nodes.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Create Cluster Configuration</strong>: Define the nodes and their roles.</li>
+<li><strong>Start Redis Nodes</strong>:
+<pre><code class="language-sh">redis-server --port 7000 --cluster-enabled yes --cluster-config-file nodes-7000.conf --cluster-node-timeout 5000 --appendonly yes --appendfilename appendonly-7000.aof --dbfilename dump-7000.rdb
+</code></pre>
+</li>
+<li><strong>Create Cluster</strong>:
+<pre><code class="language-sh">redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 --cluster-replicas 1
+</code></pre>
+</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>High scalability</td>
+<td>More complex setup and management</td>
+</tr>
+<tr>
+<td>Automatic sharding</td>
+<td>Potential data loss during failover</td>
+</tr>
+<tr>
+<td>High availability</td>
+<td>Requires more resources</td>
+</tr>
+</tbody>
+</table>
+</div><h1>5. Containerization with Docker</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Docker allows you to containerize your Redis instances, making it easier to deploy and manage.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Pull Redis Image</strong>:
+<pre><code class="language-sh">docker pull redis
+</code></pre>
+</li>
+<li><strong>Run Redis Container</strong>:
+<pre><code class="language-sh">docker run --name my-redis -d redis
+</code></pre>
+</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Easy to deploy and manage</td>
+<td>Requires Docker knowledge</td>
+</tr>
+<tr>
+<td>Consistent environment</td>
+<td>Potential performance overhead</td>
+</tr>
+<tr>
+<td>Portability</td>
+<td>Additional layer of complexity</td>
+</tr>
+</tbody>
+</table>
+</div><h1>6. Cloud-Based Deployment</h1>
+<div class='content'></div><h2>Overview</h2>
+<div class='content'><p>Deploying Redis on cloud platforms like AWS, Azure, or Google Cloud can provide managed services with high availability and scalability.</p>
+</div><h2>Steps</h2>
+<div class='content'><ol>
+<li><strong>Choose a Cloud Provider</strong>: Select a cloud provider that offers managed Redis services.</li>
+<li><strong>Create Redis Instance</strong>: Follow the provider's instructions to create a Redis instance.</li>
+<li><strong>Configure and Connect</strong>: Configure your application to connect to the cloud-based Redis instance.</li>
+</ol>
+</div><h2>Pros and Cons</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Pros</th>
+<th>Cons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Managed service</td>
+<td>Cost</td>
+</tr>
+<tr>
+<td>High availability</td>
+<td>Limited control over infrastructure</td>
+</tr>
+<tr>
+<td>Scalability</td>
+<td>Dependency on cloud provider</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered various deployment strategies for Redis, ranging from simple single instance deployments to more complex setups like Redis Cluster and cloud-based deployments. Each strategy has its own pros and cons, and the choice depends on your specific requirements for scalability, availability, and ease of management. Understanding these deployment strategies will help you make informed decisions when deploying Redis in a production environment.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-real-time-analytics' title="Real-Time Analytics">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-02-monitoring-and-maintenance' title="Monitoring and Maintenance">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

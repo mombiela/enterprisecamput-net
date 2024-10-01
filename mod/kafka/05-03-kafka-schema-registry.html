@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka with Schema Registry</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/05-03-kafka-schema-registry" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/05-03-kafka-schema-registry" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/05-03-kafka-schema-registry" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/kafka/05-03-kafka-schema-registry" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/05-03-kafka-schema-registry" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-kafka-multi-data-center' title="Kafka in a Multi-Data Center Setup">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka with Schema Registry</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-kafka-streams-advanced' title="Kafka Streams Advanced">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore the Kafka Schema Registry, a critical component for managing and enforcing data schemas in Kafka. This module will cover the following topics:</p>
+<ol>
+<li><strong>Introduction to Schema Registry</strong></li>
+<li><strong>Setting Up Schema Registry</strong></li>
+<li><strong>Using Schema Registry with Kafka Producers</strong></li>
+<li><strong>Using Schema Registry with Kafka Consumers</strong></li>
+<li><strong>Schema Evolution and Compatibility</strong></li>
+<li><strong>Practical Exercises</strong></li>
+</ol>
+</div><h1>1. Introduction to Schema Registry</h1>
+<div class='content'></div><h2>What is Schema Registry?</h2>
+<div class='content'><p>The Schema Registry is a service that provides a RESTful interface for storing and retrieving Avro schemas. It is part of the Confluent Platform and is used to manage the schemas for Kafka topics, ensuring that data is serialized and deserialized consistently.</p>
+</div><h2>Key Features</h2>
+<div class='content'><ul>
+<li><strong>Centralized Schema Management</strong>: Stores all schemas in a central repository.</li>
+<li><strong>Schema Versioning</strong>: Supports multiple versions of schemas.</li>
+<li><strong>Compatibility Checks</strong>: Ensures that new schema versions are compatible with previous versions.</li>
+<li><strong>RESTful Interface</strong>: Provides a REST API for managing schemas.</li>
+</ul>
+</div><h2>Why Use Schema Registry?</h2>
+<div class='content'><ul>
+<li><strong>Data Consistency</strong>: Ensures that data produced and consumed is consistent with the defined schema.</li>
+<li><strong>Schema Evolution</strong>: Allows for the evolution of schemas over time without breaking existing data.</li>
+<li><strong>Interoperability</strong>: Facilitates interoperability between different systems and applications.</li>
+</ul>
+</div><h1>2. Setting Up Schema Registry</h1>
+<div class='content'></div><h2>Prerequisites</h2>
+<div class='content'><ul>
+<li>Kafka cluster up and running.</li>
+<li>Confluent Platform installed.</li>
+</ul>
+</div><h2>Installation Steps</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Download and Install Schema Registry</strong>:</p>
+<pre><code class="language-bash">wget http://packages.confluent.io/archive/6.0/confluent-6.0.0.tar.gz
+tar -xvf confluent-6.0.0.tar.gz
+cd confluent-6.0.0
+</code></pre>
+</li>
+<li>
+<p><strong>Start Schema Registry</strong>:</p>
+<pre><code class="language-bash">./bin/schema-registry-start ./etc/schema-registry/schema-registry.properties
+</code></pre>
+</li>
+<li>
+<p><strong>Verify Schema Registry is Running</strong>:
+Open a web browser and navigate to <code>http://localhost:8081</code>. You should see the Schema Registry REST API documentation.</p>
+</li>
+</ol>
+</div><h1>3. Using Schema Registry with Kafka Producers</h1>
+<div class='content'></div><h2>Registering a Schema</h2>
+<div class='content'><p>Before producing messages, you need to register the schema with the Schema Registry.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBjb25mbHVlbnRfa2Fma2EgaW1wb3J0IGF2cm8KZnJvbSBjb25mbHVlbnRfa2Fma2EuYXZybyBpbXBvcnQgQXZyb1Byb2R1Y2VyCgpzY2hlbWFfcmVnaXN0cnlfdXJsID0gJ2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MScKCnZhbHVlX3NjaGVtYV9zdHIgPSAiIiIKewogICAibmFtZXNwYWNlIjogImV4YW1wbGUuYXZybyIsCiAgICJ0eXBlIjogInJlY29yZCIsCiAgICJuYW1lIjogIlVzZXIiLAogICAiZmllbGRzIjogWwogICAgICAgeyJuYW1lIjogIm5hbWUiLCAidHlwZSI6ICJzdHJpbmcifSwKICAgICAgIHsibmFtZSI6ICJhZ2UiLCAidHlwZSI6ICJpbnQifQogICBdCn0KIiIiCgp2YWx1ZV9zY2hlbWEgPSBhdnJvLmxvYWRzKHZhbHVlX3NjaGVtYV9zdHIpCgphdnJvX3Byb2R1Y2VyID0gQXZyb1Byb2R1Y2VyKHsKICAgICdib290c3RyYXAuc2VydmVycyc6ICdsb2NhbGhvc3Q6OTA5MicsCiAgICAnc2NoZW1hLnJlZ2lzdHJ5LnVybCc6IHNjaGVtYV9yZWdpc3RyeV91cmwKfSwgZGVmYXVsdF92YWx1ZV9zY2hlbWE9dmFsdWVfc2NoZW1hKQoKYXZyb19wcm9kdWNlci5wcm9kdWNlKHRvcGljPSd1c2VycycsIHZhbHVlPXsnbmFtZSc6ICdKb2huJywgJ2FnZSc6IDMwfSkKYXZyb19wcm9kdWNlci5mbHVzaCgp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from confluent_kafka import avro
+from confluent_kafka.avro import AvroProducer
+
+schema_registry_url = 'http://localhost:8081'
+
+value_schema_str = &quot;&quot;&quot;
+{
+   &quot;namespace&quot;: &quot;example.avro&quot;,
+   &quot;type&quot;: &quot;record&quot;,
+   &quot;name&quot;: &quot;User&quot;,
+   &quot;fields&quot;: [
+       {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+       {&quot;name&quot;: &quot;age&quot;, &quot;type&quot;: &quot;int&quot;}
+   ]
+}
+&quot;&quot;&quot;
+
+value_schema = avro.loads(value_schema_str)
+
+avro_producer = AvroProducer({
+    'bootstrap.servers': 'localhost:9092',
+    'schema.registry.url': schema_registry_url
+}, default_value_schema=value_schema)
+
+avro_producer.produce(topic='users', value={'name': 'John', 'age': 30})
+avro_producer.flush()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Schema Definition</strong>: The schema is defined in Avro format.</li>
+<li><strong>AvroProducer</strong>: The <code>AvroProducer</code> class is used to produce messages with Avro serialization.</li>
+<li><strong>Schema Registration</strong>: The schema is automatically registered with the Schema Registry when the message is produced.</li>
+</ul>
+</div><h1>4. Using Schema Registry with Kafka Consumers</h1>
+<div class='content'></div><h2>Consuming Messages with Schema Registry</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBjb25mbHVlbnRfa2Fma2EgaW1wb3J0IGF2cm8KZnJvbSBjb25mbHVlbnRfa2Fma2EuYXZybyBpbXBvcnQgQXZyb0NvbnN1bWVyCgpzY2hlbWFfcmVnaXN0cnlfdXJsID0gJ2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MScKCmF2cm9fY29uc3VtZXIgPSBBdnJvQ29uc3VtZXIoewogICAgJ2Jvb3RzdHJhcC5zZXJ2ZXJzJzogJ2xvY2FsaG9zdDo5MDkyJywKICAgICdncm91cC5pZCc6ICd1c2VyLWNvbnN1bWVycycsCiAgICAnc2NoZW1hLnJlZ2lzdHJ5LnVybCc6IHNjaGVtYV9yZWdpc3RyeV91cmwKfSkKCmF2cm9fY29uc3VtZXIuc3Vic2NyaWJlKFsndXNlcnMnXSkKCndoaWxlIFRydWU6CiAgICBtc2cgPSBhdnJvX2NvbnN1bWVyLnBvbGwoMTApCiAgICBpZiBtc2c6CiAgICAgICAgcHJpbnQoZiJSZWNlaXZlZCBtZXNzYWdlOiB7bXNnLnZhbHVlKCl9IikKICAgIGF2cm9fY29uc3VtZXIuY29tbWl0KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from confluent_kafka import avro
+from confluent_kafka.avro import AvroConsumer
+
+schema_registry_url = 'http://localhost:8081'
+
+avro_consumer = AvroConsumer({
+    'bootstrap.servers': 'localhost:9092',
+    'group.id': 'user-consumers',
+    'schema.registry.url': schema_registry_url
+})
+
+avro_consumer.subscribe(['users'])
+
+while True:
+    msg = avro_consumer.poll(10)
+    if msg:
+        print(f&quot;Received message: {msg.value()}&quot;)
+    avro_consumer.commit()</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>AvroConsumer</strong>: The <code>AvroConsumer</code> class is used to consume messages with Avro deserialization.</li>
+<li><strong>Schema Deserialization</strong>: The schema is fetched from the Schema Registry to deserialize the message.</li>
+</ul>
+</div><h1>5. Schema Evolution and Compatibility</h1>
+<div class='content'></div><h2>Schema Evolution</h2>
+<div class='content'><p>Schema evolution allows you to update the schema over time. For example, you might add a new field to the schema.</p>
+</div><h2>Compatibility Types</h2>
+<div class='content'><ul>
+<li><strong>Backward Compatibility</strong>: New schema can read data written by the old schema.</li>
+<li><strong>Forward Compatibility</strong>: Old schema can read data written by the new schema.</li>
+<li><strong>Full Compatibility</strong>: Both backward and forward compatibility.</li>
+</ul>
+</div><h2>Example of Schema Evolution</h2>
+<div class='content'><p>Original Schema:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICAibmFtZXNwYWNlIjogImV4YW1wbGUuYXZybyIsCiAgICJ0eXBlIjogInJlY29yZCIsCiAgICJuYW1lIjogIlVzZXIiLAogICAiZmllbGRzIjogWwogICAgICAgeyJuYW1lIjogIm5hbWUiLCAidHlwZSI6ICJzdHJpbmcifSwKICAgICAgIHsibmFtZSI6ICJhZ2UiLCAidHlwZSI6ICJpbnQifQogICBdCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+   &quot;namespace&quot;: &quot;example.avro&quot;,
+   &quot;type&quot;: &quot;record&quot;,
+   &quot;name&quot;: &quot;User&quot;,
+   &quot;fields&quot;: [
+       {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+       {&quot;name&quot;: &quot;age&quot;, &quot;type&quot;: &quot;int&quot;}
+   ]
+}</pre></div><div class='content'><p>Updated Schema:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICAibmFtZXNwYWNlIjogImV4YW1wbGUuYXZybyIsCiAgICJ0eXBlIjogInJlY29yZCIsCiAgICJuYW1lIjogIlVzZXIiLAogICAiZmllbGRzIjogWwogICAgICAgeyJuYW1lIjogIm5hbWUiLCAidHlwZSI6ICJzdHJpbmcifSwKICAgICAgIHsibmFtZSI6ICJhZ2UiLCAidHlwZSI6ICJpbnQifSwKICAgICAgIHsibmFtZSI6ICJlbWFpbCIsICJ0eXBlIjogWyJudWxsIiwgInN0cmluZyJdLCAiZGVmYXVsdCI6IG51bGx9CiAgIF0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+   &quot;namespace&quot;: &quot;example.avro&quot;,
+   &quot;type&quot;: &quot;record&quot;,
+   &quot;name&quot;: &quot;User&quot;,
+   &quot;fields&quot;: [
+       {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+       {&quot;name&quot;: &quot;age&quot;, &quot;type&quot;: &quot;int&quot;},
+       {&quot;name&quot;: &quot;email&quot;, &quot;type&quot;: [&quot;null&quot;, &quot;string&quot;], &quot;default&quot;: null}
+   ]
+}</pre></div><div class='content'></div><h1>6. Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Register a New Schema</h2>
+<div class='content'><ol>
+<li>Define a new Avro schema for a <code>Product</code> record with fields <code>id</code> (int), <code>name</code> (string), and <code>price</code> (float).</li>
+<li>Register the schema with the Schema Registry.</li>
+<li>Produce a message using the new schema.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBjb25mbHVlbnRfa2Fma2EgaW1wb3J0IGF2cm8KZnJvbSBjb25mbHVlbnRfa2Fma2EuYXZybyBpbXBvcnQgQXZyb1Byb2R1Y2VyCgpzY2hlbWFfcmVnaXN0cnlfdXJsID0gJ2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MScKCnZhbHVlX3NjaGVtYV9zdHIgPSAiIiIKewogICAibmFtZXNwYWNlIjogImV4YW1wbGUuYXZybyIsCiAgICJ0eXBlIjogInJlY29yZCIsCiAgICJuYW1lIjogIlByb2R1Y3QiLAogICAiZmllbGRzIjogWwogICAgICAgeyJuYW1lIjogImlkIiwgInR5cGUiOiAiaW50In0sCiAgICAgICB7Im5hbWUiOiAibmFtZSIsICJ0eXBlIjogInN0cmluZyJ9LAogICAgICAgeyJuYW1lIjogInByaWNlIiwgInR5cGUiOiAiZmxvYXQifQogICBdCn0KIiIiCgp2YWx1ZV9zY2hlbWEgPSBhdnJvLmxvYWRzKHZhbHVlX3NjaGVtYV9zdHIpCgphdnJvX3Byb2R1Y2VyID0gQXZyb1Byb2R1Y2VyKHsKICAgICdib290c3RyYXAuc2VydmVycyc6ICdsb2NhbGhvc3Q6OTA5MicsCiAgICAnc2NoZW1hLnJlZ2lzdHJ5LnVybCc6IHNjaGVtYV9yZWdpc3RyeV91cmwKfSwgZGVmYXVsdF92YWx1ZV9zY2hlbWE9dmFsdWVfc2NoZW1hKQoKYXZyb19wcm9kdWNlci5wcm9kdWNlKHRvcGljPSdwcm9kdWN0cycsIHZhbHVlPXsnaWQnOiAxLCAnbmFtZSc6ICdMYXB0b3AnLCAncHJpY2UnOiA5OTkuOTl9KQphdnJvX3Byb2R1Y2VyLmZsdXNoKCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from confluent_kafka import avro
+from confluent_kafka.avro import AvroProducer
+
+schema_registry_url = 'http://localhost:8081'
+
+value_schema_str = &quot;&quot;&quot;
+{
+   &quot;namespace&quot;: &quot;example.avro&quot;,
+   &quot;type&quot;: &quot;record&quot;,
+   &quot;name&quot;: &quot;Product&quot;,
+   &quot;fields&quot;: [
+       {&quot;name&quot;: &quot;id&quot;, &quot;type&quot;: &quot;int&quot;},
+       {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+       {&quot;name&quot;: &quot;price&quot;, &quot;type&quot;: &quot;float&quot;}
+   ]
+}
+&quot;&quot;&quot;
+
+value_schema = avro.loads(value_schema_str)
+
+avro_producer = AvroProducer({
+    'bootstrap.servers': 'localhost:9092',
+    'schema.registry.url': schema_registry_url
+}, default_value_schema=value_schema)
+
+avro_producer.produce(topic='products', value={'id': 1, 'name': 'Laptop', 'price': 999.99})
+avro_producer.flush()</pre></div><div class='content'></div><h2>Exercise 2: Consume Messages with Schema Registry</h2>
+<div class='content'><ol>
+<li>Consume messages from the <code>products</code> topic.</li>
+<li>Print the consumed messages to the console.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBjb25mbHVlbnRfa2Fma2EgaW1wb3J0IGF2cm8KZnJvbSBjb25mbHVlbnRfa2Fma2EuYXZybyBpbXBvcnQgQXZyb0NvbnN1bWVyCgpzY2hlbWFfcmVnaXN0cnlfdXJsID0gJ2h0dHA6Ly9sb2NhbGhvc3Q6ODA4MScKCmF2cm9fY29uc3VtZXIgPSBBdnJvQ29uc3VtZXIoewogICAgJ2Jvb3RzdHJhcC5zZXJ2ZXJzJzogJ2xvY2FsaG9zdDo5MDkyJywKICAgICdncm91cC5pZCc6ICdwcm9kdWN0LWNvbnN1bWVycycsCiAgICAnc2NoZW1hLnJlZ2lzdHJ5LnVybCc6IHNjaGVtYV9yZWdpc3RyeV91cmwKfSkKCmF2cm9fY29uc3VtZXIuc3Vic2NyaWJlKFsncHJvZHVjdHMnXSkKCndoaWxlIFRydWU6CiAgICBtc2cgPSBhdnJvX2NvbnN1bWVyLnBvbGwoMTApCiAgICBpZiBtc2c6CiAgICAgICAgcHJpbnQoZiJSZWNlaXZlZCBtZXNzYWdlOiB7bXNnLnZhbHVlKCl9IikKICAgIGF2cm9fY29uc3VtZXIuY29tbWl0KCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from confluent_kafka import avro
+from confluent_kafka.avro import AvroConsumer
+
+schema_registry_url = 'http://localhost:8081'
+
+avro_consumer = AvroConsumer({
+    'bootstrap.servers': 'localhost:9092',
+    'group.id': 'product-consumers',
+    'schema.registry.url': schema_registry_url
+})
+
+avro_consumer.subscribe(['products'])
+
+while True:
+    msg = avro_consumer.poll(10)
+    if msg:
+        print(f&quot;Received message: {msg.value()}&quot;)
+    avro_consumer.commit()</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this module, we covered the Kafka Schema Registry, its setup, and how to use it with Kafka producers and consumers. We also discussed schema evolution and compatibility, which are crucial for maintaining data consistency over time. The practical exercises provided hands-on experience with registering schemas and consuming messages using the Schema Registry.</p>
+<p>Next, we will delve into more advanced topics in Kafka, such as performance tuning and multi-data center setups.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-kafka-multi-data-center' title="Kafka in a Multi-Data Center Setup">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-kafka-streams-advanced' title="Kafka Streams Advanced">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

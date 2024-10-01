@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FFI (Foreign Function Interface)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/09-03-ffi" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/09-03-ffi" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/09-03-ffi" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/rust/09-03-ffi" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/09-03-ffi" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-unsafe-rust' title="Unsafe Rust">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">FFI (Foreign Function Interface)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-building-project' title="Building a Project">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Foreign Function Interface (FFI) in Rust allows you to call functions written in other programming languages, such as C, from Rust, and vice versa. This is particularly useful for integrating Rust with existing codebases or leveraging libraries written in other languages.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Extern Block</strong>: Used to declare functions from other languages.</li>
+<li><strong>C ABI (Application Binary Interface)</strong>: The most common ABI used for FFI in Rust.</li>
+<li><strong>Unsafe Code</strong>: FFI often involves unsafe code because Rust cannot guarantee the safety of foreign functions.</li>
+</ol>
+</div><h1>Extern Block</h1>
+<div class='content'><p>An <code>extern</code> block is used to declare functions that are implemented in another language. Here’s a simple example of calling a C function from Rust.</p>
+</div><h2>Example: Calling a C Function from Rust</h2>
+<div class='content'><p>First, let's write a simple C function:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gaGVsbG8uYwojaW5jbHVkZSA8c3RkaW8uaD4KCnZvaWQgaGVsbG9fZnJvbV9jKCkgewogICAgcHJpbnRmKCJIZWxsbyBmcm9tIEMhXG4iKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// hello.c
+#include &lt;stdio.h&gt;
+
+void hello_from_c() {
+    printf(&quot;Hello from C!\n&quot;);
+}</pre></div><div class='content'><p>Next, compile this C code into a shared library:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1jIC1mUElDIGhlbGxvLmMgLW8gaGVsbG8ubwpnY2MgLXNoYXJlZCAtbyBsaWJoZWxsby5zbyBoZWxsby5v"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -c -fPIC hello.c -o hello.o
+gcc -shared -o libhello.so hello.o</pre></div><div class='content'><p>Now, let's call this C function from Rust:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi5ycwpleHRlcm4gIkMiIHsKICAgIGZuIGhlbGxvX2Zyb21fYygpOwp9CgpmbiBtYWluKCkgewogICAgdW5zYWZlIHsKICAgICAgICBoZWxsb19mcm9tX2MoKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.rs
+extern &quot;C&quot; {
+    fn hello_from_c();
+}
+
+fn main() {
+    unsafe {
+        hello_from_c();
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>extern &quot;C&quot;</code>: Specifies that the functions inside the block use the C ABI.</li>
+<li><code>unsafe</code>: Calling foreign functions is inherently unsafe because Rust cannot enforce safety guarantees.</li>
+</ul>
+</div><h2>Compiling and Running</h2>
+<div class='content'><p>To compile and run the Rust code, you need to link the C library:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cnVzdGMgbWFpbi5ycyAtTCAuIC1sIGhlbGxvCi4vbWFpbg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rustc main.rs -L . -l hello
+./main</pre></div><div class='content'></div><h1>Passing Data Between Rust and C</h1>
+<div class='content'><p>You can pass data between Rust and C, but you need to be careful with data types and memory management.</p>
+</div><h2>Example: Passing an Integer</h2>
+<div class='content'><p>C Code:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYWRkLmMKaW50IGFkZChpbnQgYSwgaW50IGIpIHsKICAgIHJldHVybiBhICsgYjsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// add.c
+int add(int a, int b) {
+    return a + b;
+}</pre></div><div class='content'><p>Compile the C code:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1jIC1mUElDIGFkZC5jIC1vIGFkZC5vCmdjYyAtc2hhcmVkIC1vIGxpYmFkZC5zbyBhZGQubw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -c -fPIC add.c -o add.o
+gcc -shared -o libadd.so add.o</pre></div><div class='content'><p>Rust Code:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi5ycwpleHRlcm4gIkMiIHsKICAgIGZuIGFkZChhOiBpMzIsIGI6IGkzMikgLT4gaTMyOwp9CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3VsdCA9IHVuc2FmZSB7IGFkZCg1LCAzKSB9OwogICAgcHJpbnRsbiEoIjUgKyAzID0ge30iLCByZXN1bHQpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.rs
+extern &quot;C&quot; {
+    fn add(a: i32, b: i32) -&gt; i32;
+}
+
+fn main() {
+    let result = unsafe { add(5, 3) };
+    println!(&quot;5 + 3 = {}&quot;, result);
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>fn add(a: i32, b: i32) -&gt; i32;</code>: Declares the C function in Rust.</li>
+<li><code>unsafe { add(5, 3) }</code>: Calls the C function within an unsafe block.</li>
+</ul>
+</div><h2>Compiling and Running</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cnVzdGMgbWFpbi5ycyAtTCAuIC1sIGFkZAouL21haW4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rustc main.rs -L . -l add
+./main</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Calling a C Function that Takes a String</h2>
+<div class='content'><ol>
+<li>Write a C function that takes a string and prints it.</li>
+<li>Compile the C code into a shared library.</li>
+<li>Write Rust code to call this C function, passing a Rust string.</li>
+</ol>
+<h4>C Code</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcHJpbnRfc3RyaW5nLmMKI2luY2x1ZGUgPHN0ZGlvLmg+Cgp2b2lkIHByaW50X3N0cmluZyhjb25zdCBjaGFyKiBzKSB7CiAgICBwcmludGYoIiVzXG4iLCBzKTsKfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// print_string.c
+#include &lt;stdio.h&gt;
+
+void print_string(const char* s) {
+    printf(&quot;%s\n&quot;, s);
+}</pre></div><div class='content'><p>Compile the C code:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1jIC1mUElDIHByaW50X3N0cmluZy5jIC1vIHByaW50X3N0cmluZy5vCmdjYyAtc2hhcmVkIC1vIGxpYnByaW50X3N0cmluZy5zbyBwcmludF9zdHJpbmcubw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -c -fPIC print_string.c -o print_string.o
+gcc -shared -o libprint_string.so print_string.o</pre></div><div class='content'><h4>Rust Code</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi5ycwp1c2Ugc3RkOjpmZmk6OkNTdHJpbmc7CnVzZSBzdGQ6Om9zOjpyYXc6OmNfY2hhcjsKCmV4dGVybiAiQyIgewogICAgZm4gcHJpbnRfc3RyaW5nKHM6ICpjb25zdCBjX2NoYXIpOwp9CgpmbiBtYWluKCkgewogICAgbGV0IHJ1c3Rfc3RyaW5nID0gQ1N0cmluZzo6bmV3KCJIZWxsbyBmcm9tIFJ1c3QhIikuZXhwZWN0KCJDU3RyaW5nOjpuZXcgZmFpbGVkIik7CiAgICBsZXQgY19zdHJpbmcgPSBydXN0X3N0cmluZy5hc19wdHIoKTsKICAgIHVuc2FmZSB7CiAgICAgICAgcHJpbnRfc3RyaW5nKGNfc3RyaW5nKTsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.rs
+use std::ffi::CString;
+use std::os::raw::c_char;
+
+extern &quot;C&quot; {
+    fn print_string(s: *const c_char);
+}
+
+fn main() {
+    let rust_string = CString::new(&quot;Hello from Rust!&quot;).expect(&quot;CString::new failed&quot;);
+    let c_string = rust_string.as_ptr();
+    unsafe {
+        print_string(c_string);
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>CString::new(&quot;Hello from Rust!&quot;)</code>: Converts a Rust string to a C-compatible string.</li>
+<li><code>as_ptr()</code>: Gets a raw pointer to the C string.</li>
+<li><code>unsafe { print_string(c_string) }</code>: Calls the C function with the C string.</li>
+</ul>
+</div><h2>Compiling and Running</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cnVzdGMgbWFpbi5ycyAtTCAuIC1sIHByaW50X3N0cmluZwouL21haW4="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rustc main.rs -L . -l print_string
+./main</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Memory Management</strong>: Be cautious with memory allocation and deallocation when passing data between Rust and C.</li>
+<li><strong>Data Types</strong>: Ensure that the data types match between Rust and C.</li>
+<li><strong>Safety</strong>: Always use <code>unsafe</code> blocks when calling foreign functions and handle potential errors.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, you learned how to use Rust's FFI to call functions written in C. You explored the basics of <code>extern</code> blocks, passing data between Rust and C, and handling strings. Understanding FFI is crucial for integrating Rust with other languages and leveraging existing libraries. In the next module, we will delve into building a project and best practices in Rust.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-unsafe-rust' title="Unsafe Rust">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-building-project' title="Building a Project">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

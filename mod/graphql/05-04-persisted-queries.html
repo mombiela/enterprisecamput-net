@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Persisted Queries</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/05-04-persisted-queries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/05-04-persisted-queries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/05-04-persisted-queries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/graphql/05-04-persisted-queries" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/05-04-persisted-queries" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-authentication-authorization' title="Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Persisted Queries</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-graphiql-playground' title="GraphiQL and Playground">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Persisted queries are a powerful feature in GraphQL that can help improve performance and security by predefining and storing queries on the server. This approach can reduce the payload size, minimize the risk of malicious queries, and optimize the execution of frequently used queries.</p>
+</div><h1>What are Persisted Queries?</h1>
+<div class='content'><p>Persisted queries involve storing GraphQL queries on the server and referencing them by a unique identifier (ID) when making a request. Instead of sending the entire query string with each request, the client sends the ID of the persisted query, and the server retrieves and executes the corresponding query.</p>
+</div><h2>Benefits of Persisted Queries</h2>
+<div class='content'><ol>
+<li><strong>Reduced Payload Size</strong>: By sending only the query ID, the payload size is significantly reduced, which can improve network performance.</li>
+<li><strong>Enhanced Security</strong>: Since the queries are predefined and stored on the server, it reduces the risk of executing malicious or overly complex queries.</li>
+<li><strong>Improved Performance</strong>: Frequently used queries can be optimized and cached on the server, leading to faster execution times.</li>
+</ol>
+</div><h1>Setting Up Persisted Queries</h1>
+<div class='content'></div><h2>Step 1: Define and Store Queries</h2>
+<div class='content'><p>First, define the queries you want to persist and store them on the server. This can be done using a simple key-value store where the key is the query ID and the value is the query string.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGVyc2lzdGVkUXVlcmllcyA9IHsKICAiZ2V0VXNlciI6IGAKICAgIHF1ZXJ5IGdldFVzZXIoJGlkOiBJRCEpIHsKICAgICAgdXNlcihpZDogJGlkKSB7CiAgICAgICAgaWQKICAgICAgICBuYW1lCiAgICAgICAgZW1haWwKICAgICAgfQogICAgfQogIGAsCiAgImdldFBvc3RzIjogYAogICAgcXVlcnkgZ2V0UG9zdHMgewogICAgICBwb3N0cyB7CiAgICAgICAgaWQKICAgICAgICB0aXRsZQogICAgICAgIGNvbnRlbnQKICAgICAgfQogICAgfQogIGAKfTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const persistedQueries = {
+  &quot;getUser&quot;: `
+    query getUser($id: ID!) {
+      user(id: $id) {
+        id
+        name
+        email
+      }
+    }
+  `,
+  &quot;getPosts&quot;: `
+    query getPosts {
+      posts {
+        id
+        title
+        content
+      }
+    }
+  `
+};</pre></div><div class='content'></div><h2>Step 2: Implement a Middleware to Handle Persisted Queries</h2>
+<div class='content'><p>Create a middleware function to intercept incoming requests and replace the query ID with the actual query string.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKCmNvbnN0IGFwcCA9IGV4cHJlc3MoKTsKCmFwcC51c2UoJy9ncmFwaHFsJywgKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgY29uc3QgcXVlcnlJZCA9IHJlcS5ib2R5LnF1ZXJ5SWQ7CiAgaWYgKHF1ZXJ5SWQgJiYgcGVyc2lzdGVkUXVlcmllc1txdWVyeUlkXSkgewogICAgcmVxLmJvZHkucXVlcnkgPSBwZXJzaXN0ZWRRdWVyaWVzW3F1ZXJ5SWRdOwogIH0KICBuZXh0KCk7Cn0pOwoKY29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgVXNlciB7CiAgICBpZDogSUQhCiAgICBuYW1lOiBTdHJpbmchCiAgICBlbWFpbDogU3RyaW5nIQogIH0KCiAgdHlwZSBQb3N0IHsKICAgIGlkOiBJRCEKICAgIHRpdGxlOiBTdHJpbmchCiAgICBjb250ZW50OiBTdHJpbmchCiAgfQoKICB0eXBlIFF1ZXJ5IHsKICAgIHVzZXIoaWQ6IElEISk6IFVzZXIKICAgIHBvc3RzOiBbUG9zdF0KICB9CmApOwoKY29uc3Qgcm9vdCA9IHsKICB1c2VyOiAoeyBpZCB9KSA9PiB7CiAgICAvLyBGZXRjaCB1c2VyIGJ5IElECiAgfSwKICBwb3N0czogKCkgPT4gewogICAgLy8gRmV0Y2ggYWxsIHBvc3RzCiAgfQp9OwoKYXBwLnVzZSgnL2dyYXBocWwnLCBncmFwaHFsSFRUUCh7CiAgc2NoZW1hOiBzY2hlbWEsCiAgcm9vdFZhbHVlOiByb290LAogIGdyYXBoaXFsOiB0cnVlLAp9KSk7CgphcHAubGlzdGVuKDQwMDAsICgpID0+IGNvbnNvbGUubG9nKCdTZXJ2ZXIgcnVubmluZyBvbiBodHRwOi8vbG9jYWxob3N0OjQwMDAvZ3JhcGhxbCcpKTs="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+const app = express();
+
+app.use('/graphql', (req, res, next) =&gt; {
+  const queryId = req.body.queryId;
+  if (queryId &amp;&amp; persistedQueries[queryId]) {
+    req.body.query = persistedQueries[queryId];
+  }
+  next();
+});
+
+const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Post {
+    id: ID!
+    title: String!
+    content: String!
+  }
+
+  type Query {
+    user(id: ID!): User
+    posts: [Post]
+  }
+`);
+
+const root = {
+  user: ({ id }) =&gt; {
+    // Fetch user by ID
+  },
+  posts: () =&gt; {
+    // Fetch all posts
+  }
+};
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Server running on http://localhost:4000/graphql'));</pre></div><div class='content'></div><h2>Step 3: Client-Side Implementation</h2>
+<div class='content'><p>On the client side, instead of sending the entire query string, send the query ID and any necessary variables.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZmV0Y2hQZXJzaXN0ZWRRdWVyeSA9IGFzeW5jIChxdWVyeUlkLCB2YXJpYWJsZXMpID0+IHsKICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKCdodHRwOi8vbG9jYWxob3N0OjQwMDAvZ3JhcGhxbCcsIHsKICAgIG1ldGhvZDogJ1BPU1QnLAogICAgaGVhZGVyczogewogICAgICAnQ29udGVudC1UeXBlJzogJ2FwcGxpY2F0aW9uL2pzb24nCiAgICB9LAogICAgYm9keTogSlNPTi5zdHJpbmdpZnkoewogICAgICBxdWVyeUlkOiBxdWVyeUlkLAogICAgICB2YXJpYWJsZXM6IHZhcmlhYmxlcwogICAgfSkKICB9KTsKICBjb25zdCBkYXRhID0gYXdhaXQgcmVzcG9uc2UuanNvbigpOwogIHJldHVybiBkYXRhOwp9OwoKLy8gRXhhbXBsZSB1c2FnZQpmZXRjaFBlcnNpc3RlZFF1ZXJ5KCdnZXRVc2VyJywgeyBpZDogJzEnIH0pLnRoZW4oZGF0YSA9PiBjb25zb2xlLmxvZyhkYXRhKSk7"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fetchPersistedQuery = async (queryId, variables) =&gt; {
+  const response = await fetch('http://localhost:4000/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      queryId: queryId,
+      variables: variables
+    })
+  });
+  const data = await response.json();
+  return data;
+};
+
+// Example usage
+fetchPersistedQuery('getUser', { id: '1' }).then(data =&gt; console.log(data));</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Persisted Queries</h2>
+<div class='content'><ol>
+<li><strong>Define a new persisted query</strong>: Add a new query to the <code>persistedQueries</code> object that fetches a list of comments.</li>
+<li><strong>Update the middleware</strong>: Ensure the middleware can handle the new query.</li>
+<li><strong>Test the new query</strong>: Use the client-side implementation to fetch the list of comments using the query ID.</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li><strong>Define a new persisted query</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGVyc2lzdGVkUXVlcmllcyA9IHsKICAiZ2V0VXNlciI6IGAKICAgIHF1ZXJ5IGdldFVzZXIoJGlkOiBJRCEpIHsKICAgICAgdXNlcihpZDogJGlkKSB7CiAgICAgICAgaWQKICAgICAgICBuYW1lCiAgICAgICAgZW1haWwKICAgICAgfQogICAgfQogIGAsCiAgImdldFBvc3RzIjogYAogICAgcXVlcnkgZ2V0UG9zdHMgewogICAgICBwb3N0cyB7CiAgICAgICAgaWQKICAgICAgICB0aXRsZQogICAgICAgIGNvbnRlbnQKICAgICAgfQogICAgfQogIGAsCiAgImdldENvbW1lbnRzIjogYAogICAgcXVlcnkgZ2V0Q29tbWVudHMgewogICAgICBjb21tZW50cyB7CiAgICAgICAgaWQKICAgICAgICB0ZXh0CiAgICAgICAgYXV0aG9yIHsKICAgICAgICAgIGlkCiAgICAgICAgICBuYW1lCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgYAp9Ow=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const persistedQueries = {
+  &quot;getUser&quot;: `
+    query getUser($id: ID!) {
+      user(id: $id) {
+        id
+        name
+        email
+      }
+    }
+  `,
+  &quot;getPosts&quot;: `
+    query getPosts {
+      posts {
+        id
+        title
+        content
+      }
+    }
+  `,
+  &quot;getComments&quot;: `
+    query getComments {
+      comments {
+        id
+        text
+        author {
+          id
+          name
+        }
+      }
+    }
+  `
+};</pre></div><div class='content'><ol start="2">
+<li>
+<p><strong>Update the middleware</strong>: The middleware already handles any query ID, so no changes are needed.</p>
+</li>
+<li>
+<p><strong>Test the new query</strong>:</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmV0Y2hQZXJzaXN0ZWRRdWVyeSgnZ2V0Q29tbWVudHMnKS50aGVuKGRhdGEgPT4gY29uc29sZS5sb2coZGF0YSkpOw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fetchPersistedQuery('getComments').then(data =&gt; console.log(data));</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>Persisted queries are a valuable tool for optimizing GraphQL applications. By reducing payload sizes, enhancing security, and improving performance, they can significantly improve the efficiency and reliability of your GraphQL server. In this section, you learned how to set up and implement persisted queries, both on the server and client sides. In the next module, we will explore various tools and the GraphQL ecosystem to further enhance your development experience.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-authentication-authorization' title="Authentication and Authorization">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-graphiql-playground' title="GraphiQL and Playground">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

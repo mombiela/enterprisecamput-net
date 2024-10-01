@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Authentication</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/08-01-introduction-authentication" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/08-01-introduction-authentication" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/08-01-introduction-authentication" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nodejs/08-01-introduction-authentication" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/08-01-introduction-authentication" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-crud-operations' title="CRUD Operations">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introduction to Authentication</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-using-passport' title="Using Passport.js">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Authentication is a crucial aspect of web development, ensuring that users are who they claim to be. In this section, we will cover the basics of authentication, its importance, and how it is implemented in Node.js applications.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Authentication vs. Authorization</strong>:</p>
+<ul>
+<li><strong>Authentication</strong>: The process of verifying the identity of a user.</li>
+<li><strong>Authorization</strong>: The process of determining what an authenticated user is allowed to do.</li>
+</ul>
+</li>
+<li>
+<p><strong>Types of Authentication</strong>:</p>
+<ul>
+<li><strong>Basic Authentication</strong>: Uses a username and password.</li>
+<li><strong>Token-Based Authentication</strong>: Uses tokens (e.g., JWT) to authenticate users.</li>
+<li><strong>OAuth</strong>: An open standard for access delegation, commonly used for token-based authentication.</li>
+</ul>
+</li>
+<li>
+<p><strong>Common Authentication Methods</strong>:</p>
+<ul>
+<li><strong>Session-Based Authentication</strong>: Stores user information on the server.</li>
+<li><strong>Token-Based Authentication</strong>: Stores user information in a token, typically a JSON Web Token (JWT).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Example: Basic Authentication</h1>
+<div class='content'></div><h2>Step 1: Setting Up the Project</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Initialize a new Node.js project</strong>:</p>
+<pre><code class="language-bash">mkdir auth-example
+cd auth-example
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Install necessary packages</strong>:</p>
+<pre><code class="language-bash">npm install express body-parser
+</code></pre>
+</li>
+<li>
+<p><strong>Create the project structure</strong>:</p>
+<pre><code>auth-example/
+├── node_modules/
+├── package.json
+├── server.js
+└── users.js
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Implementing Basic Authentication</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a <code>users.js</code> file to store user data</strong>:</p>
+<pre><code class="language-javascript">// users.js
+const users = [
+  { id: 1, username: 'user1', password: 'password1' },
+  { id: 2, username: 'user2', password: 'password2' }
+];
+
+module.exports = users;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a <code>server.js</code> file to set up the server and authentication logic</strong>:</p>
+<pre><code class="language-javascript">// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const users = require('./users');
+
+const app = express();
+app.use(bodyParser.json());
+
+// Basic Authentication Middleware
+const authenticate = (req, res, next) =&gt; {
+  const { username, password } = req.body;
+  const user = users.find(u =&gt; u.username === username &amp;&amp; u.password === password);
+
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    res.status(401).send('Authentication failed');
+  }
+};
+
+// Protected Route
+app.post('/login', authenticate, (req, res) =&gt; {
+  res.send(`Welcome ${req.user.username}`);
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Server is running on port ${PORT}`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 3: Testing the Authentication</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Start the server</strong>:</p>
+<pre><code class="language-bash">node server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Test the authentication using a tool like Postman</strong>:</p>
+<ul>
+<li>
+<p><strong>Endpoint</strong>: <code>POST http://localhost:3000/login</code></p>
+</li>
+<li>
+<p><strong>Body</strong>:</p>
+<pre><code class="language-json">{
+  &quot;username&quot;: &quot;user1&quot;,
+  &quot;password&quot;: &quot;password1&quot;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Expected Response</strong>:</p>
+<pre><code>Welcome user1
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Implement Token-Based Authentication</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Install the necessary packages</strong>:</p>
+<pre><code class="language-bash">npm install jsonwebtoken
+</code></pre>
+</li>
+<li>
+<p><strong>Modify the <code>server.js</code> file to use JWT for authentication</strong>:</p>
+<pre><code class="language-javascript">// server.js
+const express = require('express');
+const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+const users = require('./users');
+
+const app = express();
+app.use(bodyParser.json());
+
+const SECRET_KEY = 'your_secret_key';
+
+// Token Generation
+const generateToken = (user) =&gt; {
+  return jwt.sign({ id: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+};
+
+// Token Verification Middleware
+const verifyToken = (req, res, next) =&gt; {
+  const token = req.headers['authorization'];
+  if (!token) return res.status(403).send('Token is required');
+
+  jwt.verify(token, SECRET_KEY, (err, decoded) =&gt; {
+    if (err) return res.status(401).send('Invalid token');
+    req.user = decoded;
+    next();
+  });
+};
+
+// Login Route
+app.post('/login', (req, res) =&gt; {
+  const { username, password } = req.body;
+  const user = users.find(u =&gt; u.username === username &amp;&amp; u.password === password);
+
+  if (user) {
+    const token = generateToken(user);
+    res.json({ token });
+  } else {
+    res.status(401).send('Authentication failed');
+  }
+});
+
+// Protected Route
+app.get('/protected', verifyToken, (req, res) =&gt; {
+  res.send(`Welcome ${req.user.username}`);
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Server is running on port ${PORT}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Test the token-based authentication</strong>:</p>
+<ul>
+<li>
+<p><strong>Login</strong>:</p>
+<ul>
+<li><strong>Endpoint</strong>: <code>POST http://localhost:3000/login</code></li>
+<li><strong>Body</strong>:
+<pre><code class="language-json">{
+  &quot;username&quot;: &quot;user1&quot;,
+  &quot;password&quot;: &quot;password1&quot;
+}
+</code></pre>
+</li>
+<li><strong>Expected Response</strong>:
+<pre><code class="language-json">{
+  &quot;token&quot;: &quot;your_jwt_token&quot;
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Access Protected Route</strong>:</p>
+<ul>
+<li><strong>Endpoint</strong>: <code>GET http://localhost:3000/protected</code></li>
+<li><strong>Headers</strong>:
+<pre><code>Authorization: your_jwt_token
+</code></pre>
+</li>
+<li><strong>Expected Response</strong>:
+<pre><code>Welcome user1
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of authentication, including the difference between authentication and authorization, common authentication methods, and practical examples of implementing basic and token-based authentication in a Node.js application. Understanding these concepts is crucial for building secure web applications. In the next section, we will delve deeper into using Passport.js for more advanced authentication strategies.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-crud-operations' title="CRUD Operations">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-using-passport' title="Using Passport.js">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>

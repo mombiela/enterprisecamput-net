@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Checks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/03-04-health-checks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/03-04-health-checks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/03-04-health-checks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+													<b id="lit_lang_es" class="px-2">EN</b>
+				|
+				<a href="https://campusempresa.com/mod/nginx/03-04-health-checks" class="px-2">ES</a></b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/03-04-health-checks" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">The Project</a>
+				<a href="/about">About Us</a>
+				<a href="/contribute">Contribute</a>
+				<a href="/donate">Donations</a>
+				<a href="/licence">License</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-load-balancing' title="Load Balancing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Health Checks</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-basic-security-practices' title="Basic Security Practices">Next &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Health checks are an essential part of maintaining a reliable and robust web infrastructure. They ensure that the backend servers are functioning correctly and can handle requests. In this section, we will cover the following topics:</p>
+<ol>
+<li><strong>What are Health Checks?</strong></li>
+<li><strong>Configuring Health Checks in NGINX</strong></li>
+<li><strong>Types of Health Checks</strong></li>
+<li><strong>Practical Examples</strong></li>
+<li><strong>Exercises</strong></li>
+</ol>
+</div><h1>1. What are Health Checks?</h1>
+<div class='content'><p>Health checks are mechanisms used to monitor the health and availability of backend servers. They help in:</p>
+<ul>
+<li>Detecting and isolating unhealthy servers.</li>
+<li>Ensuring high availability and reliability.</li>
+<li>Improving load balancing by directing traffic only to healthy servers.</li>
+</ul>
+</div><h1>2. Configuring Health Checks in NGINX</h1>
+<div class='content'><p>NGINX supports health checks through the <code>ngx_http_upstream_module</code>. This module allows you to define health checks for upstream servers.</p>
+</div><h2>Basic Configuration</h2>
+<div class='content'><p>To configure health checks, you need to define an upstream block and specify the health check parameters. Here is a basic example:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIEVuYWJsZSBoZWFsdGggY2hlY2tzCiAgICAgICAgaGVhbHRoX2NoZWNrOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Enable health checks
+        health_check;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>upstream backend { ... }</code>: Defines a group of backend servers.</li>
+<li><code>server backend1.example.com;</code>: Specifies a backend server.</li>
+<li><code>health_check;</code>: Enables health checks for the upstream block.</li>
+</ul>
+</div><h1>3. Types of Health Checks</h1>
+<div class='content'><p>NGINX supports different types of health checks:</p>
+</div><h2>HTTP Health Checks</h2>
+<div class='content'><p>HTTP health checks send HTTP requests to the backend servers and check the response status code.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIEVuYWJsZSBIVFRQIGhlYWx0aCBjaGVja3MKICAgICAgICBoZWFsdGhfY2hlY2sgaW50ZXJ2YWw9NXMgZmFpbHM9MyBwYXNzZXM9MiB1cmk9L2hlYWx0aF9jaGVjazsKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Enable HTTP health checks
+        health_check interval=5s fails=3 passes=2 uri=/health_check;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>interval=5s</code>: Specifies the interval between health checks (5 seconds).</li>
+<li><code>fails=3</code>: Marks the server as unhealthy after 3 consecutive failures.</li>
+<li><code>passes=2</code>: Marks the server as healthy after 2 consecutive successes.</li>
+<li><code>uri=/health_check</code>: The URI to be requested for the health check.</li>
+</ul>
+</div><h2>TCP Health Checks</h2>
+<div class='content'><p>TCP health checks establish a TCP connection to the backend servers to verify their availability.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RyZWFtIHsKICAgIHVwc3RyZWFtIGJhY2tlbmQgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbToxMjM0NTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb206MTIzNDU7CgogICAgICAgICMgRW5hYmxlIFRDUCBoZWFsdGggY2hlY2tzCiAgICAgICAgaGVhbHRoX2NoZWNrIGludGVydmFsPTVzIGZhaWxzPTMgcGFzc2VzPTI7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gMTIzNDU7CgogICAgICAgIHByb3h5X3Bhc3MgYmFja2VuZDsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stream {
+    upstream backend {
+        server backend1.example.com:12345;
+        server backend2.example.com:12345;
+
+        # Enable TCP health checks
+        health_check interval=5s fails=3 passes=2;
+    }
+
+    server {
+        listen 12345;
+
+        proxy_pass backend;
+    }
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><code>stream { ... }</code>: Defines a stream block for TCP/UDP traffic.</li>
+<li><code>server backend1.example.com:12345;</code>: Specifies a backend server with a port.</li>
+<li><code>health_check interval=5s fails=3 passes=2;</code>: Configures the health check parameters.</li>
+</ul>
+</div><h1>4. Practical Examples</h1>
+<div class='content'></div><h2>Example 1: HTTP Health Check with Custom Headers</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIEVuYWJsZSBIVFRQIGhlYWx0aCBjaGVja3Mgd2l0aCBjdXN0b20gaGVhZGVycwogICAgICAgIGhlYWx0aF9jaGVjayBpbnRlcnZhbD01cyBmYWlscz0zIHBhc3Nlcz0yIHVyaT0vaGVhbHRoX2NoZWNrIG1hdGNoPWN1c3RvbV9oZWFkZXJzOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9CgogICAgIyBEZWZpbmUgY3VzdG9tIGhlYWRlcnMgZm9yIGhlYWx0aCBjaGVja3MKICAgIG1hdGNoIGN1c3RvbV9oZWFkZXJzIHsKICAgICAgICBoZWFkZXJzIEhvc3Q6IGJhY2tlbmQuZXhhbXBsZS5jb207CiAgICAgICAgaGVhZGVycyBVc2VyLUFnZW50OiBOR0lOWC1IZWFsdGgtQ2hlY2s7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Enable HTTP health checks with custom headers
+        health_check interval=5s fails=3 passes=2 uri=/health_check match=custom_headers;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+
+    # Define custom headers for health checks
+    match custom_headers {
+        headers Host: backend.example.com;
+        headers User-Agent: NGINX-Health-Check;
+    }
+}</pre></div><div class='content'></div><h2>Example 2: TCP Health Check with Custom Timeout</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RyZWFtIHsKICAgIHVwc3RyZWFtIGJhY2tlbmQgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbToxMjM0NTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb206MTIzNDU7CgogICAgICAgICMgRW5hYmxlIFRDUCBoZWFsdGggY2hlY2tzIHdpdGggY3VzdG9tIHRpbWVvdXQKICAgICAgICBoZWFsdGhfY2hlY2sgaW50ZXJ2YWw9NXMgZmFpbHM9MyBwYXNzZXM9MiB0aW1lb3V0PTJzOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDEyMzQ1OwoKICAgICAgICBwcm94eV9wYXNzIGJhY2tlbmQ7CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stream {
+    upstream backend {
+        server backend1.example.com:12345;
+        server backend2.example.com:12345;
+
+        # Enable TCP health checks with custom timeout
+        health_check interval=5s fails=3 passes=2 timeout=2s;
+    }
+
+    server {
+        listen 12345;
+
+        proxy_pass backend;
+    }
+}</pre></div><div class='content'></div><h1>5. Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Configure HTTP Health Checks</h2>
+<div class='content'><p><strong>Task:</strong> Configure HTTP health checks for an upstream block with two backend servers. Use the URI <code>/status</code> for health checks and set the interval to 10 seconds.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIEVuYWJsZSBIVFRQIGhlYWx0aCBjaGVja3MKICAgICAgICBoZWFsdGhfY2hlY2sgaW50ZXJ2YWw9MTBzIGZhaWxzPTMgcGFzc2VzPTIgdXJpPS9zdGF0dXM7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Enable HTTP health checks
+        health_check interval=10s fails=3 passes=2 uri=/status;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Exercise 2: Configure TCP Health Checks</h2>
+<div class='content'><p><strong>Task:</strong> Configure TCP health checks for an upstream block with two backend servers on port 8080. Set the interval to 15 seconds and the timeout to 3 seconds.</p>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RyZWFtIHsKICAgIHVwc3RyZWFtIGJhY2tlbmQgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTo4MDgwOwogICAgICAgIHNlcnZlciBiYWNrZW5kMi5leGFtcGxlLmNvbTo4MDgwOwoKICAgICAgICAjIEVuYWJsZSBUQ1AgaGVhbHRoIGNoZWNrcwogICAgICAgIGhlYWx0aF9jaGVjayBpbnRlcnZhbD0xNXMgZmFpbHM9MyBwYXNzZXM9MiB0aW1lb3V0PTNzOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwODA7CgogICAgICAgIHByb3h5X3Bhc3MgYmFja2VuZDsKICAgIH0KfQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stream {
+    upstream backend {
+        server backend1.example.com:8080;
+        server backend2.example.com:8080;
+
+        # Enable TCP health checks
+        health_check interval=15s fails=3 passes=2 timeout=3s;
+    }
+
+    server {
+        listen 8080;
+
+        proxy_pass backend;
+    }
+}</pre></div><div class='content'></div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the importance of health checks, how to configure them in NGINX, and the different types of health checks available. We also provided practical examples and exercises to help you understand and implement health checks in your NGINX configuration. Health checks are crucial for maintaining a reliable and high-performing web infrastructure, ensuring that only healthy servers handle client requests.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-load-balancing' title="Load Balancing">&#x25C4;Previous</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-basic-security-practices' title="Basic Security Practices">Next &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Advertising</h1>
+			<p>This space is reserved for advertising.</p>
+			<p>If you want to be a sponsor, contact us to include links in this area: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>Thank you for collaborating!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+	</div>    
+</body>
+</html>
