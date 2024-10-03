@@ -25,12 +25,12 @@
     <div id="content">
 		<div id="header" class="container-xxl">
 	<div class="row">
-		<div class="col-12 col-md-8 p-0">
+		<div class="col-12 col-md-8 p-2 p-md-0">
 			<h1 class="m-0 p-0">
 				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
 			</h1>
 		</div>
-		<div class="col-12 col-md-4 px-0 py-2 py-md-0 text-end">
+		<div class="col-12 col-md-4 p-2 p-md-0 text-end">
 			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
 			<h3 id="main_subtitle"></h3>
 		</div>
@@ -38,7 +38,7 @@
 </div>
 <div class="container-xxl" style="margin-top: -1em;">
 	<div class="row">
-		<div class="col-12 px-0 py-2 py-md-0 m-0 text-end">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
 													<b id="lit_lang_es" class="px-2">EN</b>
 				|
 				<a href="https://campusempresa.com/mod/pytorch/07-01-image-classification-project" class="px-2">ES</a></b>
@@ -77,7 +77,8 @@
 					<a href='07-02-nlp-project' title="Natural Language Processing Project">Next &#x25BA;</a>
 			</div>
 </div>
-<div class='content'></div><h1>Introduction</h1>
+<div class='content'></div><h1><p>Introduction</p>
+</h1>
 <div class='content'><p>In this project, we will apply the knowledge gained from previous modules to build an image classification model using PyTorch. This project will cover the following steps:</p>
 <ol>
 <li><strong>Data Loading and Preprocessing</strong></li>
@@ -86,27 +87,33 @@
 <li><strong>Evaluating the Model</strong></li>
 <li><strong>Saving and Loading the Model</strong></li>
 </ol>
-</div><h1>Step 1: Data Loading and Preprocessing</h1>
-<div class='content'></div><h2>1.1 Importing Libraries</h2>
+</div><h1><p>Step 1: Data Loading and Preprocessing</p>
+</h1>
+<div class='content'></div><h2><p>1.1 Importing Libraries</p>
+</h2>
 <div class='content'><p>First, we need to import the necessary libraries.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KaW1wb3J0IHRvcmNodmlzaW9uCmltcG9ydCB0b3JjaHZpc2lvbi50cmFuc2Zvcm1zIGFzIHRyYW5zZm9ybXMKZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhTG9hZGVy"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
-from torch.utils.data import DataLoader</pre></div><div class='content'></div><h2>1.2 Data Transformation</h2>
+from torch.utils.data import DataLoader</pre></div><div class='content'></div><h2><p>1.2 Data Transformation</p>
+</h2>
 <div class='content'><p>We will use the CIFAR-10 dataset for this project. The dataset consists of 60,000 32x32 color images in 10 classes, with 6,000 images per class.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJhbnNmb3JtID0gdHJhbnNmb3Jtcy5Db21wb3NlKFsKICAgIHRyYW5zZm9ybXMuVG9UZW5zb3IoKSwKICAgIHRyYW5zZm9ybXMuTm9ybWFsaXplKCgwLjUsIDAuNSwgMC41KSwgKDAuNSwgMC41LCAwLjUpKQpdKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>transform = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-])</pre></div><div class='content'></div><h2>1.3 Loading the Dataset</h2>
+])</pre></div><div class='content'></div><h2><p>1.3 Loading the Dataset</p>
+</h2>
 <div class='content'><p>We will load the training and test datasets using <code>torchvision.datasets</code>.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJhaW5zZXQgPSB0b3JjaHZpc2lvbi5kYXRhc2V0cy5DSUZBUjEwKHJvb3Q9Jy4vZGF0YScsIHRyYWluPVRydWUsIGRvd25sb2FkPVRydWUsIHRyYW5zZm9ybT10cmFuc2Zvcm0pCnRyYWlubG9hZGVyID0gRGF0YUxvYWRlcih0cmFpbnNldCwgYmF0Y2hfc2l6ZT0xMDAsIHNodWZmbGU9VHJ1ZSwgbnVtX3dvcmtlcnM9MikKCnRlc3RzZXQgPSB0b3JjaHZpc2lvbi5kYXRhc2V0cy5DSUZBUjEwKHJvb3Q9Jy4vZGF0YScsIHRyYWluPUZhbHNlLCBkb3dubG9hZD1UcnVlLCB0cmFuc2Zvcm09dHJhbnNmb3JtKQp0ZXN0bG9hZGVyID0gRGF0YUxvYWRlcih0ZXN0c2V0LCBiYXRjaF9zaXplPTEwMCwgc2h1ZmZsZT1GYWxzZSwgbnVtX3dvcmtlcnM9Mik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transform)
 trainloader = DataLoader(trainset, batch_size=100, shuffle=True, num_workers=2)
 
 testset = torchvision.datasets.CIFAR10(root='./data', train=False, download=True, transform=transform)
-testloader = DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)</pre></div><div class='content'></div><h1>Step 2: Building the Neural Network</h1>
-<div class='content'></div><h2>2.1 Defining the Network Architecture</h2>
+testloader = DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)</pre></div><div class='content'></div><h1><p>Step 2: Building the Neural Network</p>
+</h1>
+<div class='content'></div><h2><p>2.1 Defining the Network Architecture</p>
+</h2>
 <div class='content'><p>We will define a simple Convolutional Neural Network (CNN) for image classification.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgU2ltcGxlQ05OKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoU2ltcGxlQ05OLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5jb252MSA9IG5uLkNvbnYyZCgzLCAzMiwgMywgcGFkZGluZz0xKQogICAgICAgIHNlbGYuY29udjIgPSBubi5Db252MmQoMzIsIDY0LCAzLCBwYWRkaW5nPTEpCiAgICAgICAgc2VsZi5wb29sID0gbm4uTWF4UG9vbDJkKDIsIDIpCiAgICAgICAgc2VsZi5mYzEgPSBubi5MaW5lYXIoNjQgKiA4ICogOCwgNTEyKQogICAgICAgIHNlbGYuZmMyID0gbm4uTGluZWFyKDUxMiwgMTApCiAgICAgICAgc2VsZi5yZWx1ID0gbm4uUmVMVSgpCiAgICAgICAgc2VsZi5kcm9wb3V0ID0gbm4uRHJvcG91dCgwLjUpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHggPSBzZWxmLnBvb2woc2VsZi5yZWx1KHNlbGYuY29udjEoeCkpKQogICAgICAgIHggPSBzZWxmLnBvb2woc2VsZi5yZWx1KHNlbGYuY29udjIoeCkpKQogICAgICAgIHggPSB4LnZpZXcoLTEsIDY0ICogOCAqIDgpCiAgICAgICAgeCA9IHNlbGYucmVsdShzZWxmLmZjMSh4KSkKICAgICAgICB4ID0gc2VsZi5kcm9wb3V0KHgpCiAgICAgICAgeCA9IHNlbGYuZmMyKHgpCiAgICAgICAgcmV0dXJuIHgKCm5ldCA9IFNpbXBsZUNOTigp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class SimpleCNN(nn.Module):
     def __init__(self):
@@ -128,11 +135,14 @@ testloader = DataLoader(testset, batch_size=100, shuffle=False, num_workers=2)</
         x = self.fc2(x)
         return x
 
-net = SimpleCNN()</pre></div><div class='content'></div><h1>Step 3: Training the Model</h1>
-<div class='content'></div><h2>3.1 Defining Loss Function and Optimizer</h2>
+net = SimpleCNN()</pre></div><div class='content'></div><h1><p>Step 3: Training the Model</p>
+</h1>
+<div class='content'></div><h2><p>3.1 Defining Loss Function and Optimizer</p>
+</h2>
 <div class='content'><p>We will use Cross-Entropy Loss and the Adam optimizer.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3JpdGVyaW9uID0gbm4uQ3Jvc3NFbnRyb3B5TG9zcygpCm9wdGltaXplciA9IG9wdGltLkFkYW0obmV0LnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(net.parameters(), lr=0.001)</pre></div><div class='content'></div><h2>3.2 Training Loop</h2>
+optimizer = optim.Adam(net.parameters(), lr=0.001)</pre></div><div class='content'></div><h2><p>3.2 Training Loop</p>
+</h2>
 <div class='content'><p>We will train the model for 10 epochs.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm9yIGVwb2NoIGluIHJhbmdlKDEwKTogICMgbG9vcCBvdmVyIHRoZSBkYXRhc2V0IG11bHRpcGxlIHRpbWVzCiAgICBydW5uaW5nX2xvc3MgPSAwLjAKICAgIGZvciBpLCBkYXRhIGluIGVudW1lcmF0ZSh0cmFpbmxvYWRlciwgMCk6CiAgICAgICAgaW5wdXRzLCBsYWJlbHMgPSBkYXRhCiAgICAgICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICAgICAgb3V0cHV0cyA9IG5ldChpbnB1dHMpCiAgICAgICAgbG9zcyA9IGNyaXRlcmlvbihvdXRwdXRzLCBsYWJlbHMpCiAgICAgICAgbG9zcy5iYWNrd2FyZCgpCiAgICAgICAgb3B0aW1pemVyLnN0ZXAoKQogICAgICAgIHJ1bm5pbmdfbG9zcyArPSBsb3NzLml0ZW0oKQogICAgICAgIGlmIGkgJSAxMDAgPT0gOTk6ICAjIHByaW50IGV2ZXJ5IDEwMCBtaW5pLWJhdGNoZXMKICAgICAgICAgICAgcHJpbnQoZidbRXBvY2gge2Vwb2NoICsgMX0sIEJhdGNoIHtpICsgMX1dIGxvc3M6IHtydW5uaW5nX2xvc3MgLyAxMDA6LjNmfScpCiAgICAgICAgICAgIHJ1bm5pbmdfbG9zcyA9IDAuMAoKcHJpbnQoJ0ZpbmlzaGVkIFRyYWluaW5nJyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>for epoch in range(10):  # loop over the dataset multiple times
     running_loss = 0.0
@@ -148,8 +158,10 @@ optimizer = optim.Adam(net.parameters(), lr=0.001)</pre></div><div class='conten
             print(f'[Epoch {epoch + 1}, Batch {i + 1}] loss: {running_loss / 100:.3f}')
             running_loss = 0.0
 
-print('Finished Training')</pre></div><div class='content'></div><h1>Step 4: Evaluating the Model</h1>
-<div class='content'></div><h2>4.1 Testing the Model</h2>
+print('Finished Training')</pre></div><div class='content'></div><h1><p>Step 4: Evaluating the Model</p>
+</h1>
+<div class='content'></div><h2><p>4.1 Testing the Model</p>
+</h2>
 <div class='content'><p>We will evaluate the model on the test dataset.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29ycmVjdCA9IDAKdG90YWwgPSAwCndpdGggdG9yY2gubm9fZ3JhZCgpOgogICAgZm9yIGRhdGEgaW4gdGVzdGxvYWRlcjoKICAgICAgICBpbWFnZXMsIGxhYmVscyA9IGRhdGEKICAgICAgICBvdXRwdXRzID0gbmV0KGltYWdlcykKICAgICAgICBfLCBwcmVkaWN0ZWQgPSB0b3JjaC5tYXgob3V0cHV0cy5kYXRhLCAxKQogICAgICAgIHRvdGFsICs9IGxhYmVscy5zaXplKDApCiAgICAgICAgY29ycmVjdCArPSAocHJlZGljdGVkID09IGxhYmVscykuc3VtKCkuaXRlbSgpCgpwcmludChmJ0FjY3VyYWN5IG9mIHRoZSBuZXR3b3JrIG9uIHRoZSAxMDAwMCB0ZXN0IGltYWdlczogezEwMCAqIGNvcnJlY3QgLyB0b3RhbDouMmZ9JScp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>correct = 0
 total = 0
@@ -161,13 +173,17 @@ with torch.no_grad():
         total += labels.size(0)
         correct += (predicted == labels).sum().item()
 
-print(f'Accuracy of the network on the 10000 test images: {100 * correct / total:.2f}%')</pre></div><div class='content'></div><h1>Step 5: Saving and Loading the Model</h1>
-<div class='content'></div><h2>5.1 Saving the Model</h2>
+print(f'Accuracy of the network on the 10000 test images: {100 * correct / total:.2f}%')</pre></div><div class='content'></div><h1><p>Step 5: Saving and Loading the Model</p>
+</h1>
+<div class='content'></div><h2><p>5.1 Saving the Model</p>
+</h2>
 <div class='content'><p>We will save the trained model to a file.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dG9yY2guc2F2ZShuZXQuc3RhdGVfZGljdCgpLCAnc2ltcGxlX2Nubi5wdGgnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>torch.save(net.state_dict(), 'simple_cnn.pth')</pre></div><div class='content'></div><h2>5.2 Loading the Model</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dG9yY2guc2F2ZShuZXQuc3RhdGVfZGljdCgpLCAnc2ltcGxlX2Nubi5wdGgnKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>torch.save(net.state_dict(), 'simple_cnn.pth')</pre></div><div class='content'></div><h2><p>5.2 Loading the Model</p>
+</h2>
 <div class='content'><p>We can load the model later for inference or further training.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmV0ID0gU2ltcGxlQ05OKCkKbmV0LmxvYWRfc3RhdGVfZGljdCh0b3JjaC5sb2FkKCdzaW1wbGVfY25uLnB0aCcpKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>net = SimpleCNN()
-net.load_state_dict(torch.load('simple_cnn.pth'))</pre></div><div class='content'></div><h1>Conclusion</h1>
+net.load_state_dict(torch.load('simple_cnn.pth'))</pre></div><div class='content'></div><h1><p>Conclusion</p>
+</h1>
 <div class='content'><p>In this project, we successfully built, trained, and evaluated a simple CNN for image classification using the CIFAR-10 dataset. We also learned how to save and load the model for future use. This project serves as a practical application of the concepts covered in the previous modules and provides a solid foundation for more complex image classification tasks.</p>
 </div><div class='row navigation'>
 	<div class='col-2'>

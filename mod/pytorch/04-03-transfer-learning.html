@@ -25,12 +25,12 @@
     <div id="content">
 		<div id="header" class="container-xxl">
 	<div class="row">
-		<div class="col-12 col-md-8 p-0">
+		<div class="col-12 col-md-8 p-2 p-md-0">
 			<h1 class="m-0 p-0">
 				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
 			</h1>
 		</div>
-		<div class="col-12 col-md-4 px-0 py-2 py-md-0 text-end">
+		<div class="col-12 col-md-4 p-2 p-md-0 text-end">
 			<h2 id="main_title"><cite>Building today's and tomorrow's society</cite></h2>
 			<h3 id="main_subtitle"></h3>
 		</div>
@@ -38,7 +38,7 @@
 </div>
 <div class="container-xxl" style="margin-top: -1em;">
 	<div class="row">
-		<div class="col-12 px-0 py-2 py-md-0 m-0 text-end">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
 													<b id="lit_lang_es" class="px-2">EN</b>
 				|
 				<a href="https://campusempresa.com/mod/pytorch/04-03-transfer-learning" class="px-2">ES</a></b>
@@ -78,35 +78,42 @@
 			</div>
 </div>
 <div class='content'><p>Transfer learning is a powerful technique in deep learning where a model developed for a particular task is reused as the starting point for a model on a second task. This is particularly useful when you have limited data for the second task. In this section, we will explore how to leverage pre-trained models in PyTorch for transfer learning.</p>
-</div><h1>Key Concepts</h1>
+</div><h1><p>Key Concepts</p>
+</h1>
 <div class='content'><ol>
 <li><strong>Pre-trained Models</strong>: Models that have been previously trained on large datasets, such as ImageNet.</li>
 <li><strong>Feature Extraction</strong>: Using the convolutional base of a pre-trained model to extract features from new data.</li>
 <li><strong>Fine-Tuning</strong>: Unfreezing some of the top layers of a frozen model base and jointly training both the newly added part of the model and the unfrozen layers.</li>
 </ol>
-</div><h1>Steps for Transfer Learning</h1>
+</div><h1><p>Steps for Transfer Learning</p>
+</h1>
 <div class='content'><ol>
 <li><strong>Load a Pre-trained Model</strong>: PyTorch provides several pre-trained models through the <code>torchvision.models</code> module.</li>
 <li><strong>Freeze the Convolutional Base</strong>: Prevent the weights of the pre-trained model from being updated during training.</li>
 <li><strong>Add Custom Layers</strong>: Add new layers that are specific to your task.</li>
 <li><strong>Train the Model</strong>: Train the new layers while keeping the pre-trained layers frozen, or fine-tune the entire model.</li>
 </ol>
-</div><h1>Practical Example</h1>
+</div><h1><p>Practical Example</p>
+</h1>
 <div class='content'><p>Let's walk through a practical example of transfer learning using a pre-trained ResNet model for an image classification task.</p>
-</div><h2>Step 1: Load a Pre-trained Model</h2>
+</div><h2><p>Step 1: Load a Pre-trained Model</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIExvYWQgYSBwcmUtdHJhaW5lZCBSZXNOZXQgbW9kZWwKbW9kZWwgPSBtb2RlbHMucmVzbmV0MTgocHJldHJhaW5lZD1UcnVlKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
 import torchvision.models as models
 
 # Load a pre-trained ResNet model
-model = models.resnet18(pretrained=True)</pre></div><div class='content'></div><h2>Step 2: Freeze the Convolutional Base</h2>
+model = models.resnet18(pretrained=True)</pre></div><div class='content'></div><h2><p>Step 2: Freeze the Convolutional Base</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGcmVlemUgYWxsIHRoZSBwYXJhbWV0ZXJzIGluIHRoZSBtb2RlbApmb3IgcGFyYW0gaW4gbW9kZWwucGFyYW1ldGVycygpOgogICAgcGFyYW0ucmVxdWlyZXNfZ3JhZCA9IEZhbHNl"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Freeze all the parameters in the model
 for param in model.parameters():
-    param.requires_grad = False</pre></div><div class='content'></div><h2>Step 3: Add Custom Layers</h2>
+    param.requires_grad = False</pre></div><div class='content'></div><h2><p>Step 3: Add Custom Layers</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm5uIGFzIG5uCgojIFJlcGxhY2UgdGhlIGZpbmFsIGZ1bGx5IGNvbm5lY3RlZCBsYXllcgpudW1fZmVhdHVyZXMgPSBtb2RlbC5mYy5pbl9mZWF0dXJlcwptb2RlbC5mYyA9IG5uLkxpbmVhcihudW1fZmVhdHVyZXMsIDEwKSAgIyBBc3N1bWluZyB3ZSBoYXZlIDEwIGNsYXNzZXM="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.nn as nn
 
 # Replace the final fully connected layer
 num_features = model.fc.in_features
-model.fc = nn.Linear(num_features, 10)  # Assuming we have 10 classes</pre></div><div class='content'></div><h2>Step 4: Train the Model</h2>
+model.fc = nn.Linear(num_features, 10)  # Assuming we have 10 classes</pre></div><div class='content'></div><h2><p>Step 4: Train the Model</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm9wdGltIGFzIG9wdGltCgojIERlZmluZSBsb3NzIGZ1bmN0aW9uIGFuZCBvcHRpbWl6ZXIKY3JpdGVyaW9uID0gbm4uQ3Jvc3NFbnRyb3B5TG9zcygpCm9wdGltaXplciA9IG9wdGltLlNHRChtb2RlbC5mYy5wYXJhbWV0ZXJzKCksIGxyPTAuMDAxLCBtb21lbnR1bT0wLjkpCgojIFRyYWluaW5nIGxvb3AKZm9yIGVwb2NoIGluIHJhbmdlKDEwKTogICMgTnVtYmVyIG9mIGVwb2NocwogICAgcnVubmluZ19sb3NzID0gMC4wCiAgICBmb3IgaW5wdXRzLCBsYWJlbHMgaW4gZGF0YWxvYWRlcjogICMgQXNzdW1pbmcgZGF0YWxvYWRlciBpcyBkZWZpbmVkCiAgICAgICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICAgICAgb3V0cHV0cyA9IG1vZGVsKGlucHV0cykKICAgICAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dHMsIGxhYmVscykKICAgICAgICBsb3NzLmJhY2t3YXJkKCkKICAgICAgICBvcHRpbWl6ZXIuc3RlcCgpCiAgICAgICAgcnVubmluZ19sb3NzICs9IGxvc3MuaXRlbSgpCiAgICBwcmludChmIkVwb2NoIHtlcG9jaCsxfSwgTG9zczoge3J1bm5pbmdfbG9zcy9sZW4oZGF0YWxvYWRlcil9Iik="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.optim as optim
 
 # Define loss function and optimizer
@@ -123,16 +130,19 @@ for epoch in range(10):  # Number of epochs
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
-    print(f&quot;Epoch {epoch+1}, Loss: {running_loss/len(dataloader)}&quot;)</pre></div><div class='content'></div><h2>Fine-Tuning the Model</h2>
+    print(f&quot;Epoch {epoch+1}, Loss: {running_loss/len(dataloader)}&quot;)</pre></div><div class='content'></div><h2><p>Fine-Tuning the Model</p>
+</h2>
 <div class='content'><p>If you want to fine-tune the entire model, you can unfreeze some of the layers:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVbmZyZWV6ZSB0aGUgbGFzdCBmZXcgbGF5ZXJzCmZvciBwYXJhbSBpbiBtb2RlbC5sYXllcjQucGFyYW1ldGVycygpOgogICAgcGFyYW0ucmVxdWlyZXNfZ3JhZCA9IFRydWUKCiMgVXBkYXRlIHRoZSBvcHRpbWl6ZXIgdG8gaW5jbHVkZSBhbGwgcGFyYW1ldGVycwpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwucGFyYW1ldGVycygpLCBscj0wLjAwMSwgbW9tZW50dW09MC45KQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Unfreeze the last few layers
 for param in model.layer4.parameters():
     param.requires_grad = True
 
 # Update the optimizer to include all parameters
-optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)</pre></div><div class='content'></div><h1>Practical Exercise</h1>
+optimizer = optim.SGD(model.parameters(), lr=0.001, momentum=0.9)</pre></div><div class='content'></div><h1><p>Practical Exercise</p>
+</h1>
 <div class='content'><p><strong>Exercise</strong>: Use a pre-trained VGG16 model to classify images from a custom dataset with 5 classes. Follow the steps outlined above to perform transfer learning.</p>
-</div><h2>Solution</h2>
+</div><h2><p>Solution</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KZnJvbSB0b3JjaHZpc2lvbiBpbXBvcnQgZGF0YXNldHMsIHRyYW5zZm9ybXMKZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhTG9hZGVyCgojIExvYWQgYSBwcmUtdHJhaW5lZCBWR0cxNiBtb2RlbAptb2RlbCA9IG1vZGVscy52Z2cxNihwcmV0cmFpbmVkPVRydWUpCgojIEZyZWV6ZSBhbGwgdGhlIHBhcmFtZXRlcnMgaW4gdGhlIG1vZGVsCmZvciBwYXJhbSBpbiBtb2RlbC5wYXJhbWV0ZXJzKCk6CiAgICBwYXJhbS5yZXF1aXJlc19ncmFkID0gRmFsc2UKCiMgUmVwbGFjZSB0aGUgZmluYWwgY2xhc3NpZmllciBsYXllcgpudW1fZmVhdHVyZXMgPSBtb2RlbC5jbGFzc2lmaWVyWzZdLmluX2ZlYXR1cmVzCm1vZGVsLmNsYXNzaWZpZXJbNl0gPSBubi5MaW5lYXIobnVtX2ZlYXR1cmVzLCA1KSAgIyBBc3N1bWluZyB3ZSBoYXZlIDUgY2xhc3NlcwoKIyBEZWZpbmUgbG9zcyBmdW5jdGlvbiBhbmQgb3B0aW1pemVyCmNyaXRlcmlvbiA9IG5uLkNyb3NzRW50cm9weUxvc3MoKQpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwuY2xhc3NpZmllcls2XS5wYXJhbWV0ZXJzKCksIGxyPTAuMDAxLCBtb21lbnR1bT0wLjkpCgojIERhdGEgbG9hZGluZyBhbmQgcHJlcHJvY2Vzc2luZwp0cmFuc2Zvcm0gPSB0cmFuc2Zvcm1zLkNvbXBvc2UoWwogICAgdHJhbnNmb3Jtcy5SZXNpemUoKDIyNCwgMjI0KSksCiAgICB0cmFuc2Zvcm1zLlRvVGVuc29yKCksCl0pCgp0cmFpbl9kYXRhc2V0ID0gZGF0YXNldHMuSW1hZ2VGb2xkZXIocm9vdD0ncGF0aC90by90cmFpbicsIHRyYW5zZm9ybT10cmFuc2Zvcm0pCnRyYWluX2xvYWRlciA9IERhdGFMb2FkZXIodHJhaW5fZGF0YXNldCwgYmF0Y2hfc2l6ZT0zMiwgc2h1ZmZsZT1UcnVlKQoKIyBUcmFpbmluZyBsb29wCmZvciBlcG9jaCBpbiByYW5nZSgxMCk6ICAjIE51bWJlciBvZiBlcG9jaHMKICAgIHJ1bm5pbmdfbG9zcyA9IDAuMAogICAgZm9yIGlucHV0cywgbGFiZWxzIGluIHRyYWluX2xvYWRlcjoKICAgICAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgbGFiZWxzKQogICAgICAgIGxvc3MuYmFja3dhcmQoKQogICAgICAgIG9wdGltaXplci5zdGVwKCkKICAgICAgICBydW5uaW5nX2xvc3MgKz0gbG9zcy5pdGVtKCkKICAgIHByaW50KGYiRXBvY2gge2Vwb2NoKzF9LCBMb3NzOiB7cnVubmluZ19sb3NzL2xlbih0cmFpbl9sb2FkZXIpfSIp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
 import torchvision.models as models
 import torch.nn as nn
@@ -174,7 +184,8 @@ for epoch in range(10):  # Number of epochs
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
-    print(f&quot;Epoch {epoch+1}, Loss: {running_loss/len(train_loader)}&quot;)</pre></div><div class='content'></div><h1>Summary</h1>
+    print(f&quot;Epoch {epoch+1}, Loss: {running_loss/len(train_loader)}&quot;)</pre></div><div class='content'></div><h1><p>Summary</p>
+</h1>
 <div class='content'><p>In this section, we covered the concept of transfer learning and how to implement it using pre-trained models in PyTorch. We walked through the steps of loading a pre-trained model, freezing its layers, adding custom layers, and training the model. We also provided a practical exercise to reinforce the learned concepts. Transfer learning is a powerful technique that can significantly reduce the training time and improve the performance of your models, especially when you have limited data.</p>
 </div><div class='row navigation'>
 	<div class='col-2'>
