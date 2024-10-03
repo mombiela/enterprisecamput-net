@@ -2,7 +2,6 @@
 $(document).ready(function(){
 	checkCookies();
 	$("#btn_accept_cookies").click(accept);
-	mathReload();
 });
     
 function checkCookies()
