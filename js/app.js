@@ -1,165 +1,261 @@
-// Importaciones de Firebase
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js';
-import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
-
-// Configuración de Firebase de tu proyecto
-const firebaseConfig = {
-	apiKey: "AIzaSyAcGdiZxHzBq5rVn1boUa-0RAhyBpkuGN0",
-	authDomain: "enterprise-campus-925a3.firebaseapp.com",
-	projectId: "enterprise-campus-925a3",
-	storageBucket: "enterprise-campus-925a3.appspot.com",
-	messagingSenderId: "256906158886",
-	appId: "1:256906158886:web:c2776937626b6dad9517e7",
-	measurementId: "G-VVPMPJSR3P"
-};
-
-// Inicializa Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import { FirebaseService } from './FirebaseService.js';
 
 $(document).ready(function() {
+  FirebaseService.onChangeAuth(updateInfoUser);;
 
-  // Función para mostrar mensajes al usuario
-  function mostrarMensaje(texto) {
-    $('#mensaje').text(texto);
-  }
+  // Eventos
+  $('#register').click(register);
+  $('#login').click(login);
+  $('#anonymous-login').click(loginAnonimo);
+  $('#logout').click(logout);
+  $("#eliminarUser").click(deleteUser);
+  $('#guardar-datos').click(guardarDatos);
+  $('#recover_pwd').click(recoverPwd);
+  $('#verifyEmail').click(verifyEmail);
+  $('#removePage').click(removePage);
+  $('#addPage').click(addPage);
+});
 
-  // Función para actualizar la información del usuario en la página
-  function actualizarInformacionUsuario(user) {
-    if (user) {
-      $('#usuario-nombre').text(user.displayName || 'Sin nombre');
-      $('#usuario-email').text(user.email || 'Sin email');
-      $('#usuario-info').show();
-      $('#contenido').show();
-      $('#guardar-datos').show();
-      $('#auth-form').hide();
-    } else {
-      $('#usuario-nombre').text('');
-      $('#usuario-email').text('');
-      $('#usuario-info').hide();
-      $('#contenido').hide();
-      $('#guardar-datos').hide();
-      $('#auth-form').show();
-    }
-  }
+function mostrarMensaje(texto) 
+{
+	$('#mensaje').text(texto);
+}
 
-  // Manejar estado de autenticación
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      mostrarMensaje(`Usuario autenticado.`);
-      actualizarInformacionUsuario(user);
-      // Si el usuario está autenticado, obtener y mostrar los datos
-      cargarDatos(user);
-    } else {
-      mostrarMensaje('No hay ningún usuario autenticado.');
+function updateInfoUser(user)
+{
+	if (user) 
+	{
+    	mostrarMensaje('Usuario autenticado.');
+      	actualizarInformacionUsuario(user);
+      	cargarDatosUsuario();
+    } 
+	else 
+	{
       actualizarInformacionUsuario(null);
-      // Limpiar el textarea
-      $('#contenido').val('');
     }
-  });
+}
 
-  // Función para cargar datos del usuario
-  async function cargarDatos(user) {
-    const docRef = doc(db, 'usuarios', user.uid);
-    try {
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        $('#contenido').val(data.contenido);
-        mostrarMensaje('Datos cargados correctamente.');
-      } else {
-        mostrarMensaje('No se encontraron datos para este usuario.');
-        $('#contenido').val('');
-      }
-    } catch (error) {
-      console.error("Error al obtener los datos:", error);
-      mostrarMensaje('Error al obtener los datos.');
-    }
-  }
+function actualizarInformacionUsuario(user) 
+{
+	if (user) 
+	{
+	  $('#usuario-nombre').text(user.isAnonymous ? 'Usuario Anónimo' : (user.displayName || 'Sin nombre'));
+	  $('#usuario-email').text(user.isAnonymous ? 'Sin email' : (user.email || 'Sin email'));
+	  $('#usuario-verificado').text(user.emailVerified ? 'Email verificado' : 'Falta verificar');
+	  $('#usuario-info').show();
+	  $('#contenido').show();
+	  $('#guardar-datos').show();
+	  $('#auth-form').hide();
+	  
+	  if (user.emailVerified) $('#verifyEmail').hide();
+	  else $('#verifyEmail').show();
+	} 
+	else 
+	{
+	  $('#usuario-nombre').text('');
+	  $('#usuario-email').text('');
+	  $('#usuario-info').hide();
+	  $('#contenido').hide();
+	  $('#guardar-datos').hide();
+	  $('#auth-form').show();
+	}
+}
 
-  // Registro de usuario
-  $('#register').click(function() {
+async function cargarDatosUsuario() 
+{
+	try
+	{
+		const docSnap = await FirebaseService.cargarDatos();	
+        if (docSnap.exists()) 
+		{
+        	const data = docSnap.data();
+          	$('#contenido').val(data.contenido);
+          	mostrarMensaje('Datos cargados correctamente.');
+        } 
+		else 
+		{
+        	$('#contenido').val('');
+        	mostrarMensaje('No se encontraron datos para este usuario.');
+        }
+	}
+	catch (error)
+	{
+        console.error("Error al obtener los datos:", error);
+        mostrarMensaje('Error al obtener los datos.');
+	}
+}
+
+async function register() {
     const email = $('#email').val();
     const password = $('#password').val();
+	const nombre = $('#nombre').val();
 
-    if (email && password) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          mostrarMensaje('Registro exitoso. Por favor, completa tu perfil.');
-          // Opcional: Solicitar el nombre del usuario
-          const nombre = prompt('Ingresa tu nombre:');
-          if (nombre) {
-            updateProfile(user, { displayName: nombre })
-              .then(() => {
-                actualizarInformacionUsuario(user);
-              })
-              .catch((error) => {
-                console.error('Error al actualizar el perfil:', error);
-              });
-          }
-        })
-        .catch((error) => {
+    if (email && password && nombre) 
+	{
+		try
+		{
+			const user = await FirebaseService.registrarUsuario(email, password, nombre);	
+        	mostrarMensaje('Registro exitoso.');
+        	actualizarInformacionUsuario(user);
+		}
+		catch (error)
+		{
           console.error('Error en el registro:', error);
           mostrarMensaje('Error en el registro: ' + error.message);
-        });
-    } else {
-      mostrarMensaje('Por favor, ingresa correo electrónico y contraseña.');
+		}
+    } 
+	else 
+	{
+    	mostrarMensaje('Por favor, ingresa correo electrónico, contraseña y nombre.');
     }
-  });
+}
 
-  // Inicio de sesión
-  $('#login').click(function() {
+async function login() 
+{
     const email = $('#email').val();
     const password = $('#password').val();
 
-    if (email && password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          mostrarMensaje('Inicio de sesión exitoso.');
-          actualizarInformacionUsuario(user);
-        })
-        .catch((error) => {
+    if (email && password) 
+	{
+		try
+		{
+    		const userCredential = await FirebaseService.iniciarSesion(email, password);
+        	mostrarMensaje('Inicio de sesión exitoso.');
+        	actualizarInformacionUsuario(userCredential.user);
+		}
+		catch (error)
+		{
           console.error('Error en el inicio de sesión:', error);
           mostrarMensaje('Error en el inicio de sesión: ' + error.message);
-        });
-    } else {
-      mostrarMensaje('Por favor, ingresa correo electrónico y contraseña.');
+		}
+    } 
+	else 
+	{
+    	mostrarMensaje('Por favor, ingresa correo electrónico y contraseña.');
     }
-  });
+}
 
-  // Cerrar sesión
-  $('#logout').click(function() {
-    signOut(auth).then(() => {
-      mostrarMensaje('Has cerrado sesión.');
-      actualizarInformacionUsuario(null);
-      $('#contenido').val('');
-    }).catch((error) => {
-      console.error('Error al cerrar sesión:', error);
-      mostrarMensaje('Error al cerrar sesión.');
-    });
-  });
 
-  // Funcionalidad para guardar datos
-  $('#guardar-datos').click(async function() {
-    const user = auth.currentUser;
-    if (user) {
-      const contenido = $('#contenido').val();
-      try {
-        await setDoc(doc(db, 'usuarios', user.uid), {
-          contenido: contenido
-        });
-        mostrarMensaje('Datos guardados exitosamente.');
-      } catch (error) {
-        console.error("Error al guardar los datos:", error);
-        mostrarMensaje('Error al guardar los datos.');
-      }
-    } else {
-      mostrarMensaje('Debes iniciar sesión para guardar datos.');
-    }
-  });
+async function loginAnonimo() 
+{
+	try
+	{
+    	await FirebaseService.iniciarSesionAnonimamente();
+        mostrarMensaje('Has iniciado sesión como invitado.');
+        actualizarInformacionUsuario(userCredential.user);
+	}
+	catch (error)
+	{
+        console.error('Error al iniciar sesión anónimamente:', error);
+        mostrarMensaje('Error al iniciar sesión anónimamente: ' + JSON.stringify(error,null,3));
+	}
+}
 
-});
+async function logout() 
+{
+	try
+	{
+    	await FirebaseService.cerrarSesion();
+        mostrarMensaje('Has cerrado sesión.');
+        actualizarInformacionUsuario(null);
+        $('#contenido').val('');
+	}
+	catch (error)
+	{
+        console.error('Error al cerrar sesión:', error);
+        mostrarMensaje('Error al cerrar sesión.');
+	}
+}
+
+async function deleteUser()
+{
+	try
+	{
+    	await FirebaseService.eliminarUsuario();
+		//await FirebaseService.cerrarSesion();
+        mostrarMensaje('Has eliminado usuario.');
+        actualizarInformacionUsuario(null);
+        $('#contenido').val('');
+	}
+	catch (error)
+	{
+        console.error('Error al Eliminar usuario:', error);
+        mostrarMensaje('Error al eliminar usuario.');
+	}
+}
+
+async function guardarDatos() 
+{
+	const contenido = $('#contenido').val();
+  	try
+	{
+  		await FirebaseService.guardarDatos(contenido);
+		mostrarMensaje('Datos guardados exitosamente.');
+	}
+	catch(error)
+	{
+    	console.error("Error al guardar los datos:", error);
+      	mostrarMensaje('Error al guardar los datos.');
+	}
+}
+
+async function recoverPwd()
+{
+  	try
+	{
+	    const email = $('#email').val();
+	    
+	    if (!email)
+	    {
+			 mostrarMensaje('Debe informar email');
+			 return;	
+		}
+  		await FirebaseService.recuperarContrasena(email);
+		mostrarMensaje('recuperar pwd ok');
+	}
+	catch(error)
+	{
+    	console.error("Error al guardar los datos:", error);
+      	mostrarMensaje('Error al recuperar pwd.');
+	}
+}
+
+async function verifyEmail()
+{
+  	try
+	{
+  		await FirebaseService.enviarVerificacionEmail();
+		mostrarMensaje('Email verificación ok');
+	}
+	catch(error)
+	{
+    	console.error("Error al enviar email verificación:", error);
+      	mostrarMensaje('Error al enviar email verificacion: ' + error);
+	}
+}
+
+async function addPage()
+{
+	let mod = $("#module").val();
+	let page = $("#page").val();
+	
+	if (!mod || !page)
+	{
+		mostrarMensaje("Debe informar modulo y página para añadir");
+		return;
+	}
+}
+
+async function removePage()
+{
+	let mod = $("#module").val();
+	let page = $("#page").val();
+	
+	if (!mod || !page)
+	{
+		mostrarMensaje("Debe informar modulo y página para eliminar");
+		return;
+	}
+}
+
+
