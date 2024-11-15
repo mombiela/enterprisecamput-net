@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Lifetimes </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/07-01-lifetimes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/07-01-lifetimes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/07-01-lifetimes" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "rust";
+  		var TEMA_NAME = "7-1";
+  		var TYPE = "mod";
+  		var PATH = "mod/rust/07-01-lifetimes";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/rust/07-01-lifetimes" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/rust/07-01-lifetimes" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="rust">
+		<a  href="#" class="text-secondary d-none" data-read-mod="rust" data-read-unit="7-1" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="rust" data-unread-unit="7-1" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-panic-unwinding' title="Panic and Unwinding" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-panic-unwinding' title="Panic and Unwinding" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Lifetimes</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-02-traits' title="Traits" class="py-2 px-3 btn btn-primary"
+				data-read-mod="rust" data-read-unit="7-1">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-02-traits' title="Traits" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="rust" data-read-unit="7-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>Lifetimes in Rust are a way of ensuring that references are valid as long as they are used. They are a crucial part of Rust's ownership system, which guarantees memory safety without a garbage collector. Understanding lifetimes is essential for writing safe and efficient Rust code, especially when dealing with complex data structures and functions.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Lifetime Annotations</strong>: Syntax used to specify how long references should be valid.</li>
+<li><strong>Borrow Checker</strong>: Rust's compile-time system that enforces the rules of lifetimes.</li>
+<li><strong>Lifetime Elision</strong>: Simplification rules that allow the compiler to infer lifetimes in certain cases.</li>
+</ol>
+</div><h1>Lifetime Annotations</h1>
+<div class='content'><p>Lifetime annotations are specified using an apostrophe followed by a name, like <code>'a</code>. They are used in function signatures to indicate the relationship between the lifetimes of different references.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbG9uZ2VzdDwnYT4oeDogJidhIHN0ciwgeTogJidhIHN0cikgLT4gJidhIHN0ciB7CiAgICBpZiB4LmxlbigpID4geS5sZW4oKSB7CiAgICAgICAgeAogICAgfSBlbHNlIHsKICAgICAgICB5CiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}</pre></div><div class='content'><p>In this example:</p>
+<ul>
+<li><code>'a</code> is a lifetime parameter.</li>
+<li><code>x</code> and <code>y</code> are references that must live at least as long as <code>'a</code>.</li>
+<li>The function returns a reference that is also valid for at least as long as <code>'a</code>.</li>
+</ul>
+</div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Function Signature</strong>: The function <code>longest</code> takes two string slices (<code>&amp;str</code>) with the same lifetime <code>'a</code> and returns a string slice with the same lifetime.</li>
+<li><strong>Lifetime Parameter</strong>: <code>'a</code> ensures that the returned reference is valid as long as both input references are valid.</li>
+</ul>
+</div><h1>Borrow Checker</h1>
+<div class='content'><p>The borrow checker is a part of the Rust compiler that enforces the rules of lifetimes. It ensures that references do not outlive the data they point to, preventing dangling references and ensuring memory safety.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCByOwogICAgewogICAgICAgIGxldCB4ID0gNTsKICAgICAgICByID0gJng7CiAgICB9CiAgICAvLyBwcmludGxuISgicjoge30iLCByKTsgLy8gVGhpcyBsaW5lIHdvdWxkIGNhdXNlIGEgY29tcGlsZS10aW1lIGVycm9yCn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let r;
+    {
+        let x = 5;
+        r = &amp;x;
+    }
+    // println!(&quot;r: {}&quot;, r); // This line would cause a compile-time error
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Scope</strong>: The variable <code>x</code> is created inside an inner scope and is dropped when the scope ends.</li>
+<li><strong>Reference</strong>: The reference <code>r</code> points to <code>x</code>, but <code>x</code> is no longer valid outside the inner scope.</li>
+<li><strong>Borrow Checker</strong>: The borrow checker prevents the use of <code>r</code> outside the scope where <code>x</code> is valid, avoiding a dangling reference.</li>
+</ul>
+</div><h1>Lifetime Elision</h1>
+<div class='content'><p>Rust has rules for lifetime elision, which allow the compiler to infer lifetimes in certain cases, reducing the need for explicit annotations.</p>
+</div><h2>Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZmlyc3Rfd29yZChzOiAmc3RyKSAtPiAmc3RyIHsKICAgIGxldCBieXRlcyA9IHMuYXNfYnl0ZXMoKTsKICAgIGZvciAoaSwgJml0ZW0pIGluIGJ5dGVzLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgaWYgaXRlbSA9PSBiJyAnIHsKICAgICAgICAgICAgcmV0dXJuICZzWzAuLmldOwogICAgICAgIH0KICAgIH0KICAgICZzWy4uXQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn first_word(s: &amp;str) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+    &amp;s[..]
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Elision Rules</strong>: The compiler infers that the input and output lifetimes are the same.</li>
+<li><strong>Simplified Syntax</strong>: No explicit lifetime annotations are needed, making the code cleaner and easier to read.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Task</h2>
+<div class='content'><p>Write a function <code>shortest</code> that takes two string slices and returns the shorter one. Use lifetime annotations to ensure the references are valid.</p>
+</div><h2>Solution</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gc2hvcnRlc3Q8J2E+KHg6ICYnYSBzdHIsIHk6ICYnYSBzdHIpIC0+ICYnYSBzdHIgewogICAgaWYgeC5sZW4oKSA8IHkubGVuKCkgewogICAgICAgIHgKICAgIH0gZWxzZSB7CiAgICAgICAgeQogICAgfQp9CgpmbiBtYWluKCkgewogICAgbGV0IHN0cmluZzEgPSBTdHJpbmc6OmZyb20oInNob3J0Iik7CiAgICBsZXQgc3RyaW5nMiA9IFN0cmluZzo6ZnJvbSgibG9uZ2VyIHN0cmluZyIpOwogICAgbGV0IHJlc3VsdCA9IHNob3J0ZXN0KCZzdHJpbmcxLCAmc3RyaW5nMik7CiAgICBwcmludGxuISgiVGhlIHNob3J0ZXN0IHN0cmluZyBpczoge30iLCByZXN1bHQpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn shortest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &lt; y.len() {
+        x
+    } else {
+        y
+    }
+}
+
+fn main() {
+    let string1 = String::from(&quot;short&quot;);
+    let string2 = String::from(&quot;longer string&quot;);
+    let result = shortest(&amp;string1, &amp;string2);
+    println!(&quot;The shortest string is: {}&quot;, result);
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Function Signature</strong>: The function <code>shortest</code> takes two string slices with the same lifetime <code>'a</code> and returns a string slice with the same lifetime.</li>
+<li><strong>Lifetime Parameter</strong>: <code>'a</code> ensures that the returned reference is valid as long as both input references are valid.</li>
+</ul>
+</div><h1>Common Mistakes</h1>
+<div class='content'><ol>
+<li><strong>Dangling References</strong>: Returning a reference to a local variable that goes out of scope.</li>
+<li><strong>Mismatched Lifetimes</strong>: Incorrectly specifying lifetimes that do not match the actual usage of references.</li>
+</ol>
+</div><h2>Example of a Common Mistake</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gaW52YWxpZF9yZWZlcmVuY2U8J2E+KCkgLT4gJidhIHN0ciB7CiAgICBsZXQgcyA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgICZzIC8vIEVycm9yOiBgc2AgZG9lcyBub3QgbGl2ZSBsb25nIGVub3VnaAp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn invalid_reference&lt;'a&gt;() -&gt; &amp;'a str {
+    let s = String::from(&quot;hello&quot;);
+    &amp;s // Error: `s` does not live long enough
+}</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Local Variable</strong>: The variable <code>s</code> is created inside the function and is dropped when the function ends.</li>
+<li><strong>Invalid Reference</strong>: The function attempts to return a reference to <code>s</code>, which is no longer valid.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>Lifetimes are a powerful feature in Rust that ensure memory safety by enforcing the validity of references. By understanding and correctly using lifetime annotations, you can write safe and efficient Rust code. In the next topic, we will explore traits, which allow for defining shared behavior across different types.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-panic-unwinding' title="Panic and Unwinding" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-panic-unwinding' title="Panic and Unwinding" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-02-traits' title="Traits" class="py-2 px-3 btn btn-primary"
+				data-read-mod="rust" data-read-unit="7-1">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-02-traits' title="Traits" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="rust" data-read-unit="7-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Rust Programming Course</h1>
+<h2>Module 1: Introduction to Rust</h2>
+<ul>
+<li><a href="01-01-what-is-rust">What is Rust?</a></li>
+<li><a href="01-02-setting-up-rust">Setting Up the Rust Environment</a></li>
+<li><a href="01-03-hello-world">Hello, World! Program</a></li>
+<li><a href="01-04-basic-syntax">Basic Syntax and Structure</a></li>
+</ul>
+<h2>Module 2: Basic Concepts</h2>
+<ul>
+<li><a href="02-01-variables-mutability">Variables and Mutability</a></li>
+<li><a href="02-02-data-types">Data Types</a></li>
+<li><a href="02-03-functions">Functions</a></li>
+<li><a href="02-04-control-flow">Control Flow</a></li>
+</ul>
+<h2>Module 3: Ownership and Borrowing</h2>
+<ul>
+<li><a href="03-01-understanding-ownership">Understanding Ownership</a></li>
+<li><a href="03-02-references-borrowing">References and Borrowing</a></li>
+<li><a href="03-03-slices">Slices</a></li>
+</ul>
+<h2>Module 4: Structs and Enums</h2>
+<ul>
+<li><a href="04-01-defining-structs">Defining Structs</a></li>
+<li><a href="04-02-using-structs">Using Structs</a></li>
+<li><a href="04-03-enums-pattern-matching">Enums and Pattern Matching</a></li>
+</ul>
+<h2>Module 5: Collections</h2>
+<ul>
+<li><a href="05-01-vectors">Vectors</a></li>
+<li><a href="05-02-strings">Strings</a></li>
+<li><a href="05-03-hashmaps">HashMaps</a></li>
+</ul>
+<h2>Module 6: Error Handling</h2>
+<ul>
+<li><a href="06-01-error-handling-result">Error Handling with Result</a></li>
+<li><a href="06-02-error-handling-option">Error Handling with Option</a></li>
+<li><a href="06-03-panic-unwinding">Panic and Unwinding</a></li>
+</ul>
+<h2>Module 7: Advanced Concepts</h2>
+<ul>
+<li><a href="07-01-lifetimes">Lifetimes</a></li>
+<li><a href="07-02-traits">Traits</a></li>
+<li><a href="07-03-generics">Generics</a></li>
+</ul>
+<h2>Module 8: Concurrency</h2>
+<ul>
+<li><a href="08-01-threads">Threads</a></li>
+<li><a href="08-02-message-passing">Message Passing</a></li>
+<li><a href="08-03-shared-state">Shared State</a></li>
+</ul>
+<h2>Module 9: Advanced Features</h2>
+<ul>
+<li><a href="09-01-macros">Macros</a></li>
+<li><a href="09-02-unsafe-rust">Unsafe Rust</a></li>
+<li><a href="09-03-ffi">FFI (Foreign Function Interface)</a></li>
+</ul>
+<h2>Module 10: Project and Best Practices</h2>
+<ul>
+<li><a href="10-01-building-project">Building a Project</a></li>
+<li><a href="10-02-testing">Testing</a></li>
+<li><a href="10-03-documentation">Documentation</a></li>
+<li><a href="10-04-best-practices">Best Practices</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

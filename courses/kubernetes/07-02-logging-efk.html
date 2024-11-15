@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Logging with Elasticsearch, Fluentd, and Kibana (EFK) </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-02-logging-efk" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-02-logging-efk" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "kubernetes";
+  		var TEMA_NAME = "7-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/kubernetes/07-02-logging-efk";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/kubernetes/07-02-logging-efk" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="kubernetes">
+		<a  href="#" class="text-secondary d-none" data-read-mod="kubernetes" data-read-unit="7-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="kubernetes" data-unread-unit="7-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Logging with Elasticsearch, Fluentd, and Kibana (EFK)</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes" class="py-2 px-3 btn btn-primary"
+				data-read-mod="kubernetes" data-read-unit="7-2">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="kubernetes" data-read-unit="7-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to set up and use the EFK stack (Elasticsearch, Fluentd, and Kibana) for logging in Kubernetes. The EFK stack is a popular choice for centralized logging, allowing you to collect, store, and visualize logs from your Kubernetes cluster.</p>
+</div><h1>Overview of EFK Stack</h1>
+<div class='content'></div><h2>Elasticsearch</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: A distributed search and analytics engine used for storing and querying log data.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Scalability: Can handle large volumes of data.</li>
+<li>Full-text search: Allows complex queries on log data.</li>
+<li>Real-time analytics: Provides near real-time insights.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Fluentd</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: An open-source data collector that helps unify data collection and consumption.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Flexible: Supports various input and output plugins.</li>
+<li>Reliable: Ensures data is delivered even in case of failures.</li>
+<li>Lightweight: Minimal resource usage.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Kibana</h2>
+<div class='content'><ul>
+<li><strong>Purpose</strong>: A data visualization and exploration tool used for visualizing Elasticsearch data.</li>
+<li><strong>Key Features</strong>:
+<ul>
+<li>Interactive: Allows creating dynamic dashboards.</li>
+<li>User-friendly: Intuitive interface for exploring data.</li>
+<li>Real-time: Provides real-time data visualization.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Setting Up EFK Stack in Kubernetes</h1>
+<div class='content'></div><h2>Step 1: Deploy Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a namespace for logging</strong>:</p>
+<pre><code class="language-sh">kubectl create namespace logging
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Elasticsearch</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: logging
+spec:
+  serviceName: &quot;elasticsearch&quot;
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
+        env:
+        - name: discovery.type
+          value: single-node
+</code></pre>
+</li>
+<li>
+<p><strong>Create a service for Elasticsearch</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  namespace: logging
+spec:
+  ports:
+  - port: 9200
+    targetPort: 9200
+  selector:
+    app: elasticsearch
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 2: Deploy Fluentd</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Create a ConfigMap for Fluentd configuration</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentd-config
+  namespace: logging
+data:
+  fluent.conf: |
+    &lt;source&gt;
+      @type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      tag kubernetes.*
+      &lt;parse&gt;
+        @type json
+        time_key time
+        time_format %Y-%m-%dT%H:%M:%S.%N%z
+      &lt;/parse&gt;
+    &lt;/source&gt;
+    &lt;match kubernetes.**&gt;
+      @type elasticsearch
+      host elasticsearch.logging.svc.cluster.local
+      port 9200
+      logstash_format true
+      logstash_prefix kubernetes
+      logstash_dateformat %Y.%m.%d
+    &lt;/match&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Deploy Fluentd as a DaemonSet</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluent/fluentd:v1.11.2
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: config-volume
+          mountPath: /fluentd/etc
+          subPath: fluent.conf
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: config-volume
+        configMap:
+          name: fluentd-config
+</code></pre>
+</li>
+</ol>
+</div><h2>Step 3: Deploy Kibana</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy Kibana</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.1
+        ports:
+        - containerPort: 5601
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: &quot;http://elasticsearch.logging.svc.cluster.local:9200&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Create a service for Kibana</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  ports:
+  - port: 5601
+    targetPort: 5601
+  selector:
+    app: kibana
+</code></pre>
+</li>
+</ol>
+</div><h1>Accessing Kibana</h1>
+<div class='content'><ul>
+<li><strong>Port-forward the Kibana service</strong>:
+<pre><code class="language-sh">kubectl port-forward service/kibana 5601:5601 -n logging
+</code></pre>
+</li>
+<li><strong>Open Kibana in your browser</strong>: Navigate to <code>http://localhost:5601</code>.</li>
+</ul>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Set Up EFK Stack</h2>
+<div class='content'><ol>
+<li><strong>Objective</strong>: Deploy the EFK stack in your Kubernetes cluster and visualize logs.</li>
+<li><strong>Steps</strong>:
+<ul>
+<li>Follow the steps outlined above to deploy Elasticsearch, Fluentd, and Kibana.</li>
+<li>Generate some logs by deploying a sample application.</li>
+<li>Access Kibana and create a dashboard to visualize the logs.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solution</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Deploy a sample application</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      containers:
+      - name: sample-app
+        image: busybox
+        command: ['sh', '-c', 'while true; do echo &quot;Hello, Kubernetes!&quot;; sleep 5; done']
+</code></pre>
+</li>
+<li>
+<p><strong>Check logs in Kibana</strong>:</p>
+<ul>
+<li>Access Kibana using the port-forward command.</li>
+<li>Navigate to the &quot;Discover&quot; tab and search for logs from the <code>sample-app</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Elasticsearch not starting</strong>: Ensure you have sufficient resources and the correct image version.</li>
+<li><strong>Fluentd not collecting logs</strong>: Verify the Fluentd configuration and ensure the paths are correct.</li>
+<li><strong>Kibana not connecting to Elasticsearch</strong>: Check the <code>ELASTICSEARCH_HOSTS</code> environment variable and network connectivity.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered the setup and usage of the EFK stack for logging in Kubernetes. You learned how to deploy Elasticsearch, Fluentd, and Kibana, and how to visualize logs from your Kubernetes cluster. This knowledge is crucial for monitoring and troubleshooting applications running in Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-01-monitoring-prometheus' title="Monitoring with Prometheus" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes" class="py-2 px-3 btn btn-primary"
+				data-read-mod="kubernetes" data-read-unit="7-2">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-03-health-checks-probes' title="Health Checks and Probes" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="kubernetes" data-read-unit="7-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Kubernetes Course</h1>
+<h2>Module 1: Introduction to Kubernetes</h2>
+<ul>
+<li><a href="01-01-what-is-kubernetes">What is Kubernetes?</a></li>
+<li><a href="01-02-kubernetes-architecture">Kubernetes Architecture</a></li>
+<li><a href="01-03-key-concepts-terminology">Key Concepts and Terminology</a></li>
+<li><a href="01-04-setting-up-cluster">Setting Up a Kubernetes Cluster</a></li>
+<li><a href="01-05-kubernetes-cli">Kubernetes CLI (kubectl)</a></li>
+</ul>
+<h2>Module 2: Core Kubernetes Components</h2>
+<ul>
+<li><a href="02-01-pods">Pods</a></li>
+<li><a href="02-02-replicasets">ReplicaSets</a></li>
+<li><a href="02-03-deployments">Deployments</a></li>
+<li><a href="02-04-services">Services</a></li>
+<li><a href="02-05-namespaces">Namespaces</a></li>
+</ul>
+<h2>Module 3: Configuration and Secrets Management</h2>
+<ul>
+<li><a href="03-01-configmaps">ConfigMaps</a></li>
+<li><a href="03-02-secrets">Secrets</a></li>
+<li><a href="03-03-environment-variables">Environment Variables</a></li>
+<li><a href="03-04-resource-quotas-limits">Resource Quotas and Limits</a></li>
+</ul>
+<h2>Module 4: Networking in Kubernetes</h2>
+<ul>
+<li><a href="04-01-cluster-networking">Cluster Networking</a></li>
+<li><a href="04-02-service-types">Service Types</a></li>
+<li><a href="04-03-ingress-controllers">Ingress Controllers</a></li>
+<li><a href="04-04-network-policies">Network Policies</a></li>
+</ul>
+<h2>Module 5: Storage in Kubernetes</h2>
+<ul>
+<li><a href="05-01-volumes">Volumes</a></li>
+<li><a href="05-02-persistent-volumes">Persistent Volumes</a></li>
+<li><a href="05-03-persistent-volume-claims">Persistent Volume Claims</a></li>
+<li><a href="05-04-storage-classes">Storage Classes</a></li>
+</ul>
+<h2>Module 6: Advanced Kubernetes Concepts</h2>
+<ul>
+<li><a href="06-01-statefulsets">StatefulSets</a></li>
+<li><a href="06-02-daemonsets">DaemonSets</a></li>
+<li><a href="06-03-jobs-cronjobs">Jobs and CronJobs</a></li>
+<li><a href="06-04-crds">Custom Resource Definitions (CRDs)</a></li>
+</ul>
+<h2>Module 7: Monitoring and Logging</h2>
+<ul>
+<li><a href="07-01-monitoring-prometheus">Monitoring with Prometheus</a></li>
+<li><a href="07-02-logging-efk">Logging with Elasticsearch, Fluentd, and Kibana (EFK)</a></li>
+<li><a href="07-03-health-checks-probes">Health Checks and Probes</a></li>
+<li><a href="07-04-metrics-server">Metrics Server</a></li>
+</ul>
+<h2>Module 8: Security in Kubernetes</h2>
+<ul>
+<li><a href="08-01-rbac">Role-Based Access Control (RBAC)</a></li>
+<li><a href="08-02-pod-security-policies">Pod Security Policies</a></li>
+<li><a href="08-03-network-security">Network Security</a></li>
+<li><a href="08-04-image-security">Image Security</a></li>
+</ul>
+<h2>Module 9: Scaling and Performance</h2>
+<ul>
+<li><a href="09-01-horizontal-pod-autoscaling">Horizontal Pod Autoscaling</a></li>
+<li><a href="09-02-vertical-pod-autoscaling">Vertical Pod Autoscaling</a></li>
+<li><a href="09-03-cluster-autoscaling">Cluster Autoscaling</a></li>
+<li><a href="09-04-performance-tuning">Performance Tuning</a></li>
+</ul>
+<h2>Module 10: Kubernetes Ecosystem and Tools</h2>
+<ul>
+<li><a href="10-01-helm">Helm</a></li>
+<li><a href="10-02-kustomize">Kustomize</a></li>
+<li><a href="10-03-kubeadm">Kubeadm</a></li>
+<li><a href="10-04-minikube">Minikube</a></li>
+</ul>
+<h2>Module 11: Case Studies and Real-World Applications</h2>
+<ul>
+<li><a href="11-01-deploying-web-application">Deploying a Web Application</a></li>
+<li><a href="11-02-cicd-kubernetes">CI/CD with Kubernetes</a></li>
+<li><a href="11-03-running-stateful-applications">Running Stateful Applications</a></li>
+<li><a href="11-04-multi-cluster-management">Multi-Cluster Management</a></li>
+</ul>
+<h2>Module 12: Preparing for Kubernetes Certification</h2>
+<ul>
+<li><a href="12-01-cka">Certified Kubernetes Administrator (CKA)</a></li>
+<li><a href="12-02-ckad">Certified Kubernetes Application Developer (CKAD)</a></li>
+<li><a href="12-03-cks">Certified Kubernetes Security Specialist (CKS)</a></li>
+<li><a href="12-04-exam-preparation-tips">Exam Preparation Tips</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

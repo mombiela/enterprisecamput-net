@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Data Pipelines with tf.data </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "tensorflow";
+  		var TEMA_NAME = "3-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/tensorflow/03-02-data-pipelines-with-tf-data";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/tensorflow/03-02-data-pipelines-with-tf-data" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/tensorflow/03-02-data-pipelines-with-tf-data" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="tensorflow">
+		<a  href="#" class="text-secondary d-none" data-read-mod="tensorflow" data-read-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="tensorflow" data-unread-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-loading-data' title="Loading Data" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-loading-data' title="Loading Data" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Data Pipelines with tf.data</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-data-augmentation' title="Data Augmentation" class="py-2 px-3 btn btn-primary"
+				data-read-mod="tensorflow" data-read-unit="3-2">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-data-augmentation' title="Data Augmentation" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="tensorflow" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>In this section, we will explore how to efficiently handle and preprocess data using TensorFlow's <code>tf.data</code> API. This API is designed to build complex input pipelines from simple, reusable pieces, making it easier to handle large datasets and perform data augmentation.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Datasets</strong>: The core abstraction in <code>tf.data</code> for representing a sequence of elements.</li>
+<li><strong>Transformations</strong>: Operations that can be applied to datasets to prepare data for training.</li>
+<li><strong>Iterators</strong>: Objects that enable you to iterate over the elements of a dataset.</li>
+</ol>
+</div><h1>Creating a Dataset</h1>
+<div class='content'></div><h2>From Tensors</h2>
+<div class='content'><p>You can create a dataset directly from tensors using <code>tf.data.Dataset.from_tensor_slices</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRXhhbXBsZSBkYXRhCmZlYXR1cmVzID0gdGYuY29uc3RhbnQoW1sxLjAsIDIuMF0sIFszLjAsIDQuMF0sIFs1LjAsIDYuMF1dKQpsYWJlbHMgPSB0Zi5jb25zdGFudChbMCwgMSwgMl0pCgojIENyZWF0ZSBhIGRhdGFzZXQKZGF0YXNldCA9IHRmLmRhdGEuRGF0YXNldC5mcm9tX3RlbnNvcl9zbGljZXMoKGZlYXR1cmVzLCBsYWJlbHMpKQoKIyBQcmludCB0aGUgZGF0YXNldCBlbGVtZW50cwpmb3IgZWxlbWVudCBpbiBkYXRhc2V0OgogICAgcHJpbnQoZWxlbWVudCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Example data
+features = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+labels = tf.constant([0, 1, 2])
+
+# Create a dataset
+dataset = tf.data.Dataset.from_tensor_slices((features, labels))
+
+# Print the dataset elements
+for element in dataset:
+    print(element)</pre></div><div class='content'></div><h2>From Files</h2>
+<div class='content'><p>You can also create datasets from files, such as CSV files or TFRecord files.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeGFtcGxlOiBDcmVhdGluZyBhIGRhdGFzZXQgZnJvbSBhIENTViBmaWxlCmZpbGVfcGF0aCA9ICdwYXRoL3RvL3lvdXIvY3N2ZmlsZS5jc3YnCmRhdGFzZXQgPSB0Zi5kYXRhLmV4cGVyaW1lbnRhbC5tYWtlX2Nzdl9kYXRhc2V0KAogICAgZmlsZV9wYXRoLAogICAgYmF0Y2hfc2l6ZT01LCAgIyBOdW1iZXIgb2Ygc2FtcGxlcyBwZXIgYmF0Y2gKICAgIGxhYmVsX25hbWU9J2xhYmVsX2NvbHVtbl9uYW1lJywKICAgIG5hX3ZhbHVlPSI/IiwKICAgIG51bV9lcG9jaHM9MSwKICAgIGlnbm9yZV9lcnJvcnM9VHJ1ZQop"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Example: Creating a dataset from a CSV file
+file_path = 'path/to/your/csvfile.csv'
+dataset = tf.data.experimental.make_csv_dataset(
+    file_path,
+    batch_size=5,  # Number of samples per batch
+    label_name='label_column_name',
+    na_value=&quot;?&quot;,
+    num_epochs=1,
+    ignore_errors=True
+)</pre></div><div class='content'></div><h1>Transformations</h1>
+<div class='content'></div><h2>Map</h2>
+<div class='content'><p>The <code>map</code> transformation applies a function to each element of the dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIG5vcm1hbGl6ZShmZWF0dXJlcywgbGFiZWwpOgogICAgZmVhdHVyZXMgPSB0Zi5jYXN0KGZlYXR1cmVzLCB0Zi5mbG9hdDMyKSAvIDI1NS4wCiAgICByZXR1cm4gZmVhdHVyZXMsIGxhYmVsCgpub3JtYWxpemVkX2RhdGFzZXQgPSBkYXRhc2V0Lm1hcChub3JtYWxpemUp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def normalize(features, label):
+    features = tf.cast(features, tf.float32) / 255.0
+    return features, label
+
+normalized_dataset = dataset.map(normalize)</pre></div><div class='content'></div><h2>Batch</h2>
+<div class='content'><p>The <code>batch</code> transformation combines consecutive elements of the dataset into batches.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmF0Y2hlZF9kYXRhc2V0ID0gZGF0YXNldC5iYXRjaCgyKQoKIyBQcmludCB0aGUgYmF0Y2hlZCBkYXRhc2V0IGVsZW1lbnRzCmZvciBiYXRjaCBpbiBiYXRjaGVkX2RhdGFzZXQ6CiAgICBwcmludChiYXRjaCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>batched_dataset = dataset.batch(2)
+
+# Print the batched dataset elements
+for batch in batched_dataset:
+    print(batch)</pre></div><div class='content'></div><h2>Shuffle</h2>
+<div class='content'><p>The <code>shuffle</code> transformation randomly shuffles the elements of the dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2h1ZmZsZWRfZGF0YXNldCA9IGRhdGFzZXQuc2h1ZmZsZShidWZmZXJfc2l6ZT0xMCk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>shuffled_dataset = dataset.shuffle(buffer_size=10)</pre></div><div class='content'></div><h2>Prefetch</h2>
+<div class='content'><p>The <code>prefetch</code> transformation allows the data pipeline to fetch batches in the background while the model is training.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJlZmV0Y2hlZF9kYXRhc2V0ID0gZGF0YXNldC5wcmVmZXRjaChidWZmZXJfc2l6ZT10Zi5kYXRhLmV4cGVyaW1lbnRhbC5BVVRPVFVORSk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>prefetched_dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)</pre></div><div class='content'></div><h1>Practical Example</h1>
+<div class='content'><p>Let's put it all together in a practical example where we load a dataset, apply transformations, and prepare it for training.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRXhhbXBsZSBkYXRhCmZlYXR1cmVzID0gdGYuY29uc3RhbnQoW1sxLjAsIDIuMF0sIFszLjAsIDQuMF0sIFs1LjAsIDYuMF0sIFs3LjAsIDguMF0sIFs5LjAsIDEwLjBdXSkKbGFiZWxzID0gdGYuY29uc3RhbnQoWzAsIDEsIDIsIDMsIDRdKQoKIyBDcmVhdGUgYSBkYXRhc2V0CmRhdGFzZXQgPSB0Zi5kYXRhLkRhdGFzZXQuZnJvbV90ZW5zb3Jfc2xpY2VzKChmZWF0dXJlcywgbGFiZWxzKSkKCiMgRGVmaW5lIGEgZnVuY3Rpb24gdG8gbm9ybWFsaXplIHRoZSBkYXRhCmRlZiBub3JtYWxpemUoZmVhdHVyZXMsIGxhYmVsKToKICAgIGZlYXR1cmVzID0gdGYuY2FzdChmZWF0dXJlcywgdGYuZmxvYXQzMikgLyAxMC4wCiAgICByZXR1cm4gZmVhdHVyZXMsIGxhYmVsCgojIEFwcGx5IHRyYW5zZm9ybWF0aW9ucwpkYXRhc2V0ID0gZGF0YXNldC5tYXAobm9ybWFsaXplKQpkYXRhc2V0ID0gZGF0YXNldC5zaHVmZmxlKGJ1ZmZlcl9zaXplPTUpCmRhdGFzZXQgPSBkYXRhc2V0LmJhdGNoKDIpCmRhdGFzZXQgPSBkYXRhc2V0LnByZWZldGNoKGJ1ZmZlcl9zaXplPXRmLmRhdGEuZXhwZXJpbWVudGFsLkFVVE9UVU5FKQoKIyBQcmludCB0aGUgdHJhbnNmb3JtZWQgZGF0YXNldCBlbGVtZW50cwpmb3IgYmF0Y2ggaW4gZGF0YXNldDoKICAgIHByaW50KGJhdGNoKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Example data
+features = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0], [7.0, 8.0], [9.0, 10.0]])
+labels = tf.constant([0, 1, 2, 3, 4])
+
+# Create a dataset
+dataset = tf.data.Dataset.from_tensor_slices((features, labels))
+
+# Define a function to normalize the data
+def normalize(features, label):
+    features = tf.cast(features, tf.float32) / 10.0
+    return features, label
+
+# Apply transformations
+dataset = dataset.map(normalize)
+dataset = dataset.shuffle(buffer_size=5)
+dataset = dataset.batch(2)
+dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+
+# Print the transformed dataset elements
+for batch in dataset:
+    print(batch)</pre></div><div class='content'></div><h1>Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Create and Transform a Dataset</h2>
+<div class='content'><ol>
+<li>Create a dataset from the following tensors:
+<ul>
+<li>Features: <code>[[10, 20], [30, 40], [50, 60], [70, 80], [90, 100]]</code></li>
+<li>Labels: <code>[0, 1, 2, 3, 4]</code></li>
+</ul>
+</li>
+<li>Normalize the features by dividing by 100.</li>
+<li>Shuffle the dataset with a buffer size of 5.</li>
+<li>Batch the dataset with a batch size of 2.</li>
+<li>Prefetch the dataset with <code>AUTOTUNE</code>.</li>
+</ol>
+<p><strong>Solution:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgU3RlcCAxOiBDcmVhdGUgdGhlIGRhdGFzZXQKZmVhdHVyZXMgPSB0Zi5jb25zdGFudChbWzEwLCAyMF0sIFszMCwgNDBdLCBbNTAsIDYwXSwgWzcwLCA4MF0sIFs5MCwgMTAwXV0pCmxhYmVscyA9IHRmLmNvbnN0YW50KFswLCAxLCAyLCAzLCA0XSkKZGF0YXNldCA9IHRmLmRhdGEuRGF0YXNldC5mcm9tX3RlbnNvcl9zbGljZXMoKGZlYXR1cmVzLCBsYWJlbHMpKQoKIyBTdGVwIDI6IE5vcm1hbGl6ZSB0aGUgZmVhdHVyZXMKZGVmIG5vcm1hbGl6ZShmZWF0dXJlcywgbGFiZWwpOgogICAgZmVhdHVyZXMgPSB0Zi5jYXN0KGZlYXR1cmVzLCB0Zi5mbG9hdDMyKSAvIDEwMC4wCiAgICByZXR1cm4gZmVhdHVyZXMsIGxhYmVsCgpkYXRhc2V0ID0gZGF0YXNldC5tYXAobm9ybWFsaXplKQoKIyBTdGVwIDM6IFNodWZmbGUgdGhlIGRhdGFzZXQKZGF0YXNldCA9IGRhdGFzZXQuc2h1ZmZsZShidWZmZXJfc2l6ZT01KQoKIyBTdGVwIDQ6IEJhdGNoIHRoZSBkYXRhc2V0CmRhdGFzZXQgPSBkYXRhc2V0LmJhdGNoKDIpCgojIFN0ZXAgNTogUHJlZmV0Y2ggdGhlIGRhdGFzZXQKZGF0YXNldCA9IGRhdGFzZXQucHJlZmV0Y2goYnVmZmVyX3NpemU9dGYuZGF0YS5leHBlcmltZW50YWwuQVVUT1RVTkUpCgojIFByaW50IHRoZSB0cmFuc2Zvcm1lZCBkYXRhc2V0IGVsZW1lbnRzCmZvciBiYXRjaCBpbiBkYXRhc2V0OgogICAgcHJpbnQoYmF0Y2gp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Step 1: Create the dataset
+features = tf.constant([[10, 20], [30, 40], [50, 60], [70, 80], [90, 100]])
+labels = tf.constant([0, 1, 2, 3, 4])
+dataset = tf.data.Dataset.from_tensor_slices((features, labels))
+
+# Step 2: Normalize the features
+def normalize(features, label):
+    features = tf.cast(features, tf.float32) / 100.0
+    return features, label
+
+dataset = dataset.map(normalize)
+
+# Step 3: Shuffle the dataset
+dataset = dataset.shuffle(buffer_size=5)
+
+# Step 4: Batch the dataset
+dataset = dataset.batch(2)
+
+# Step 5: Prefetch the dataset
+dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+
+# Print the transformed dataset elements
+for batch in dataset:
+    print(batch)</pre></div><div class='content'></div><h1>Summary</h1>
+<div class='content'><p>In this section, we covered the basics of creating and transforming datasets using TensorFlow's <code>tf.data</code> API. We learned how to:</p>
+<ul>
+<li>Create datasets from tensors and files.</li>
+<li>Apply transformations such as <code>map</code>, <code>batch</code>, <code>shuffle</code>, and <code>prefetch</code>.</li>
+<li>Combine these transformations to build efficient data pipelines.</li>
+</ul>
+<p>Understanding these concepts is crucial for handling large datasets and preparing data for training machine learning models. In the next section, we will delve into data augmentation techniques to further enhance our data preprocessing capabilities.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-loading-data' title="Loading Data" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-loading-data' title="Loading Data" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-data-augmentation' title="Data Augmentation" class="py-2 px-3 btn btn-primary"
+				data-read-mod="tensorflow" data-read-unit="3-2">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-data-augmentation' title="Data Augmentation" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="tensorflow" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>TensorFlow Course</h1>
+<h2>Module 1: Introduction to TensorFlow</h2>
+<ul>
+<li><a href="01-01-what-is-tensorflow">What is TensorFlow?</a></li>
+<li><a href="01-02-setting-up-tensorflow">Setting Up TensorFlow</a></li>
+<li><a href="01-03-basic-tensorflow-concepts">Basic TensorFlow Concepts</a></li>
+<li><a href="01-04-tensorflow-hello-world">TensorFlow Hello World</a></li>
+</ul>
+<h2>Module 2: TensorFlow Basics</h2>
+<ul>
+<li><a href="02-01-tensors-and-operations">Tensors and Operations</a></li>
+<li><a href="02-02-variables-and-constants">Variables and Constants</a></li>
+<li><a href="02-03-tensorflow-graphs">TensorFlow Graphs</a></li>
+<li><a href="02-04-eager-execution">Eager Execution</a></li>
+</ul>
+<h2>Module 3: Data Handling in TensorFlow</h2>
+<ul>
+<li><a href="03-01-loading-data">Loading Data</a></li>
+<li><a href="03-02-data-pipelines-with-tf-data">Data Pipelines with tf.data</a></li>
+<li><a href="03-03-data-augmentation">Data Augmentation</a></li>
+<li><a href="03-04-working-with-datasets">Working with Datasets</a></li>
+</ul>
+<h2>Module 4: Building Neural Networks</h2>
+<ul>
+<li><a href="04-01-introduction-to-neural-networks">Introduction to Neural Networks</a></li>
+<li><a href="04-02-creating-a-simple-neural-network">Creating a Simple Neural Network</a></li>
+<li><a href="04-03-activation-functions">Activation Functions</a></li>
+<li><a href="04-04-loss-functions-and-optimizers">Loss Functions and Optimizers</a></li>
+</ul>
+<h2>Module 5: Convolutional Neural Networks (CNNs)</h2>
+<ul>
+<li><a href="05-01-introduction-to-cnns">Introduction to CNNs</a></li>
+<li><a href="05-02-building-a-cnn">Building a CNN</a></li>
+<li><a href="05-03-pooling-layers">Pooling Layers</a></li>
+<li><a href="05-04-advanced-cnn-architectures">Advanced CNN Architectures</a></li>
+</ul>
+<h2>Module 6: Recurrent Neural Networks (RNNs)</h2>
+<ul>
+<li><a href="06-01-introduction-to-rnns">Introduction to RNNs</a></li>
+<li><a href="06-02-building-an-rnn">Building an RNN</a></li>
+<li><a href="06-03-long-short-term-memory">Long Short-Term Memory (LSTM)</a></li>
+<li><a href="06-04-gated-recurrent-units">Gated Recurrent Units (GRUs)</a></li>
+</ul>
+<h2>Module 7: Advanced TensorFlow Techniques</h2>
+<ul>
+<li><a href="07-01-custom-layers-and-models">Custom Layers and Models</a></li>
+<li><a href="07-02-tensorflow-hub">TensorFlow Hub</a></li>
+<li><a href="07-03-transfer-learning">Transfer Learning</a></li>
+<li><a href="07-04-hyperparameter-tuning">Hyperparameter Tuning</a></li>
+</ul>
+<h2>Module 8: TensorFlow for Production</h2>
+<ul>
+<li><a href="08-01-model-saving-and-loading">Model Saving and Loading</a></li>
+<li><a href="08-02-tensorflow-serving">TensorFlow Serving</a></li>
+<li><a href="08-03-deploying-models">Deploying Models</a></li>
+<li><a href="08-04-monitoring-and-maintenance">Monitoring and Maintenance</a></li>
+</ul>
+<h2>Module 9: TensorFlow Extended (TFX)</h2>
+<ul>
+<li><a href="09-01-introduction-to-tfx">Introduction to TFX</a></li>
+<li><a href="09-02-data-validation">Data Validation</a></li>
+<li><a href="09-03-transforming-data">Transforming Data</a></li>
+<li><a href="09-04-model-analysis">Model Analysis</a></li>
+</ul>
+<h2>Module 10: Special Topics</h2>
+<ul>
+<li><a href="10-01-tensorflow-lite">TensorFlow Lite</a></li>
+<li><a href="10-02-tensorflow-js">TensorFlow.js</a></li>
+<li><a href="10-03-tensorflow-federated">TensorFlow Federated</a></li>
+<li><a href="10-04-tensorflow-quantum">TensorFlow Quantum</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

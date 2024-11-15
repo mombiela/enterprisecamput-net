@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Panic and Unwinding </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/06-03-panic-unwinding" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/06-03-panic-unwinding" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/06-03-panic-unwinding" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "rust";
+  		var TEMA_NAME = "6-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/rust/06-03-panic-unwinding";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/rust/06-03-panic-unwinding" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/rust/06-03-panic-unwinding" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="rust">
+		<a  href="#" class="text-secondary d-none" data-read-mod="rust" data-read-unit="6-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="rust" data-unread-unit="6-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Panic and Unwinding</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-01-lifetimes' title="Lifetimes" class="py-2 px-3 btn btn-primary"
+				data-read-mod="rust" data-read-unit="6-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-01-lifetimes' title="Lifetimes" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="rust" data-read-unit="6-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>In Rust, error handling is a critical aspect of writing robust and reliable software. While Rust provides mechanisms like <code>Result</code> and <code>Option</code> for handling recoverable errors, there are situations where an error is so severe that the program cannot continue. In such cases, Rust uses a mechanism called <strong>panic</strong>.</p>
+</div><h1>What is Panic?</h1>
+<div class='content'><p>A <strong>panic</strong> in Rust is a mechanism for handling unrecoverable errors. When a panic occurs, the program stops execution and starts unwinding the stack, cleaning up resources along the way. This is useful for situations where continuing execution would lead to undefined behavior or data corruption.</p>
+</div><h2>When to Use Panic</h2>
+<div class='content'><ul>
+<li><strong>Critical Errors</strong>: When an error occurs that the program cannot recover from.</li>
+<li><strong>Assertions</strong>: When you want to enforce certain conditions during development and testing.</li>
+</ul>
+</div><h2>Example of Panic</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB2ID0gdmVjIVsxLCAyLCAzXTsKCiAgICAvLyBUaGlzIHdpbGwgY2F1c2UgYSBwYW5pYyBiZWNhdXNlIHRoZSBpbmRleCBpcyBvdXQgb2YgYm91bmRzCiAgICBwcmludGxuISgie30iLCB2Wzk5XSk7Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let v = vec![1, 2, 3];
+
+    // This will cause a panic because the index is out of bounds
+    println!(&quot;{}&quot;, v[99]);
+}</pre></div><div class='content'><p>In this example, accessing an out-of-bounds index in a vector causes a panic.</p>
+</div><h1>Unwinding the Stack</h1>
+<div class='content'><p>When a panic occurs, Rust starts a process called <strong>unwinding</strong>. Unwinding means that Rust walks back up the stack, cleaning up resources and running destructors for all the variables that go out of scope.</p>
+</div><h2>Example of Unwinding</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBfdiA9IHZlYyFbMSwgMiwgM107CgogICAgLy8gVGhpcyB3aWxsIGNhdXNlIGEgcGFuaWMKICAgIHBhbmljISgiVGhpcyBpcyBhIGNyaXRpY2FsIGVycm9yISIpOwp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let _v = vec![1, 2, 3];
+
+    // This will cause a panic
+    panic!(&quot;This is a critical error!&quot;);
+}</pre></div><div class='content'><p>In this example, the <code>panic!</code> macro is used to trigger a panic with a custom error message. Rust will unwind the stack, cleaning up the vector <code>_v</code>.</p>
+</div><h1>Catching Panics</h1>
+<div class='content'><p>In some cases, you might want to catch a panic and handle it gracefully. Rust provides the <code>std::panic::catch_unwind</code> function for this purpose.</p>
+</div><h2>Example of Catching a Panic</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6cGFuaWM7CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3VsdCA9IHBhbmljOjpjYXRjaF91bndpbmQofHwgewogICAgICAgIHByaW50bG4hKCJBYm91dCB0byBwYW5pYyEiKTsKICAgICAgICBwYW5pYyEoIlRoaXMgaXMgYSBjcml0aWNhbCBlcnJvciEiKTsKICAgIH0pOwoKICAgIG1hdGNoIHJlc3VsdCB7CiAgICAgICAgT2soXykgPT4gcHJpbnRsbiEoIk5vIHBhbmljIG9jY3VycmVkLiIpLAogICAgICAgIEVycihfKSA9PiBwcmludGxuISgiQSBwYW5pYyBvY2N1cnJlZCwgYnV0IGl0IHdhcyBjYXVnaHQuIiksCiAgICB9Cn0="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::panic;
+
+fn main() {
+    let result = panic::catch_unwind(|| {
+        println!(&quot;About to panic!&quot;);
+        panic!(&quot;This is a critical error!&quot;);
+    });
+
+    match result {
+        Ok(_) =&gt; println!(&quot;No panic occurred.&quot;),
+        Err(_) =&gt; println!(&quot;A panic occurred, but it was caught.&quot;),
+    }
+}</pre></div><div class='content'><p>In this example, the closure passed to <code>catch_unwind</code> causes a panic, but the panic is caught, and the program continues execution.</p>
+</div><h1>Practical Exercise</h1>
+<div class='content'></div><h2>Exercise: Handling Panics</h2>
+<div class='content'><ol>
+<li>Write a function that takes a vector and an index, and returns the element at that index. If the index is out of bounds, the function should panic with a custom error message.</li>
+<li>Write a main function that calls this function with a valid index and an invalid index. Use <code>catch_unwind</code> to catch the panic and print a custom error message.</li>
+</ol>
+<h4>Solution</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6cGFuaWM7CgpmbiBnZXRfZWxlbWVudCh2OiBWZWM8aTMyPiwgaW5kZXg6IHVzaXplKSAtPiBpMzIgewogICAgaWYgaW5kZXggPj0gdi5sZW4oKSB7CiAgICAgICAgcGFuaWMhKCJJbmRleCBvdXQgb2YgYm91bmRzOiB7fSBpcyBub3QgYSB2YWxpZCBpbmRleCBmb3IgYSB2ZWN0b3Igb2YgbGVuZ3RoIHt9IiwgaW5kZXgsIHYubGVuKCkpOwogICAgfQogICAgdltpbmRleF0KfQoKZm4gbWFpbigpIHsKICAgIGxldCB2ID0gdmVjIVsxLCAyLCAzLCA0LCA1XTsKCiAgICAvLyBWYWxpZCBpbmRleAogICAgbGV0IHJlc3VsdCA9IHBhbmljOjpjYXRjaF91bndpbmQofHwgewogICAgICAgIHByaW50bG4hKCJFbGVtZW50IGF0IGluZGV4IDI6IHt9IiwgZ2V0X2VsZW1lbnQodi5jbG9uZSgpLCAyKSk7CiAgICB9KTsKCiAgICBtYXRjaCByZXN1bHQgewogICAgICAgIE9rKF8pID0+IHByaW50bG4hKCJObyBwYW5pYyBvY2N1cnJlZC4iKSwKICAgICAgICBFcnIoXykgPT4gcHJpbnRsbiEoIkEgcGFuaWMgb2NjdXJyZWQsIGJ1dCBpdCB3YXMgY2F1Z2h0LiIpLAogICAgfQoKICAgIC8vIEludmFsaWQgaW5kZXgKICAgIGxldCByZXN1bHQgPSBwYW5pYzo6Y2F0Y2hfdW53aW5kKHx8IHsKICAgICAgICBwcmludGxuISgiRWxlbWVudCBhdCBpbmRleCAxMDoge30iLCBnZXRfZWxlbWVudCh2LmNsb25lKCksIDEwKSk7CiAgICB9KTsKCiAgICBtYXRjaCByZXN1bHQgewogICAgICAgIE9rKF8pID0+IHByaW50bG4hKCJObyBwYW5pYyBvY2N1cnJlZC4iKSwKICAgICAgICBFcnIoXykgPT4gcHJpbnRsbiEoIkEgcGFuaWMgb2NjdXJyZWQsIGJ1dCBpdCB3YXMgY2F1Z2h0LiIpLAogICAgfQp9"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::panic;
+
+fn get_element(v: Vec&lt;i32&gt;, index: usize) -&gt; i32 {
+    if index &gt;= v.len() {
+        panic!(&quot;Index out of bounds: {} is not a valid index for a vector of length {}&quot;, index, v.len());
+    }
+    v[index]
+}
+
+fn main() {
+    let v = vec![1, 2, 3, 4, 5];
+
+    // Valid index
+    let result = panic::catch_unwind(|| {
+        println!(&quot;Element at index 2: {}&quot;, get_element(v.clone(), 2));
+    });
+
+    match result {
+        Ok(_) =&gt; println!(&quot;No panic occurred.&quot;),
+        Err(_) =&gt; println!(&quot;A panic occurred, but it was caught.&quot;),
+    }
+
+    // Invalid index
+    let result = panic::catch_unwind(|| {
+        println!(&quot;Element at index 10: {}&quot;, get_element(v.clone(), 10));
+    });
+
+    match result {
+        Ok(_) =&gt; println!(&quot;No panic occurred.&quot;),
+        Err(_) =&gt; println!(&quot;A panic occurred, but it was caught.&quot;),
+    }
+}</pre></div><div class='content'></div><h2>Common Mistakes</h2>
+<div class='content'><ul>
+<li><strong>Ignoring Panics</strong>: Not handling panics can lead to unexpected program termination.</li>
+<li><strong>Overusing Panics</strong>: Use panics sparingly and only for truly unrecoverable errors.</li>
+</ul>
+</div><h2>Additional Tips</h2>
+<div class='content'><ul>
+<li>Use <code>Result</code> and <code>Option</code> for recoverable errors.</li>
+<li>Use <code>panic!</code> for critical errors that should stop the program.</li>
+<li>Use <code>catch_unwind</code> to handle panics gracefully when necessary.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we learned about Rust's panic mechanism and how it handles unrecoverable errors by unwinding the stack. We also explored how to catch panics using <code>catch_unwind</code> to handle them gracefully. Understanding panic and unwinding is crucial for writing robust Rust programs that can handle critical errors effectively.</p>
+<p>Next, we will delve into <strong>Lifetimes</strong> in Rust, which is an advanced concept that helps ensure memory safety.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-02-error-handling-option' title="Error Handling with Option" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-01-lifetimes' title="Lifetimes" class="py-2 px-3 btn btn-primary"
+				data-read-mod="rust" data-read-unit="6-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-01-lifetimes' title="Lifetimes" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="rust" data-read-unit="6-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Rust Programming Course</h1>
+<h2>Module 1: Introduction to Rust</h2>
+<ul>
+<li><a href="01-01-what-is-rust">What is Rust?</a></li>
+<li><a href="01-02-setting-up-rust">Setting Up the Rust Environment</a></li>
+<li><a href="01-03-hello-world">Hello, World! Program</a></li>
+<li><a href="01-04-basic-syntax">Basic Syntax and Structure</a></li>
+</ul>
+<h2>Module 2: Basic Concepts</h2>
+<ul>
+<li><a href="02-01-variables-mutability">Variables and Mutability</a></li>
+<li><a href="02-02-data-types">Data Types</a></li>
+<li><a href="02-03-functions">Functions</a></li>
+<li><a href="02-04-control-flow">Control Flow</a></li>
+</ul>
+<h2>Module 3: Ownership and Borrowing</h2>
+<ul>
+<li><a href="03-01-understanding-ownership">Understanding Ownership</a></li>
+<li><a href="03-02-references-borrowing">References and Borrowing</a></li>
+<li><a href="03-03-slices">Slices</a></li>
+</ul>
+<h2>Module 4: Structs and Enums</h2>
+<ul>
+<li><a href="04-01-defining-structs">Defining Structs</a></li>
+<li><a href="04-02-using-structs">Using Structs</a></li>
+<li><a href="04-03-enums-pattern-matching">Enums and Pattern Matching</a></li>
+</ul>
+<h2>Module 5: Collections</h2>
+<ul>
+<li><a href="05-01-vectors">Vectors</a></li>
+<li><a href="05-02-strings">Strings</a></li>
+<li><a href="05-03-hashmaps">HashMaps</a></li>
+</ul>
+<h2>Module 6: Error Handling</h2>
+<ul>
+<li><a href="06-01-error-handling-result">Error Handling with Result</a></li>
+<li><a href="06-02-error-handling-option">Error Handling with Option</a></li>
+<li><a href="06-03-panic-unwinding">Panic and Unwinding</a></li>
+</ul>
+<h2>Module 7: Advanced Concepts</h2>
+<ul>
+<li><a href="07-01-lifetimes">Lifetimes</a></li>
+<li><a href="07-02-traits">Traits</a></li>
+<li><a href="07-03-generics">Generics</a></li>
+</ul>
+<h2>Module 8: Concurrency</h2>
+<ul>
+<li><a href="08-01-threads">Threads</a></li>
+<li><a href="08-02-message-passing">Message Passing</a></li>
+<li><a href="08-03-shared-state">Shared State</a></li>
+</ul>
+<h2>Module 9: Advanced Features</h2>
+<ul>
+<li><a href="09-01-macros">Macros</a></li>
+<li><a href="09-02-unsafe-rust">Unsafe Rust</a></li>
+<li><a href="09-03-ffi">FFI (Foreign Function Interface)</a></li>
+</ul>
+<h2>Module 10: Project and Best Practices</h2>
+<ul>
+<li><a href="10-01-building-project">Building a Project</a></li>
+<li><a href="10-02-testing">Testing</a></li>
+<li><a href="10-03-documentation">Documentation</a></li>
+<li><a href="10-04-best-practices">Best Practices</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

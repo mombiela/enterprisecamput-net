@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Performance Tuning </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/06-03-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/06-03-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/06-03-performance-tuning" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "redis";
+  		var TEMA_NAME = "6-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/redis/06-03-performance-tuning";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/redis/06-03-performance-tuning" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/redis/06-03-performance-tuning" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="redis">
+		<a  href="#" class="text-secondary d-none" data-read-mod="redis" data-read-unit="6-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="redis" data-unread-unit="6-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-02-latency-and-throughput' title="Latency and Throughput" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-02-latency-and-throughput' title="Latency and Throughput" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Performance Tuning</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-04-monitoring-and-metrics' title="Monitoring and Metrics" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="6-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-04-monitoring-and-metrics' title="Monitoring and Metrics" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="6-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>Performance tuning in Redis is crucial for ensuring that your Redis instance runs efficiently and can handle the required load. This section will cover various techniques and best practices for optimizing Redis performance.</p>
+</div><h1>Key Concepts</h1>
+<div class='content'><ol>
+<li><strong>Memory Management</strong>: Efficient use of memory to store data.</li>
+<li><strong>Command Optimization</strong>: Using the most efficient commands for your use case.</li>
+<li><strong>Configuration Tuning</strong>: Adjusting Redis configuration settings for optimal performance.</li>
+<li><strong>Data Structure Selection</strong>: Choosing the right data structures for your needs.</li>
+<li><strong>Monitoring and Profiling</strong>: Continuously monitoring and profiling Redis to identify and resolve performance bottlenecks.</li>
+</ol>
+</div><h1>Memory Management</h1>
+<div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li><strong>Memory Allocation</strong>: Redis uses a memory allocator (jemalloc by default) to manage memory. Understanding how memory is allocated can help in tuning performance.</li>
+<li><strong>Eviction Policies</strong>: Redis supports various eviction policies to handle situations where memory is full.</li>
+<li><strong>Memory Fragmentation</strong>: Over time, memory fragmentation can occur, leading to inefficient memory usage.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25maWd1cmluZyBhbiBldmljdGlvbiBwb2xpY3kKQ09ORklHIFNFVCBtYXhtZW1vcnktcG9saWN5IGFsbGtleXMtbHJ1"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Configuring an eviction policy
+CONFIG SET maxmemory-policy allkeys-lru</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>maxmemory-policy allkeys-lru</code>: This sets the eviction policy to remove the least recently used keys when the memory limit is reached.</li>
+</ul>
+</div><h1>Command Optimization</h1>
+<div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li><strong>Avoiding Expensive Commands</strong>: Some commands are more expensive in terms of time complexity (e.g., <code>KEYS</code>, <code>SMEMBERS</code>).</li>
+<li><strong>Batching Commands</strong>: Use pipelining to batch commands and reduce round-trip time.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2luZyBwaXBlbGluaW5nIHRvIGJhdGNoIGNvbW1hbmRzCk1VTFRJClNFVCBrZXkxIHZhbHVlMQpTRVQga2V5MiB2YWx1ZTIKRVhFQw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Using pipelining to batch commands
+MULTI
+SET key1 value1
+SET key2 value2
+EXEC</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>MULTI</code> and <code>EXEC</code> are used to batch multiple commands, reducing the number of round-trips to the server.</li>
+</ul>
+</div><h1>Configuration Tuning</h1>
+<div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li><strong>maxmemory</strong>: Set a maximum memory limit for Redis.</li>
+<li><strong>maxclients</strong>: Limit the number of client connections.</li>
+<li><strong>tcp-keepalive</strong>: Adjust TCP keepalive settings to manage idle connections.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXR0aW5nIG1heGltdW0gbWVtb3J5IGxpbWl0CkNPTkZJRyBTRVQgbWF4bWVtb3J5IDJnYgoKIyBMaW1pdGluZyB0aGUgbnVtYmVyIG9mIGNsaWVudCBjb25uZWN0aW9ucwpDT05GSUcgU0VUIG1heGNsaWVudHMgMTAwMAoKIyBBZGp1c3RpbmcgVENQIGtlZXBhbGl2ZSBzZXR0aW5ncwpDT05GSUcgU0VUIHRjcC1rZWVwYWxpdmUgMzAw"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Setting maximum memory limit
+CONFIG SET maxmemory 2gb
+
+# Limiting the number of client connections
+CONFIG SET maxclients 1000
+
+# Adjusting TCP keepalive settings
+CONFIG SET tcp-keepalive 300</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>maxmemory 2gb</code>: Limits Redis to use a maximum of 2GB of memory.</li>
+<li><code>maxclients 1000</code>: Limits the number of client connections to 1000.</li>
+<li><code>tcp-keepalive 300</code>: Sets the TCP keepalive interval to 300 seconds.</li>
+</ul>
+</div><h1>Data Structure Selection</h1>
+<div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li><strong>Strings</strong>: Simple key-value pairs, efficient for small data.</li>
+<li><strong>Lists</strong>: Ordered collections, useful for queues.</li>
+<li><strong>Sets</strong>: Unordered collections of unique elements.</li>
+<li><strong>Hashes</strong>: Key-value pairs within a key, efficient for storing objects.</li>
+<li><strong>Sorted Sets</strong>: Ordered collections with scores, useful for ranking.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2luZyBhIGhhc2ggdG8gc3RvcmUgdXNlciBkYXRhCkhTRVQgdXNlcjoxMDAwIG5hbWUgIkpvaG4gRG9lIiBhZ2UgMzAgZW1haWwgImpvaG4uZG9lQGV4YW1wbGUuY29tIg=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Using a hash to store user data
+HSET user:1000 name &quot;John Doe&quot; age 30 email &quot;john.doe@example.com&quot;</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>HSET user:1000 name &quot;John Doe&quot; age 30 email &quot;john.doe@example.com&quot;</code>: Stores user data in a hash, which is more memory-efficient than using multiple string keys.</li>
+</ul>
+</div><h1>Monitoring and Profiling</h1>
+<div class='content'></div><h2>Key Points</h2>
+<div class='content'><ul>
+<li><strong>Redis INFO</strong>: Provides detailed information about the Redis server.</li>
+<li><strong>Redis MONITOR</strong>: Real-time command monitoring.</li>
+<li><strong>Redis Slow Log</strong>: Logs slow queries for analysis.</li>
+</ul>
+</div><h2>Practical Example</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2luZyBSZWRpcyBJTkZPIHRvIGdldCBzZXJ2ZXIgaW5mb3JtYXRpb24KSU5GTwoKIyBVc2luZyBSZWRpcyBNT05JVE9SIHRvIG1vbml0b3IgY29tbWFuZHMgaW4gcmVhbC10aW1lCk1PTklUT1IKCiMgQ29uZmlndXJpbmcgYW5kIHVzaW5nIHRoZSBzbG93IGxvZwpDT05GSUcgU0VUIHNsb3dsb2ctbG9nLXNsb3dlci10aGFuIDEwMDAwClNMT1dMT0cgR0VU"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Using Redis INFO to get server information
+INFO
+
+# Using Redis MONITOR to monitor commands in real-time
+MONITOR
+
+# Configuring and using the slow log
+CONFIG SET slowlog-log-slower-than 10000
+SLOWLOG GET</pre></div><div class='content'><p>Explanation:</p>
+<ul>
+<li><code>INFO</code>: Retrieves detailed information about the Redis server.</li>
+<li><code>MONITOR</code>: Monitors all commands processed by the Redis server in real-time.</li>
+<li><code>slowlog-log-slower-than 10000</code>: Logs queries that take longer than 10 milliseconds.</li>
+<li><code>SLOWLOG GET</code>: Retrieves the slow log entries.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Configuring Eviction Policy</h2>
+<div class='content'><p><strong>Task</strong>: Configure Redis to use the <code>volatile-lru</code> eviction policy and set a maximum memory limit of 1GB.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q09ORklHIFNFVCBtYXhtZW1vcnkgMWdiCkNPTkZJRyBTRVQgbWF4bWVtb3J5LXBvbGljeSB2b2xhdGlsZS1scnU="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CONFIG SET maxmemory 1gb
+CONFIG SET maxmemory-policy volatile-lru</pre></div><div class='content'></div><h2>Exercise 2: Using Pipelining</h2>
+<div class='content'><p><strong>Task</strong>: Use pipelining to set three keys (<code>key1</code>, <code>key2</code>, <code>key3</code>) with values (<code>value1</code>, <code>value2</code>, <code>value3</code>).</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TVVMVEkKU0VUIGtleTEgdmFsdWUxClNFVCBrZXkyIHZhbHVlMgpTRVQga2V5MyB2YWx1ZTMKRVhFQw=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MULTI
+SET key1 value1
+SET key2 value2
+SET key3 value3
+EXEC</pre></div><div class='content'></div><h2>Exercise 3: Monitoring Slow Queries</h2>
+<div class='content'><p><strong>Task</strong>: Configure the slow log to log queries slower than 5 milliseconds and retrieve the slow log entries.</p>
+<p><strong>Solution</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q09ORklHIFNFVCBzbG93bG9nLWxvZy1zbG93ZXItdGhhbiA1MDAwClNMT1dMT0cgR0VU"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CONFIG SET slowlog-log-slower-than 5000
+SLOWLOG GET</pre></div><div class='content'></div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Overusing Expensive Commands</strong>: Avoid using commands like <code>KEYS</code> in production as they can block the server.</li>
+<li><strong>Ignoring Memory Limits</strong>: Always set a <code>maxmemory</code> limit to prevent Redis from consuming all available memory.</li>
+<li><strong>Not Monitoring</strong>: Regularly monitor Redis performance using tools like <code>INFO</code>, <code>MONITOR</code>, and the slow log.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we covered various techniques for performance tuning in Redis, including memory management, command optimization, configuration tuning, data structure selection, and monitoring. By applying these best practices, you can ensure that your Redis instance runs efficiently and can handle the required load. In the next section, we will delve into monitoring and metrics to further enhance your understanding of Redis performance.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-02-latency-and-throughput' title="Latency and Throughput" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-02-latency-and-throughput' title="Latency and Throughput" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-04-monitoring-and-metrics' title="Monitoring and Metrics" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="6-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-04-monitoring-and-metrics' title="Monitoring and Metrics" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="6-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Redis Course</h1>
+<h2>Module 1: Introduction to Redis</h2>
+<ul>
+<li><a href="01-01-what-is-redis">What is Redis?</a></li>
+<li><a href="01-02-installing-redis">Installing Redis</a></li>
+<li><a href="01-03-basic-redis-data-types">Basic Redis Data Types</a></li>
+<li><a href="01-04-redis-cli-basics">Redis CLI Basics</a></li>
+</ul>
+<h2>Module 2: Redis Data Structures</h2>
+<ul>
+<li><a href="02-01-strings">Strings</a></li>
+<li><a href="02-02-lists">Lists</a></li>
+<li><a href="02-03-sets">Sets</a></li>
+<li><a href="02-04-hashes">Hashes</a></li>
+<li><a href="02-05-sorted-sets">Sorted Sets</a></li>
+</ul>
+<h2>Module 3: Redis Commands and Operations</h2>
+<ul>
+<li><a href="03-01-basic-commands">Basic Commands</a></li>
+<li><a href="03-02-advanced-commands">Advanced Commands</a></li>
+<li><a href="03-03-transactions">Transactions</a></li>
+<li><a href="03-04-pipelining">Pipelining</a></li>
+</ul>
+<h2>Module 4: Redis Persistence</h2>
+<ul>
+<li><a href="04-01-snapshots-rdb">Snapshots (RDB)</a></li>
+<li><a href="04-02-append-only-files-aof">Append-Only Files (AOF)</a></li>
+<li><a href="04-03-persistence-configuration">Persistence Configuration</a></li>
+<li><a href="04-04-backup-and-restore">Backup and Restore</a></li>
+</ul>
+<h2>Module 5: Redis Security</h2>
+<ul>
+<li><a href="05-01-authentication">Authentication</a></li>
+<li><a href="05-02-encryption">Encryption</a></li>
+<li><a href="05-03-access-control-lists-acls">Access Control Lists (ACLs)</a></li>
+<li><a href="05-04-security-best-practices">Security Best Practices</a></li>
+</ul>
+<h2>Module 6: Redis Performance Optimization</h2>
+<ul>
+<li><a href="06-01-memory-optimization">Memory Optimization</a></li>
+<li><a href="06-02-latency-and-throughput">Latency and Throughput</a></li>
+<li><a href="06-03-performance-tuning">Performance Tuning</a></li>
+<li><a href="06-04-monitoring-and-metrics">Monitoring and Metrics</a></li>
+</ul>
+<h2>Module 7: Redis Clustering and High Availability</h2>
+<ul>
+<li><a href="07-01-replication">Replication</a></li>
+<li><a href="07-02-sentinel">Sentinel</a></li>
+<li><a href="07-03-cluster-mode">Cluster Mode</a></li>
+<li><a href="07-04-scaling-redis">Scaling Redis</a></li>
+</ul>
+<h2>Module 8: Redis Modules and Extensions</h2>
+<ul>
+<li><a href="08-01-introduction-to-redis-modules">Introduction to Redis Modules</a></li>
+<li><a href="08-02-popular-redis-modules">Popular Redis Modules</a></li>
+<li><a href="08-03-creating-custom-modules">Creating Custom Modules</a></li>
+<li><a href="08-04-using-redis-with-other-technologies">Using Redis with Other Technologies</a></li>
+</ul>
+<h2>Module 9: Advanced Redis Use Cases</h2>
+<ul>
+<li><a href="09-01-caching">Caching</a></li>
+<li><a href="09-02-session-storage">Session Storage</a></li>
+<li><a href="09-03-message-queues">Message Queues</a></li>
+<li><a href="09-04-real-time-analytics">Real-Time Analytics</a></li>
+</ul>
+<h2>Module 10: Redis in Production</h2>
+<ul>
+<li><a href="10-01-deployment-strategies">Deployment Strategies</a></li>
+<li><a href="10-02-monitoring-and-maintenance">Monitoring and Maintenance</a></li>
+<li><a href="10-03-troubleshooting">Troubleshooting</a></li>
+<li><a href="10-04-case-studies">Case Studies</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

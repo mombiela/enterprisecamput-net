@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Decision Trees and Random Forests </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/analisis_datos/04-03-arboles-bosques" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/analisis_datos/04-03-arbres-boscos" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/analisis_datos/04-03-trees-forests" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "foundations";
+  		var MOD_NAME = "analisis_datos";
+  		var TEMA_NAME = "4-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/analisis_datos/04-03-trees-forests";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/analisis_datos/04-03-arboles-bosques" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/analisis_datos/04-03-arbres-boscos" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="analisis_datos">
+		<a  href="#" class="text-secondary d-none" data-read-mod="analisis_datos" data-read-unit="4-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="analisis_datos" data-unread-unit="4-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-02-regression' title="Linear and Logistic Regression" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-02-regression' title="Linear and Logistic Regression" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Decision Trees and Random Forests</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-01-evaluation-metrics' title="Model Evaluation Metrics" class="py-2 px-3 btn btn-primary"
+				data-read-mod="analisis_datos" data-read-unit="4-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-01-evaluation-metrics' title="Model Evaluation Metrics" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="analisis_datos" data-read-unit="4-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In this section, we will delve into two powerful and widely used machine learning techniques: Decision Trees and Random Forests. These methods are particularly useful for both classification and regression tasks. By the end of this module, you will understand how these models work, how to implement them, and how to evaluate their performance.</p>
+</div><h1>Decision Trees</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Nodes and Leaves</strong>:</p>
+<ul>
+<li><strong>Root Node</strong>: The topmost node representing the entire dataset.</li>
+<li><strong>Decision Nodes</strong>: Nodes where the data is split based on a feature.</li>
+<li><strong>Leaf Nodes</strong>: Terminal nodes that represent the final output or decision.</li>
+</ul>
+</li>
+<li>
+<p><strong>Splitting Criteria</strong>:</p>
+<ul>
+<li><strong>Gini Impurity</strong>: Measures the frequency of a randomly chosen element being incorrectly labeled.</li>
+<li><strong>Entropy</strong>: Measures the amount of uncertainty or randomness in the data.</li>
+<li><strong>Information Gain</strong>: The reduction in entropy or impurity after a dataset is split on an attribute.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pruning</strong>:</p>
+<ul>
+<li><strong>Pre-pruning</strong>: Stops the tree from growing once it reaches a certain condition.</li>
+<li><strong>Post-pruning</strong>: Removes branches from a fully grown tree to prevent overfitting.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Let's consider a simple example of a decision tree for classifying whether a person will buy a computer based on their age and income.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLnRyZWUgaW1wb3J0IERlY2lzaW9uVHJlZUNsYXNzaWZpZXIKZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdApmcm9tIHNrbGVhcm4ubWV0cmljcyBpbXBvcnQgYWNjdXJhY3lfc2NvcmUKCiMgU2FtcGxlIGRhdGEKZGF0YSA9IHsKICAgICdBZ2UnOiBbMjUsIDQ1LCAzNSwgNTAsIDIzLCA0MCwgMzAsIDYwXSwKICAgICdJbmNvbWUnOiBbJ0hpZ2gnLCAnSGlnaCcsICdNZWRpdW0nLCAnTWVkaXVtJywgJ0xvdycsICdMb3cnLCAnTG93JywgJ0hpZ2gnXSwKICAgICdCdXlzX0NvbXB1dGVyJzogWydObycsICdObycsICdZZXMnLCAnWWVzJywgJ05vJywgJ1llcycsICdObycsICdZZXMnXQp9CgojIENvbnZlcnQgdG8gRGF0YUZyYW1lCmltcG9ydCBwYW5kYXMgYXMgcGQKZGYgPSBwZC5EYXRhRnJhbWUoZGF0YSkKCiMgRmVhdHVyZSBlbmNvZGluZwpkZlsnSW5jb21lJ10gPSBkZlsnSW5jb21lJ10ubWFwKHsnTG93JzogMCwgJ01lZGl1bSc6IDEsICdIaWdoJzogMn0pCgojIEZlYXR1cmVzIGFuZCB0YXJnZXQgdmFyaWFibGUKWCA9IGRmW1snQWdlJywgJ0luY29tZSddXQp5ID0gZGZbJ0J1eXNfQ29tcHV0ZXInXS5tYXAoeydObyc6IDAsICdZZXMnOiAxfSkKCiMgU3BsaXQgdGhlIGRhdGEKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjMsIHJhbmRvbV9zdGF0ZT00MikKCiMgSW5pdGlhbGl6ZSBhbmQgdHJhaW4gdGhlIG1vZGVsCmNsZiA9IERlY2lzaW9uVHJlZUNsYXNzaWZpZXIoKQpjbGYuZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIFByZWRpY3Rpb25zCnlfcHJlZCA9IGNsZi5wcmVkaWN0KFhfdGVzdCkKCiMgRXZhbHVhdGUgdGhlIG1vZGVsCmFjY3VyYWN5ID0gYWNjdXJhY3lfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCnByaW50KGYnQWNjdXJhY3k6IHthY2N1cmFjeTouMmZ9Jyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Sample data
+data = {
+    'Age': [25, 45, 35, 50, 23, 40, 30, 60],
+    'Income': ['High', 'High', 'Medium', 'Medium', 'Low', 'Low', 'Low', 'High'],
+    'Buys_Computer': ['No', 'No', 'Yes', 'Yes', 'No', 'Yes', 'No', 'Yes']
+}
+
+# Convert to DataFrame
+import pandas as pd
+df = pd.DataFrame(data)
+
+# Feature encoding
+df['Income'] = df['Income'].map({'Low': 0, 'Medium': 1, 'High': 2})
+
+# Features and target variable
+X = df[['Age', 'Income']]
+y = df['Buys_Computer'].map({'No': 0, 'Yes': 1})
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize and train the model
+clf = DecisionTreeClassifier()
+clf.fit(X_train, y_train)
+
+# Predictions
+y_pred = clf.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Data Preparation</strong>: The data is converted into a DataFrame, and categorical features are encoded numerically.</li>
+<li><strong>Model Training</strong>: The <code>DecisionTreeClassifier</code> is trained on the training data.</li>
+<li><strong>Prediction and Evaluation</strong>: The model's accuracy is evaluated on the test data.</li>
+</ul>
+</div><h1>Random Forests</h1>
+<div class='content'></div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Ensemble Learning</strong>:</p>
+<ul>
+<li>Combines multiple decision trees to improve the model's performance and robustness.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bootstrap Aggregation (Bagging)</strong>:</p>
+<ul>
+<li>Randomly samples the dataset with replacement to create multiple subsets.</li>
+<li>Each subset is used to train a different decision tree.</li>
+</ul>
+</li>
+<li>
+<p><strong>Feature Randomness</strong>:</p>
+<ul>
+<li>At each split in the tree, a random subset of features is considered to introduce more diversity.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Example</h2>
+<div class='content'><p>Let's extend our previous example to use a Random Forest classifier.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyCgojIEluaXRpYWxpemUgYW5kIHRyYWluIHRoZSBtb2RlbApyZl9jbGYgPSBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyKG5fZXN0aW1hdG9ycz0xMDAsIHJhbmRvbV9zdGF0ZT00MikKcmZfY2xmLmZpdChYX3RyYWluLCB5X3RyYWluKQoKIyBQcmVkaWN0aW9ucwp5X3ByZWRfcmYgPSByZl9jbGYucHJlZGljdChYX3Rlc3QpCgojIEV2YWx1YXRlIHRoZSBtb2RlbAphY2N1cmFjeV9yZiA9IGFjY3VyYWN5X3Njb3JlKHlfdGVzdCwgeV9wcmVkX3JmKQpwcmludChmJ1JhbmRvbSBGb3Jlc3QgQWNjdXJhY3k6IHthY2N1cmFjeV9yZjouMmZ9Jyk="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import RandomForestClassifier
+
+# Initialize and train the model
+rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_clf.fit(X_train, y_train)
+
+# Predictions
+y_pred_rf = rf_clf.predict(X_test)
+
+# Evaluate the model
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+print(f'Random Forest Accuracy: {accuracy_rf:.2f}')</pre></div><div class='content'></div><h2>Explanation</h2>
+<div class='content'><ul>
+<li><strong>Model Initialization</strong>: The <code>RandomForestClassifier</code> is initialized with 100 trees.</li>
+<li><strong>Model Training</strong>: The model is trained on the training data.</li>
+<li><strong>Prediction and Evaluation</strong>: The model's accuracy is evaluated on the test data.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Decision Tree Implementation</h2>
+<div class='content'><p><strong>Task</strong>: Implement a decision tree classifier on the Iris dataset and evaluate its performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2lyaXMKZnJvbSBza2xlYXJuLnRyZWUgaW1wb3J0IERlY2lzaW9uVHJlZUNsYXNzaWZpZXIKZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdApmcm9tIHNrbGVhcm4ubWV0cmljcyBpbXBvcnQgYWNjdXJhY3lfc2NvcmUKCiMgTG9hZCB0aGUgSXJpcyBkYXRhc2V0CmlyaXMgPSBsb2FkX2lyaXMoKQpYLCB5ID0gaXJpcy5kYXRhLCBpcmlzLnRhcmdldAoKIyBTcGxpdCB0aGUgZGF0YQpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBJbml0aWFsaXplIGFuZCB0cmFpbiB0aGUgbW9kZWwKY2xmID0gRGVjaXNpb25UcmVlQ2xhc3NpZmllcigpCmNsZi5maXQoWF90cmFpbiwgeV90cmFpbikKCiMgUHJlZGljdGlvbnMKeV9wcmVkID0gY2xmLnByZWRpY3QoWF90ZXN0KQoKIyBFdmFsdWF0ZSB0aGUgbW9kZWwKYWNjdXJhY3kgPSBhY2N1cmFjeV9zY29yZSh5X3Rlc3QsIHlfcHJlZCkKcHJpbnQoZidBY2N1cmFjeToge2FjY3VyYWN5Oi4yZn0nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_iris
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Load the Iris dataset
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize and train the model
+clf = DecisionTreeClassifier()
+clf.fit(X_train, y_train)
+
+# Predictions
+y_pred = clf.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ul>
+<li><strong>Data Loading</strong>: The Iris dataset is loaded using <code>load_iris()</code>.</li>
+<li><strong>Data Splitting</strong>: The data is split into training and testing sets.</li>
+<li><strong>Model Training</strong>: The <code>DecisionTreeClassifier</code> is trained on the training data.</li>
+<li><strong>Prediction and Evaluation</strong>: The model's accuracy is evaluated on the test data.</li>
+</ul>
+</div><h2>Exercise 2: Random Forest Implementation</h2>
+<div class='content'><p><strong>Task</strong>: Implement a random forest classifier on the Wine dataset and evaluate its performance.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX3dpbmUKZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyCmZyb20gc2tsZWFybi5tb2RlbF9zZWxlY3Rpb24gaW1wb3J0IHRyYWluX3Rlc3Rfc3BsaXQKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3JlCgojIExvYWQgdGhlIFdpbmUgZGF0YXNldAp3aW5lID0gbG9hZF93aW5lKCkKWCwgeSA9IHdpbmUuZGF0YSwgd2luZS50YXJnZXQKCiMgU3BsaXQgdGhlIGRhdGEKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjMsIHJhbmRvbV9zdGF0ZT00MikKCiMgSW5pdGlhbGl6ZSBhbmQgdHJhaW4gdGhlIG1vZGVsCnJmX2NsZiA9IFJhbmRvbUZvcmVzdENsYXNzaWZpZXIobl9lc3RpbWF0b3JzPTEwMCwgcmFuZG9tX3N0YXRlPTQyKQpyZl9jbGYuZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIFByZWRpY3Rpb25zCnlfcHJlZF9yZiA9IHJmX2NsZi5wcmVkaWN0KFhfdGVzdCkKCiMgRXZhbHVhdGUgdGhlIG1vZGVsCmFjY3VyYWN5X3JmID0gYWNjdXJhY3lfc2NvcmUoeV90ZXN0LCB5X3ByZWRfcmYpCnByaW50KGYnUmFuZG9tIEZvcmVzdCBBY2N1cmFjeToge2FjY3VyYWN5X3JmOi4yZn0nKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_wine
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Load the Wine dataset
+wine = load_wine()
+X, y = wine.data, wine.target
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Initialize and train the model
+rf_clf = RandomForestClassifier(n_estimators=100, random_state=42)
+rf_clf.fit(X_train, y_train)
+
+# Predictions
+y_pred_rf = rf_clf.predict(X_test)
+
+# Evaluate the model
+accuracy_rf = accuracy_score(y_test, y_pred_rf)
+print(f'Random Forest Accuracy: {accuracy_rf:.2f}')</pre></div><div class='content'></div><h2>Solution</h2>
+<div class='content'><ul>
+<li><strong>Data Loading</strong>: The Wine dataset is loaded using <code>load_wine()</code>.</li>
+<li><strong>Data Splitting</strong>: The data is split into training and testing sets.</li>
+<li><strong>Model Training</strong>: The <code>RandomForestClassifier</code> is trained on the training data.</li>
+<li><strong>Prediction and Evaluation</strong>: The model's accuracy is evaluated on the test data.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored Decision Trees and Random Forests, two powerful machine learning techniques for classification and regression tasks. We covered the key concepts, provided practical examples, and included exercises to reinforce the learned concepts. Understanding these models will enable you to tackle a wide range of data analysis problems effectively.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-02-regression' title="Linear and Logistic Regression" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-02-regression' title="Linear and Logistic Regression" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-01-evaluation-metrics' title="Model Evaluation Metrics" class="py-2 px-3 btn btn-primary"
+				data-read-mod="analisis_datos" data-read-unit="4-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-01-evaluation-metrics' title="Model Evaluation Metrics" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="analisis_datos" data-read-unit="4-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Data Analysis Course</h1>
+<h2>Module 1: Introduction to Data Analysis</h2>
+<ul>
+<li><a href="01-01-basic-concepts">Basic Concepts of Data Analysis</a></li>
+<li><a href="01-02-importance">Importance of Data Analysis in Decision Making</a></li>
+<li><a href="01-03-tools-software">Commonly Used Tools and Software</a></li>
+</ul>
+<h2>Module 2: Data Collection and Preparation</h2>
+<ul>
+<li><a href="02-01-sources-methods">Data Sources and Collection Methods</a></li>
+<li><a href="02-02-data-cleaning">Data Cleaning: Identification and Handling of Missing Data</a></li>
+<li><a href="02-03-transformation-normalization">Data Transformation and Normalization</a></li>
+</ul>
+<h2>Module 3: Data Exploration</h2>
+<ul>
+<li><a href="03-01-eda">Exploratory Data Analysis (EDA)</a></li>
+<li><a href="03-02-visualization">Data Visualization: Graphs and Tables</a></li>
+<li><a href="03-03-patterns-trends">Pattern and Trend Detection</a></li>
+</ul>
+<h2>Module 4: Data Modeling</h2>
+<ul>
+<li><a href="04-01-statistical-models">Introduction to Statistical Models</a></li>
+<li><a href="04-02-regression">Linear and Logistic Regression</a></li>
+<li><a href="04-03-trees-forests">Decision Trees and Random Forests</a></li>
+</ul>
+<h2>Module 5: Model Evaluation and Validation</h2>
+<ul>
+<li><a href="05-01-evaluation-metrics">Model Evaluation Metrics</a></li>
+<li><a href="05-02-cross-validation">Cross-Validation and Validation Techniques</a></li>
+<li><a href="05-03-tuning-optimization">Model Tuning and Optimization</a></li>
+</ul>
+<h2>Module 6: Implementation and Communication of Results</h2>
+<ul>
+<li><a href="06-01-implementation-production">Model Implementation in Production</a></li>
+<li><a href="06-02-communication-results">Communication of Results to Stakeholders</a></li>
+<li><a href="06-03-documentation-reports">Documentation and Reports</a></li>
+</ul>
+<h2>Module 7: Practical Cases and Projects</h2>
+<ul>
+<li><a href="07-01-case-sales">Case Study 1: Sales Data Analysis</a></li>
+<li><a href="07-02-case-marketing">Case Study 2: Marketing Data Analysis</a></li>
+<li><a href="07-03-final-project">Final Project: Complete Analysis of a Data Set</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

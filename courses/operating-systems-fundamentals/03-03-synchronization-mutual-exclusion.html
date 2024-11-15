@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Synchronization and Mutual Exclusion </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/sistemas_operativos/03-03-sincronizacion-exclusion-mutua" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sistemas_operativos/03-03-sincronitzacio-exclusio-mutua" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sistemas_operativos/03-03-synchronization-mutual-exclusion" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "en";
+  		var CATEGORY = "foundations";
+  		var MOD_NAME = "sistemas_operativos";
+  		var TEMA_NAME = "3-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/sistemas_operativos/03-03-synchronization-mutual-exclusion";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo-header_enterprise.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<b id="lit_lang_es" class="px-2">EN</b>
+	|
+	<a href="https://campusempresa.com/mod/sistemas_operativos/03-03-sincronizacion-exclusion-mutua" class="px-2">ES</a></b>
+	|
+	<a href="https://campusempresa.cat/mod/sistemas_operativos/03-03-sincronitzacio-exclusio-mutua" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>All the knowledge within your reach</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/my-courses" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>My courses</b></i>
+</a>
+<a href="/completed-courses" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Completed             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="sistemas_operativos">
+		<a  href="#" class="text-secondary d-none" data-read-mod="sistemas_operativos" data-read-unit="3-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Mark as read
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="sistemas_operativos" data-unread-unit="3-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Mark as unread
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Course Content
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-02-threads-processes' title="Threads and Processes" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-02-threads-processes' title="Threads and Processes" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Synchronization and Mutual Exclusion</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-04-classic-problems' title="Classic Concurrency Problems" class="py-2 px-3 btn btn-primary"
+				data-read-mod="sistemas_operativos" data-read-unit="3-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-04-classic-problems' title="Classic Concurrency Problems" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="sistemas_operativos" data-read-unit="3-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introduction</h1>
+<div class='content'><p>In the realm of operating systems, synchronization and mutual exclusion are critical concepts for managing the execution of concurrent processes. These concepts ensure that multiple processes or threads can operate safely and efficiently without interfering with each other.</p>
+</div><h2>Key Concepts</h2>
+<div class='content'><ol>
+<li><strong>Concurrency</strong>: The ability of the operating system to execute multiple processes or threads simultaneously.</li>
+<li><strong>Synchronization</strong>: The coordination of concurrent processes to ensure correct execution.</li>
+<li><strong>Mutual Exclusion</strong>: Ensuring that only one process or thread can access a critical section at a time.</li>
+</ol>
+</div><h1>Synchronization</h1>
+<div class='content'><p>Synchronization is essential for coordinating the sequence of actions of concurrent processes. It ensures that processes do not interfere with each other while sharing resources.</p>
+</div><h2>Mechanisms for Synchronization</h2>
+<div class='content'><ol>
+<li><strong>Locks</strong>: Used to protect critical sections by allowing only one thread to access the resource at a time.</li>
+<li><strong>Semaphores</strong>: A signaling mechanism that can be used to control access to a common resource.</li>
+<li><strong>Monitors</strong>: High-level synchronization constructs that provide a mechanism for threads to temporarily give up exclusive access to a resource and be notified when they can regain it.</li>
+</ol>
+</div><h2>Example: Using Locks</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwoKIyBTaGFyZWQgcmVzb3VyY2UKY291bnRlciA9IDAKbG9jayA9IHRocmVhZGluZy5Mb2NrKCkKCmRlZiBpbmNyZW1lbnQoKToKICAgIGdsb2JhbCBjb3VudGVyCiAgICBmb3IgXyBpbiByYW5nZSgxMDAwMDApOgogICAgICAgIGxvY2suYWNxdWlyZSgpCiAgICAgICAgY291bnRlciArPSAxCiAgICAgICAgbG9jay5yZWxlYXNlKCkKCnRocmVhZHMgPSBbXQpmb3IgaSBpbiByYW5nZSgxMCk6CiAgICB0ID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9aW5jcmVtZW50KQogICAgdGhyZWFkcy5hcHBlbmQodCkKICAgIHQuc3RhcnQoKQoKZm9yIHQgaW4gdGhyZWFkczoKICAgIHQuam9pbigpCgpwcmludCgiRmluYWwgY291bnRlciB2YWx1ZToiLCBjb3VudGVyKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+
+# Shared resource
+counter = 0
+lock = threading.Lock()
+
+def increment():
+    global counter
+    for _ in range(100000):
+        lock.acquire()
+        counter += 1
+        lock.release()
+
+threads = []
+for i in range(10):
+    t = threading.Thread(target=increment)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+
+print(&quot;Final counter value:&quot;, counter)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>A lock is used to ensure that only one thread can increment the counter at a time.</li>
+<li><code>lock.acquire()</code> is called before accessing the shared resource.</li>
+<li><code>lock.release()</code> is called after accessing the shared resource.</li>
+</ul>
+</div><h1>Mutual Exclusion</h1>
+<div class='content'><p>Mutual exclusion is a property of concurrency control, which is instituted to prevent race conditions. It ensures that only one process or thread can enter the critical section at a time.</p>
+</div><h2>Mechanisms for Mutual Exclusion</h2>
+<div class='content'><ol>
+<li><strong>Mutex (Mutual Exclusion Object)</strong>: A lock that ensures mutual exclusion.</li>
+<li><strong>Spinlocks</strong>: A lock where the thread simply waits in a loop (&quot;spins&quot;) repeatedly checking until the lock becomes available.</li>
+<li><strong>Critical Sections</strong>: Code segments that access shared resources and must not be concurrently executed by more than one thread.</li>
+</ol>
+</div><h2>Example: Using Mutex</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwoKIyBTaGFyZWQgcmVzb3VyY2UKY291bnRlciA9IDAKbXV0ZXggPSB0aHJlYWRpbmcuTG9jaygpCgpkZWYgaW5jcmVtZW50KCk6CiAgICBnbG9iYWwgY291bnRlcgogICAgZm9yIF8gaW4gcmFuZ2UoMTAwMDAwKToKICAgICAgICB3aXRoIG11dGV4OgogICAgICAgICAgICBjb3VudGVyICs9IDEKCnRocmVhZHMgPSBbXQpmb3IgaSBpbiByYW5nZSgxMCk6CiAgICB0ID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9aW5jcmVtZW50KQogICAgdGhyZWFkcy5hcHBlbmQodCkKICAgIHQuc3RhcnQoKQoKZm9yIHQgaW4gdGhyZWFkczoKICAgIHQuam9pbigpCgpwcmludCgiRmluYWwgY291bnRlciB2YWx1ZToiLCBjb3VudGVyKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+
+# Shared resource
+counter = 0
+mutex = threading.Lock()
+
+def increment():
+    global counter
+    for _ in range(100000):
+        with mutex:
+            counter += 1
+
+threads = []
+for i in range(10):
+    t = threading.Thread(target=increment)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+
+print(&quot;Final counter value:&quot;, counter)</pre></div><div class='content'><p><strong>Explanation:</strong></p>
+<ul>
+<li>A mutex is used to ensure mutual exclusion.</li>
+<li>The <code>with</code> statement is used to acquire and release the mutex automatically.</li>
+</ul>
+</div><h1>Practical Exercises</h1>
+<div class='content'></div><h2>Exercise 1: Implementing a Semaphore</h2>
+<div class='content'><p><strong>Task:</strong>
+Implement a semaphore to control access to a shared resource.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwoKIyBTaGFyZWQgcmVzb3VyY2UKY291bnRlciA9IDAKc2VtYXBob3JlID0gdGhyZWFkaW5nLlNlbWFwaG9yZSgxKQoKZGVmIGluY3JlbWVudCgpOgogICAgZ2xvYmFsIGNvdW50ZXIKICAgIGZvciBfIGluIHJhbmdlKDEwMDAwMCk6CiAgICAgICAgc2VtYXBob3JlLmFjcXVpcmUoKQogICAgICAgIGNvdW50ZXIgKz0gMQogICAgICAgIHNlbWFwaG9yZS5yZWxlYXNlKCkKCnRocmVhZHMgPSBbXQpmb3IgaSBpbiByYW5nZSgxMCk6CiAgICB0ID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9aW5jcmVtZW50KQogICAgdGhyZWFkcy5hcHBlbmQodCkKICAgIHQuc3RhcnQoKQoKZm9yIHQgaW4gdGhyZWFkczoKICAgIHQuam9pbigpCgpwcmludCgiRmluYWwgY291bnRlciB2YWx1ZToiLCBjb3VudGVyKQ=="))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+
+# Shared resource
+counter = 0
+semaphore = threading.Semaphore(1)
+
+def increment():
+    global counter
+    for _ in range(100000):
+        semaphore.acquire()
+        counter += 1
+        semaphore.release()
+
+threads = []
+for i in range(10):
+    t = threading.Thread(target=increment)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()
+
+print(&quot;Final counter value:&quot;, counter)</pre></div><div class='content'><p><strong>Solution:</strong></p>
+<ul>
+<li>A semaphore is used to control access to the shared resource.</li>
+<li><code>semaphore.acquire()</code> is called before accessing the shared resource.</li>
+<li><code>semaphore.release()</code> is called after accessing the shared resource.</li>
+</ul>
+</div><h2>Exercise 2: Solving a Classic Concurrency Problem</h2>
+<div class='content'><p><strong>Task:</strong>
+Implement the Producer-Consumer problem using a bounded buffer.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwppbXBvcnQgdGltZQppbXBvcnQgcmFuZG9tCgpidWZmZXIgPSBbXQpidWZmZXJfc2l6ZSA9IDUKc2VtYXBob3JlX2VtcHR5ID0gdGhyZWFkaW5nLlNlbWFwaG9yZShidWZmZXJfc2l6ZSkKc2VtYXBob3JlX2Z1bGwgPSB0aHJlYWRpbmcuU2VtYXBob3JlKDApCm11dGV4ID0gdGhyZWFkaW5nLkxvY2soKQoKZGVmIHByb2R1Y2VyKCk6CiAgICBnbG9iYWwgYnVmZmVyCiAgICB3aGlsZSBUcnVlOgogICAgICAgIGl0ZW0gPSByYW5kb20ucmFuZGludCgxLCAxMDApCiAgICAgICAgc2VtYXBob3JlX2VtcHR5LmFjcXVpcmUoKQogICAgICAgIHdpdGggbXV0ZXg6CiAgICAgICAgICAgIGJ1ZmZlci5hcHBlbmQoaXRlbSkKICAgICAgICAgICAgcHJpbnQoZiJQcm9kdWNlZDoge2l0ZW19IikKICAgICAgICBzZW1hcGhvcmVfZnVsbC5yZWxlYXNlKCkKICAgICAgICB0aW1lLnNsZWVwKHJhbmRvbS5yYW5kb20oKSkKCmRlZiBjb25zdW1lcigpOgogICAgZ2xvYmFsIGJ1ZmZlcgogICAgd2hpbGUgVHJ1ZToKICAgICAgICBzZW1hcGhvcmVfZnVsbC5hY3F1aXJlKCkKICAgICAgICB3aXRoIG11dGV4OgogICAgICAgICAgICBpdGVtID0gYnVmZmVyLnBvcCgwKQogICAgICAgICAgICBwcmludChmIkNvbnN1bWVkOiB7aXRlbX0iKQogICAgICAgIHNlbWFwaG9yZV9lbXB0eS5yZWxlYXNlKCkKICAgICAgICB0aW1lLnNsZWVwKHJhbmRvbS5yYW5kb20oKSkKCnRocmVhZHMgPSBbXQpmb3IgXyBpbiByYW5nZSgzKToKICAgIHQgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1wcm9kdWNlcikKICAgIHRocmVhZHMuYXBwZW5kKHQpCiAgICB0LnN0YXJ0KCkKCmZvciBfIGluIHJhbmdlKDMpOgogICAgdCA9IHRocmVhZGluZy5UaHJlYWQodGFyZ2V0PWNvbnN1bWVyKQogICAgdGhyZWFkcy5hcHBlbmQodCkKICAgIHQuc3RhcnQoKQoKZm9yIHQgaW4gdGhyZWFkczoKICAgIHQuam9pbigp"))));alert("Copied!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+import time
+import random
+
+buffer = []
+buffer_size = 5
+semaphore_empty = threading.Semaphore(buffer_size)
+semaphore_full = threading.Semaphore(0)
+mutex = threading.Lock()
+
+def producer():
+    global buffer
+    while True:
+        item = random.randint(1, 100)
+        semaphore_empty.acquire()
+        with mutex:
+            buffer.append(item)
+            print(f&quot;Produced: {item}&quot;)
+        semaphore_full.release()
+        time.sleep(random.random())
+
+def consumer():
+    global buffer
+    while True:
+        semaphore_full.acquire()
+        with mutex:
+            item = buffer.pop(0)
+            print(f&quot;Consumed: {item}&quot;)
+        semaphore_empty.release()
+        time.sleep(random.random())
+
+threads = []
+for _ in range(3):
+    t = threading.Thread(target=producer)
+    threads.append(t)
+    t.start()
+
+for _ in range(3):
+    t = threading.Thread(target=consumer)
+    threads.append(t)
+    t.start()
+
+for t in threads:
+    t.join()</pre></div><div class='content'><p><strong>Solution:</strong></p>
+<ul>
+<li>Semaphores <code>semaphore_empty</code> and <code>semaphore_full</code> are used to track the buffer state.</li>
+<li>A mutex is used to ensure mutual exclusion when accessing the buffer.</li>
+<li>Producers add items to the buffer, and consumers remove items from the buffer.</li>
+</ul>
+</div><h1>Common Mistakes and Tips</h1>
+<div class='content'><ul>
+<li><strong>Deadlock</strong>: Ensure that locks are always released after being acquired to avoid deadlocks.</li>
+<li><strong>Starvation</strong>: Ensure that all threads get a fair chance to access the resource to avoid starvation.</li>
+<li><strong>Race Conditions</strong>: Always use synchronization mechanisms to prevent race conditions.</li>
+</ul>
+</div><h1>Conclusion</h1>
+<div class='content'><p>In this section, we explored the concepts of synchronization and mutual exclusion, which are vital for managing concurrent processes in an operating system. We discussed various mechanisms like locks, semaphores, and mutexes, and provided practical examples to illustrate their usage. Understanding these concepts is crucial for ensuring the correct and efficient execution of concurrent processes.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-02-threads-processes' title="Threads and Processes" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Previous 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-02-threads-processes' title="Threads and Processes" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-04-classic-problems' title="Classic Concurrency Problems" class="py-2 px-3 btn btn-primary"
+				data-read-mod="sistemas_operativos" data-read-unit="3-3">
+				Next &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-04-classic-problems' title="Classic Concurrency Problems" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="sistemas_operativos" data-read-unit="3-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Fundamentals of Operating Systems</h1>
+<h2>Module 1: Introduction to Operating Systems</h2>
+<ul>
+<li><a href="01-01-basic-concepts">Basic Concepts of Operating Systems</a></li>
+<li><a href="01-02-history-evolution">History and Evolution of Operating Systems</a></li>
+<li><a href="01-03-types-operating-systems">Types of Operating Systems</a></li>
+<li><a href="01-04-main-functions">Main Functions of an Operating System</a></li>
+</ul>
+<h2>Module 2: Resource Management</h2>
+<ul>
+<li><a href="02-01-process-management">Process Management</a></li>
+<li><a href="02-02-memory-management">Memory Management</a></li>
+<li><a href="02-03-storage-management">Storage Management</a></li>
+<li><a href="02-04-device-management">Device Management</a></li>
+</ul>
+<h2>Module 3: Concurrency</h2>
+<ul>
+<li><a href="03-01-concepts-concurrency">Concepts of Concurrency</a></li>
+<li><a href="03-02-threads-processes">Threads and Processes</a></li>
+<li><a href="03-03-synchronization-mutual-exclusion">Synchronization and Mutual Exclusion</a></li>
+<li><a href="03-04-classic-problems">Classic Concurrency Problems</a></li>
+</ul>
+<h2>Module 4: File Structures</h2>
+<ul>
+<li><a href="04-01-file-systems">File Systems</a></li>
+<li><a href="04-02-directory-structures">Directory Structures</a></li>
+<li><a href="04-03-file-management">File Management</a></li>
+<li><a href="04-04-security-permissions">File Security and Permissions</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objective" rel="nofollow">The Project</a> | 
+<a href="/about" rel="nofollow">About Us</a> | 
+<a href="/contribute" rel="nofollow">Contribute</a> | 
+<a href="/donate" rel="nofollow">Donations</a> | 
+<a href="/license" rel="nofollow">License</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. All rights reserved</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	We use cookies to improve your user experience and offer content tailored to your interests.
+    <a href="#" id="btn_accept_cookies" class="button">Accept</a>
+    <a href="/cookies">More Information</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">User not authenticated</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
